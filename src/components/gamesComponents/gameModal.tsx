@@ -5,7 +5,6 @@ import { Game } from '../../types'
 import * as Dialog from '@radix-ui/react-dialog'
 
 import { ReactNode } from 'react'
-import { RxCross1 } from 'react-icons/rx'
 
 export default function GameModal({
   open,
@@ -43,18 +42,16 @@ export default function GameModal({
   //     dateStyle: 'medium'
   //   }).format(new Date(release))
   // }
+  console.log(game)
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-black/70 inset-0 fixed" />
-        <Dialog.Content className="fixed bg-[#272932] py-8 px-10 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[630px] h-[650px] ">
+        <Dialog.Content className="fixed bg-[#272932] pt-4 px-12 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg ">
           <div className="flex items-center justify-between">
-            <Dialog.Title className="text-xl">{game?.gameName}</Dialog.Title>
+            <Dialog.Title className="text-2xl"></Dialog.Title>
             <Dialog.Description></Dialog.Description>
-            <Dialog.Close className="text-gray-400 hover:text-gray-500">
-              <RxCross1 />
-            </Dialog.Close>
           </div>
           {children}
         </Dialog.Content>

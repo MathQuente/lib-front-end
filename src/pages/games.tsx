@@ -1,19 +1,23 @@
 import SideBar from '../components/sideBar'
 
+import * as Collapsible from '@radix-ui/react-collapsible'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+
 import {
-  ChevronsLeft,
   ChevronLeft,
   ChevronRight,
-  ChevronsRight
+  ChevronsLeft,
+  ChevronsRight,
+  DotIcon
 } from 'lucide-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { Game, GameStatus } from '../types'
-import { IconButton } from '../components/iconButton'
 import { CiSearch } from 'react-icons/ci'
-import GameModal from '../components/gamesComponents/gameModal'
-import * as RadioGroup from '@radix-ui/react-radio-group'
-import { addGame, updateGameStatus } from '../services/gamesServices'
 import { Cookies } from 'typescript-cookie'
+import GameModal from '../components/gamesComponents/gameModal'
+import { IconButton } from '../components/iconButton'
+import { addGame, updateGameStatus } from '../services/gamesServices'
+import { Game, GameStatus } from '../types'
+import { RxCross1, RxRowSpacing } from 'react-icons/rx'
 
 export function Games() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -185,6 +189,7 @@ function ContactForm({
   const [saving, setSaving] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<GameStatus>()
+  const [open, setOpen] = useState(false)
 
   const userId = localStorage.getItem('userId')
 
@@ -200,6 +205,8 @@ function ContactForm({
         .then(response => response.json())
         .then(data => {
           setGameStatus(data?.UserGamesStatus)
+
+          setSelectedStatus(data?.UserGamesStatus.id.toString())
         })
     }
   }, [game, userId])
@@ -227,113 +234,177 @@ function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} key={gameStatus?.id}>
+    <form onSubmit={handleSubmit} key={gameStatus?.id} className="">
       <fieldset disabled={saving} className="group">
-        <div className="mt-8 group-disabled:opacity-50">
-          <div className="flex flex-row">
-            <img className="w-64 h-80" src={game?.gameBanner} alt="" />
-            <div className="flex flex-col gap-1">
-              <div
-                className={`gap-4 ${
-                  game?.categories.length === 1
-                    ? 'flex items-center ml-2'
-                    : 'grid grid-cols-2 ml-2'
-                }`}
-              >
+        <div className="group-disabled:opacity-50 flex w-[649px] h-[430px]">
+          <img
+            className="-ml-12 -mt-4 rounded-l-lg"
+            src={game?.gameBanner}
+            alt=""
+          />
+          <div className="flex flex-col gap-1 items-center">
+            <div className="flex flex-col items-center mt-2">
+              <div className="ml-10 -mt-4">
+                <h2 className="text-3xl font-bold">{game.gameName}</h2>
+              </div>
+              <div className="mt-2 relative">
+                <Collapsible.Root
+                  className="w-full md:w-[300px] md:ml-6"
+                  open={open}
+                  onOpenChange={setOpen}
+                >
+                  {game?.platforms.length === 1 && (
+                    <div className="grid grid-flow-col ml-4">
+                      <span
+                        className="text-violet11 text-xl mx-auto leading-[25px]"
+                        style={{ color: 'white' }}
+                      >
+                        Platforms
+                      </span>
+                    </div>
+                  )}
+                  {game?.platforms.length > 2 && (
+                    <div className="grid grid-flow-col ml-16">
+                      <span
+                        className="text-violet11 text-2xl font-semibold mx-auto leading-[25px]"
+                        style={{ color: 'white' }}
+                      >
+                        Platforms
+                      </span>
+                      <Collapsible.Trigger asChild>
+                        <button className="rounded-full h-[25px] w-[25px] inline-flex items-center justify-center text-violet11 shadow-[0_2px_10px] shadow-blackA4 outline-none data-[state=closed]:bg-white data-[state=open]:bg-violet3 hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black">
+                          {open ? <RxCross1 /> : <RxRowSpacing />}
+                        </button>
+                      </Collapsible.Trigger>
+                    </div>
+                  )}
+
+                  <div
+                    className={`${
+                      game?.platforms.length === 1
+                        ? 'flex justify-center  ml-2'
+                        : 'grid grid-cols-2 gap-x-10 gap-y-1 mt-2'
+                    }`}
+                  >
+                    {game?.platforms.slice(0, 2).map((platform, index) => (
+                      <div
+                        className="bg-violet11 rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
+                        key={index}
+                      >
+                        <span className="text-white text-xl leading-[25px]">
+                          {platform.platformName}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Collapsible.Content
+                    className={`${
+                      game?.platforms.length === 1
+                        ? 'flex justify-center'
+                        : 'grid grid-cols-2  gap-x-10 gap-y-1'
+                    } absolute bg-[#272932]  `}
+                  >
+                    {game?.platforms.slice(2).map((platform, index) => (
+                      <div
+                        className="bg-violet11 rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
+                        key={index}
+                      >
+                        <span className="text-white text-xl leading-[25px]">
+                          {platform.platformName}
+                        </span>
+                      </div>
+                    ))}
+                  </Collapsible.Content>
+                </Collapsible.Root>
+              </div>
+            </div>
+
+            <div className="flex gap-2 my-10 ml-4">
+              <h1 className="text-2xl font font-normal">Tags:</h1>
+              <div className="flex flex-row gap-2">
                 {game?.categories.map((category, index) => (
                   <span
-                    className="bg-black rounded-lg text-[#A9A9AD] font-bold flex justify-center items-center h-12 w-36 p-1"
+                    className="bg-black rounded-lg text-[#A9A9AD] font-bold text-lg flex justify-center items-center h-8 w-28"
                     key={index}
                   >
                     {category.categoryName}
                   </span>
                 ))}
               </div>
-              <div
-                className={`gap-4 pt-4 ${
-                  game?.platforms.length === 1 || game?.platforms.length === 2
-                    ? 'flex items-center ml-2'
-                    : 'grid grid-cols-2 ml-2'
-                }`}
-              >
-                {game?.platforms.map((platform, index) => (
-                  <span
-                    className="bg-[#6930CD] flex justify-center items-center h-12 w-36 p-1 rounded-lg text-zinc-950 font-bold"
-                    key={index}
-                  >
-                    {platform.platformName}
-                  </span>
-                ))}
-              </div>
-              <div className="flex flex-row gap-2 pt-2 ml-2">
-                <h3>Developer:</h3>
-                <span>{game?.gameStudio.studioName}</span>
-              </div>
-              <div className="flex ml-3">
-                <RadioGroup.Root
-                  className="flex flex-col gap-2.5"
-                  defaultValue={gameStatus?.id.toString() ?? ''}
-                  onValueChange={handleStatusChange}
-                  aria-label="View density"
+            </div>
+
+            <div className="flex flex-row gap-2 ml-6 my-auto">
+              <h3 className="text-xl">Developer:</h3>
+              <p className="text-xl font-bold">{game?.gameStudio.studioName}</p>
+            </div>
+
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  className="rounded-md w-28 h-9 inline-flex items-center justify-center text-violet11 bg-white shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black ml-8 text-lg font-medium"
+                  aria-label="Customise options"
                 >
-                  <div className="flex items-center">
-                    <RadioGroup.Item
-                      className="bg-white w-[25px] h-[25px] rounded-full shadow-[0_2px_10px] shadow-blackA4 hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
+                  <p>
+                    {selectedStatus === '1'
+                      ? 'finished'
+                      : selectedStatus === '2'
+                      ? 'playing'
+                      : 'paused'}
+                  </p>
+                </button>
+              </DropdownMenu.Trigger>
+
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-36  bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade "
+                  sideOffset={5}
+                >
+                  <DropdownMenu.RadioGroup
+                    value={selectedStatus?.toString()}
+                    onValueChange={handleStatusChange}
+                  >
+                    <DropdownMenu.RadioItem
+                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                       value="1"
-                      id="1"
                     >
-                      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-violet11" />
-                    </RadioGroup.Item>
-                    <label
-                      className="text-white text-[15px] leading-none pl-[15px]"
-                      htmlFor="1"
-                    >
-                      playing
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <RadioGroup.Item
-                      className="bg-white w-[25px] h-[25px] rounded-full shadow-[0_2px_10px] shadow-blackA4 hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
-                      value="2"
-                      id="2"
-                    >
-                      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-violet11" />
-                    </RadioGroup.Item>
-                    <label
-                      className="text-white text-[15px] leading-none pl-[15px]"
-                      htmlFor="2"
-                    >
-                      paused
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <RadioGroup.Item
-                      className="bg-white w-[25px] h-[25px] rounded-full shadow-[0_2px_10px] shadow-blackA4 hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
-                      value="3"
-                      id="3"
-                    >
-                      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-violet11" />
-                    </RadioGroup.Item>
-                    <label
-                      className="text-white text-[15px] leading-none pl-[15px]"
-                      htmlFor="3"
-                    >
+                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                        <DotIcon />
+                      </DropdownMenu.ItemIndicator>
                       finished
-                    </label>
-                  </div>
-                </RadioGroup.Root>
-              </div>
+                    </DropdownMenu.RadioItem>
+                    <DropdownMenu.RadioItem
+                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+                      value="2"
+                    >
+                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                        <DotIcon />
+                      </DropdownMenu.ItemIndicator>
+                      playing
+                    </DropdownMenu.RadioItem>
+                    <DropdownMenu.RadioItem
+                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+                      value="3"
+                    >
+                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                        <DotIcon />
+                      </DropdownMenu.ItemIndicator>
+                      paused
+                    </DropdownMenu.RadioItem>
+                  </DropdownMenu.RadioGroup>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+            <div className="my-auto ml-56">
+              <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
+                Cancel
+              </GameModal.Close>
+              <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-white hover:bg-green-600 group-disabled:pointer-events-none">
+                {/* <Spinner className="absolute h-4 group-enabled:opacity-0" /> */}
+                <span className="group-disabled:opacity-0">Save</span>
+              </button>
             </div>
           </div>
-        </div>
-        <div className="mt-8 space-x-6 text-right">
-          <GameModal.Close className="rounded px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-600">
-            Cancel
-          </GameModal.Close>
-          <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-[#A9A9AD] hover:bg-green-600 group-disabled:pointer-events-none">
-            {/* <Spinner className="absolute h-4 group-enabled:opacity-0" /> */}
-            <span className="group-disabled:opacity-0">Save</span>
-          </button>
         </div>
       </fieldset>
     </form>
