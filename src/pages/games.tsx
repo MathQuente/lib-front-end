@@ -7,8 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight,
-  DotIcon
+  ChevronsRight
 } from 'lucide-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
@@ -18,6 +17,9 @@ import { IconButton } from '../components/iconButton'
 import { addGame, updateGameStatus } from '../services/gamesServices'
 import { Game, GameStatus } from '../types'
 import { RxCross1, RxRowSpacing } from 'react-icons/rx'
+import { IoMdHourglass } from 'react-icons/io'
+import { PiFlagCheckeredBold } from 'react-icons/pi'
+import { FiPause } from 'react-icons/fi'
 
 export function Games() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -160,16 +162,36 @@ export function Games() {
             </span>
             <div className="flex gap-1.5">
               <IconButton onClick={goToFirstPage} disabled={page === 1}>
-                <ChevronsLeft className="size-4" />
+                <ChevronsLeft
+                  className={`${
+                    page === 1 ? 'size-4 text-black' : 'size-4 text-[#6930CD]'
+                  }`}
+                />
               </IconButton>
               <IconButton onClick={goToPreviousPage} disabled={page === 1}>
-                <ChevronLeft className="size-4 " />
+                <ChevronLeft
+                  className={`${
+                    page === 1 ? 'size-4 text-black' : 'size-4 text-[#6930CD]'
+                  }`}
+                />
               </IconButton>
               <IconButton onClick={goToNextPage} disabled={page === totalPages}>
-                <ChevronRight className="size-4 text-[#6930CD]" />
+                <ChevronRight
+                  className={`${
+                    total === totalPages
+                      ? 'size-4 text-[#6930CD]'
+                      : 'size-4 text-black'
+                  }`}
+                />
               </IconButton>
               <IconButton onClick={goToLastPage} disabled={page === totalPages}>
-                <ChevronsRight className="size-4 text-[#6930CD]" />
+                <ChevronsRight
+                  className={`${
+                    total === totalPages
+                      ? 'size-4 text-[#6930CD]'
+                      : 'size-4 text-black'
+                  }`}
+                />
               </IconButton>
             </div>
           </div>
@@ -244,7 +266,7 @@ function ContactForm({
           />
           <div className="flex flex-col gap-1 items-center">
             <div className="flex flex-col items-center mt-2">
-              <div className="ml-10 -mt-4">
+              <div className="ml-10 ">
                 <h2 className="text-3xl font-bold">{game.gameName}</h2>
               </div>
               <div className="mt-2 relative">
@@ -265,10 +287,7 @@ function ContactForm({
                   )}
                   {game?.platforms.length > 2 && (
                     <div className="grid grid-flow-col ml-16">
-                      <span
-                        className="text-violet11 text-2xl font-semibold mx-auto leading-[25px]"
-                        style={{ color: 'white' }}
-                      >
+                      <span className="text-white text-2xl font-semibold mx-auto leading-[25px]">
                         Platforms
                       </span>
                       <Collapsible.Trigger asChild>
@@ -288,10 +307,10 @@ function ContactForm({
                   >
                     {game?.platforms.slice(0, 2).map((platform, index) => (
                       <div
-                        className="bg-violet11 rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
+                        className="bg-[#6930CD] rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
                         key={index}
                       >
-                        <span className="text-white text-xl leading-[25px]">
+                        <span className="text-white text-xl font-semibold leading-[25px]">
                           {platform.platformName}
                         </span>
                       </div>
@@ -307,7 +326,7 @@ function ContactForm({
                   >
                     {game?.platforms.slice(2).map((platform, index) => (
                       <div
-                        className="bg-violet11 rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
+                        className="bg-[#6930CD] rounded my-1 p-1 shadow-[0_2px_10px] flex justify-center w-40 shadow-blackA4"
                         key={index}
                       >
                         <span className="text-white text-xl leading-[25px]">
@@ -325,7 +344,7 @@ function ContactForm({
               <div className="flex flex-row gap-2">
                 {game?.categories.map((category, index) => (
                   <span
-                    className="bg-black rounded-lg text-[#A9A9AD] font-bold text-lg flex justify-center items-center h-8 w-28"
+                    className="bg-black rounded-lg text-white font-semibold text-lg flex justify-center items-center h-8 w-28"
                     key={index}
                   >
                     {category.categoryName}
@@ -342,15 +361,22 @@ function ContactForm({
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button
-                  className="rounded-md w-28 h-9 inline-flex items-center justify-center text-violet11 bg-white shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black ml-8 text-lg font-medium"
+                  className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
                   aria-label="Customise options"
                 >
+                  {selectedStatus === '1' && (
+                    <PiFlagCheckeredBold className="size-4" />
+                  )}
+                  {selectedStatus === '2' && (
+                    <IoMdHourglass className="size-4" />
+                  )}
+                  {selectedStatus === '3' && <FiPause className="size-4" />}
                   <p>
                     {selectedStatus === '1'
-                      ? 'finished'
+                      ? 'Finished'
                       : selectedStatus === '2'
-                      ? 'playing'
-                      : 'paused'}
+                      ? 'Playing'
+                      : 'Paused'}
                   </p>
                 </button>
               </DropdownMenu.Trigger>
@@ -369,33 +395,33 @@ function ContactForm({
                       value="1"
                     >
                       <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <DotIcon />
+                        <PiFlagCheckeredBold />
                       </DropdownMenu.ItemIndicator>
-                      finished
+                      Finished
                     </DropdownMenu.RadioItem>
                     <DropdownMenu.RadioItem
                       className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                       value="2"
                     >
                       <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <DotIcon />
+                        <IoMdHourglass />
                       </DropdownMenu.ItemIndicator>
-                      playing
+                      Playing
                     </DropdownMenu.RadioItem>
                     <DropdownMenu.RadioItem
                       className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
                       value="3"
                     >
                       <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <DotIcon />
+                        <FiPause />
                       </DropdownMenu.ItemIndicator>
-                      paused
+                      Paused
                     </DropdownMenu.RadioItem>
                   </DropdownMenu.RadioGroup>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
-            <div className="my-auto ml-56">
+            <div className="my-auto pb-2 ml-56 flex gap-4">
               <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
                 Cancel
               </GameModal.Close>
