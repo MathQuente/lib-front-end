@@ -138,7 +138,6 @@ export function Games() {
             ))}
             <div>
               <GameModal
-                game={currentGame}
                 open={open}
                 onOpenChange={open => {
                   setOpen(open)
@@ -226,8 +225,7 @@ function ContactForm({
       })
         .then(response => response.json())
         .then(data => {
-          setGameStatus(data?.UserGamesStatus)
-
+          setGameStatus(data.UserGamesStatus)
           setSelectedStatus(data?.UserGamesStatus.id.toString())
         })
     }

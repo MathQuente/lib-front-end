@@ -1,7 +1,3 @@
-// import { getGamesStatus } from '../../services/gamesServices'
-// import { useEffect, useState } from 'react'
-
-import { Game } from '../../types'
 import * as Dialog from '@radix-ui/react-dialog'
 
 import { ReactNode } from 'react'
@@ -9,40 +5,18 @@ import { ReactNode } from 'react'
 export default function GameModal({
   open,
   onOpenChange,
-  game,
   children
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  game: Game | null
+
   children?: ReactNode
 }) {
-  // const [valorSelecionado, setValorSelecionado] = useState('')
-
-  // async function handleSubmitGame() {
-  //   try {
-  //     const body = { game, status: Number(valorSelecionado) }
-  //     await addGame(body)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // const handleGame = (event: any) => {
-  //   setValorSelecionado(event.target.value)
-  //   console.log(event.target.value)
-  // }
-
-  // useEffect(() => {
-  //   listGamesStatus()
-  // }, [])
-
   // const dateFormatter = (release: string) => {
   //   return new Intl.DateTimeFormat('pt-BR', {
   //     dateStyle: 'medium'
   //   }).format(new Date(release))
   // }
-  console.log(game)
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>

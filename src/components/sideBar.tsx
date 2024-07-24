@@ -3,22 +3,8 @@ import { GoHomeFill } from 'react-icons/go'
 import { FaGear } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import wheelSpinner from '../assets/wheelSpinner.svg'
-// import { useEffect } from 'react'
 
 export default function SideBar() {
-  // useEffect(() => {
-  //   if (Cookies.get('token')) {
-  //     findUserLogged()
-  //   }
-  // }, [])
-
-  // const navigate = useNavigate()
-
-  // function signout() {
-  //   Cookies.remove('token')
-  //   navigate('/auth')
-  // }
-
   return (
     <>
       <div className="w-[126px]  bg-[#272932] flex flex-col justify-between py-20 items-center fixed 2xl:h-full xl:h-full lg:h-full md:h-full sm:h-full">
@@ -29,7 +15,7 @@ export default function SideBar() {
               <GoHomeFill className="size-8 text-[#8F8F8F]" />
             </li>
           </Link>
-          <Link to="/library">
+          <Link to="/userLibrary">
             <li>
               <IoPerson className="size-8 text-[#8F8F8F]" />
             </li>
