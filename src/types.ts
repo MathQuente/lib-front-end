@@ -16,6 +16,7 @@ export interface GameStudio {
 }
 
 export interface Game {
+  game: Game
   id: string
   gameName: string
   gameBanner: string

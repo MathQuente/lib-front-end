@@ -12,12 +12,6 @@ export default function GameModal({
 
   children?: ReactNode
 }) {
-  // const dateFormatter = (release: string) => {
-  //   return new Intl.DateTimeFormat('pt-BR', {
-  //     dateStyle: 'medium'
-  //   }).format(new Date(release))
-  // }
-
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>

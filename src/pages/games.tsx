@@ -11,15 +11,15 @@ import {
 } from 'lucide-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
+import { FiPause } from 'react-icons/fi'
+import { IoMdHourglass } from 'react-icons/io'
+import { PiFlagCheckeredBold } from 'react-icons/pi'
+import { RxCross1, RxRowSpacing } from 'react-icons/rx'
 import { Cookies } from 'typescript-cookie'
 import GameModal from '../components/gamesComponents/gameModal'
 import { IconButton } from '../components/iconButton'
 import { addGame, updateGameStatus } from '../services/gamesServices'
 import { Game, GameStatus } from '../types'
-import { RxCross1, RxRowSpacing } from 'react-icons/rx'
-import { IoMdHourglass } from 'react-icons/io'
-import { PiFlagCheckeredBold } from 'react-icons/pi'
-import { FiPause } from 'react-icons/fi'
 
 export function Games() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -107,7 +107,7 @@ export function Games() {
 
   return (
     <>
-      <div className="flex flex-col w-full min-h-screen bg-[#1A1C26] ">
+      <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
         <SideBar />
         <div className="flex gap-3 items-center">
           <div className=" left-[20rem] top-[2rem] w-[30rem] mx-44 mt-10">
