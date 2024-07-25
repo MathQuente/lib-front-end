@@ -82,6 +82,14 @@ export function UserLibrary() {
     UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
   )
 
+  const finished = userGames.filter(
+    UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
+  )
+
+  const paused = userGames.filter(
+    UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
+  )
+  console.log(userGames)
   const pausedGames = userGames
     .filter(
       UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
@@ -176,14 +184,14 @@ export function UserLibrary() {
               <h1 className="text-2xl font-bold text-white">Finished</h1>
               <div className="flex flex-row items-center gap-1">
                 <FaFlagCheckered className="size-4 text-white" />
-                <p className="text-sm text-white">{finishedGames?.length}</p>
+                <p className="text-sm text-white">{finished?.length}</p>
               </div>
             </div>
             <div>
               <Link
                 to="/userLibrary/finishedGames"
                 className="text-[#8F8F8F]"
-                state={finishedGames}
+                state={finished}
               >
                 Mostrar tudo
               </Link>
@@ -226,14 +234,14 @@ export function UserLibrary() {
               <h1 className="text-2xl font-bold text-white">Paused</h1>
               <div className="flex flex-row items-center gap-1">
                 <CiPause1 className="size-4 text-white" />
-                <p className="text-sm text-white">{pausedGames?.length}</p>
+                <p className="text-sm text-white">{paused?.length}</p>
               </div>
             </div>
             <div>
               <Link
                 to="/userLibrary/pausedGames"
                 className="text-[#8F8F8F]"
-                state={pausedGames}
+                state={paused}
               >
                 Mostrar tudo
               </Link>

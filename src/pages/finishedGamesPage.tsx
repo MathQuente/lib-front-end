@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom'
-import { PlayingGames } from '../components/userGamesComponents/playingGames'
 import SideBar from '../components/sideBar'
 import { CiSearch } from 'react-icons/ci'
 import { ChangeEvent, useState } from 'react'
@@ -99,7 +98,7 @@ export function FinishedGamesPage() {
           <FinishedGames finishedGames={location.state} />
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {PlayingGames?.length} de {total} items
+              Mostrando {total} de {total} items
             </p>
             <span className="text-[#FFFFFF]">
               Página {page} de {totalPages}
