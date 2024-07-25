@@ -9,6 +9,7 @@ import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { UserLibrary } from './pages/userLibrary'
 import { PlayingGamesPage } from './pages/playingGamesPage'
+import { FinishedGamesPage } from './pages/finishedGamesPage'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/userLibrary/playingGames',
     element: <PlayingGamesPage />
+  },
+  {
+    path: '/userLibrary/finishedGames',
+    element: <FinishedGamesPage />
   }
 ])
 
