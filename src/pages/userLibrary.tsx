@@ -231,7 +231,7 @@ export function UserLibrary() {
             </div>
             <div>
               <Link
-                to="/library/finishedGames"
+                to="/userLibrary/pausedGames"
                 className="text-[#8F8F8F]"
                 state={pausedGames}
               >
