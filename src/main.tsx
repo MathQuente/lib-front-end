@@ -7,7 +7,8 @@ import { Authetication } from './pages/authetication'
 import { App } from './app'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import UserLibrary from './pages/userLibrary'
+import { UserLibrary } from './pages/userLibrary'
+import { PlayingGamesPage } from './pages/playingGamesPage'
 
 const queryClient = new QueryClient()
 
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/userLibrary',
     element: <UserLibrary />
+  },
+  {
+    path: '/userLibrary/playingGames',
+    element: <PlayingGamesPage />
   }
 ])
 
