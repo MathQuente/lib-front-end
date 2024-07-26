@@ -64,18 +64,18 @@ export function GameForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} key={gameStatus?.id}>
+    <form onSubmit={handleSubmit} key={gameStatus?.id} className="">
       <fieldset disabled={saving} className="group">
-        <div className="group-disabled:opacity-50 flex w-[679px] h-[430px]">
+        <div className="group-disabled:opacity-50 flex min-w-[520px] min-h-[430px]">
           <img
-            className="-ml-12 -mt-4 rounded-l-lg"
+            className="-ml-12 -mt-4 rounded-l-lg w-80"
             src={game?.gameBanner}
             alt=""
           />
           <div className="flex flex-col gap-1 items-center">
             <div className="flex flex-col items-center mt-2">
               <div className="ml-10 ">
-                <h2 className="text-3xl font-bold">{game.gameName}</h2>
+                <h2 className="text-2xl font-bold">{game.gameName}</h2>
               </div>
               <div className="mt-2 relative">
                 <Collapsible.Root
@@ -147,28 +147,30 @@ export function GameForm({
               </div>
             </div>
 
-            <div
-              className={`${
-                game?.categories.length === 2 || game?.categories.length === 1
-                  ? 'flex justify-center gap-4 ml-14'
-                  : 'grid grid-cols-2 gap-x-10 gap-y-1 mt-2 ml-12'
-              }`}
-            >
-              {game?.categories.map((categories, index) => (
-                <div
-                  className="bg-black rounded my-1 shadow-[0_2px_10px] flex justify-center items-center w-full  shadow-blackA4"
-                  key={index}
-                >
-                  <span className="text-white text-xl font-semibold leading-[25px]">
-                    {categories.categoryName}
+            <div className="flex gap-2 my-10 ml-4">
+              <h1 className="text-2xl font font-normal">Tags:</h1>
+              <div className="flex flex-row gap-2">
+                {game?.categories.map((category, index) => (
+                  <span
+                    className={`bg-black rounded-lg text-white font-semibold text-lg flex justify-center items-center p-2`}
+                    key={index}
+                  >
+                    {category.categoryName}
                   </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-row gap-2 ml-6 my-auto">
               <h3 className="text-xl">Developer:</h3>
               <p className="text-xl font-bold">{game?.gameStudio.studioName}</p>
+            </div>
+
+            <div className="flex flex-row gap-2 ml-6 my-auto">
+              <h3 className="text-xl">Publisher:</h3>
+              <p className="text-xl font-bold">
+                {game?.publisher.publisherName}
+              </p>
             </div>
 
             <DropdownMenu.Root>
@@ -234,7 +236,7 @@ export function GameForm({
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
-            <div className="my-auto pb-2 ml-56 flex gap-4">
+            <div className="my-auto pb-2 flex gap-4">
               <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
                 Cancel
               </GameModal.Close>
