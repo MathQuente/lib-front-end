@@ -1,18 +1,22 @@
-export interface Category {
+interface Category {
   categoryName: string
 }
 
-export interface Platform {
+interface Platform {
   platformName: string
 }
 
-export interface GameLaunchers {
+interface GameLaunchers {
   dateRelease: string
   platforms: Platform
 }
 
-export interface GameStudio {
+interface GameStudio {
   studioName: string
+}
+
+interface Publisher {
+  publisherName: string
 }
 
 export interface Game {
@@ -22,6 +26,7 @@ export interface Game {
   gameBanner: string
   categories: Category[]
   platforms: Platform[]
+  publisher: Publisher
   gameStudio: GameStudio
   gameLaunchers: GameLaunchers[]
 }
@@ -43,7 +48,7 @@ export interface GameStatus {
   status: string
 }
 
-export interface UserGamesStatus {
+interface UserGamesStatus {
   id: number
   status: string
 }

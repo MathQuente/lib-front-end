@@ -98,7 +98,7 @@ export function PlayingGamesPage() {
           <PlayingGames playingGames={location.state} />
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {PlayingGames?.length} de {total} items
+              Mostrando {total} de {total} items
             </p>
             <span className="text-[#FFFFFF]">
               Página {page} de {totalPages}
@@ -143,4 +143,3 @@ export function PlayingGamesPage() {
     </>
   )
 }
-

@@ -89,7 +89,7 @@ export function UserLibrary() {
   const paused = userGames.filter(
     UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
   )
-  console.log(userGames)
+
   const pausedGames = userGames
     .filter(
       UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
@@ -149,7 +149,7 @@ export function UserLibrary() {
           </div>
           <div className="flex flex-row gap-4">
             {playingGames &&
-              playingGames.map(({ game }: Game) => (
+              playingGames.map(({ game }: UserGame) => (
                 <div key={game.id}>
                   <button
                     onClick={() => {
@@ -199,7 +199,7 @@ export function UserLibrary() {
           </div>
           <div className="flex flex-row gap-4">
             {finishedGames &&
-              finishedGames.map(({ game }: Game) => (
+              finishedGames.map(({ game }: UserGame) => (
                 <div key={game.id}>
                   <button
                     onClick={() => {
@@ -249,7 +249,7 @@ export function UserLibrary() {
           </div>
           <div className="flex flex-row gap-4">
             {pausedGames &&
-              pausedGames.map(({ game }: Game) => (
+              pausedGames.map(({ game }: UserGame) => (
                 <div key={game.id}>
                   <button
                     onClick={() => {
