@@ -7,6 +7,10 @@ interface Data {
   password: string
 }
 
+interface Body {
+  gameId: string | undefined
+}
+
 const baseUrl = 'http://localhost:3333'
 
 // const token = Cookies.get('token')
@@ -31,4 +35,18 @@ export async function login(data: Data) {
     console.error('Erro ao fazer login:', error)
     throw error
   }
+}
+
+export async function removeGame(body: Body) {
+  const userId = localStorage.getItem('userId')
+
+  const response = axios.delete(
+    `${baseUrl}/users/${userId}/userGames/${body.gameId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`
+      }
+    }
+  )
+  return response
 }
