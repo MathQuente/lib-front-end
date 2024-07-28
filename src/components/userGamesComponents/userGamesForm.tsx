@@ -61,9 +61,10 @@ export function UserGamesForm({
   }
 
   async function handleSubmitRemoveGame() {
+    setSaving(true)
     const data = { gameId: game?.id }
-    console.log(data)
     await removeGame(data)
+    afterSave()
   }
 
   if (game === null) {
@@ -137,7 +138,7 @@ export function UserGamesForm({
                       game?.platforms.length === 1
                         ? 'flex justify-center'
                         : 'grid grid-cols-2  gap-x-10 gap-y-1'
-                    } absolute bg-[#272932]  `}
+                    } absolute  `}
                   >
                     {game?.platforms.slice(2).map((platform, index) => (
                       <div
@@ -183,7 +184,7 @@ export function UserGamesForm({
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                   <button
-                    className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
+                    className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] hover:bg-[#6111CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
                     aria-label="Customise options"
                   >
                     {selectedStatus === '1' && (
@@ -245,10 +246,10 @@ export function UserGamesForm({
               </DropdownMenu.Root>
 
               <DropdownMenu.Root>
-                <DropdownMenu.Trigger className="rounded-md w-12 h-10 inline-flex items-center justify-center bg-[#6930CD]  outline-none ">
+                <DropdownMenu.Trigger className="rounded-md w-12 h-10 inline-flex items-center justify-center bg-[#6930CD]  outline-none hover:bg-[#6111CD]">
                   <SlOptionsVertical />
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Content className="bg-[#6930CD] rounded-md p-2 m-1  will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade hover:bg-[#2214CD]">
+                <DropdownMenu.Content className="bg-[#6930CD] rounded-md p-2 m-1  will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade hover:bg-[#6111CD]">
                   <Button
                     className="ps-3 group text-[13px] leading-none text-white rounded-sm flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-slate-700 data-[highlighted]:text-violet1 gap-1 "
                     onClick={() => {
@@ -274,11 +275,11 @@ export function UserGamesForm({
               </DropdownMenu.Root>
             </div>
 
-            <div className="my-auto pb-2 flex gap-4 ml-72 mt-12">
+            <div className="my-auto mb-4 flex gap-4 ml-72 mt-6">
               <UserGameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
                 Cancel
               </UserGameModal.Close>
-              <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-white hover:bg-green-600 group-disabled:pointer-events-none">
+              <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-white hover:bg-[#6111CD] group-disabled:pointer-events-none">
                 <span className="group-disabled:opacity-0">Save</span>
               </button>
             </div>

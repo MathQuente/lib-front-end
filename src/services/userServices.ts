@@ -48,5 +48,6 @@ export async function removeGame(body: Body) {
       }
     }
   )
+
   return response
 }

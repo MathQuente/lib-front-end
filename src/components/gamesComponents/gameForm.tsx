@@ -9,6 +9,9 @@ import { Cookies } from 'typescript-cookie'
 import { addGame, updateGameStatus } from '../../services/gamesServices'
 import { Game, GameStatus } from '../../types'
 import GameModal from './gameModal'
+import { Button } from '@radix-ui/themes'
+import { SlOptionsVertical } from 'react-icons/sl'
+import { removeGame } from '../../services/userServices'
 
 export function GameForm({
   afterSave,
@@ -35,7 +38,7 @@ export function GameForm({
       })
         .then(response => response.json())
         .then(data => {
-          setGameStatus(data.UserGamesStatus)
+          setGameStatus(data?.UserGamesStatus)
           setSelectedStatus(data?.UserGamesStatus.id.toString())
         })
     }
@@ -57,6 +60,12 @@ export function GameForm({
     await updateGameStatus(body)
 
     afterSave()
+  }
+
+  async function handleSubmitRemoveGame() {
+    const data = { gameId: game?.id }
+    console.log(data)
+    await removeGame(data)
   }
 
   if (game === null) {
@@ -173,75 +182,108 @@ export function GameForm({
               </p>
             </div>
 
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button
-                  className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
-                  aria-label="Customise options"
-                >
-                  {selectedStatus === '1' && (
-                    <PiFlagCheckeredBold className="size-4" />
-                  )}
-                  {selectedStatus === '2' && (
-                    <IoMdHourglass className="size-4" />
-                  )}
-                  {selectedStatus === '3' && <FiPause className="size-4" />}
-                  <p>
-                    {selectedStatus === '1'
-                      ? 'Finished'
-                      : selectedStatus === '2'
-                      ? 'Playing'
-                      : 'Paused'}
-                  </p>
-                </button>
-              </DropdownMenu.Trigger>
-
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="w-36  bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade "
-                  sideOffset={5}
-                >
-                  <DropdownMenu.RadioGroup
-                    value={selectedStatus?.toString()}
-                    onValueChange={handleStatusChange}
+            <div className="flex gap-2 mt-4">
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button
+                    className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] hover:bg-[#6111CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
+                    aria-label="Customise options"
                   >
-                    <DropdownMenu.RadioItem
-                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
-                      value="1"
+                    {selectedStatus === '1' && (
+                      <PiFlagCheckeredBold className="size-4" />
+                    )}
+                    {selectedStatus === '2' && (
+                      <IoMdHourglass className="size-4" />
+                    )}
+                    {selectedStatus === '3' && <FiPause className="size-4" />}
+                    <p>
+                      {selectedStatus === '1'
+                        ? 'Finished'
+                        : selectedStatus === '2'
+                        ? 'Playing'
+                        : 'Paused'}
+                    </p>
+                  </button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className="w-36  bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade "
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.RadioGroup
+                      value={selectedStatus?.toString()}
+                      onValueChange={handleStatusChange}
                     >
-                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <PiFlagCheckeredBold />
-                      </DropdownMenu.ItemIndicator>
-                      Finished
-                    </DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem
-                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
-                      value="2"
+                      <DropdownMenu.RadioItem
+                        className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+                        value="1"
+                      >
+                        <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                          <PiFlagCheckeredBold />
+                        </DropdownMenu.ItemIndicator>
+                        Finished
+                      </DropdownMenu.RadioItem>
+                      <DropdownMenu.RadioItem
+                        className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+                        value="2"
+                      >
+                        <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                          <IoMdHourglass />
+                        </DropdownMenu.ItemIndicator>
+                        Playing
+                      </DropdownMenu.RadioItem>
+                      <DropdownMenu.RadioItem
+                        className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+                        value="3"
+                      >
+                        <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
+                          <FiPause />
+                        </DropdownMenu.ItemIndicator>
+                        Paused
+                      </DropdownMenu.RadioItem>
+                    </DropdownMenu.RadioGroup>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+
+              {/* {selectedStatus && (
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger className="rounded-md w-12 h-10 inline-flex items-center justify-center bg-[#6930CD]  outline-none hover:bg-[#6111CD]">
+                    <SlOptionsVertical />
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content className="bg-[#6930CD] rounded-md p-2 m-1  will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade hover:bg-[#6111CD]">
+                    <Button
+                      className="ps-3 group text-[13px] leading-none text-white rounded-sm flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-slate-700 data-[highlighted]:text-violet1 gap-1 "
+                      onClick={() => {
+                        handleSubmitRemoveGame()
+                      }}
                     >
-                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <IoMdHourglass />
-                      </DropdownMenu.ItemIndicator>
-                      Playing
-                    </DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem
-                      className="text-base leading-none text-violet11 rounded-[3px] flex items-center justify-center h-[25px] px-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
-                      value="3"
-                    >
-                      <DropdownMenu.ItemIndicator className="absolute left-3 w-[25px] inline-flex items-center justify-center">
-                        <FiPause />
-                      </DropdownMenu.ItemIndicator>
-                      Paused
-                    </DropdownMenu.RadioItem>
-                  </DropdownMenu.RadioGroup>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-            <div className="my-auto pb-2 flex gap-4">
+                      Remover de{' '}
+                      {selectedStatus === '1' && (
+                        <PiFlagCheckeredBold className="size-4" />
+                      )}
+                      {selectedStatus === '2' && (
+                        <IoMdHourglass className="size-4" />
+                      )}
+                      {selectedStatus === '3' && <FiPause className="size-4" />}
+                      {selectedStatus === '1'
+                        ? 'Finished'
+                        : selectedStatus === '2'
+                        ? 'Playing'
+                        : 'Paused'}
+                    </Button>
+                    <DropdownMenu.Arrow className="fill-black" />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              )} */}
+            </div>
+
+            <div className="my-auto mb-4 flex gap-4 ml-72 mt-6">
               <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
                 Cancel
               </GameModal.Close>
-              <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-white hover:bg-green-600 group-disabled:pointer-events-none">
-                {/* <Spinner className="absolute h-4 group-enabled:opacity-0" /> */}
+              <button className="inline-flex items-center justify-center rounded bg-[#6930CD] px-4 py-2 text-sm font-medium text-white hover:bg-[#6111CD] group-disabled:pointer-events-none">
                 <span className="group-disabled:opacity-0">Save</span>
               </button>
             </div>
