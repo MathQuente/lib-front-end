@@ -143,7 +143,7 @@ export function UserLibrary() {
               <div className="flex flex-row items-center gap-1">
                 <PiGameControllerBold className="size-4 text-white" />
                 <p className="text-sm text-white font-bold">
-                  {playingGames?.length}
+                  {playingGame?.length}
                 </p>
               </div>
             </div>
@@ -195,7 +195,7 @@ export function UserLibrary() {
               <div className="flex flex-row items-center gap-1">
                 <FaFlagCheckered className="size-4 text-white" />
                 <p className="text-sm text-white font-bold">
-                  {finishedGames?.length}
+                  {finishedGame?.length}
                 </p>
               </div>
             </div>
@@ -247,7 +247,7 @@ export function UserLibrary() {
               <div className="flex flex-row items-center gap-1">
                 <CiPause1 className="size-4 text-white" />
                 <p className="text-sm text-white font-bold">
-                  {pausedGames?.length}
+                  {pausedGame?.length}
                 </p>
               </div>
             </div>
