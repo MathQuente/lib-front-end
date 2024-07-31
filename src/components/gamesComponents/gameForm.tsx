@@ -63,9 +63,10 @@ export function GameForm({
   }
 
   async function handleSubmitRemoveGame() {
+    setSaving(true)
     const data = { gameId: game?.id }
-    console.log(data)
     await removeGame(data)
+    afterSave()
   }
 
   if (game === null) {
@@ -186,7 +187,7 @@ export function GameForm({
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                   <button
-                    className="rounded-md w-40 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] hover:bg-[#6111CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
+                    className="rounded-md w-48 h-10 gap-4 flex flex-row items-center justify-center text-white bg-[#6930CD] hover:bg-[#6111CD] shadow-[0_2px_10px] shadow-blackA4 outline-none focus:shadow-[0_0_0_2px] focus:shadow-violet11 ml-8 text-lg font-medium"
                     aria-label="Customise options"
                   >
                     {selectedStatus === '1' && (
@@ -201,7 +202,9 @@ export function GameForm({
                         ? 'Finished'
                         : selectedStatus === '2'
                         ? 'Playing'
-                        : 'Paused'}
+                        : selectedStatus === '3'
+                        ? 'Paused'
+                        : 'Adicione um status'}
                     </p>
                   </button>
                 </DropdownMenu.Trigger>
@@ -247,7 +250,7 @@ export function GameForm({
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
 
-              {/* {selectedStatus && (
+              {selectedStatus && (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="rounded-md w-12 h-10 inline-flex items-center justify-center bg-[#6930CD]  outline-none hover:bg-[#6111CD]">
                     <SlOptionsVertical />
@@ -276,7 +279,7 @@ export function GameForm({
                     <DropdownMenu.Arrow className="fill-black" />
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
-              )} */}
+              )}
             </div>
 
             <div className="my-auto mb-4 flex gap-4 ml-72 mt-6">

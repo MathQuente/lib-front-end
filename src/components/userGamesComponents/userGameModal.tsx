@@ -5,11 +5,11 @@ import { ReactNode } from 'react'
 export default function UserGameModal({
   open,
   onOpenChange,
+
   children
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-
   children?: ReactNode
 }) {
   return (

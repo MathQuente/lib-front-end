@@ -14,13 +14,13 @@ import { SlOptionsVertical } from 'react-icons/sl'
 import { Button } from '@radix-ui/themes'
 import { removeGame } from '../../services/userServices'
 
-export function UserGamesForm({
-  afterSave,
-  game
-}: {
+type UserGamesFormProps = {
   afterSave: () => void
+  remove?: (id: string | undefined) => void
   game: Game | null
-}) {
+}
+
+export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
   const [saving, setSaving] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<GameStatus>()
@@ -64,6 +64,9 @@ export function UserGamesForm({
     setSaving(true)
     const data = { gameId: game?.id }
     await removeGame(data)
+    if (remove && game) {
+      remove(game?.id)
+    }
     afterSave()
   }
 
@@ -252,9 +255,7 @@ export function UserGamesForm({
                 <DropdownMenu.Content className="bg-[#6930CD] rounded-md p-2 m-1  will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade hover:bg-[#6111CD]">
                   <Button
                     className="ps-3 group text-[13px] leading-none text-white rounded-sm flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-slate-700 data-[highlighted]:text-violet1 gap-1 "
-                    onClick={() => {
-                      handleSubmitRemoveGame()
-                    }}
+                    onClick={handleSubmitRemoveGame}
                   >
                     Remover de{' '}
                     {selectedStatus === '1' && (

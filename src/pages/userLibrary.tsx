@@ -12,6 +12,9 @@ import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
 export function UserLibrary() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
   const [open, setOpen] = useState(false)
+  const [playingGame, setPlayingGame] = useState<UserGame[]>([])
+  const [finishedGame, setFinishedGame] = useState<UserGame[]>([])
+  const [pausedGame, setPausedGame] = useState<UserGame[]>([])
 
   const [userGames, setUserGames] = useState<UserGame[]>([])
 
@@ -78,35 +81,43 @@ export function UserLibrary() {
     setCurrentPage(1)
   }
 
-  const playing = userGames.filter(
-    UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
-  )
-
-  const finished = userGames.filter(
-    UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
-  )
-
-  const paused = userGames.filter(
-    UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
-  )
-
-  const pausedGames = userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
+  useEffect(() => {
+    setPlayingGame(
+      userGames.filter(
+        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
+      )
     )
-    .slice(0, 5)
-
-  const finishedGames = userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
+    setFinishedGame(
+      userGames.filter(
+        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
+      )
     )
-    .slice(0, 5)
-
-  const playingGames = userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
+    setPausedGame(
+      userGames.filter(
+        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
+      )
     )
-    .slice(0, 5)
+  }, [userGames])
+
+  function removeGame(id: string | undefined) {
+    if (!id) return
+
+    setPlayingGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+    setFinishedGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+    setPausedGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+  }
+
+  const playingGames = playingGame.slice(0, 5)
+
+  const finishedGames = finishedGame.slice(0, 5)
+
+  const pausedGames = pausedGame.slice(0, 5)
 
   return (
     <>
@@ -125,7 +136,6 @@ export function UserLibrary() {
             />
           </div>
         </div>
-
         <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8">
           <div className="flex flex-row gap-2 justify-between">
             <div className="flex flex-row gap-2 items-center mb-2">
@@ -133,7 +143,7 @@ export function UserLibrary() {
               <div className="flex flex-row items-center gap-1">
                 <PiGameControllerBold className="size-4 text-white" />
                 <p className="text-sm text-white font-bold">
-                  {playing?.length}
+                  {playingGames?.length}
                 </p>
               </div>
             </div>
@@ -141,26 +151,25 @@ export function UserLibrary() {
               <Link
                 to="/userLibrary/playingGames"
                 className="text-[#8F8F8F]"
-                state={playing}
+                state={playingGame}
               >
                 Mostrar tudo
               </Link>
             </div>
           </div>
           <div className="flex flex-row gap-4">
-            {playingGames &&
-              playingGames.map(({ game }: UserGame) => (
-                <div key={game.id}>
-                  <button
-                    onClick={() => {
-                      setCurrentGame(game)
-                      setOpen(true)
-                    }}
-                  >
-                    <img src={game.gameBanner} alt="" />
-                  </button>
-                </div>
-              ))}
+            {playingGames.map(({ game }: UserGame) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
             <div>
               <UserGameModal
                 open={open}
@@ -173,6 +182,7 @@ export function UserLibrary() {
                   afterSave={() => {
                     setOpen(false)
                   }}
+                  remove={removeGame}
                 />
               </UserGameModal>
             </div>
@@ -184,33 +194,34 @@ export function UserLibrary() {
               <h1 className="text-2xl font-bold text-white">Finished</h1>
               <div className="flex flex-row items-center gap-1">
                 <FaFlagCheckered className="size-4 text-white" />
-                <p className="text-sm text-white">{finished?.length}</p>
+                <p className="text-sm text-white font-bold">
+                  {finishedGames?.length}
+                </p>
               </div>
             </div>
             <div>
               <Link
-                to="/userLibrary/finishedGames"
+                to="/userLibrary/playingGames"
                 className="text-[#8F8F8F]"
-                state={finished}
+                state={finishedGame}
               >
                 Mostrar tudo
               </Link>
             </div>
           </div>
           <div className="flex flex-row gap-4">
-            {finishedGames &&
-              finishedGames.map(({ game }: UserGame) => (
-                <div key={game.id}>
-                  <button
-                    onClick={() => {
-                      setCurrentGame(game)
-                      setOpen(true)
-                    }}
-                  >
-                    <img src={game.gameBanner} alt="" />
-                  </button>
-                </div>
-              ))}
+            {finishedGames.map(({ game }: UserGame) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
             <div>
               <UserGameModal
                 open={open}
@@ -223,44 +234,46 @@ export function UserLibrary() {
                   afterSave={() => {
                     setOpen(false)
                   }}
+                  remove={removeGame}
                 />
               </UserGameModal>
             </div>
           </div>
         </div>
-        <div className="flex flex-col mt-10 mx-52 mb-10 bg-[#272932] p-8">
+        <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8">
           <div className="flex flex-row gap-2 justify-between">
             <div className="flex flex-row gap-2 items-center mb-2">
-              <h1 className="text-2xl font-bold text-white">Paused</h1>
+              <h1 className="text-2xl font-bold text-white">Playing</h1>
               <div className="flex flex-row items-center gap-1">
                 <CiPause1 className="size-4 text-white" />
-                <p className="text-sm text-white">{paused?.length}</p>
+                <p className="text-sm text-white font-bold">
+                  {pausedGames?.length}
+                </p>
               </div>
             </div>
             <div>
               <Link
-                to="/userLibrary/pausedGames"
+                to="/userLibrary/playingGames"
                 className="text-[#8F8F8F]"
-                state={paused}
+                state={pausedGame}
               >
                 Mostrar tudo
               </Link>
             </div>
           </div>
           <div className="flex flex-row gap-4">
-            {pausedGames &&
-              pausedGames.map(({ game }: UserGame) => (
-                <div key={game.id}>
-                  <button
-                    onClick={() => {
-                      setCurrentGame(game)
-                      setOpen(true)
-                    }}
-                  >
-                    <img src={game.gameBanner} alt="" />
-                  </button>
-                </div>
-              ))}
+            {pausedGames.map(({ game }: UserGame) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
             <div>
               <UserGameModal
                 open={open}
@@ -273,6 +286,7 @@ export function UserLibrary() {
                   afterSave={() => {
                     setOpen(false)
                   }}
+                  remove={removeGame}
                 />
               </UserGameModal>
             </div>

@@ -42,7 +42,7 @@ export function Authetication() {
     try {
       const response = await login(data)
       Cookies.set('token', response.token, { expires: 1 })
-      navigate('/home')
+      navigate('/')
     } catch (error) {
       console.log(error)
     }
@@ -52,7 +52,6 @@ export function Authetication() {
     try {
       const response = await signUp(data)
       Cookies.set('token', response.data.token, { expires: 1 })
-      console.log('deu bom')
     } catch (error) {
       console.log(error)
     }
