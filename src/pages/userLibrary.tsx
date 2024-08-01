@@ -1,13 +1,12 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { CiPause1, CiSearch } from 'react-icons/ci'
-import { FaFlagCheckered } from 'react-icons/fa6'
+import { CiSearch } from 'react-icons/ci'
 import { PiGameControllerBold } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
 import { Cookies } from 'typescript-cookie'
 import SideBar from '../components/sideBar'
 import UserGameModal from '../components/userGamesComponents/userGameModal'
-import { Game, UserGame } from '../types'
 import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
+import { Game, UserGame } from '../types'
 
 export function UserLibrary() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -113,6 +112,31 @@ export function UserLibrary() {
     )
   }
 
+  function updateGame(id: string | undefined, gameStatus: string | undefined) {
+    if (!id) return
+
+    setPlayingGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+    setFinishedGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+    setPausedGame((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+
+    const updatedGame = userGames.find(({ game }) => game.id === id)
+    if (updatedGame) {
+      if (gameStatus === '1') {
+        setFinishedGame((oldData: UserGame[]) => [updatedGame, ...oldData])
+      } else if (gameStatus === '2') {
+        setPlayingGame((oldData: UserGame[]) => [updatedGame, ...oldData])
+      } else if (gameStatus === '3') {
+        setPausedGame((oldData: UserGame[]) => [updatedGame, ...oldData])
+      }
+    }
+  }
+
   const playingGames = playingGame.slice(0, 5)
 
   const finishedGames = finishedGame.slice(0, 5)
@@ -136,65 +160,14 @@ export function UserLibrary() {
             />
           </div>
         </div>
+
         <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8">
           <div className="flex flex-row gap-2 justify-between">
             <div className="flex flex-row gap-2 items-center mb-2">
-              <h1 className="text-2xl font-bold text-white">Playing</h1>
+              <h1 className="text-3xl font-bold text-white">Finished</h1>
               <div className="flex flex-row items-center gap-1">
-                <PiGameControllerBold className="size-4 text-white" />
-                <p className="text-sm text-white font-bold">
-                  {playingGame?.length}
-                </p>
-              </div>
-            </div>
-            <div>
-              <Link
-                to="/userLibrary/playingGames"
-                className="text-[#8F8F8F]"
-                state={playingGame}
-              >
-                Mostrar tudo
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-row gap-4">
-            {playingGames.map(({ game }: UserGame) => (
-              <div key={game.id}>
-                <button
-                  onClick={() => {
-                    setCurrentGame(game)
-                    setOpen(true)
-                  }}
-                >
-                  <img src={game.gameBanner} alt="" />
-                </button>
-              </div>
-            ))}
-            <div>
-              <UserGameModal
-                open={open}
-                onOpenChange={open => {
-                  setOpen(open)
-                }}
-              >
-                <UserGamesForm
-                  game={currentGame}
-                  afterSave={() => {
-                    setOpen(false)
-                  }}
-                  remove={removeGame}
-                />
-              </UserGameModal>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8">
-          <div className="flex flex-row gap-2 justify-between">
-            <div className="flex flex-row gap-2 items-center mb-2">
-              <h1 className="text-2xl font-bold text-white">Finished</h1>
-              <div className="flex flex-row items-center gap-1">
-                <FaFlagCheckered className="size-4 text-white" />
-                <p className="text-sm text-white font-bold">
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
                   {finishedGame?.length}
                 </p>
               </div>
@@ -235,18 +208,72 @@ export function UserLibrary() {
                     setOpen(false)
                   }}
                   remove={removeGame}
+                  update={updateGame}
                 />
               </UserGameModal>
             </div>
           </div>
         </div>
         <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8">
+          <div className="flex flex-row gap-2  justify-between">
+            <div className="flex flex-row gap-2 items-center jus mb-2">
+              <h1 className="text-3xl font-bold text-white">Playing</h1>
+              <div className="flex flex-row items-center gap-1">
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
+                  {playingGame?.length}
+                </p>
+              </div>
+            </div>
+            <div>
+              <Link
+                to="/userLibrary/playingGames"
+                className="text-[#8F8F8F]"
+                state={playingGame}
+              >
+                Mostrar tudo
+              </Link>
+            </div>
+          </div>
+          <div className="flex flex-row gap-4">
+            {playingGames.map(({ game }: UserGame) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
+            <div>
+              <UserGameModal
+                open={open}
+                onOpenChange={open => {
+                  setOpen(open)
+                }}
+              >
+                <UserGamesForm
+                  game={currentGame}
+                  afterSave={() => {
+                    setOpen(false)
+                  }}
+                  remove={removeGame}
+                  update={updateGame}
+                />
+              </UserGameModal>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col mt-10 mx-52 bg-[#272932] p-8 mb-8">
           <div className="flex flex-row gap-2 justify-between">
             <div className="flex flex-row gap-2 items-center mb-2">
-              <h1 className="text-2xl font-bold text-white">Playing</h1>
+              <h1 className="text-3xl font-bold text-white">Paused</h1>
               <div className="flex flex-row items-center gap-1">
-                <CiPause1 className="size-4 text-white" />
-                <p className="text-sm text-white font-bold">
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
                   {pausedGame?.length}
                 </p>
               </div>
@@ -287,6 +314,7 @@ export function UserLibrary() {
                     setOpen(false)
                   }}
                   remove={removeGame}
+                  update={updateGame}
                 />
               </UserGameModal>
             </div>

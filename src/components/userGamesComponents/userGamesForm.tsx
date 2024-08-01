@@ -1,29 +1,34 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Game, GameStatus } from '../../types'
 import { updateGameStatus } from '../../services/gamesServices'
+import { Game } from '../../types'
 
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { Button } from '@radix-ui/themes'
+import { FiPause } from 'react-icons/fi'
 import { IoMdHourglass } from 'react-icons/io'
 import { PiFlagCheckeredBold } from 'react-icons/pi'
-import { FiPause } from 'react-icons/fi'
 import { RxCross1, RxRowSpacing } from 'react-icons/rx'
-import { Cookies } from 'typescript-cookie'
-import UserGameModal from './userGameModal'
 import { SlOptionsVertical } from 'react-icons/sl'
-import { Button } from '@radix-ui/themes'
+import { Cookies } from 'typescript-cookie'
 import { removeGame } from '../../services/userServices'
+import UserGameModal from './userGameModal'
 
 type UserGamesFormProps = {
   afterSave: () => void
   remove?: (id: string | undefined) => void
+  update?: (id: string | undefined, gameStatus: string | undefined) => void
   game: Game | null
 }
 
-export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
+export function UserGamesForm({
+  afterSave,
+  game,
+  remove,
+  update
+}: UserGamesFormProps) {
   const [saving, setSaving] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
-  const [gameStatus, setGameStatus] = useState<GameStatus>()
+  const [selectedStatus, setSelectedStatus] = useState<string>()
   const [open, setOpen] = useState(false)
 
   const userId = localStorage.getItem('userId')
@@ -39,7 +44,6 @@ export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
       })
         .then(response => response.json())
         .then(data => {
-          setGameStatus(data.UserGamesStatus)
           setSelectedStatus(data?.UserGamesStatus.id.toString())
         })
     }
@@ -52,10 +56,13 @@ export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSaving(true)
-
     const body = { gameId: game?.id, status: Number(selectedStatus) }
 
     await updateGameStatus(body)
+
+    if (update) {
+      update(game?.id, selectedStatus)
+    }
 
     afterSave()
   }
@@ -63,10 +70,13 @@ export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
   async function handleSubmitRemoveGame() {
     setSaving(true)
     const data = { gameId: game?.id }
+
     await removeGame(data)
-    if (remove && game) {
+
+    if (remove) {
       remove(game?.id)
     }
+
     afterSave()
   }
 
@@ -75,7 +85,7 @@ export function UserGamesForm({ afterSave, game, remove }: UserGamesFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} key={gameStatus?.id} className="">
+    <form onSubmit={handleSubmit} key={game.id} className="">
       <fieldset disabled={saving} className="group ">
         <div className="group-disabled:opacity-50 flex  min-w-[420px] min-h-[430px]">
           <img
