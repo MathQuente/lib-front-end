@@ -12,7 +12,7 @@ import { RxCross1, RxRowSpacing } from 'react-icons/rx'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { Cookies } from 'typescript-cookie'
 import { removeGame } from '../../services/userServices'
-import UserGameModal from './userGameModal'
+import { UserGameModal } from './userGameModal'
 
 type UserGamesFormProps = {
   afterSave: () => void
@@ -281,7 +281,7 @@ export function UserGamesForm({
                       ? 'Playing'
                       : 'Paused'}
                   </Button>
-                  <DropdownMenu.Arrow className="fill-black" />
+                  <DropdownMenu.Arrow className="fill-[#6930CD]" />
                 </DropdownMenu.Content>
               </DropdownMenu.Root>
             </div>

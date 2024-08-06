@@ -1,17 +1,17 @@
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { Button } from '@radix-ui/themes'
 import { FormEvent, useEffect, useState } from 'react'
 import { FiPause } from 'react-icons/fi'
 import { IoMdHourglass } from 'react-icons/io'
 import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { RxCross1, RxRowSpacing } from 'react-icons/rx'
+import { SlOptionsVertical } from 'react-icons/sl'
 import { Cookies } from 'typescript-cookie'
 import { addGame, updateGameStatus } from '../../services/gamesServices'
-import { Game, GameStatus } from '../../types'
-import GameModal from './gameModal'
-import { Button } from '@radix-ui/themes'
-import { SlOptionsVertical } from 'react-icons/sl'
 import { removeGame } from '../../services/userServices'
+import { Game, GameStatus } from '../../types'
+import { GameModal } from './gameModal'
 
 export function GameForm({
   afterSave,
@@ -276,7 +276,7 @@ export function GameForm({
                         ? 'Playing'
                         : 'Paused'}
                     </Button>
-                    <DropdownMenu.Arrow className="fill-black" />
+                    <DropdownMenu.Arrow className="fill-[#6930CD]" />
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
               )}

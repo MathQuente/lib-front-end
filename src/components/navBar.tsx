@@ -18,7 +18,7 @@ const searchSchema = z.object({
     })
 })
 
-export default function Navbar() {
+export function Navbar() {
   // const [user, setUser] = useState({})
 
   // async function findUserLogged() {

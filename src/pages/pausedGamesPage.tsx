@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom'
 
 import SideBar from '../components/sideBar'
 import { CiSearch } from 'react-icons/ci'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { IconButton } from '../components/iconButton'
 import {
   ChevronLeft,
@@ -11,6 +11,7 @@ import {
   ChevronsRight
 } from 'lucide-react'
 import { PausedGames } from '../components/userGamesComponents/pausedGames'
+import { Cookies } from 'typescript-cookie'
 
 export function PausedGamesPage() {
   const location = useLocation()
@@ -36,6 +37,23 @@ export function PausedGamesPage() {
 
     return ''
   })
+
+  const userId = localStorage.getItem('userId')
+
+  useEffect(() => {
+    const url = new URL(`http://localhost:3333/users/${userId}/userGames`)
+    url.searchParams.set('pageIndex', String(page - 1))
+
+    if (search.length > 0) {
+      url.searchParams.set('query', search)
+    }
+
+    fetch(url, {
+      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+    }).then(response => response.json())
+  }, [page, search, userId])
+
+  console.log(search)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())

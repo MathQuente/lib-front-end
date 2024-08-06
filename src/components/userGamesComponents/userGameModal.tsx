@@ -2,7 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 
 import { ReactNode } from 'react'
 
-export default function UserGameModal({
+export function UserGameModal({
   open,
   onOpenChange,
 
