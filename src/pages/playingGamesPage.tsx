@@ -1,8 +1,6 @@
-import { useLocation } from 'react-router-dom'
-import { PlayingGames } from '../components/userGamesComponents/playingGames'
 import SideBar from '../components/sideBar'
 import { CiSearch } from 'react-icons/ci'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { IconButton } from '../components/iconButton'
 import {
   ChevronLeft,
@@ -10,11 +8,17 @@ import {
   ChevronsLeft,
   ChevronsRight
 } from 'lucide-react'
+import { Game, UserGame } from '../types'
+import { Cookies } from 'typescript-cookie'
+import { UserGameModal } from '../components/userGamesComponents/userGameModal'
+import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
 
 export function PlayingGamesPage() {
-  const location = useLocation()
-  const total = location.state.length
-  const totalPages = Math.ceil(total / 15)
+  const [currentGame, setCurrentGame] = useState<Game | null>(null)
+  const [open, setOpen] = useState(false)
+  const [userPlayingGames, setUserPlayingGames] = useState<UserGame[]>([])
+  const [total, setTotal] = useState(0)
+  const totalPages = Math.ceil(total / 10) || 1
 
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
@@ -35,6 +39,29 @@ export function PlayingGamesPage() {
 
     return ''
   })
+
+  const userId = localStorage.getItem('userId')
+
+  useEffect(() => {
+    const url = new URL(
+      `http://localhost:3333/users/${userId}/userPlayingGames`
+    )
+
+    url.searchParams.set('pageIndex', String(page - 1))
+
+    if (search.length > 0) {
+      url.searchParams.set('query', search)
+    }
+
+    fetch(url, {
+      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserPlayingGames(data.userPlayingGames)
+        setTotal(data.total)
+      })
+  }, [userId, page, search])
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -76,6 +103,14 @@ export function PlayingGamesPage() {
     setCurrentPage(page - 1)
   }
 
+  function removeGame(id: string | undefined) {
+    if (!id) return
+
+    setUserPlayingGames((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
+  }
+
   return (
     <>
       <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
@@ -95,7 +130,37 @@ export function PlayingGamesPage() {
         </div>
 
         <div className="flex flex-col justify-center items-center ml-32 mr-10 mt-8">
-          <PlayingGames playingGames={location.state} />
+          <div className="grid grid-cols-5 gap-7 bg-[#272932] p-12 min-h-[800px] w-[1633px]">
+            {userPlayingGames.map(({ game }) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
+
+            <div>
+              <UserGameModal
+                open={open}
+                onOpenChange={open => {
+                  setOpen(open)
+                }}
+              >
+                <UserGamesForm
+                  game={currentGame}
+                  afterSave={() => {
+                    setOpen(false)
+                  }}
+                  remove={removeGame}
+                />
+              </UserGameModal>
+            </div>
+          </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
               Mostrando {total} de {total} items

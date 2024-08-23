@@ -9,7 +9,7 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { GameForm } from '../components/gamesComponents/gameForm'
-import GameModal from '../components/gamesComponents/gameModal'
+import { GameModal } from '../components/gamesComponents/gameModal'
 import { IconButton } from '../components/iconButton'
 import { Game } from '../types'
 

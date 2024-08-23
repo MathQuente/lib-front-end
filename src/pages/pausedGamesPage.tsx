@@ -1,5 +1,3 @@
-import { useLocation } from 'react-router-dom'
-
 import SideBar from '../components/sideBar'
 import { CiSearch } from 'react-icons/ci'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -10,13 +8,18 @@ import {
   ChevronsLeft,
   ChevronsRight
 } from 'lucide-react'
-import { PausedGames } from '../components/userGamesComponents/pausedGames'
+
 import { Cookies } from 'typescript-cookie'
+import { Game, UserGame } from '../types'
+import { UserGameModal } from '../components/userGamesComponents/userGameModal'
+import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
 
 export function PausedGamesPage() {
-  const location = useLocation()
-  const total = location.state.length
-  const totalPages = Math.ceil(total / 15)
+  const [currentGame, setCurrentGame] = useState<Game | null>(null)
+  const [open, setOpen] = useState(false)
+  const [userPausedGames, setUserPausedGames] = useState<UserGame[]>([])
+  const [total, setTotal] = useState(0)
+  const totalPage = Math.ceil(total / 10) || 1
 
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
@@ -41,7 +44,8 @@ export function PausedGamesPage() {
   const userId = localStorage.getItem('userId')
 
   useEffect(() => {
-    const url = new URL(`http://localhost:3333/users/${userId}/userGames`)
+    const url = new URL(`http://localhost:3333/users/${userId}/userPausedGames`)
+
     url.searchParams.set('pageIndex', String(page - 1))
 
     if (search.length > 0) {
@@ -50,10 +54,13 @@ export function PausedGamesPage() {
 
     fetch(url, {
       headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    }).then(response => response.json())
-  }, [page, search, userId])
-
-  console.log(search)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserPausedGames(data.userPausedGames)
+        setTotal(data.total)
+      })
+  }, [userId, page, search])
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -84,7 +91,7 @@ export function PausedGamesPage() {
   }
 
   function goToLastPage() {
-    setCurrentPage(totalPages)
+    setCurrentPage(totalPage)
   }
 
   function goToNextPage() {
@@ -93,6 +100,14 @@ export function PausedGamesPage() {
 
   function goToPreviousPage() {
     setCurrentPage(page - 1)
+  }
+
+  function removeGame(id: string | undefined) {
+    if (!id) return
+
+    setUserPausedGames((oldData: UserGame[]) =>
+      oldData.filter(({ game }) => game.id !== id)
+    )
   }
 
   return (
@@ -114,13 +129,43 @@ export function PausedGamesPage() {
         </div>
 
         <div className="flex flex-col justify-center items-center ml-32 mr-10 mt-8">
-          <PausedGames pausedGames={location.state} />
+          <div className="grid grid-cols-5 gap-7 bg-[#272932] p-12 min-h-[800px] w-[1633px]">
+            {userPausedGames.map(({ game }) => (
+              <div key={game.id}>
+                <button
+                  onClick={() => {
+                    setCurrentGame(game)
+                    setOpen(true)
+                  }}
+                >
+                  <img src={game.gameBanner} alt="" />
+                </button>
+              </div>
+            ))}
+
+            <div>
+              <UserGameModal
+                open={open}
+                onOpenChange={open => {
+                  setOpen(open)
+                }}
+              >
+                <UserGamesForm
+                  game={currentGame}
+                  afterSave={() => {
+                    setOpen(false)
+                  }}
+                  remove={removeGame}
+                />
+              </UserGameModal>
+            </div>
+          </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {total} de {total} items
+              Mostrando {userPausedGames.length} de {total} items
             </p>
             <span className="text-[#FFFFFF]">
-              Página {page} de {totalPages}
+              Página {page} de {totalPage}
             </span>
             <div className="flex gap-1.5">
               <IconButton onClick={goToFirstPage} disabled={page === 1}>
@@ -137,21 +182,17 @@ export function PausedGamesPage() {
                   }`}
                 />
               </IconButton>
-              <IconButton onClick={goToNextPage} disabled={page === totalPages}>
+              <IconButton onClick={goToNextPage} disabled={page === totalPage}>
                 <ChevronRight
-                  className={`${
-                    total === totalPages
-                      ? 'size-4 text-[#6930CD]'
-                      : 'size-4 text-black'
+                  className={`size-4 ${
+                    page === totalPage ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>
-              <IconButton onClick={goToLastPage} disabled={page === totalPages}>
+              <IconButton onClick={goToLastPage} disabled={page === totalPage}>
                 <ChevronsRight
-                  className={`${
-                    total === totalPages
-                      ? 'size-4 text-[#6930CD]'
-                      : 'size-4 text-black'
+                  className={`size-4 ${
+                    page === totalPage ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>
