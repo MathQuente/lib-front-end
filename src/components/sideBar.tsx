@@ -1,6 +1,6 @@
-import { IoGameControllerOutline, IoPerson, IoExit } from 'react-icons/io5'
+import { IoGameControllerOutline, IoExit } from 'react-icons/io5'
+import { VscLibrary } from 'react-icons/vsc'
 import { GoHomeFill } from 'react-icons/go'
-import { FaGear } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import wheelSpinner from '../assets/wheelSpinner.svg'
 
@@ -17,7 +17,7 @@ export default function SideBar() {
           </Link>
           <Link to="/userLibrary">
             <li>
-              <IoPerson className="size-8 text-[#8F8F8F]" />
+              <VscLibrary className="size-8 text-[#8F8F8F]" />
             </li>
           </Link>
           <Link to="/games">
@@ -33,11 +33,6 @@ export default function SideBar() {
 
           <hr className="w-12 bg-[#757678]" />
 
-          <Link to="/profile">
-            <li>
-              <FaGear className="size-8 text-[#8F8F8F]" />
-            </li>
-          </Link>
           <Link to="/auth">
             <li>
               <IoExit className="size-8 text-[#8F8F8F]" />
