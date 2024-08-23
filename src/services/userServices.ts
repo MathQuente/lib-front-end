@@ -2,42 +2,44 @@ import axios from 'axios'
 import { Cookies } from 'typescript-cookie'
 // import { Cookies } from 'typescript-cookie'
 
-interface Data {
+interface userDataProps {
   email: string
   password: string
 }
 
-interface Body {
+interface gameBodyProps {
   gameId: string | undefined
+}
+
+interface userBodyProps {
+  userName: string
+  profilePicture: string
+  userBanner: string
 }
 
 const baseUrl = 'http://localhost:3333'
 
 // const token = Cookies.get('token')
 
-export function signUp(data: Data) {
+export function signUp(data: userDataProps) {
   const body = { ...data }
   const response = axios.post(`${baseUrl}/users`, body)
   return response
 }
 
-export async function login(data: Data) {
+export async function login(data: userDataProps) {
   try {
     const response = await axios.post(`${baseUrl}/users/login`, data)
-    const { token, userId } = response.data
+    const { token } = response.data
 
-    // Armazenar o token e o userId
-    Cookies.set('token', token)
-    localStorage.setItem('userId', userId)
-
-    return { token, userId }
+    return { token }
   } catch (error) {
     console.error('Erro ao fazer login:', error)
     throw error
   }
 }
 
-export async function removeGame(body: Body) {
+export async function removeGame(body: gameBodyProps) {
   const userId = localStorage.getItem('userId')
 
   const response = axios.delete(
@@ -49,5 +51,15 @@ export async function removeGame(body: Body) {
     }
   )
 
+  return response
+}
+
+export function updateUser(body: userBodyProps) {
+  const userId = localStorage.getItem('userId')
+  const response = axios.put(`${baseUrl}/users/${userId}`, body, {
+    headers: {
+      Authorization: `Bearer ${Cookies.get('token')}`
+    }
+  })
   return response
 }
