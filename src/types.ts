@@ -52,3 +52,10 @@ interface UserGamesStatus {
   id: number
   status: string
 }
+
+export interface User {
+  id: string
+  userName: string
+  profilePicture: string
+  userBanner: string | undefined
+}
