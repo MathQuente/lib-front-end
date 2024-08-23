@@ -1,4 +1,4 @@
-import Navbar from './components/navBar'
+import { Navbar } from './components/navBar'
 import SideBar from './components/sideBar'
 
 export function App() {
