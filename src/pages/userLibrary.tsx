@@ -8,6 +8,7 @@ import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
 import { UserProfileForm } from '../components/userGamesComponents/userProfileForm'
 import { UserProfileModal } from '../components/userGamesComponents/userProfileModal'
 import { Game, User, UserGame } from '../types'
+import { ToastContainer } from 'react-toastify'
 
 export function UserLibrary() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -114,8 +115,6 @@ export function UserLibrary() {
   const finishedGames = finishedGame.slice(0, 6)
   const playingGames = playingGame.slice(0, 6)
   const pausedGames = pausedGame.slice(0, 5)
-
-  console.log(isLoading)
 
   return (
     <>
@@ -411,6 +410,7 @@ export function UserLibrary() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   )
 }
