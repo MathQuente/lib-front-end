@@ -9,7 +9,6 @@ import { TbCameraPlus } from 'react-icons/tb'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 
 import { updateProfileSchema } from '../../schemas/profileSchema'
-import { updateUser } from '../../services/userServices'
 import { User } from '../../types'
 import { toast } from 'react-toastify'
 import { useApi } from '../../hooks/useApi'
@@ -36,14 +35,14 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
     resolver: zodResolver(updateProfileSchema)
   })
 
-  const api = useApi()
+  const baseApi = useApi()
 
-  const userId = api.getUserIdFromToken()
+  const userId = baseApi.getUserIdFromToken()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (userId) {
-        const data = await api.getUserProfile(userId)
+        const data = await baseApi.getUserProfile(userId)
         setUser(data.user)
         if (data.user) {
           setValue('userName', data.user.userName)
@@ -85,11 +84,13 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
 
       const res = await axios.post(api, image)
       const { secure_url } = res.data
+      const profilePicture = secure_url
       setIsLoading(false)
       await toast.promise(
         new Promise(resolve =>
           setTimeout(
-            () => resolve(updateUser({ profilePicture: secure_url })),
+            () =>
+              resolve(baseApi.updateUser(userId, undefined, profilePicture)),
             1000
           )
         ),
@@ -123,11 +124,15 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
 
       const res = await axios.post(api, image)
       const { secure_url } = res.data
+      const userBanner = secure_url
       setIsLoading(false)
       await toast.promise(
         new Promise(resolve =>
           setTimeout(
-            () => resolve(updateUser({ userBanner: secure_url })),
+            () =>
+              resolve(
+                baseApi.updateUser(userId, undefined, undefined, userBanner)
+              ),
             1000
           )
         ),
@@ -151,7 +156,7 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
       await toast.promise(
         new Promise(resolve =>
           setTimeout(
-            () => resolve(updateUser({ userName: data.userName })),
+            () => resolve(baseApi.updateUser(userId, data.userName)),
             1000
           )
         ),
@@ -170,10 +175,18 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
   }
 
   async function updateUserBanner() {
-    if (userBannerPreview !== '' && user?.userBanner !== '') return
+    if (
+      userBannerPreview === '' &&
+      (user?.userBanner === '' || user?.userBanner === null)
+    )
+      return
+
     await toast.promise(
       new Promise(resolve =>
-        setTimeout(() => resolve(updateUser({ userBanner: '' })), 1000)
+        setTimeout(
+          () => resolve(baseApi.updateUser(userId, undefined, undefined, '')),
+          1000
+        )
       ),
       {
         pending: 'Updating...',
