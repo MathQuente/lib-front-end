@@ -69,5 +69,53 @@ export const useApi = () => ({
       headers: { Authorization: `Bearer ${token}` }
     })
     return response.data
+  },
+  getGameStatus: async (userId: string | null, gameId: string | undefined) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.get(`/userGames/${userId}/${gameId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  },
+  addGame: async (
+    userId: string | null,
+    gameId: string | undefined,
+    statusId: string | null
+  ) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.post(
+      `/users/${userId}/userGames/${gameId}/${statusId}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    )
+    return response
+  },
+  updateGameStatus: async (
+    userId: string | null,
+    gameId: string | undefined,
+    statusId: string | null
+  ) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.patch(
+      `/userGamesStatus/${userId}/${gameId}/${statusId}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    )
+    return response
+  },
+  removeGame: async (userId: string | null, gameId: string | undefined) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.delete(`/users/${userId}/userGames/${gameId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response
   }
 })
