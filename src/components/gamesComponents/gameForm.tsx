@@ -7,11 +7,9 @@ import { IoMdHourglass } from 'react-icons/io'
 import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { RxCross1, RxRowSpacing } from 'react-icons/rx'
 import { SlOptionsVertical } from 'react-icons/sl'
-import { Cookies } from 'typescript-cookie'
-import { addGame, updateGameStatus } from '../../services/gamesServices'
-import { removeGame } from '../../services/userServices'
 import { Game, GameStatus } from '../../types'
 import { GameModal } from './gameModal'
+import { useApi } from '../../hooks/useApi'
 
 export function GameForm({
   afterSave,
@@ -25,23 +23,20 @@ export function GameForm({
   const [gameStatus, setGameStatus] = useState<GameStatus>()
   const [open, setOpen] = useState(false)
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    if (game) {
-      const url = new URL(
-        `http://localhost:3333/userGames/${userId}/${game.id}`
-      )
-
-      fetch(url, {
-        headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-      })
-        .then(response => response.json())
-        .then(data => {
-          setGameStatus(data?.UserGamesStatus)
-          setSelectedStatus(data?.UserGamesStatus.id.toString())
-        })
+    const fetchGames = async () => {
+      if (game) {
+        const data = await api.getGameStatus(userId, game.id)
+        setGameStatus(data?.UserGamesStatus)
+        setSelectedStatus(data?.UserGamesStatus.id.toString())
+      }
     }
+    fetchGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game, userId])
 
   function handleStatusChange(value: string) {
@@ -52,20 +47,19 @@ export function GameForm({
     event.preventDefault()
     setSaving(true)
 
-    const body = { gameId: game?.id, status: Number(selectedStatus) }
     if (!gameStatus) {
-      await addGame(body)
+      await api.addGame(userId, game?.id, selectedStatus)
     }
 
-    await updateGameStatus(body)
+    await api.updateGameStatus(userId, game?.id, selectedStatus)
 
     afterSave()
   }
 
   async function handleSubmitRemoveGame() {
     setSaving(true)
-    const data = { gameId: game?.id }
-    await removeGame(data)
+
+    await api.removeGame(userId, game?.id)
     afterSave()
   }
 
