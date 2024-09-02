@@ -63,10 +63,19 @@ export const useApi = () => ({
     })
     return response.data
   },
-  getUserProfile: async (userId: string) => {
+  getUserProfile: async (userId: string | undefined) => {
     const token = localStorage.getItem('authToken')
     const response = await api.get(`/users/${userId}`, {
       headers: { Authorization: `Bearer ${token}` }
+    })
+    return response.data
+  },
+  getGames: async (page: number, search: string) => {
+    const response = await api.get(`/games`, {
+      params: {
+        pageIndex: page - 1,
+        query: search || undefined
+      }
     })
     return response.data
   },
@@ -97,7 +106,7 @@ export const useApi = () => ({
   updateGameStatus: async (
     userId: string | null,
     gameId: string | undefined,
-    statusId: string | null
+    statusId: string | null | undefined
   ) => {
     const token = localStorage.getItem('authToken')
     const response = await api.patch(
@@ -117,5 +126,70 @@ export const useApi = () => ({
       }
     })
     return response
+  },
+  getUserGamesFinished: async (
+    userId: string,
+    page: number,
+    search: string
+  ) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.get(`/users/${userId}/userFinishedGames`, {
+      params: {
+        pageIndex: page - 1,
+        query: search || undefined
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  },
+  getUserPlayingGames: async (userId: string, page: number, search: string) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.get(`/users/${userId}/userPlayingGames`, {
+      params: {
+        pageIndex: page - 1,
+        query: search || undefined
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  },
+  getUserPausedGames: async (userId: string, page: number, search: string) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.get(`/users/${userId}/userPausedGames`, {
+      params: {
+        pageIndex: page - 1,
+        query: search || undefined
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  },
+  updateUser: async (
+    userId: string | null,
+    userName?: string,
+    profilePicture?: string,
+    userBanner?: string
+  ) => {
+    const token = localStorage.getItem('authToken')
+    const response = await api.put(
+      `/users/${userId}`,
+      {
+        userName,
+        profilePicture,
+        userBanner
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return response.data
   }
 })
