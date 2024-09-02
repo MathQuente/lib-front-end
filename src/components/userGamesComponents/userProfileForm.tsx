@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
-import { Cookies } from 'typescript-cookie'
 import { z } from 'zod'
 
 import { RxCross2 } from 'react-icons/rx'
@@ -13,6 +12,7 @@ import { updateProfileSchema } from '../../schemas/profileSchema'
 import { updateUser } from '../../services/userServices'
 import { User } from '../../types'
 import { toast } from 'react-toastify'
+import { useApi } from '../../hooks/useApi'
 
 type UserGamesFormProps = {
   afterSave: () => void
@@ -36,21 +36,22 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
     resolver: zodResolver(updateProfileSchema)
   })
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    const url = new URL(`http://localhost:3333/users/${userId}`)
-
-    fetch(url, {
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    })
-      .then(response => response.json())
-      .then(data => {
+    const fetchUserProfile = async () => {
+      if (userId) {
+        const data = await api.getUserProfile(userId)
         setUser(data.user)
         if (data.user) {
           setValue('userName', data.user.userName)
         }
-      })
+      }
+    }
+    fetchUserProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, setValue])
 
   async function profileHandleSubmit(data: FieldValues) {
@@ -64,18 +65,7 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
 
     updateUserName(data)
 
-    if (userBannerPreview === '' && user?.userBanner === '') {
-      await toast.promise(
-        new Promise(resolve =>
-          setTimeout(() => resolve(updateUser({ userBanner: '' })), 1000)
-        ),
-        {
-          pending: 'Atualizando...',
-          success: 'Atualizado com sucesso 👌',
-          error: 'Erro na atualização 🤯'
-        }
-      )
-    }
+    updateUserBanner()
   }
 
   async function uploadProfilePicture(data: FieldValues) {
@@ -104,14 +94,15 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
           )
         ),
         {
-          pending: 'Atualizando...',
-          success: 'Atualizado com sucesso 👌',
-          error: 'Erro na atualização 🤯'
+          pending: 'Updating...',
+          success: 'Profile picture updated with sucess.👌',
+          error: 'Update error 🤯'
         }
       )
       afterSave()
     } catch (error) {
       console.log(error)
+      setIsLoading(false)
     }
   }
 
@@ -141,14 +132,15 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
           )
         ),
         {
-          pending: 'Atualizando...',
-          success: 'Atualizado com sucesso 👌',
-          error: 'Erro na atualização 🤯'
+          pending: 'Updating...',
+          success: 'Banner updated with sucess.👌',
+          error: 'Update error 🤯'
         }
       )
       afterSave()
     } catch (error) {
       console.log(error)
+      setIsLoading(false)
     }
   }
 
@@ -164,16 +156,33 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
           )
         ),
         {
-          pending: 'Atualizando...',
-          success: 'Atualizado com sucesso 👌',
-          error: 'Erro na atualização 🤯'
+          pending: 'Updating...',
+          success: 'Username updated with sucess.👌',
+          error: 'Update error 🤯'
         }
       )
       setIsLoading(false)
       afterSave()
     } catch (error) {
       console.log(error)
+      setIsLoading(false)
     }
+  }
+
+  async function updateUserBanner() {
+    if (userBannerPreview !== '' && user?.userBanner !== '') return
+    await toast.promise(
+      new Promise(resolve =>
+        setTimeout(() => resolve(updateUser({ userBanner: '' })), 1000)
+      ),
+      {
+        pending: 'Updating...',
+        success: 'Banner updated with sucess.👌',
+        error: 'Update error 🤯'
+      }
+    )
+    setIsLoading(false)
+    afterSave()
   }
 
   const handleProfilePicture = (e: FieldValues) => {
