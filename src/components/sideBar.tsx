@@ -1,10 +1,20 @@
 import { IoGameControllerOutline, IoExit } from 'react-icons/io5'
 import { VscLibrary } from 'react-icons/vsc'
 import { GoHomeFill } from 'react-icons/go'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import wheelSpinner from '../assets/wheelSpinner.svg'
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/auth/authContext'
 
 export default function SideBar() {
+  const auth = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    auth.logout()
+    navigate('/auth')
+  }
+
   return (
     <>
       <div className="w-[126px]  bg-[#272932] flex flex-col justify-between py-20 items-center fixed 2xl:h-full xl:h-full lg:h-full md:h-full sm:h-full">
@@ -33,11 +43,14 @@ export default function SideBar() {
 
           <hr className="w-12 bg-[#757678]" />
 
-          <Link to="/auth">
-            <li>
-              <IoExit className="size-8 text-[#8F8F8F]" />
-            </li>
-          </Link>
+          <li>
+            <button>
+              <IoExit
+                className="size-8 text-[#8F8F8F]"
+                onClick={handleLogout}
+              />
+            </button>
+          </li>
         </ul>
       </div>
     </>
