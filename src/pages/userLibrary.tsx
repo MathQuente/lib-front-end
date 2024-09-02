@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PiGameControllerBold } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
-import { Cookies } from 'typescript-cookie'
 import SideBar from '../components/sideBar'
 import { UserGameModal } from '../components/userGamesComponents/userGameModal'
 import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
@@ -160,17 +159,14 @@ export function UserLibrary() {
                 <UserProfileForm
                   afterSave={() => {
                     setIsOpen(false)
-                    const url = new URL(`http://localhost:3333/users/${userId}`)
-
-                    fetch(url, {
-                      headers: {
-                        Authorization: `Bearer ${Cookies.get('token')}`
-                      }
-                    })
-                      .then(response => response.json())
-                      .then(data => {
+                    const fetchUserProfile = async () => {
+                      if (userId) {
+                        const data = await api.getUserProfile(userId)
                         setUser(data.user)
-                      })
+                        setIsLoading(false)
+                      }
+                    }
+                    fetchUserProfile()
                   }}
                 />
               </UserProfileModal>
