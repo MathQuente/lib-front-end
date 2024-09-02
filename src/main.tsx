@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 // import { App } from './app'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Authetication } from './pages/authetication'
+import { Authentication } from './pages/authentication'
 import { App } from './app'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -11,44 +11,77 @@ import { UserLibrary } from './pages/userLibrary'
 import { PlayingGamesPage } from './pages/playingGamesPage'
 import { FinishedGamesPage } from './pages/finishedGamesPage'
 import { PausedGamesPage } from './pages/pausedGamesPage'
+import { RouletteWheel } from './pages/rouletteWheel'
+import { AuthProvider } from './contexts/auth/authProvider'
+import { RequireAuth } from './contexts/auth/requireAuth'
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
     path: '/auth',
-    element: <Authetication />
+    element: <Authentication />
   },
   {
     path: '/',
-    element: <App />
+    element: (
+      <RequireAuth>
+        <App />
+      </RequireAuth>
+    )
   },
   {
     path: '/games',
-    element: <Games />
+    element: (
+      <RequireAuth>
+        <Games />
+      </RequireAuth>
+    )
+  },
+  {
+    path: '/roulette',
+    element: <RouletteWheel />
   },
   {
     path: '/userLibrary',
-    element: <UserLibrary />
+    element: (
+      <RequireAuth>
+        <UserLibrary />
+      </RequireAuth>
+    )
   },
   {
     path: '/userLibrary/playingGames',
-    element: <PlayingGamesPage />
+    element: (
+      <RequireAuth>
+        <PlayingGamesPage />
+      </RequireAuth>
+    )
   },
   {
     path: '/userLibrary/finishedGames',
-    element: <FinishedGamesPage />
+    element: (
+      <RequireAuth>
+        <FinishedGamesPage />
+      </RequireAuth>
+    )
   },
   {
     path: '/userLibrary/pausedGames',
-    element: <PausedGamesPage />
+    element: (
+      <RequireAuth>
+        <PausedGamesPage />
+      </RequireAuth>
+    )
   }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>
 )
