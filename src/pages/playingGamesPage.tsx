@@ -9,9 +9,9 @@ import {
   ChevronsRight
 } from 'lucide-react'
 import { Game, UserGame } from '../types'
-import { Cookies } from 'typescript-cookie'
 import { UserGameModal } from '../components/userGamesComponents/userGameModal'
 import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
+import { useApi } from '../hooks/useApi'
 
 export function PlayingGamesPage() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -40,27 +40,19 @@ export function PlayingGamesPage() {
     return ''
   })
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    const url = new URL(
-      `http://localhost:3333/users/${userId}/userPlayingGames`
-    )
-
-    url.searchParams.set('pageIndex', String(page - 1))
-
-    if (search.length > 0) {
-      url.searchParams.set('query', search)
-    }
-
-    fetch(url, {
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    })
-      .then(response => response.json())
-      .then(data => {
+    const fetchFinishedGames = async () => {
+      if (userId) {
+        const data = await api.getUserPlayingGames(userId, page, search)
         setUserPlayingGames(data.userPlayingGames)
         setTotal(data.total)
-      })
+      }
+    }
+    fetchFinishedGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, page, search])
 
   function setCurrentPage(page: number) {

@@ -9,10 +9,10 @@ import {
   ChevronsRight
 } from 'lucide-react'
 
-import { Cookies } from 'typescript-cookie'
 import { Game, UserGame } from '../types'
 import { UserGameModal } from '../components/userGamesComponents/userGameModal'
 import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
+import { useApi } from '../hooks/useApi'
 
 export function PausedGamesPage() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -41,25 +41,19 @@ export function PausedGamesPage() {
     return ''
   })
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    const url = new URL(`http://localhost:3333/users/${userId}/userPausedGames`)
-
-    url.searchParams.set('pageIndex', String(page - 1))
-
-    if (search.length > 0) {
-      url.searchParams.set('query', search)
-    }
-
-    fetch(url, {
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    })
-      .then(response => response.json())
-      .then(data => {
-        setUserPausedGames(data.userPausedGames)
+    const fetchFinishedGames = async () => {
+      if (userId) {
+        const data = await api.getUserPausedGames(userId, page, search)
+        setUserPausedGames(data.userFinishedGames)
         setTotal(data.total)
-      })
+      }
+    }
+    fetchFinishedGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, page, search])
 
   function setCurrentPage(page: number) {
