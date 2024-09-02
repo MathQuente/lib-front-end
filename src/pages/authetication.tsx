@@ -12,11 +12,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { loginSchema } from '../schemas/loginSchema'
 import { signUpSchema } from '../schemas/signUpSchema'
-import { Cookies } from 'typescript-cookie'
-import { login, signUp } from '../services/userServices'
-import { useNavigate } from 'react-router-dom'
 
-export function Authetication() {
+import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/auth/authContext'
+
+export function Authentication() {
+  const auth = useContext(AuthContext)
   const navigate = useNavigate()
 
   type loginForm = z.infer<typeof loginSchema>
@@ -39,21 +41,25 @@ export function Authetication() {
   })
 
   async function loginHandleSubmit(data: loginForm) {
-    try {
-      const response = await login(data)
-      Cookies.set('token', response.token, { expires: 1 })
-      navigate('/')
-    } catch (error) {
-      console.log(error)
+    if (data) {
+      const isLogged = await auth.login(data.email, data.password)
+      if (isLogged) {
+        navigate('/')
+      } else {
+        alert('Não deu certo')
+      }
     }
   }
 
   async function signUpHandleSubmit(data: signUpForm) {
-    try {
-      const response = await signUp(data)
-      Cookies.set('token', response.data.token, { expires: 1 })
-    } catch (error) {
-      console.log(error)
+    if (data) {
+      const isCreated = await auth.signup(data.email, data.password)
+      console.log(isCreated)
+      if (isCreated) {
+        navigate('/')
+      } else {
+        alert('Não deu certo')
+      }
     }
   }
 
