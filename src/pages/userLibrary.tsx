@@ -9,48 +9,47 @@ import { UserProfileForm } from '../components/userGamesComponents/userProfileFo
 import { UserProfileModal } from '../components/userGamesComponents/userProfileModal'
 import { Game, User, UserGame } from '../types'
 import { ToastContainer } from 'react-toastify'
+import { useApi } from '../hooks/useApi'
+import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 
 export function UserLibrary() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
   const [open, setOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-
   const [playingGame, setPlayingGame] = useState<UserGame[]>([])
   const [finishedGame, setFinishedGame] = useState<UserGame[]>([])
   const [pausedGame, setPausedGame] = useState<UserGame[]>([])
   const [user, setUser] = useState<User>()
   const [totalGames, setTotalGames] = useState(0)
-
   const [userGames, setUserGames] = useState<UserGame[]>([])
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    const url = new URL(`http://localhost:3333/users/${userId}/userGames`)
-
-    fetch(url, {
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    })
-      .then(response => response.json())
-      .then(data => {
+    const fetchUserGames = async () => {
+      if (userId) {
+        const data = await api.getUserGames(userId)
         setUserGames(data.userGames)
         setTotalGames(data.total)
-      })
-    setIsLoading(false)
+        setIsLoading(false)
+      }
+    }
+    fetchUserGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
   useEffect(() => {
-    const url = new URL(`http://localhost:3333/users/${userId}`)
-
-    fetch(url, {
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-    })
-      .then(response => response.json())
-      .then(data => {
+    const fetchUserProfile = async () => {
+      if (userId) {
+        const data = await api.getUserProfile(userId)
         setUser(data.user)
         setIsLoading(false)
-      })
+      }
+    }
+    fetchUserProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
   useEffect(() => {
@@ -135,7 +134,7 @@ export function UserLibrary() {
               )}
               <div className="absolute top-[105px] left-[12%] transform -translate-x-1/2 size-28 bg-[#272932] rounded-full flex items-center justify-center">
                 <img
-                  src={user?.profilePicture}
+                  src={user?.profilePicture || userProfilePictureDefault}
                   alt=""
                   className="size-24 rounded-full"
                 />
