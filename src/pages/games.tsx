@@ -12,6 +12,7 @@ import { GameForm } from '../components/gamesComponents/gameForm'
 import { GameModal } from '../components/gamesComponents/gameModal'
 import { IconButton } from '../components/iconButton'
 import { Game } from '../types'
+import { useApi } from '../hooks/useApi'
 
 export function Games() {
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
@@ -41,20 +42,16 @@ export function Games() {
 
   const totalPages = Math.ceil(total / 15)
 
+  const api = useApi()
+
   useEffect(() => {
-    const url = new URL('http://localhost:3333/games')
-    url.searchParams.set('pageIndex', String(page - 1))
-
-    if (search.length > 0) {
-      url.searchParams.set('query', search)
+    const fetchGames = async () => {
+      const data = await api.getGames(page, search)
+      setGames(data.games)
+      setTotal(data.total)
     }
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        setGames(data.games)
-        setTotal(data.total)
-      })
+    fetchGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search])
 
   function setCurrentPage(page: number) {
