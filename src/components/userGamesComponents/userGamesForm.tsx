@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { updateGameStatus } from '../../services/gamesServices'
 import { Game } from '../../types'
 
 import * as Collapsible from '@radix-ui/react-collapsible'
@@ -10,9 +9,8 @@ import { IoMdHourglass } from 'react-icons/io'
 import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { RxCross1, RxRowSpacing } from 'react-icons/rx'
 import { SlOptionsVertical } from 'react-icons/sl'
-import { Cookies } from 'typescript-cookie'
-import { removeGame } from '../../services/userServices'
 import { UserGameModal } from './userGameModal'
+import { useApi } from '../../hooks/useApi'
 
 type UserGamesFormProps = {
   afterSave: () => void
@@ -31,22 +29,19 @@ export function UserGamesForm({
   const [selectedStatus, setSelectedStatus] = useState<string>()
   const [open, setOpen] = useState(false)
 
-  const userId = localStorage.getItem('userId')
+  const api = useApi()
+
+  const userId = api.getUserIdFromToken()
 
   useEffect(() => {
-    if (game) {
-      const url = new URL(
-        `http://localhost:3333/userGames/${userId}/${game.id}`
-      )
-
-      fetch(url, {
-        headers: { Authorization: `Bearer ${Cookies.get('token')}` }
-      })
-        .then(response => response.json())
-        .then(data => {
-          setSelectedStatus(data?.UserGamesStatus.id.toString())
-        })
+    const fetchGames = async () => {
+      if (game) {
+        const data = await api.getGameStatus(userId, game.id)
+        setSelectedStatus(data?.UserGamesStatus.id.toString())
+      }
     }
+    fetchGames()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game, userId])
 
   function handleStatusChange(value: string) {
@@ -56,9 +51,8 @@ export function UserGamesForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSaving(true)
-    const body = { gameId: game?.id, status: Number(selectedStatus) }
 
-    await updateGameStatus(body)
+    await api.updateGameStatus(userId, game?.id, selectedStatus)
 
     if (update) {
       update(game?.id, selectedStatus)
@@ -69,10 +63,7 @@ export function UserGamesForm({
 
   async function handleSubmitRemoveGame() {
     setSaving(true)
-    const data = { gameId: game?.id }
-
-    await removeGame(data)
-
+    await api.removeGame(userId, game?.id)
     if (remove) {
       remove(game?.id)
     }
