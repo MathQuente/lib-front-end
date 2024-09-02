@@ -5,7 +5,6 @@ import { ReactNode } from 'react'
 export function UserGameModal({
   open,
   onOpenChange,
-
   children
 }: {
   open: boolean
