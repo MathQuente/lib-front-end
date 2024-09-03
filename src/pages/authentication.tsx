@@ -41,25 +41,20 @@ export function Authentication() {
   })
 
   async function loginHandleSubmit(data: loginForm) {
-    if (data) {
-      const isLogged = await auth.login(data.email, data.password)
-      if (isLogged) {
-        navigate('/')
-      } else {
-        alert('Não deu certo')
-      }
+    const success = await auth.login(data.email, data.password)
+    if (success) {
+      const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
+      navigate(redirectTo, { replace: true })
+      localStorage.removeItem('redirectAfterLogin')
     }
   }
 
   async function signUpHandleSubmit(data: signUpForm) {
-    if (data) {
-      const isCreated = await auth.signup(data.email, data.password)
-      console.log(isCreated)
-      if (isCreated) {
-        navigate('/')
-      } else {
-        alert('Não deu certo')
-      }
+    const success = await auth.signup(data.email, data.password)
+    if (success) {
+      const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
+      navigate(redirectTo, { replace: true })
+      localStorage.removeItem('redirectAfterLogin')
     }
   }
 
