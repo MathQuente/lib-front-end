@@ -44,7 +44,7 @@ export default function SideBar() {
           <hr className="w-12 bg-[#757678]" />
 
           <li>
-            <button>
+            <button type="button">
               <IoExit
                 className="size-8 text-[#8F8F8F]"
                 onClick={handleLogout}
