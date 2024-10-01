@@ -1,24 +1,27 @@
 import * as Dialog from '@radix-ui/react-dialog'
-
-import { ReactNode } from 'react'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import type { ReactNode } from 'react'
 
 export function GameModal({
   open,
   onOpenChange,
-  children
+  children,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-
   children?: ReactNode
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-black/70 inset-0 fixed" />
-        <Dialog.Content className="fixed bg-[#272932] pt-4 px-12 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
-          <Dialog.Title></Dialog.Title>
-          <Dialog.Description></Dialog.Description>
+        <Dialog.Title>
+          <VisuallyHidden.Root />
+        </Dialog.Title>
+        <Dialog.Description>
+          <VisuallyHidden.Root />
+        </Dialog.Description>
+        <Dialog.Content className="w-[800px] h-[550px] fixed bg-[#272932] text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
           {children}
         </Dialog.Content>
       </Dialog.Portal>
