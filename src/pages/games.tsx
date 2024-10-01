@@ -4,21 +4,23 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
 } from 'lucide-react'
-import { ChangeEvent, useEffect, useState } from 'react'
+
+import type { ChangeEvent } from 'react'
+import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-import { GameForm } from '../components/gamesComponents/gameForm'
-import { GameModal } from '../components/gamesComponents/gameModal'
+import { ToastContainer } from 'react-toastify'
+
 import { IconButton } from '../components/iconButton'
-import { Game } from '../types'
 import { useApi } from '../hooks/useApi'
 
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import type { GamesResponse } from '../types/games'
+import { GameCard } from '../components/gameCard'
+
 export function Games() {
-  const [currentGame, setCurrentGame] = useState<Game | null>(null)
-  const [open, setOpen] = useState(false)
-  const [total, setTotal] = useState(0)
-  const [games, setGames] = useState<Game[]>([])
+  const api = useApi()
 
   const [search, setSearch] = useState(() => {
     const url = new URL(window.location.toString())
@@ -40,19 +42,17 @@ export function Games() {
     return 1
   })
 
-  const totalPages = Math.ceil(total / 15)
+  const { data: GamesResponse } = useQuery<GamesResponse>({
+    queryKey: ['games', page, search],
+    queryFn: async () => api.getGames(page, search),
+    placeholderData: keepPreviousData,
+  })
 
-  const api = useApi()
+  if (!GamesResponse) {
+    return null
+  }
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      const data = await api.getGames(page, search)
-      setGames(data.games)
-      setTotal(data.total)
-    }
-    fetchGames()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, search])
+  const totalPages = Math.ceil(GamesResponse?.total / 18)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -111,39 +111,18 @@ export function Games() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center ml-32 mr-10 mt-8">
-          <div className="grid grid-cols-5 gap-7 bg-[#272932] p-12">
-            {games.map(game => (
-              <div key={game.id}>
-                <button
-                  onClick={() => {
-                    setCurrentGame(game)
-                    setOpen(true)
-                  }}
-                >
-                  <img src={game.gameBanner} alt="" />
-                </button>
+        <div className="flex flex-col items-center mt-4">
+          <div className="flex flex-col bg-[#272932] w-[1550px] h-[1085px] p-9">
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-6 gap-5">
+                <GameCard games={GamesResponse.games} />
               </div>
-            ))}
-            <div>
-              <GameModal
-                open={open}
-                onOpenChange={open => {
-                  setOpen(open)
-                }}
-              >
-                <GameForm
-                  game={currentGame}
-                  afterSave={() => {
-                    setOpen(false)
-                  }}
-                />
-              </GameModal>
             </div>
           </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {games?.length} de {total} items
+              Mostrando {GamesResponse.games?.length} de {GamesResponse.total}{' '}
+              items
             </p>
             <span className="text-[#FFFFFF]">
               Página {page} de {totalPages}
@@ -181,6 +160,7 @@ export function Games() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   )
 }

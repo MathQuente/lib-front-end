@@ -1,25 +1,20 @@
-import SideBar from '../components/sideBar'
-import { CiSearch } from 'react-icons/ci'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { IconButton } from '../components/iconButton'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
 } from 'lucide-react'
-import { Game, UserGame } from '../types'
-import { UserGameModal } from '../components/userGamesComponents/userGameModal'
-import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
+import type { ChangeEvent } from 'react'
+import { useState } from 'react'
+import { CiSearch } from 'react-icons/ci'
+import { IconButton } from '../components/iconButton'
+import SideBar from '../components/sideBar'
+import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
+import type { UserGamesResponse } from '../types/user'
 
 export function PlayingGamesPage() {
-  const [currentGame, setCurrentGame] = useState<Game | null>(null)
-  const [open, setOpen] = useState(false)
-  const [userPlayingGames, setUserPlayingGames] = useState<UserGame[]>([])
-  const [total, setTotal] = useState(0)
-  const totalPages = Math.ceil(total / 10) || 1
-
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -42,18 +37,27 @@ export function PlayingGamesPage() {
 
   const api = useApi()
   const userId = api.getUserIdFromToken()
+  const filter = 2
 
-  useEffect(() => {
-    const fetchFinishedGames = async () => {
-      if (userId) {
-        const data = await api.getUserPlayingGames(userId, page, search)
-        setUserPlayingGames(data.userPlayingGames)
-        setTotal(data.total)
-      }
-    }
-    fetchFinishedGames()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, page, search])
+  const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
+    queryKey: ['userGames', userId, page, search, filter],
+    queryFn: async () => api.getUserGames(userId, page, search, filter),
+    placeholderData: keepPreviousData,
+  })
+
+  if (!UserGamesResponse) {
+    return null
+  }
+
+  const totalGamesPlaying = UserGamesResponse.totalPerStatus.find(
+    total => total.statusId === 2
+  )
+
+  if (!totalGamesPlaying) {
+    return null
+  }
+
+  const totalPages = Math.ceil(totalGamesPlaying?.totalGames / 18)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -95,14 +99,6 @@ export function PlayingGamesPage() {
     setCurrentPage(page - 1)
   }
 
-  function removeGame(id: string | undefined) {
-    if (!id) return
-
-    setUserPlayingGames((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
-  }
-
   return (
     <>
       <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
@@ -120,42 +116,18 @@ export function PlayingGamesPage() {
             />
           </div>
         </div>
-
-        <div className="flex flex-col justify-center items-center ml-32 mr-10 mt-8">
-          <div className="grid grid-cols-5 gap-7 bg-[#272932] p-12 min-h-[800px] w-[1633px]">
-            {userPlayingGames.map(({ game }) => (
-              <div key={game.id}>
-                <button
-                  onClick={() => {
-                    setCurrentGame(game)
-                    setOpen(true)
-                  }}
-                >
-                  <img src={game.gameBanner} alt="" />
-                </button>
+        <div className="flex flex-col items-center mt-4">
+          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] min-h-[300px] p-6">
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-6 gap-4">
+                <UserGameCard userGames={UserGamesResponse.userGames} />
               </div>
-            ))}
-
-            <div>
-              <UserGameModal
-                open={open}
-                onOpenChange={open => {
-                  setOpen(open)
-                }}
-              >
-                <UserGamesForm
-                  game={currentGame}
-                  afterSave={() => {
-                    setOpen(false)
-                  }}
-                  remove={removeGame}
-                />
-              </UserGameModal>
             </div>
           </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {total} de {total} items
+              Mostrando {UserGamesResponse.userGames.length} de{' '}
+              {totalGamesPlaying?.totalGames} items
             </p>
             <span className="text-[#FFFFFF]">
               Página {page} de {totalPages}
@@ -177,19 +149,15 @@ export function PlayingGamesPage() {
               </IconButton>
               <IconButton onClick={goToNextPage} disabled={page === totalPages}>
                 <ChevronRight
-                  className={`${
-                    total === totalPages
-                      ? 'size-4 text-[#6930CD]'
-                      : 'size-4 text-black'
+                  className={`size-4 ${
+                    page === totalPages ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>
               <IconButton onClick={goToLastPage} disabled={page === totalPages}>
                 <ChevronsRight
-                  className={`${
-                    total === totalPages
-                      ? 'size-4 text-[#6930CD]'
-                      : 'size-4 text-black'
+                  className={`size-4 ${
+                    page === totalPages ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>

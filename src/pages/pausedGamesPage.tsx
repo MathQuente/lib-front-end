@@ -1,26 +1,21 @@
-import SideBar from '../components/sideBar'
-import { CiSearch } from 'react-icons/ci'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { IconButton } from '../components/iconButton'
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
 } from 'lucide-react'
+import type { ChangeEvent } from 'react'
+import { useState } from 'react'
+import { CiSearch } from 'react-icons/ci'
+import { IconButton } from '../components/iconButton'
+import SideBar from '../components/sideBar'
 
-import { Game, UserGame } from '../types'
-import { UserGameModal } from '../components/userGamesComponents/userGameModal'
-import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
+import type { UserGamesResponse } from '../types/user'
 
 export function PausedGamesPage() {
-  const [currentGame, setCurrentGame] = useState<Game | null>(null)
-  const [open, setOpen] = useState(false)
-  const [userPausedGames, setUserPausedGames] = useState<UserGame[]>([])
-  const [total, setTotal] = useState(0)
-  const totalPage = Math.ceil(total / 10) || 1
-
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -44,17 +39,27 @@ export function PausedGamesPage() {
   const api = useApi()
   const userId = api.getUserIdFromToken()
 
-  useEffect(() => {
-    const fetchFinishedGames = async () => {
-      if (userId) {
-        const data = await api.getUserPausedGames(userId, page, search)
-        setUserPausedGames(data.userFinishedGames)
-        setTotal(data.total)
-      }
-    }
-    fetchFinishedGames()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, page, search])
+  const filter = 3
+
+  const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
+    queryKey: ['userGames', userId, page, search, filter],
+    queryFn: async () => api.getUserGames(userId, page, search, filter),
+    placeholderData: keepPreviousData,
+  })
+
+  if (!UserGamesResponse) {
+    return null
+  }
+
+  const totalGamesPaused = UserGamesResponse.totalPerStatus.find(
+    total => total.statusId === 3
+  )
+
+  if (!totalGamesPaused) {
+    return null
+  }
+
+  const totalPages = Math.ceil(totalGamesPaused.totalGames / 18)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -85,7 +90,7 @@ export function PausedGamesPage() {
   }
 
   function goToLastPage() {
-    setCurrentPage(totalPage)
+    setCurrentPage(totalPages)
   }
 
   function goToNextPage() {
@@ -94,14 +99,6 @@ export function PausedGamesPage() {
 
   function goToPreviousPage() {
     setCurrentPage(page - 1)
-  }
-
-  function removeGame(id: string | undefined) {
-    if (!id) return
-
-    setUserPausedGames((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
   }
 
   return (
@@ -122,44 +119,21 @@ export function PausedGamesPage() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center ml-32 mr-10 mt-8">
-          <div className="grid grid-cols-5 gap-7 bg-[#272932] p-12 min-h-[800px] w-[1633px]">
-            {userPausedGames.map(({ game }) => (
-              <div key={game.id}>
-                <button
-                  onClick={() => {
-                    setCurrentGame(game)
-                    setOpen(true)
-                  }}
-                >
-                  <img src={game.gameBanner} alt="" />
-                </button>
+        <div className="flex flex-col items-center mt-4">
+          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] min-h-[300px] p-6">
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-6 gap-4">
+                <UserGameCard userGames={UserGamesResponse.userGames} />
               </div>
-            ))}
-
-            <div>
-              <UserGameModal
-                open={open}
-                onOpenChange={open => {
-                  setOpen(open)
-                }}
-              >
-                <UserGamesForm
-                  game={currentGame}
-                  afterSave={() => {
-                    setOpen(false)
-                  }}
-                  remove={removeGame}
-                />
-              </UserGameModal>
             </div>
           </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {userPausedGames.length} de {total} items
+              Mostrando {UserGamesResponse.userGames.length} de{' '}
+              {totalGamesPaused?.totalGames} items
             </p>
             <span className="text-[#FFFFFF]">
-              Página {page} de {totalPage}
+              Página {page} de {totalPages}
             </span>
             <div className="flex gap-1.5">
               <IconButton onClick={goToFirstPage} disabled={page === 1}>
@@ -176,17 +150,17 @@ export function PausedGamesPage() {
                   }`}
                 />
               </IconButton>
-              <IconButton onClick={goToNextPage} disabled={page === totalPage}>
+              <IconButton onClick={goToNextPage} disabled={page === totalPages}>
                 <ChevronRight
                   className={`size-4 ${
-                    page === totalPage ? 'text-black' : 'text-[#6930CD]'
+                    page === totalPages ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>
-              <IconButton onClick={goToLastPage} disabled={page === totalPage}>
+              <IconButton onClick={goToLastPage} disabled={page === totalPages}>
                 <ChevronsRight
                   className={`size-4 ${
-                    page === totalPage ? 'text-black' : 'text-[#6930CD]'
+                    page === totalPages ? 'text-black' : 'text-[#6930CD]'
                   }`}
                 />
               </IconButton>
