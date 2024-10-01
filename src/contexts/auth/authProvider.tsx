@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './authContext'
-import { User } from '../../types/user'
+import type { User } from '../../types/user'
 import { useApi } from '../../hooks/useApi'
+import { tokenProvider } from '../../hooks/token'
 
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
   const api = useApi()
+  const tokenService = tokenProvider()
 
   const login = async (email: string, password: string) => {
     const data = await api.login(email, password)
     if (data.user && data.token) {
       setUser(data.user)
-      setToken(data.token)
+      tokenService.setToken(data.token)
       return true
     }
     return false
@@ -21,7 +24,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     const data = await api.signup(email, password)
     if (data.user && data.token) {
       setUser(data.user)
-      setToken(data.token)
+      tokenService.setToken(data.token)
       return true
     }
     return false
@@ -30,36 +33,41 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   const logout = async () => {
     await api.logout()
     setUser(null)
-    removeToken()
+    tokenService.removeToken()
   }
-
-  const setToken = (token: string) => {
-    localStorage.setItem('authToken', token)
-  }
-
-  const removeToken = () => {
-    localStorage.removeItem('authToken')
-  }
-
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = localStorage.getItem('authToken')
-      if (token) {
-        const userData = await api.getCurrentUser(token)
-        if (userData) {
-          setUser(userData)
-        } else {
-          removeToken()
-        }
-      }
+  const checkToken = async () => {
+    setLoading(true)
+    const token = localStorage.getItem('authToken')
+    if (!token) {
+      tokenService.removeToken()
+      setLoading(false)
+      return
     }
+
+    try {
+      const userData = await api.getCurrentUser(token)
+      if (userData) {
+        setUser(userData)
+      } else {
+        tokenService.removeToken()
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data:', error) // opcional: log do erro para depuração
+      tokenService.removeToken()
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies(checkToken): <explanation>
+  useEffect(() => {
     checkToken()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <AuthContext.Provider value={{ user, login, logout, signup }}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   )
 }
