@@ -1,118 +1,60 @@
-import { useEffect, useState } from 'react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { PiGameControllerBold } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
-import SideBar from '../components/sideBar'
-import { UserGameModal } from '../components/userGamesComponents/userGameModal'
-import { UserGamesForm } from '../components/userGamesComponents/userGamesForm'
-import { UserProfileForm } from '../components/userGamesComponents/userProfileForm'
-import { UserProfileModal } from '../components/userGamesComponents/userProfileModal'
-import { Game, User, UserGame } from '../types'
 import { ToastContainer } from 'react-toastify'
+
+import SideBar from '../components/sideBar'
+
 import { useApi } from '../hooks/useApi'
-import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
+
+import type { UserGamesResponse } from '../types/user'
+
+import { UserGameCard } from '../components/userGamesComponents/userGameCard'
+import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
 
 export function UserLibrary() {
-  const [currentGame, setCurrentGame] = useState<Game | null>(null)
-  const [open, setOpen] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [playingGame, setPlayingGame] = useState<UserGame[]>([])
-  const [finishedGame, setFinishedGame] = useState<UserGame[]>([])
-  const [pausedGame, setPausedGame] = useState<UserGame[]>([])
-  const [user, setUser] = useState<User>()
-  const [totalGames, setTotalGames] = useState(0)
-  const [userGames, setUserGames] = useState<UserGame[]>([])
-
   const api = useApi()
   const userId = api.getUserIdFromToken()
 
-  useEffect(() => {
-    const fetchUserGames = async () => {
-      if (userId) {
-        const data = await api.getUserGames(userId)
-        setUserGames(data.userGames)
-        setTotalGames(data.total)
-        setIsLoading(false)
-      }
-    }
-    fetchUserGames()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+  const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
+    queryKey: ['userGames', userId],
+    queryFn: async () => api.getUserGames(userId),
+    placeholderData: keepPreviousData,
+  })
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (userId) {
-        const data = await api.getUserProfile(userId)
-        setUser(data.user)
-        setIsLoading(false)
-      }
-    }
-    fetchUserProfile()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
-
-  useEffect(() => {
-    setPlayingGame(
-      userGames.filter(
-        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
-      )
-    )
-    setFinishedGame(
-      userGames.filter(
-        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
-      )
-    )
-    setPausedGame(
-      userGames.filter(
-        UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
-      )
-    )
-  }, [userGames])
-
-  function removeGame(id: string | undefined) {
-    if (!id) return
-
-    setPlayingGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
-    setFinishedGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
-    setPausedGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
-
-    setTotalGames(previous => previous - 1)
+  if (!UserGamesResponse) {
+    return null
   }
 
-  function updateGame(id: string | undefined, gameStatus: string | undefined) {
-    if (!id) return
-
-    setPlayingGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
+  const userGamesFinished = UserGamesResponse.userGames
+    .filter(
+      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
     )
-    setFinishedGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
-    setPausedGame((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== id)
-    )
+    .slice(0, 6)
 
-    const updatedGame = userGames.find(({ game }) => game.id === id)
-    if (updatedGame) {
-      if (gameStatus === '1') {
-        setFinishedGame((oldData: UserGame[]) => [updatedGame, ...oldData])
-      } else if (gameStatus === '2') {
-        setPlayingGame((oldData: UserGame[]) => [updatedGame, ...oldData])
-      } else if (gameStatus === '3') {
-        setPausedGame((oldData: UserGame[]) => [updatedGame, ...oldData])
-      }
-    }
-  }
+  const totalGamesFinished = UserGamesResponse.totalPerStatus.find(
+    total => total.statusId === 1
+  )
 
-  const finishedGames = finishedGame.slice(0, 6)
-  const playingGames = playingGame.slice(0, 6)
-  const pausedGames = pausedGame.slice(0, 5)
+  const userGamesPlaying = UserGamesResponse.userGames
+    .filter(
+      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
+    )
+    .slice(0, 6)
+
+  const totalGamesPlaying = UserGamesResponse.totalPerStatus.find(
+    total => total.statusId === 2
+  )
+
+  const userGamesPaused = UserGamesResponse.userGames
+    .filter(
+      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
+    )
+    .slice(0, 6)
+
+  const totalGamesPaused = UserGamesResponse.totalPerStatus.find(
+    total => total.statusId === 3
+  )
 
   return (
     <>
@@ -120,288 +62,111 @@ export function UserLibrary() {
         <SideBar />
 
         <div className="flex flex-col items-center mt-4">
-          <div className="flex flex-col w-[600px] h-[270px] gap-4 rounded border-zinc-500 border-2 bg-[#272932]">
-            <div className="relative w-full">
-              {user?.userBanner ? (
-                <img
-                  src={user?.userBanner}
-                  alt=""
-                  className="w-full h-[150px] object-cover"
-                />
-              ) : (
-                <div className="w-full h-[150px] bg-[#272932]"></div>
+          <UserProfileDisplay />
+
+          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4">
+            <div className="flex flex-row items-center justify-between mb-2 px-1">
+              <div className="flex flex-row items-center gap-1">
+                <h2 className="text-3xl font-bold text-white">Finished</h2>
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
+                  {totalGamesFinished?.totalGames}
+                </p>
+              </div>
+
+              {totalGamesFinished?.totalGames > 0 && (
+                <Link
+                  to="/userLibrary/finishedGames"
+                  className="text-[#8F8F8F]"
+                >
+                  Show all
+                </Link>
               )}
-              <div className="absolute top-[105px] left-[12%] transform -translate-x-1/2 size-28 bg-[#272932] rounded-full flex items-center justify-center">
-                <img
-                  src={user?.profilePicture || userProfilePictureDefault}
-                  alt=""
-                  className="size-24 rounded-full"
-                />
-              </div>
             </div>
-            <div className="w-full flex justify-end px-4">
-              <button
-                onClick={() => {
-                  setIsOpen(true)
-                }}
-                className="p-2 rounded-2xl bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105
-              hover:from-[#5D23A5] hover:to-[#813FCF]
-               text-white font-semibold w-32"
-              >
-                Editar perfil
-              </button>
-              <UserProfileModal
-                open={isOpen}
-                onOpenChange={isOpen => {
-                  setIsOpen(isOpen)
-                }}
-              >
-                <UserProfileForm
-                  afterSave={() => {
-                    setIsOpen(false)
-                    const fetchUserProfile = async () => {
-                      if (userId) {
-                        const data = await api.getUserProfile(userId)
-                        setUser(data.user)
-                        setIsLoading(false)
-                      }
-                    }
-                    fetchUserProfile()
-                  }}
-                />
-              </UserProfileModal>
-            </div>
-            <div className="flex justify-start w-full ml-8 gap-2">
-              <p className="text-white font-semibold">{user?.userName}</p>|
-              <p className="text-white font-semibold">Games: {totalGames}</p>
-            </div>
-          </div>
-          {isLoading ? (
-            <div className="min-w-[1440px] h-[300px] bg-[#272932]">
-              Loading...
-            </div>
-          ) : (
-            <div className="flex flex-col mt-10 bg-[#272932] p-8">
-              <div className="flex flex-row gap-2 justify-between items-center">
-                <div className="flex flex-row gap-2 mb-2">
-                  <h1 className="text-3xl font-bold text-white">Finished</h1>
-                  <div className="flex flex-row items-center gap-1">
-                    <PiGameControllerBold className="size-6 text-white" />
-                    <p className="text-base text-white font-bold">
-                      {finishedGame?.length}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  {finishedGame.length > 0 && (
-                    <Link
-                      to="/userLibrary/finishedGames"
-                      className="text-[#8F8F8F]"
-                    >
-                      Show all
-                    </Link>
-                  )}
+            {totalGamesFinished.totalGames > 0 ? (
+              <div className="flex items-center justify-center">
+                <div className="grid grid-cols-6 gap-4">
+                  <UserGameCard userGames={userGamesFinished} />
                 </div>
               </div>
-
-              <div
-                className={`min-w-[1440px] h-[300px] ${
-                  finishedGame.length > 0
-                    ? 'flex flex-row gap-4'
-                    : 'flex flex-row gap-4 justify-center items-center'
-                }`}
-              >
-                {finishedGame.length > 0 ? (
-                  finishedGames.map(({ game }: UserGame) => (
-                    <div key={game.id}>
-                      <button
-                        onClick={() => {
-                          setCurrentGame(game)
-                          setOpen(true)
-                        }}
-                      >
-                        <img
-                          className="max-w-56 max-h-80"
-                          src={game.gameBanner}
-                          alt=""
-                        />
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <h2 className="text-black font-bold text-3xl">
-                    Sem jogos adicionados. Procure jogos{' '}
-                    <Link to="/games" className="text-red-500">
-                      aqui.
-                    </Link>
-                  </h2>
-                )}
-                <div>
-                  <UserGameModal
-                    open={open}
-                    onOpenChange={open => {
-                      setOpen(open)
-                    }}
-                  >
-                    <UserGamesForm
-                      game={currentGame}
-                      afterSave={() => {
-                        setOpen(false)
-                      }}
-                      remove={removeGame}
-                      update={updateGame}
-                    />
-                  </UserGameModal>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-col mt-10 bg-[#272932] p-8">
-            <div className="flex flex-row gap-2 justify-between items-center">
-              <div className="flex flex-row gap-2 mb-2">
-                <h1 className="text-3xl font-bold text-white">Playing</h1>
-                <div className="flex flex-row items-center gap-1">
-                  <PiGameControllerBold className="size-6 text-white" />
-                  <p className="text-base text-white font-bold">
-                    {playingGame?.length}
-                  </p>
-                </div>
-              </div>
-              <div>
-                {playingGame.length > 0 && (
-                  <Link
-                    to="/userLibrary/playingGames"
-                    className="text-[#8F8F8F]"
-                  >
-                    Show all
-                  </Link>
-                )}
-              </div>
-            </div>
-            <div
-              className={`min-w-[1440px] h-[300px] ${
-                playingGame.length > 0
-                  ? 'flex flex-row gap-4'
-                  : 'flex flex-row gap-4 justify-center items-center'
-              }`}
-            >
-              {playingGame.length > 0 ? (
-                playingGames.map(({ game }: UserGame) => (
-                  <div key={game.id}>
-                    <button
-                      onClick={() => {
-                        setCurrentGame(game)
-                        setOpen(true)
-                      }}
-                    >
-                      <img
-                        className="max-w-56 max-h-80"
-                        src={game.gameBanner}
-                        alt=""
-                      />
-                    </button>
-                  </div>
-                ))
-              ) : (
+            ) : (
+              <div className="flex flex-row gap-4 justify-center items-center h-full">
                 <h2 className="text-black font-bold text-3xl">
                   Sem jogos adicionados. Procure jogos{' '}
                   <Link to="/games" className="text-red-500">
                     aqui.
                   </Link>
                 </h2>
-              )}
-              <div>
-                <UserGameModal
-                  open={open}
-                  onOpenChange={open => {
-                    setOpen(open)
-                  }}
-                >
-                  <UserGamesForm
-                    game={currentGame}
-                    afterSave={() => {
-                      setOpen(false)
-                    }}
-                    remove={removeGame}
-                    update={updateGame}
-                  />
-                </UserGameModal>
               </div>
-            </div>
+            )}
           </div>
-          <div className="flex flex-col mt-10 bg-[#272932] p-8 mb-8">
-            <div className="flex flex-row gap-2 justify-between items-center">
-              <div className="flex flex-row gap-2 mb-2">
-                <h1 className="text-3xl font-bold text-white">Paused</h1>
-                <div className="flex flex-row items-center gap-1">
-                  <PiGameControllerBold className="size-6 text-white" />
-                  <p className="text-base text-white font-bold">
-                    {pausedGame?.length}
-                  </p>
+
+          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4">
+            <div className="flex flex-row items-center justify-between mb-2 px-1">
+              <div className="flex flex-row items-center gap-1">
+                <h2 className="text-3xl font-bold text-white">Playing</h2>
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
+                  {totalGamesPlaying?.totalGames}
+                </p>
+              </div>
+
+              {totalGamesPlaying?.totalGames > 0 && (
+                <Link to="/userLibrary/playingGames" className="text-[#8F8F8F]">
+                  Show all
+                </Link>
+              )}
+            </div>
+            {totalGamesPlaying?.totalGames > 0 ? (
+              <div className="flex items-center justify-center">
+                <div className="grid grid-cols-6 gap-4">
+                  <UserGameCard userGames={userGamesPlaying} />
                 </div>
               </div>
-              <div>
-                {pausedGame.length > 0 && (
-                  <Link
-                    to="/userLibrary/playingGames"
-                    className="text-[#8F8F8F]"
-                  >
-                    Show all
-                  </Link>
-                )}
-              </div>
-            </div>
-            <div
-              className={`min-w-[1440px] h-[300px] ${
-                pausedGame.length > 0
-                  ? 'flex flex-row gap-4'
-                  : 'flex flex-row gap-4 justify-center items-center'
-              }`}
-            >
-              {pausedGame.length > 0 ? (
-                pausedGames.map(({ game }: UserGame) => (
-                  <div key={game.id}>
-                    <button
-                      onClick={() => {
-                        setCurrentGame(game)
-                        setOpen(true)
-                      }}
-                    >
-                      <img
-                        className="max-w-56 max-h-80"
-                        src={game.gameBanner}
-                        alt=""
-                      />
-                    </button>
-                  </div>
-                ))
-              ) : (
+            ) : (
+              <div className="flex flex-row gap-4 justify-center items-center h-full">
                 <h2 className="text-black font-bold text-3xl">
                   Sem jogos adicionados. Procure jogos{' '}
                   <Link to="/games" className="text-red-500">
                     aqui.
                   </Link>
                 </h2>
-              )}
-              <div>
-                <UserGameModal
-                  open={open}
-                  onOpenChange={open => {
-                    setOpen(open)
-                  }}
-                >
-                  <UserGamesForm
-                    game={currentGame}
-                    afterSave={() => {
-                      setOpen(false)
-                    }}
-                    remove={removeGame}
-                    update={updateGame}
-                  />
-                </UserGameModal>
               </div>
+            )}
+          </div>
+
+          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4 mb-6">
+            <div className="flex flex-row items-center justify-between mb-2 px-1">
+              <div className="flex flex-row items-center gap-1">
+                <h2 className="text-3xl font-bold text-white">Paused</h2>
+                <PiGameControllerBold className="size-6 text-white" />
+                <p className="text-base text-white font-bold">
+                  {totalGamesPaused?.totalGames}
+                </p>
+              </div>
+
+              {totalGamesPaused?.totalGames > 0 && (
+                <Link to="/userLibrary/pausedGames" className="text-[#8F8F8F]">
+                  Show all
+                </Link>
+              )}
             </div>
+            {totalGamesPaused?.totalGames > 0 ? (
+              <div className="flex items-center justify-center">
+                <div className="grid grid-cols-6 gap-4">
+                  <UserGameCard userGames={userGamesPaused} />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-row gap-4 justify-center items-center h-full">
+                <h2 className="text-black font-bold text-3xl">
+                  Sem jogos adicionados. Procure jogos{' '}
+                  <Link to="/games" className="text-red-500">
+                    aqui.
+                  </Link>
+                </h2>
+              </div>
+            )}
           </div>
         </div>
       </div>
