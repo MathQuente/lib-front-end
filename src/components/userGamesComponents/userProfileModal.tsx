@@ -1,11 +1,11 @@
 import * as Dialog from '@radix-ui/react-dialog'
-
-import { ReactNode } from 'react'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import type { ReactNode } from 'react'
 
 export function UserProfileModal({
   open,
   onOpenChange,
-  children
+  children,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -15,11 +15,13 @@ export function UserProfileModal({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-black/50 inset-0 fixed" />
+        <Dialog.Title>
+          <VisuallyHidden.Root />
+        </Dialog.Title>
+        <Dialog.Description>
+          <VisuallyHidden.Root />
+        </Dialog.Description>
         <Dialog.Content className="fixed bg-[#272932] pt-4 px-12 text-white top-1/2 left-1/2 delay-3000 -translate-x-1/2 -translate-y-1/2 rounded-lg">
-          <div className="flex items-center justify-between">
-            <Dialog.Title className="text-2xl"></Dialog.Title>
-            <Dialog.Description></Dialog.Description>
-          </div>
           {children}
         </Dialog.Content>
       </Dialog.Portal>
