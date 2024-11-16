@@ -1,7 +1,8 @@
 import type {
   Category,
+  Dlc,
   Game,
-  GameLaunchers,
+  GameLauncher,
   GameStudio,
   Platform,
   Publisher
@@ -12,8 +13,16 @@ export interface UserGamesStatus {
   status: string
 }
 
+// export type UserGameDlc = UserGame & Dlc
+
+export type UserGameAndDlc = {
+  game?: Omit<Game, 'game'>
+  dlc?: Omit<Dlc, 'dlc'>
+  UserGamesStatus: UserGamesStatus
+}
+
 export interface UserGamesResponse {
-  userGames: UserGame[]
+  userGames: UserGameAndDlc[]
   totalPerStatus: TotalPerStatus[]
   totalGames: number
 }
@@ -46,13 +55,19 @@ export interface UserGame {
   gameBanner: string
   categories: Category[]
   platforms: Platform[]
-  publisher: Publisher
-  gameStudio: GameStudio
-  gameLaunchers: GameLaunchers[]
+  publishers: Publisher[]
+  gameStudios: GameStudio[]
+  gameLaunchers: GameLauncher[]
+  dlcs: Dlc[]
   UserGamesStatus: UserGamesStatus
 }
 
 export interface GameStatus {
+  id: number
+  status: string
+}
+
+export interface UserGamesStatus {
   id: number
   status: string
 }
