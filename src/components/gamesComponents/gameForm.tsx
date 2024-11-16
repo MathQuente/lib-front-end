@@ -8,9 +8,10 @@ import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { toast } from 'react-toastify'
 import { useApi } from '../../hooks/useApi'
-import type { Game } from '../../types/games'
+import type { Dlc, Game } from '../../types/games'
 import type { GameStatusResponse } from '../../types/games'
 import { GameModal } from './gameModal'
+import { Link } from 'react-router-dom'
 
 interface FormValues {
   statusId: string | undefined
@@ -21,7 +22,7 @@ export function GameForm({
   game,
 }: {
   afterSave: () => void
-  game: Game
+  game: Omit<Game, 'game'> | Omit<Dlc, 'dlc'> | undefined
 }) {
   const api = useApi()
   const userId = api.getUserIdFromToken()
@@ -275,7 +276,7 @@ export function GameForm({
                   handleSubmitRemoveGame()
                 }}
               >
-                Remover de{' '}
+                Remove from{' '}
                 {GameStatus.id.toString() === '3' && (
                   <FiPause className="size-4" />
                 )}
@@ -290,8 +291,10 @@ export function GameForm({
           </DropdownMenu.Root>
         )}
       </div>
-
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end">
+        <Link className="text-[#7A38CA] font-bold" to={`/games/${game.id}`}>
+          Game page
+        </Link>
         <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
           Cancel
         </GameModal.Close>
