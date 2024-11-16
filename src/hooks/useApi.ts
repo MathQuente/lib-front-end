@@ -102,6 +102,10 @@ export const useApi = () => ({
     })
     return response.data
   },
+  getGame: async (gameId: string | undefined) => {
+    const response = await api.get(`/games/${gameId}`)
+    return response.data
+  },
   getGameStatus: async (userId: string | null, gameId: string | undefined) => {
     const token = localStorage.getItem('authToken')
     const response = await api.get(`/userGames/${userId}/${gameId}`, {
@@ -110,6 +114,10 @@ export const useApi = () => ({
       }
     })
     return response.data.UserGamesStatus
+  },
+  getSimilarGames: async (gameId: string | undefined) => {
+    const response = await api.get(`/games/similarGames/${gameId}`)
+    return response.data
   },
   addGame: async (
     userId: string | null,
