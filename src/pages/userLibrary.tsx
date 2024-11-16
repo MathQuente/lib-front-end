@@ -27,9 +27,7 @@ export function UserLibrary() {
   }
 
   const userGamesFinished = UserGamesResponse.userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'finished'
-    )
+    .filter(userGame => userGame.UserGamesStatus.status === 'finished')
     .slice(0, 6)
 
   const totalGamesFinished = UserGamesResponse.totalPerStatus.find(
@@ -37,9 +35,7 @@ export function UserLibrary() {
   )
 
   const userGamesPlaying = UserGamesResponse.userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'playing'
-    )
+    .filter(userGame => userGame.UserGamesStatus.status === 'playing')
     .slice(0, 6)
 
   const totalGamesPlaying = UserGamesResponse.totalPerStatus.find(
@@ -47,9 +43,7 @@ export function UserLibrary() {
   )
 
   const userGamesPaused = UserGamesResponse.userGames
-    .filter(
-      UserGameStatus => UserGameStatus.UserGamesStatus.status === 'paused'
-    )
+    .filter(userGame => userGame.UserGamesStatus.status === 'paused')
     .slice(0, 6)
 
   const totalGamesPaused = UserGamesResponse.totalPerStatus.find(
@@ -74,19 +68,19 @@ export function UserLibrary() {
                 </p>
               </div>
 
-              {totalGamesFinished?.totalGames > 0 && (
+              {(totalGamesFinished?.totalGames || 0) > 0 && (
                 <Link
                   to="/userLibrary/finishedGames"
-                  className="text-[#8F8F8F]"
+                  className="text-[#7A38CA] font-bold"
                 >
                   Show all
                 </Link>
               )}
             </div>
-            {totalGamesFinished.totalGames > 0 ? (
+            {(totalGamesFinished?.totalGames || 0) > 0 ? (
               <div className="flex items-center justify-center">
                 <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGames={userGamesFinished} />
+                  <UserGameCard userGamesAndDlcs={userGamesFinished} />
                 </div>
               </div>
             ) : (
@@ -111,16 +105,19 @@ export function UserLibrary() {
                 </p>
               </div>
 
-              {totalGamesPlaying?.totalGames > 0 && (
-                <Link to="/userLibrary/playingGames" className="text-[#8F8F8F]">
+              {(totalGamesPlaying?.totalGames || 0) > 0 && (
+                <Link
+                  to="/userLibrary/playingGames"
+                  className="text-[#7A38CA] font-bold"
+                >
                   Show all
                 </Link>
               )}
             </div>
-            {totalGamesPlaying?.totalGames > 0 ? (
+            {(totalGamesPlaying?.totalGames || 0) > 0 ? (
               <div className="flex items-center justify-center">
                 <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGames={userGamesPlaying} />
+                  <UserGameCard userGamesAndDlcs={userGamesPlaying} />
                 </div>
               </div>
             ) : (
@@ -145,16 +142,19 @@ export function UserLibrary() {
                 </p>
               </div>
 
-              {totalGamesPaused?.totalGames > 0 && (
-                <Link to="/userLibrary/pausedGames" className="text-[#8F8F8F]">
+              {(totalGamesPaused?.totalGames || 0) > 0 && (
+                <Link
+                  to="/userLibrary/pausedGames"
+                  className="text-[#7A38CA] font-bold"
+                >
                   Show all
                 </Link>
               )}
             </div>
-            {totalGamesPaused?.totalGames > 0 ? (
+            {(totalGamesPaused?.totalGames || 0) > 0 ? (
               <div className="flex items-center justify-center">
                 <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGames={userGamesPaused} />
+                  <UserGameCard userGamesAndDlcs={userGamesPaused} />
                 </div>
               </div>
             ) : (
