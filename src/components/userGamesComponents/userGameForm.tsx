@@ -8,10 +8,10 @@ import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { toast } from 'react-toastify'
 import { useApi } from '../../hooks/useApi'
-import type { UserGame } from '../../types/user'
-import type { Game } from '../../types/games'
+import type { Dlc, Game } from '../../types/games'
 import type { GameStatusResponse } from '../../types/games'
 import { UserGameModal } from './userGameModal'
+import { Link } from 'react-router-dom'
 
 interface FormValues {
   statusId: string | undefined
@@ -19,19 +19,19 @@ interface FormValues {
 
 export function UserGameForm({
   afterSave,
-  userGame,
+  game,
 }: {
   afterSave: () => void
-  userGame: UserGame
+  game: Omit<Game, 'game'> | Omit<Dlc, 'dlc'> | undefined
 }) {
   const api = useApi()
   const userId = api.getUserIdFromToken()
   const queryClient = useQueryClient()
 
   const { data: GameStatus } = useQuery<GameStatusResponse>({
-    queryKey: ['gamesStatus', userId, userGame.game.id],
-    queryFn: async () => api.getGameStatus(userId, userGame.game.id),
-    enabled: !!userGame?.game.id,
+    queryKey: ['gamesStatus', userId, game?.id],
+    queryFn: async () => api.getGameStatus(userId, game?.id),
+    enabled: !!game?.id,
   })
 
   const { mutateAsync: updateGameStatusFn, isPending: isUpdatingStatus } =
@@ -125,7 +125,7 @@ export function UserGameForm({
 
   const gameStatus = watch('statusId')
 
-  if (!userGame) {
+  if (!game) {
     return null
   }
 
@@ -141,14 +141,14 @@ export function UserGameForm({
 
     await updateGameStatusFn({
       userId,
-      gameId: userGame?.game.id,
+      gameId: game?.id,
       statusId: data.statusId,
     })
     afterSave()
   }
 
   async function handleSubmitRemoveGame() {
-    await removeGameFn({ userId, gameId: userGame?.game.id })
+    await removeGameFn({ userId, gameId: game?.id })
     afterSave()
   }
 
@@ -256,7 +256,7 @@ export function UserGameForm({
                   handleSubmitRemoveGame()
                 }}
               >
-                Remover de{' '}
+                Remove from{' '}
                 {GameStatus.id.toString() === '3' && (
                   <FiPause className="size-4" />
                 )}
@@ -272,7 +272,10 @@ export function UserGameForm({
         )}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end">
+        <Link className="text-[#7A38CA] font-bold" to={`/games/${game.id}`}>
+          Game page
+        </Link>
         <UserGameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
           Cancel
         </UserGameModal.Close>

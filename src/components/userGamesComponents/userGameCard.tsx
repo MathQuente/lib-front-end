@@ -1,35 +1,44 @@
 import { useState } from 'react'
 
-import { GameModal } from '../gamesComponents/gameModal'
-
-import type { UserGame, UserGames } from '../../types/user'
+import type { UserGameAndDlc } from '../../types/user'
 import { UserGameInfo } from './userGameInfo'
+import { UserGameModal } from './userGameModal'
 
-export function UserGameCard({ userGames }: UserGames) {
-  const [currentGame, setCurrentGame] = useState<UserGame | null>(null)
+interface GameCardProps {
+  userGamesAndDlcs: UserGameAndDlc[]
+}
+
+export function UserGameCard({ userGamesAndDlcs }: GameCardProps) {
+  const [currentGame, setCurrentGame] = useState<UserGameAndDlc | null>(null)
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      {userGames.map(userGame => (
-        <div key={userGame.game.id}>
+      {userGamesAndDlcs.map(item => (
+        <div key={item.game?.id || item.dlc?.id}>
           <button
             type="button"
             onClick={() => {
-              setCurrentGame(userGame)
+              setCurrentGame(item)
               setOpen(true)
             }}
           >
+            {item.dlc?.dlcBanner && (
+              <div className="absolute ml-2 mt-1 w-10 h-7 flex items-center justify-center bg-zinc-800 rounded-xl">
+                <p className="font-normal text-gray-300 text-xs">DLC</p>
+              </div>
+            )}
             <img
-              className="w-[230px] h-[320px]"
-              src={userGame.game.gameBanner}
+              className="w-[230px] h-[320px] rounded-lg"
+              src={item.game?.gameBanner || item.dlc?.dlcBanner}
               alt=""
             />
           </button>
         </div>
       ))}
+
       <div>
-        <GameModal
+        <UserGameModal
           open={open}
           onOpenChange={open => {
             setOpen(open)
@@ -41,7 +50,7 @@ export function UserGameCard({ userGames }: UserGames) {
               setOpen(false)
             }}
           />
-        </GameModal>
+        </UserGameModal>
       </div>
     </>
   )
