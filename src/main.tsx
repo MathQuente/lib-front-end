@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-// import { App } from './app'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Authentication } from './pages/authentication'
@@ -14,13 +13,14 @@ import { PausedGamesPage } from './pages/pausedGamesPage'
 import { RouletteWheel } from './pages/rouletteWheel'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
+import { GamePage } from './pages/gamePage'
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
     path: '/auth',
-    element: <Authentication />
+    element: <Authentication />,
   },
   {
     path: '/',
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       <RequireAuth>
         <App />
       </RequireAuth>
-    )
+    ),
   },
   {
     path: '/games',
@@ -36,11 +36,19 @@ const router = createBrowserRouter([
       <RequireAuth>
         <Games />
       </RequireAuth>
-    )
+    ),
+  },
+  {
+    path: '/games/:gameId',
+    element: (
+      <RequireAuth>
+        <GamePage />
+      </RequireAuth>
+    ),
   },
   {
     path: '/roulette',
-    element: <RouletteWheel />
+    element: <RouletteWheel />,
   },
   {
     path: '/userLibrary',
@@ -48,7 +56,7 @@ const router = createBrowserRouter([
       <RequireAuth>
         <UserLibrary />
       </RequireAuth>
-    )
+    ),
   },
   {
     path: '/userLibrary/playingGames',
@@ -56,7 +64,7 @@ const router = createBrowserRouter([
       <RequireAuth>
         <PlayingGamesPage />
       </RequireAuth>
-    )
+    ),
   },
   {
     path: '/userLibrary/finishedGames',
@@ -64,7 +72,7 @@ const router = createBrowserRouter([
       <RequireAuth>
         <FinishedGamesPage />
       </RequireAuth>
-    )
+    ),
   },
   {
     path: '/userLibrary/pausedGames',
@@ -72,8 +80,8 @@ const router = createBrowserRouter([
       <RequireAuth>
         <PausedGamesPage />
       </RequireAuth>
-    )
-  }
+    ),
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
