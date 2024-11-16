@@ -1,112 +1,127 @@
-import type { Game } from '../../types/games'
+import type { GameAndDLC } from '../../types/games'
+import { CategoriesDiv } from '../categoriesDiv'
+import { PlatformDiv } from '../platformDiv'
 import { GameForm } from './gameForm'
 
 export function GameInfo({
   afterSave,
-  game,
+  gameAndDlc,
 }: {
   afterSave: () => void
-  game: Game | null
+  gameAndDlc: GameAndDLC | null
 }) {
-  if (!game) {
+  if (!gameAndDlc) {
     return null
   }
 
   return (
-    <div key={game.id} className="flex flex-row h-full w-full">
-      <div className="flex flex-col items-center justify-start w-full">
+    <div
+      key={gameAndDlc.game?.id || gameAndDlc.dlc?.id}
+      className="flex flex-row h-full w-full"
+    >
+      <div className="flex flex-col items-center justify-start w-2/5">
         <img
-          className="rounded-s-lg justify-start w-full h-[500px]"
-          src={game.gameBanner}
+          className="rounded-s-lg h-[500px]"
+          src={gameAndDlc.dlc?.dlcBanner || gameAndDlc.game?.gameBanner}
           alt=""
         />
       </div>
-      <div className="flex flex-col justify-between p-4 w-full">
-        <div className="flex flex-col items-center">
+      <div className="flex flex-col justify-between p-4 w-3/5">
+        <div className="flex flex-col items-center gap-2">
           <h1
-            className={`${game.gameName.length < 20 ? 'text-xl font-bold' : 'text-lg font-bold'}`}
+            className={`${(gameAndDlc.game?.gameName?.length || gameAndDlc.dlc?.dlcName?.length || 0) < 30 ? 'text-xl font-bold' : 'text-lg font-bold'}`}
           >
-            {game.gameName}
+            {gameAndDlc.game?.gameName || gameAndDlc.dlc?.dlcName}
           </h1>
-          {game?.platforms.length <= 2 ? (
-            <div className="flex justify-center pt-2">
-              {game.platforms.map(platform => (
-                <div
-                  className="bg-zinc-900 rounded-xl p-2 flex justify-center "
-                  key={platform.id}
-                >
-                  <p className="text-gray-600 text-xl font-normal">
-                    {platform.platformName}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-wrap items-center justify-center gap-x-2 pt-2">
-              {game.platforms.map(platform => (
-                <div
-                  className="bg-zinc-900 rounded-2xl p-2 flex justify-center"
-                  key={platform.id}
-                >
-                  <p className="text-gray-600 text-xl font-normal">
-                    {platform.platformName}
-                  </p>
-                </div>
-              ))}
+        </div>
+        <div className="flex gap-2 flex-wrap justify-center">
+          {(gameAndDlc.game?.platforms || gameAndDlc.dlc?.platforms || [])
+            .slice(0, 4)
+            .map(platform => (
+              <PlatformDiv
+                key={platform.id}
+                platformName={platform.platformName}
+              />
+            ))}
+          {(gameAndDlc.game?.platforms || gameAndDlc.dlc?.platforms || [])
+            .length > 4 && (
+            <div>
+              <span className="flex flex-row gap-1 text-slate-300 font-semibold">
+                There are
+                <p className="text-[#7A38CA] font-bold">
+                  {(
+                    gameAndDlc.game?.platforms ||
+                    gameAndDlc.dlc?.platforms ||
+                    []
+                  ).length - 4}
+                </p>
+                additional platforms.
+              </span>
             </div>
           )}
         </div>
         <div className="flex flex-col items-center justify-center">
-          {game?.platforms.length <= 2 ? (
-            <div className="flex gap-2 justify-center pt-2">
-              {game.categories.map(category => (
-                <div
-                  className="bg-gray-500 rounded-xl p-2 flex justify-center"
-                  key={category.id}
-                >
-                  <p className="text-white text-xl font-normal">
-                    {category.categoryName}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-x-2 gap-y-2 pt-2">
-              {game.categories.map(category => (
-                <div
-                  className="bg-gray-500 rounded-2xl p-2 flex justify-center"
-                  key={category.id}
-                >
-                  <p className="text-white text-xl font-normal">
-                    {category.categoryName}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-x-1 flex-wrap justify-center">
             <h2 className="text-xl font-semibold">Developer:</h2>
-            {game?.gameStudios.map(gameStudio => (
-              <p className="text-xl font-bold" key={gameStudio.id}>
-                {gameStudio.studioName}
-              </p>
-            ))}
+            {(gameAndDlc.game?.gameStudios || gameAndDlc.dlc?.gameStudios)?.map(
+              (gameStudio, index, array) => (
+                <p
+                  className="text-xl font-bold text-slate-400"
+                  key={gameStudio.id}
+                >
+                  {gameStudio.studioName}
+                  {index < array.length - 1 && (
+                    <span className="text-lg text-white">, </span>
+                  )}
+                </p>
+              )
+            )}
           </div>
-          <div className="flex flex-row flex-wrap items-center justify-center gap-x-2">
+          <div className="flex flex-row gap-x-1 flex-wrap justify-center">
             <h2 className="text-xl font-semibold">Publisher:</h2>
-            {game?.publishers.map((publisher, index, array) => (
-              <p className="text-xl font-bold" key={publisher.id}>
-                {publisher.publisherName}
-                {index < array.length - 1 && (
-                  <span className="text-xl">, </span>
-                )}
-              </p>
-            ))}
+            {(gameAndDlc.game?.publishers || gameAndDlc.dlc?.publishers)?.map(
+              (publisher, index, array) => (
+                <p
+                  className="text-xl font-bold text-slate-400"
+                  key={publisher.id}
+                >
+                  {publisher.publisherName}
+                  {index < array.length - 1 && (
+                    <span className="text-xl text-white">, </span>
+                  )}
+                </p>
+              )
+            )}
           </div>
         </div>
-        <GameForm afterSave={afterSave} game={game} />
+        <div className="flex gap-2 flex-wrap justify-center">
+          {(gameAndDlc.game?.categories || gameAndDlc.dlc?.categories || [])
+            .slice(0, 3)
+            .map(category => (
+              <CategoriesDiv
+                key={category.id}
+                categoryName={category.categoryName}
+              />
+            ))}
+          {(gameAndDlc.game?.categories || gameAndDlc.dlc?.categories || [])
+            .length > 3 && (
+            <span className="flex gap-1 text-slate-300 font-semibold">
+              There are
+              <p className="text-[#7A38CA] font-bold">
+                {(
+                  gameAndDlc.game?.categories ||
+                  gameAndDlc.dlc?.categories ||
+                  []
+                ).length - 3}
+              </p>
+              additional categories.
+            </span>
+          )}
+        </div>
+        <GameForm
+          afterSave={afterSave}
+          game={gameAndDlc.game || gameAndDlc.dlc}
+        />
       </div>
     </div>
   )
