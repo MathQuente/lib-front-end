@@ -122,7 +122,7 @@ export function FinishedGamesPage() {
           <div className="flex flex-col bg-[#272932] w-[1550px] h-[1085px] p-9">
             <div className="flex items-center justify-center">
               <div className="grid grid-cols-6 gap-5">
-                <UserGameCard userGames={UserGamesResponse.userGames} />
+                <UserGameCard userGamesAndDlcs={UserGamesResponse.userGames} />
               </div>
             </div>
           </div>

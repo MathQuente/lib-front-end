@@ -123,7 +123,7 @@ export function PausedGamesPage() {
           <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] min-h-[300px] p-6">
             <div className="flex items-center justify-center">
               <div className="grid grid-cols-6 gap-4">
-                <UserGameCard userGames={UserGamesResponse.userGames} />
+                <UserGameCard userGamesAndDlcs={UserGamesResponse.userGames} />
               </div>
             </div>
           </div>
