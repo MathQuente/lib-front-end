@@ -1,22 +1,26 @@
 import axios from 'axios'
-import { jwtDecode } from 'jwt-decode'
 import { toast } from 'react-toastify'
 import { tokenProvider } from './token'
-
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL
 })
 
-interface JwtPayload {
-  userId: string
-}
-
 const tokenService = tokenProvider()
 
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    if (error.response?.status === 401) {
+      tokenService.removeTokens()
+      window.location.href = '/auth'
+    }
+    return Promise.reject(error)
+  }
+)
 export const useApi = () => ({
   login: async (email: string, password: string) => {
     try {
-      const response = await api.post('/users/login', { email, password })
+      const response = await api.post('/auth/login', { email, password })
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -33,14 +37,14 @@ export const useApi = () => ({
     return response.data
   },
   logout: async () => {
-    const token = tokenService.getToken()
+    const accessToken = tokenService.getAccessToken()
     try {
       await api.post(
-        '/users/logout',
+        '/auth/logout',
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${accessToken}`
           }
         }
       )
@@ -48,26 +52,25 @@ export const useApi = () => ({
       console.error('Logout failed:', error)
     }
   },
-  getCurrentUser: async (token: string) => {
-    const response = await api.get('/users/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
+  refreshToken: async (refreshToken: string) => {
+    try {
+      const response = await api.post(
+        '/auth/refresh',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`
+          }
+        }
+      )
+      return {
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken
       }
-    })
-    return response.data
-  },
-  getUserIdFromToken: (): string | null => {
-    const token = localStorage.getItem('authToken')
-    if (token) {
-      try {
-        const decoded = jwtDecode<JwtPayload>(token)
-        return decoded.userId
-      } catch (error) {
-        console.error('Invalid token:', error)
-        return null
-      }
+    } catch (error) {
+      console.error('Error refreshing token:', error)
+      return null
     }
-    return null
   },
   getUserGames: async (
     userId: string | null,
@@ -75,21 +78,21 @@ export const useApi = () => ({
     search?: string,
     filter?: number
   ) => {
-    const token = localStorage.getItem('authToken')
+    const accessToken = tokenService.getAccessToken()
     const response = await api.get(`/users/${userId}/userGames`, {
       params: {
         filter: filter,
         pageIndex: page ? page - 1 : undefined,
         query: search || undefined
       },
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${accessToken}` }
     })
     return response.data
   },
   getUserProfile: async (userId: string | null) => {
-    const token = localStorage.getItem('authToken')
+    const accessToken = tokenService.getAccessToken()
     const response = await api.get(`/users/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${accessToken}` }
     })
     return response.data
   },
@@ -106,11 +109,11 @@ export const useApi = () => ({
     const response = await api.get(`/games/${gameId}`)
     return response.data
   },
-  getGameStatus: async (userId: string | null, gameId: string | undefined) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.get(`/userGames/${userId}/${gameId}`, {
+  getGameStatus: async (userId: string | null, itemId: string | undefined) => {
+    const accessToken = tokenService.getAccessToken()
+    const response = await api.get(`/users/${userId}/${itemId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
     return response.data.UserGamesStatus
@@ -124,12 +127,12 @@ export const useApi = () => ({
     gameId: string | undefined,
     statusId: string | undefined
   ) => {
-    const token = localStorage.getItem('authToken')
+    const accessToken = tokenService.getAccessToken()
     const response = await api.post(
-      `/users/${userId}/userGames/${gameId}/${statusId}`,
+      `/users/${userId}/addGame/${gameId}/${statusId}`,
       {},
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${accessToken}` }
       }
     )
     return response
@@ -139,67 +142,24 @@ export const useApi = () => ({
     gameId: string | undefined,
     statusId: string | null | undefined
   ) => {
-    const token = localStorage.getItem('authToken')
+    const accessToken = tokenService.getAccessToken()
     const response = await api.patch(
-      `/userGamesStatus/${userId}/${gameId}/${statusId}`,
+      `/users/userGamesStatus/${userId}/${gameId}/${statusId}`,
       {},
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${accessToken}` }
       }
     )
     return response
   },
   removeGame: async (userId: string | null, gameId: string | undefined) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.delete(`/users/${userId}/userGames/${gameId}`, {
+    const accessToken = tokenService.getAccessToken()
+    const response = await api.delete(`/users/${userId}/removeItem/${gameId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
     return response
-  },
-  getUserGamesFinished: async (
-    userId: string | null,
-    page: number,
-    search?: string
-  ) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.get(`/users/${userId}/userFinishedGames`, {
-      params: {
-        pageIndex: page - 1,
-        query: search || undefined
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  },
-  getUserPlayingGames: async (userId: string, page: number, search: string) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.get(`/users/${userId}/userPlayingGames`, {
-      params: {
-        pageIndex: page - 1,
-        query: search || undefined
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  },
-  getUserPausedGames: async (userId: string, page: number, search: string) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.get(`/users/${userId}/userPausedGames`, {
-      params: {
-        pageIndex: page - 1,
-        query: search || undefined
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
   },
   updateUser: async (
     userId: string | null,
@@ -207,8 +167,8 @@ export const useApi = () => ({
     profilePicture?: string,
     userBanner?: string
   ) => {
-    const token = localStorage.getItem('authToken')
-    const response = await api.put(
+    const accessToken = tokenService.getAccessToken()
+    const response = await api.patch(
       `/users/${userId}`,
       {
         userName,
@@ -217,7 +177,7 @@ export const useApi = () => ({
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${accessToken}`
         }
       }
     )

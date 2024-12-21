@@ -1,31 +1,58 @@
 import { jwtDecode } from 'jwt-decode'
-
-interface JwtPayload {
-  userId: string
-}
-
+import type { JwtPayload } from 'jwt-decode'
 export const tokenProvider = () => ({
-  getToken: () => {
-    const token = localStorage.getItem('authToken')
-    return token
+  getRefreshToken: () => {
+    return localStorage.getItem('refreshToken')
   },
-  setToken: (token: string) => {
-    localStorage.setItem('authToken', token)
+  getAccessToken: () => {
+    return localStorage.getItem('accessToken')
   },
-  removeToken: () => {
-    localStorage.removeItem('authToken')
+  setAccessToken: (acessToken: string) => {
+    localStorage.setItem('accessToken', acessToken)
   },
-  isTokenValid: () => {
-    const token = localStorage.getItem('authToken')
-    if (!token) {
-      return false
+  setRefreshToken: (token: string) => {
+    localStorage.setItem('refreshToken', token)
+  },
+  removeTokens: () => {
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('accessToken')
+  },
+  isTokenExpired: (token: string): boolean => {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token)
+      if (!decoded.exp) return true
+      // Adiciona uma margem de 30 segundos para evitar problemas de timing
+      return decoded.exp <= Date.now()
+    } catch {
+      return true
     }
-
-    const decoded = jwtDecode<JwtPayload>(token)
-    if (!decoded) {
-      return false
+  },
+  isTokenCloseToExpire: (token: string): boolean => {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token)
+      if (!decoded.exp) return true
+      // Adiciona uma margem de 30 segundos para evitar problemas de timing
+      return decoded.exp * 1000 <= Date.now() + 3000
+    } catch {
+      return true
     }
+  },
+  extractUserFromToken: (accessToken: string | null) => {
+    try {
+      const decoded = jwtDecode<JwtPayload & { userId?: string }>(
+        accessToken || ''
+      )
 
-    return true
+      if (!decoded.exp || decoded.exp * 1000 < Date.now()) {
+        return null
+      }
+
+      return {
+        id: decoded.userId
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error)
+      return null
+    }
   }
 })

@@ -3,20 +3,20 @@ import { useState } from 'react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 
-import type { GameAndDLC } from '../../types/games'
+import type { GameDlcBase } from '../../types/games'
 
 interface GameCardProps {
-  gamesAndDlcs: GameAndDLC[]
+  games: GameDlcBase[]
 }
 
-export function GameCard({ gamesAndDlcs }: GameCardProps) {
-  const [currentGame, setCurrentGame] = useState<GameAndDLC | null>(null)
+export function GameCard({ games }: GameCardProps) {
+  const [currentGame, setCurrentGame] = useState<GameDlcBase | null>(null)
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      {gamesAndDlcs.map(item => (
-        <div key={item.game?.id || item.dlc?.id}>
+      {games.map(item => (
+        <div key={item.id}>
           <button
             type="button"
             onClick={() => {
@@ -24,15 +24,15 @@ export function GameCard({ gamesAndDlcs }: GameCardProps) {
               setOpen(true)
             }}
           >
-            {item.dlc?.dlcBanner && (
+            {item.type === 'dlc' && (
               <div className="absolute ml-2 mt-1 w-10 h-7 flex items-center justify-center bg-zinc-800 rounded-xl">
                 <p className="font-normal text-gray-300 text-xs">DLC</p>
               </div>
             )}
             <img
               className="w-[230px] h-[320px] rounded-lg"
-              src={item.game?.gameBanner || item.dlc?.dlcBanner}
-              alt=""
+              src={item.banner}
+              alt={item.name}
             />
           </button>
         </div>

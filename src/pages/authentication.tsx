@@ -42,11 +42,11 @@ export function Authentication() {
                 </Tabs.Trigger>
               </div>
             </Tabs.List>
-            <Tabs.Content asChild value="login">
+            <Tabs.Content value="login">
               <FormLogin />
             </Tabs.Content>
 
-            <Tabs.Content asChild value="signUp">
+            <Tabs.Content value="signUp">
               <FormSignUp />
             </Tabs.Content>
           </Tabs.Root>

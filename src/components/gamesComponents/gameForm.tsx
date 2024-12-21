@@ -8,10 +8,11 @@ import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { toast } from 'react-toastify'
 import { useApi } from '../../hooks/useApi'
-import type { Dlc, Game } from '../../types/games'
+import type { GameDlcBase } from '../../types/games'
 import type { GameStatusResponse } from '../../types/games'
 import { GameModal } from './gameModal'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 
 interface FormValues {
   statusId: string | undefined
@@ -19,19 +20,20 @@ interface FormValues {
 
 export function GameForm({
   afterSave,
-  game,
+  item,
 }: {
   afterSave: () => void
-  game: Omit<Game, 'game'> | Omit<Dlc, 'dlc'> | undefined
+  item: GameDlcBase | undefined
 }) {
   const api = useApi()
-  const userId = api.getUserIdFromToken()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
   const queryClient = useQueryClient()
 
   const { data: GameStatus } = useQuery<GameStatusResponse>({
-    queryKey: ['gamesStatus', userId, game?.id],
-    queryFn: async () => api.getGameStatus(userId, game?.id),
-    enabled: !!game?.id,
+    queryKey: ['gamesStatus', userId, item?.id],
+    queryFn: async () => api.getGameStatus(userId, item?.id),
+    enabled: !!item?.id,
   })
 
   const { mutateAsync: addGameFn, isPending: isAddingGame } = useMutation({
@@ -94,7 +96,7 @@ export function GameForm({
       ])
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['games'], (old: Game[] | undefined) =>
+      queryClient.setQueryData(['games'], (old: GameDlcBase[] | undefined) =>
         old ? old.filter(g => g.id !== variables.gameId) : []
       )
       queryClient.setQueryData(['gamesStatus', userId, variables.gameId], null)
@@ -139,7 +141,7 @@ export function GameForm({
 
   const gameStatus = watch('statusId')
 
-  if (!game) {
+  if (!item) {
     return null
   }
 
@@ -154,21 +156,21 @@ export function GameForm({
     }
 
     if (!GameStatus) {
-      await addGameFn({ userId, gameId: game?.id, statusId: data.statusId })
+      await addGameFn({ userId, gameId: item?.id, statusId: data.statusId })
       afterSave()
       return
     }
 
     await updateGameStatusFn({
       userId,
-      gameId: game?.id,
+      gameId: item?.id,
       statusId: data.statusId,
     })
     afterSave()
   }
 
   async function handleSubmitRemoveGame() {
-    await removeGameFn({ userId, gameId: game?.id })
+    await removeGameFn({ userId, gameId: item?.id })
     afterSave()
   }
 
@@ -292,7 +294,7 @@ export function GameForm({
         )}
       </div>
       <div className="flex items-center justify-end">
-        <Link className="text-[#7A38CA] font-bold" to={`/games/${game.id}`}>
+        <Link className="text-[#7A38CA] font-bold" to={`/games/${item.id}`}>
           Game page
         </Link>
         <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
