@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 import type { ChangeEvent } from 'react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { ToastContainer } from 'react-toastify'
 
@@ -21,7 +21,7 @@ import { GameCard } from '../components/gamesComponents/gameCard'
 
 export function Games() {
   const api = useApi()
-  const topRef = useRef<HTMLDivElement>(null)
+  // const topRef = useRef<HTMLDivElement>(null)
   const [search, setSearch] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -54,9 +54,9 @@ export function Games() {
 
   const totalPages = Math.ceil(GamesResponse?.total / 18)
 
-  function scrollToTop() {
-    topRef.current?.scrollIntoView({ behavior: 'instant' })
-  }
+  // function scrollToTop() {
+  //   topRef.current?.scrollIntoView({ behavior: 'instant' })
+  // }
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -66,7 +66,7 @@ export function Games() {
     window.history.pushState({}, '', url)
     setPage(page)
 
-    scrollToTop()
+    // scrollToTop()
   }
 
   function setCurrentSearch(search: string) {
@@ -93,18 +93,22 @@ export function Games() {
   }
 
   function goToNextPage() {
-    setCurrentPage(page + 1)
+    if (page < totalPages) {
+      setCurrentPage(page + 1)
+    }
   }
 
   function goToPreviousPage() {
-    setCurrentPage(page - 1)
+    if (page > 1) {
+      setCurrentPage(page - 1)
+    }
   }
 
   return (
     <>
       <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
         <SideBar />
-        <div ref={topRef} />
+        {/* <div ref={topRef} /> */}
         <div className="flex gap-3 items-center">
           <div className=" left-[20rem] top-[2rem] w-[30rem] mx-44 mt-10">
             <CiSearch className="size-6 text-[#8F8F8F] absolute top-[3.625rem] left-[12.5rem]" />
@@ -122,14 +126,14 @@ export function Games() {
           <div className="flex flex-col bg-[#272932] w-[1550px] h-[1085px] p-9">
             <div className="flex items-center justify-center">
               <div className="grid grid-cols-6 gap-5">
-                <GameCard gamesAndDlcs={GamesResponse.gamesAndDlcs} />
+                <GameCard games={GamesResponse.games} />
               </div>
             </div>
           </div>
           <div className="flex items-center gap-6 pt-5 pb-5">
             <p className="text-[#FFFFFF]">
-              Mostrando {GamesResponse.gamesAndDlcs.length} de{' '}
-              {GamesResponse.total} items
+              Mostrando {GamesResponse.games.length} de {GamesResponse.total}{' '}
+              items
             </p>
             <span className="text-[#FFFFFF]">
               Página {page} de {totalPages}

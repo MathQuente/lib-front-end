@@ -5,12 +5,14 @@ import { useApi } from '../../hooks/useApi'
 import { useState } from 'react'
 import { UserProfileModal } from './userProfileModal'
 import { UserProfileForm } from './userProfileForm'
+import { useAuth } from '../../hooks/useAuth'
 
 export function UserProfileDisplay() {
-  const [isOpen, setIsOpen] = useState(false)
-
   const api = useApi()
-  const userId = api.getUserIdFromToken()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const { data: UserProfileResponse } = useQuery<UserProfileResponse>({
     queryKey: ['userProfile', userId],
@@ -82,7 +84,7 @@ export function UserProfileDisplay() {
         </p>
         |
         <p className="text-white font-semibold">
-          Games: {UserProfileResponse.total}
+          Games: {UserProfileResponse.user.gamesAmount}
         </p>
       </div>
     </div>

@@ -13,8 +13,12 @@ import SideBar from '../components/sideBar'
 import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
 import type { UserGamesResponse } from '../types/user'
+import { useAuth } from '../hooks/useAuth'
+import { GameStatusEnum } from '../types/games'
 
 export function PlayingGamesPage() {
+  const api = useApi()
+  const { user } = useAuth()
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -35,9 +39,8 @@ export function PlayingGamesPage() {
     return ''
   })
 
-  const api = useApi()
-  const userId = api.getUserIdFromToken()
-  const filter = 2
+  const userId = user?.id ?? ''
+  const filter = GameStatusEnum.Playing
 
   const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId, page, search, filter],

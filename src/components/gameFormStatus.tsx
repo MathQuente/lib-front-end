@@ -8,26 +8,28 @@ import { PiFlagCheckeredBold } from 'react-icons/pi'
 import { SlOptionsVertical } from 'react-icons/sl'
 import { toast } from 'react-toastify'
 import { useApi } from '../hooks/useApi'
-import type { Dlc, Game } from '../types/games'
+import type { GameDlcBase } from '../types/games'
 import type { GameStatusResponse } from '../types/games'
+import { useAuth } from '../hooks/useAuth'
 
 interface FormValues {
   statusId: string | undefined
 }
 
 export function GameFormStatus({
-  game,
+  item,
 }: {
-  game: Omit<Game, 'game'> | Omit<Dlc, 'dlc'> | undefined
+  item: GameDlcBase
 }) {
   const api = useApi()
-  const userId = api.getUserIdFromToken()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
   const queryClient = useQueryClient()
 
   const { data: GameStatus } = useQuery<GameStatusResponse>({
-    queryKey: ['gamesStatus', userId, game?.id],
-    queryFn: async () => api.getGameStatus(userId, game?.id),
-    enabled: !!game?.id,
+    queryKey: ['gamesStatus', userId, item?.id],
+    queryFn: async () => api.getGameStatus(userId, item?.id),
+    enabled: !!item?.id,
   })
 
   const { mutateAsync: addGameFn, isPending: isAddingGame } = useMutation({
@@ -90,7 +92,7 @@ export function GameFormStatus({
       ])
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['games'], (old: Game[] | undefined) =>
+      queryClient.setQueryData(['games'], (old: GameDlcBase[] | undefined) =>
         old ? old.filter(g => g.id !== variables.gameId) : []
       )
       queryClient.setQueryData(['gamesStatus', userId, variables.gameId], null)
@@ -135,7 +137,7 @@ export function GameFormStatus({
 
   const gameStatus = watch('statusId')
 
-  if (!game) {
+  if (!item) {
     return null
   }
 
@@ -150,20 +152,20 @@ export function GameFormStatus({
     }
 
     if (!GameStatus) {
-      await addGameFn({ userId, gameId: game?.id, statusId: data.statusId })
+      await addGameFn({ userId, gameId: item?.id, statusId: data.statusId })
 
       return
     }
 
     await updateGameStatusFn({
       userId,
-      gameId: game?.id,
+      gameId: item?.id,
       statusId: data.statusId,
     })
   }
 
   async function handleSubmitRemoveGame() {
-    await removeGameFn({ userId, gameId: game?.id })
+    await removeGameFn({ userId, gameId: item?.id })
   }
 
   return (

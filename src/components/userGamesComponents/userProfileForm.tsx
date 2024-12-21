@@ -20,12 +20,18 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import type { UserProfileResponse } from '../../types/user'
+import { useAuth } from '../../hooks/useAuth'
 
 type UserGamesFormProps = {
   afterSave: () => void
 }
 
 export function UserProfileForm({ afterSave }: UserGamesFormProps) {
+  const baseApi = useApi()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
+  const queryClient = useQueryClient()
+
   const [profilePicturePreview, setProfilePicturePreview] = useState('')
   const [userBannerPreview, setUserBannerPreview] = useState('')
   const [removeUserBanner, setRemoveUserBanner] = useState(false)
@@ -41,10 +47,6 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
   } = useForm<profileForm>({
     resolver: zodResolver(updateProfileSchema),
   })
-
-  const baseApi = useApi()
-  const userId = baseApi.getUserIdFromToken()
-  const queryClient = useQueryClient()
 
   const { data: UserProfileResponse } = useQuery<UserProfileResponse>({
     queryKey: ['userProfile', userId],

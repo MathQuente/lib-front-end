@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 
 import SideBar from '../components/sideBar'
 
+import { useAuth } from '../hooks/useAuth'
 import { useApi } from '../hooks/useApi'
 
 import type { UserGamesResponse } from '../types/user'
@@ -14,7 +15,8 @@ import { UserProfileDisplay } from '../components/userGamesComponents/userProfil
 
 export function UserLibrary() {
   const api = useApi()
-  const userId = api.getUserIdFromToken()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
 
   const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId],
@@ -26,29 +28,30 @@ export function UserLibrary() {
     return null
   }
 
-  const userGamesFinished = UserGamesResponse.userGames
-    .filter(userGame => userGame.UserGamesStatus.status === 'finished')
-    .slice(0, 6)
+  function getUserGamesByStatus(
+    response: UserGamesResponse,
+    status: string,
+    statusId: number
+  ) {
+    const userGames = response.userGames
+      .filter(userGame => userGame.UserGamesStatus.status === status)
+      .slice(0, 6)
 
-  const totalGamesFinished = UserGamesResponse.totalPerStatus.find(
-    total => total.statusId === 1
-  )
+    const totalGames = response.totalPerStatus.find(
+      total => total.statusId === statusId
+    )
 
-  const userGamesPlaying = UserGamesResponse.userGames
-    .filter(userGame => userGame.UserGamesStatus.status === 'playing')
-    .slice(0, 6)
+    return { userGames, totalGames }
+  }
 
-  const totalGamesPlaying = UserGamesResponse.totalPerStatus.find(
-    total => total.statusId === 2
-  )
+  const { userGames: userGamesFinished, totalGames: totalGamesFinished } =
+    getUserGamesByStatus(UserGamesResponse, 'finished', 1)
 
-  const userGamesPaused = UserGamesResponse.userGames
-    .filter(userGame => userGame.UserGamesStatus.status === 'paused')
-    .slice(0, 6)
+  const { userGames: userGamesPlaying, totalGames: totalGamesPlaying } =
+    getUserGamesByStatus(UserGamesResponse, 'playing', 2)
 
-  const totalGamesPaused = UserGamesResponse.totalPerStatus.find(
-    total => total.statusId === 3
-  )
+  const { userGames: userGamesPaused, totalGames: totalGamesPaused } =
+    getUserGamesByStatus(UserGamesResponse, 'paused', 3)
 
   return (
     <>

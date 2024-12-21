@@ -14,8 +14,13 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
 import type { UserGamesResponse } from '../types/user'
+import { useAuth } from '../hooks/useAuth'
+import { GameStatusEnum } from '../types/games'
 
 export function PausedGamesPage() {
+  const api = useApi()
+  const { user } = useAuth()
+
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -36,11 +41,8 @@ export function PausedGamesPage() {
     return ''
   })
 
-  const api = useApi()
-  const userId = api.getUserIdFromToken()
-
-  const filter = 3
-
+  const userId = user?.id ?? ''
+  const filter = GameStatusEnum.Paused
   const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId, page, search, filter],
     queryFn: async () => api.getUserGames(userId, page, search, filter),
@@ -120,7 +122,7 @@ export function PausedGamesPage() {
         </div>
 
         <div className="flex flex-col items-center mt-4">
-          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] min-h-[300px] p-6">
+          <div className="flex flex-col bg-[#272932] w-[1550px] h-[1085px] p-9">
             <div className="flex items-center justify-center">
               <div className="grid grid-cols-6 gap-4">
                 <UserGameCard userGamesAndDlcs={UserGamesResponse.userGames} />

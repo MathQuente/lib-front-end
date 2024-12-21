@@ -1,5 +1,5 @@
 export interface GamesResponse {
-  gamesAndDlcs: GameAndDLC[]
+  games: GameDlcResponse
   total: number
 }
 
@@ -7,23 +7,55 @@ export interface SimilarGamesResponse {
   similarGames: SimilarGame[]
 }
 
+export interface GameDlcBase {
+  id: string
+  name: string
+  banner: string
+  gameStudios: GameStudio[]
+  categories: Category[]
+  publishers: Publisher[]
+  platforms: Platform[]
+  summary: string
+  game?: Game
+  dlcs?: Dlc[]
+  gameLaunchers: GameLauncher[]
+  type: 'game' | 'dlc' // Diferencia se é jogo ou DLC
+}
+
+export enum GameStatusEnum {
+  Finished = 1,
+  Playing = 2,
+  Paused = 3
+}
+
+// Interface específica para Game
+interface Game extends GameDlcBase {
+  type: 'game' // Tipo exclusivo para jogos
+  dlcs: Dlc[]
+}
+
+// Interface específica para DLC
+interface Dlc extends GameDlcBase {
+  type: 'dlc' // Tipo exclusivo para DLCs
+  game: Game
+}
+
+// Tipagem do array de jogos e DLCs combinados
+export type GameDlcResponse = (Game | Dlc)[]
+
 export interface SimilarGame {
   id: string
   gameBanner?: string
   dlcBanner?: string
 }
-export type GameAndDLC = {
-  game?: Omit<Game, 'game'>
-  dlc?: Omit<Dlc, 'dlc'>
+
+export type GameStatusResponse = {
+  id: number
+  status: string
 }
 
 export interface GameResponse {
-  gameAndDlc: GameAndDLC
-}
-
-export interface GameStatusResponse {
-  id: number
-  status: string
+  gameAndDlc: GameDlcBase
 }
 
 export interface Category {
@@ -49,35 +81,4 @@ export interface GameStudio {
 export interface Publisher {
   id: string
   publisherName: string
-}
-export interface Game {
-  game: Game
-  id: string
-  gameName: string
-  gameBanner: string
-  summary: string
-  categories: Category[]
-  platforms: Platform[]
-  publishers: Publisher[]
-  gameStudios: GameStudio[]
-  gameLaunchers: GameLauncher[]
-  dlcs: Dlc[]
-}
-
-export interface Dlc {
-  dlc: Dlc
-  id: string
-  dlcName: string
-  dlcBanner: string
-  summary: string
-  categories: Category[]
-  platforms: Platform[]
-  publishers: Publisher[]
-  gameStudios: GameStudio[]
-  gameLaunchers: GameLauncher[]
-  game: Game
-}
-
-export interface Games {
-  games: Game[]
 }
