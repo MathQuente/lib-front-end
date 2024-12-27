@@ -10,10 +10,10 @@ import { UserLibrary } from './pages/userLibrary'
 import { PlayingGamesPage } from './pages/playingGamesPage'
 import { FinishedGamesPage } from './pages/finishedGamesPage'
 import { PausedGamesPage } from './pages/pausedGamesPage'
-import { RouletteWheel } from './pages/rouletteWheel'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
 import { GamePage } from './pages/gamePage'
+import { RouletteWheel } from './pages/rouletteWheel'
 
 const queryClient = new QueryClient()
 

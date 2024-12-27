@@ -30,16 +30,16 @@ export function FormSignUp() {
   return (
     <form
       onSubmit={handleSubmitSignUp(signUpHandleSubmit)}
-      className="flex flex-col h-full justify-between"
+      className="flex flex-col"
     >
-      <div className="px-2 w-full flex flex-col pt-[66px] flex-grow">
+      <div className="px-2 w-full flex flex-col pt-[66px] nesthub:pt-8 flex-grow">
         <div>
           <label htmlFor="email" className="relative block text-[#ECECEC]">
-            <p className="mb-4 text-base text-[#ECECEC] font-medium">
+            <p className="mb-4 text-base md:text-xl text-[#ECECEC] font-medium">
               Email Adress
             </p>
             <RxEnvelopeClosed
-              className="pointer-events-none absolute top-[72px] transform -translate-y-1/2 left-4"
+              className="pointer-events-none absolute top-[70px] md:top-[74px] transform -translate-y-1/2 left-5 size-5 md:size-6"
               color="#8F8F8F"
               size={20}
             />
@@ -47,7 +47,8 @@ export function FormSignUp() {
               type="email"
               id="email"
               placeholder="Please Enter your Email"
-              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full p-2.5 pl-12 h-[62px] 
+              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
+               p-2.5 pl-12 h-14 md:h-14 md:pl-14 
           ${
             errorsSignUp.email
               ? 'border-2 border-red-500 focus:outline-none'
@@ -66,13 +67,13 @@ export function FormSignUp() {
           )}
         </div>
 
-        <div>
+        <div className="pt-[35px]">
           <label htmlFor="password" className="relative block text-[#ECECEC]">
-            <p className="pt-[35px] mb-4 text-base text-[#ECECEC] font-medium capitalize">
+            <p className="mb-4 text-base md:text-xl text-[#ECECEC] font-medium capitalize">
               Password
             </p>
             <RxLockOpen2
-              className="pointer-events-none absolute top-[107px] transform -translate-y-1/2 left-4"
+              className="pointer-events-none absolute top-[70px] md:top-[74px] transform -translate-y-1/2 left-5 size-5 md:size-6"
               color="#8F8F8F"
               size={20}
             />
@@ -80,7 +81,8 @@ export function FormSignUp() {
               type="password"
               id="password"
               placeholder="Please Enter your Password"
-              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full p-2.5 pl-12 h-[62px] 
+              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
+               p-2.5 pl-12 h-14 md:h-14 md:pl-14 
          ${
            errorsSignUp.password
              ? 'border-2 border-red-500 focus:outline-none'
@@ -102,11 +104,10 @@ export function FormSignUp() {
         </div>
       </div>
 
-      {/* Botão agora está sempre no final */}
-      <div className="w-full pb-[123px]">
+      <div className="w-full pt-[9.72rem] sm:pt-[22.25rem] nesthub:pt-[6.25rem]">
         <button
           type="submit"
-          className="w-full h-14 inline-flex items-center justify-center  text-[#FFFFFF] text-base font-semibold bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF] focus:ring-4 rounded-xl px-5 py-2.5"
+          className="w-full text-xl md:text-xl font-semibold h-12 md:h-14 inline-flex items-center justify-center text-[#FFFFFF] bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF] focus:ring-4 rounded-xl"
         >
           Sign Up
         </button>
