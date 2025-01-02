@@ -17,7 +17,8 @@ export default function SideBar() {
 
   return (
     <>
-      <div className="w-[126px]  bg-[#272932] flex flex-col justify-between py-20 items-center fixed 2xl:h-full xl:h-full lg:h-full md:h-full sm:h-full">
+      <div className="w-20 sm:w-20 md:w-24 lg:w-24 bg-[#272932] flex flex-col justify-between 
+      py-20 items-center fixed h-full 2xl:h-full xl:h-full lg:h-full md:h-full sm:h-full">
         <h2 className="text-[#FFFFFF]">Logo</h2>
         <ul className="flex flex-col justify-center items-center gap-10">
           <Link to="/">
