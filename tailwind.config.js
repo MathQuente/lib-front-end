@@ -5,6 +5,7 @@ export default {
     extend: {
       screens: {
         nesthub: { raw: '(max-width: 1024px) and (max-height: 600px)' },
+        asus: { raw: '(min-width: 1071px) and (max-height: 695px)'}
       },
     }
   },

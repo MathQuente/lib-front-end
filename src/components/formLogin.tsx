@@ -34,7 +34,7 @@ export function FormLogin() {
       onSubmit={handleSubmitLogin(loginHandleSubmit)}
       className="flex flex-col"
     >
-      <div className="px-2 w-full flex flex-col pt-[66px] nesthub:pt-8 flex-grow">
+      <div className="px-2 w-full flex flex-col pt-[66px] nesthub:pt-8 asus:pt-4 flex-grow">
         <div>
           <label htmlFor="email" className="relative block text-[#ECECEC]">
             <p className="mb-4 text-base md:text-xl text-[#ECECEC] font-medium">
@@ -109,7 +109,7 @@ export function FormLogin() {
         </a>
       </div>
 
-      <div className="w-full pt-32 sm:pt-80 nesthub:pt-16">
+      <div className="w-full pt-32 sm:pt-80 nesthub:pt-16 asus:pt-32">
         <button
           type="submit"
           className="w-full text-xl md:text-xl font-semibold h-12 md:h-14 inline-flex items-center justify-center text-[#FFFFFF] bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF] focus:ring-4 rounded-xl"

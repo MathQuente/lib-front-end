@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { PiGameControllerBold } from 'react-icons/pi'
-import { Link } from 'react-router-dom'
+
+
 import { ToastContainer } from 'react-toastify'
 
 import SideBar from '../components/sideBar'
@@ -10,8 +10,8 @@ import { useApi } from '../hooks/useApi'
 
 import type { UserGamesResponse } from '../types/user'
 
-import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
+import { UserGamesDiv } from '../components/UserGamesDiv'
 
 export function UserLibrary() {
   const api = useApi()
@@ -28,30 +28,11 @@ export function UserLibrary() {
     return null
   }
 
-  function getUserGamesByStatus(
-    response: UserGamesResponse,
-    status: string,
-    statusId: number
-  ) {
-    const userGames = response.userGames
-      .filter(userGame => userGame.UserGamesStatus.status === status)
-      .slice(0, 6)
-
-    const totalGames = response.totalPerStatus.find(
-      total => total.statusId === statusId
-    )
-
-    return { userGames, totalGames }
-  }
-
-  const { userGames: userGamesFinished, totalGames: totalGamesFinished } =
-    getUserGamesByStatus(UserGamesResponse, 'finished', 1)
-
-  const { userGames: userGamesPlaying, totalGames: totalGamesPlaying } =
-    getUserGamesByStatus(UserGamesResponse, 'playing', 2)
-
-  const { userGames: userGamesPaused, totalGames: totalGamesPaused } =
-    getUserGamesByStatus(UserGamesResponse, 'paused', 3)
+    const STATUS_MAP = {
+      'finished': 1,
+      'playing': 2,
+      'paused': 3
+    };
 
   return (
     <>
@@ -59,118 +40,13 @@ export function UserLibrary() {
         <SideBar />
 
         <div className="flex flex-col items-center mt-4">
+          <div className='lg:ml-16'>
           <UserProfileDisplay />
-
-          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4">
-            <div className="flex flex-row items-center justify-between mb-2 px-1">
-              <div className="flex flex-row items-center gap-1">
-                <h2 className="text-3xl font-bold text-white">Finished</h2>
-                <PiGameControllerBold className="size-6 text-white" />
-                <p className="text-base text-white font-bold">
-                  {totalGamesFinished?.totalGames}
-                </p>
-              </div>
-
-              {(totalGamesFinished?.totalGames || 0) > 0 && (
-                <Link
-                  to="/userLibrary/finishedGames"
-                  className="text-[#7A38CA] font-bold"
-                >
-                  Show all
-                </Link>
-              )}
-            </div>
-            {(totalGamesFinished?.totalGames || 0) > 0 ? (
-              <div className="flex items-center justify-center">
-                <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGamesAndDlcs={userGamesFinished} />
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-row gap-4 justify-center items-center h-full">
-                <h2 className="text-black font-bold text-3xl">
-                  Sem jogos adicionados. Procure jogos{' '}
-                  <Link to="/games" className="text-red-500">
-                    aqui.
-                  </Link>
-                </h2>
-              </div>
-            )}
           </div>
 
-          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4">
-            <div className="flex flex-row items-center justify-between mb-2 px-1">
-              <div className="flex flex-row items-center gap-1">
-                <h2 className="text-3xl font-bold text-white">Playing</h2>
-                <PiGameControllerBold className="size-6 text-white" />
-                <p className="text-base text-white font-bold">
-                  {totalGamesPlaying?.totalGames}
-                </p>
-              </div>
-
-              {(totalGamesPlaying?.totalGames || 0) > 0 && (
-                <Link
-                  to="/userLibrary/playingGames"
-                  className="text-[#7A38CA] font-bold"
-                >
-                  Show all
-                </Link>
-              )}
-            </div>
-            {(totalGamesPlaying?.totalGames || 0) > 0 ? (
-              <div className="flex items-center justify-center">
-                <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGamesAndDlcs={userGamesPlaying} />
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-row gap-4 justify-center items-center h-full">
-                <h2 className="text-black font-bold text-3xl">
-                  Sem jogos adicionados. Procure jogos{' '}
-                  <Link to="/games" className="text-red-500">
-                    aqui.
-                  </Link>
-                </h2>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-col mt-8 bg-[#272932] w-[1500px] h-[410px] p-4 mb-6">
-            <div className="flex flex-row items-center justify-between mb-2 px-1">
-              <div className="flex flex-row items-center gap-1">
-                <h2 className="text-3xl font-bold text-white">Paused</h2>
-                <PiGameControllerBold className="size-6 text-white" />
-                <p className="text-base text-white font-bold">
-                  {totalGamesPaused?.totalGames}
-                </p>
-              </div>
-
-              {(totalGamesPaused?.totalGames || 0) > 0 && (
-                <Link
-                  to="/userLibrary/pausedGames"
-                  className="text-[#7A38CA] font-bold"
-                >
-                  Show all
-                </Link>
-              )}
-            </div>
-            {(totalGamesPaused?.totalGames || 0) > 0 ? (
-              <div className="flex items-center justify-center">
-                <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGamesAndDlcs={userGamesPaused} />
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-row gap-4 justify-center items-center h-full">
-                <h2 className="text-black font-bold text-3xl">
-                  Sem jogos adicionados. Procure jogos{' '}
-                  <Link to="/games" className="text-red-500">
-                    aqui.
-                  </Link>
-                </h2>
-              </div>
-            )}
-          </div>
+        <UserGamesDiv userGames={UserGamesResponse.userGames} 
+        totalPerStatus={UserGamesResponse.totalPerStatus} statusMap={STATUS_MAP} />
+        
         </div>
       </div>
       <ToastContainer />
