@@ -1,11 +1,12 @@
 import { Navbar } from './components/navBar'
-import SideBar from './components/sideBar'
+import { SideBar, SidebarItem } from './components/sideBar'
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { GamesResponse } from './types/games'
 import { useApi } from './hooks/useApi'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { LayoutDashboard } from 'lucide-react'
 
 export function App() {
   const [search, setSearch] = useState(() => {

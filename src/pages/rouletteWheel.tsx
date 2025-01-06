@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import type { Game, UserGame } from '../types'
-import SideBar from '../components/sideBar'
+import { SideBar } from '../components/sideBar'
 
 import { Flip, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'

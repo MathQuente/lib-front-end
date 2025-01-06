@@ -1,68 +1,91 @@
-import { Link } from 'react-router-dom';
-import { PiGameControllerBold } from 'react-icons/pi';
-import { UserGameCard } from './userGamesComponents/userGameCard';
-import { TotalPerStatus, UserGameDlcBase } from '../types/user';
+import { Link } from 'react-router-dom'
+import { PiGameControllerBold } from 'react-icons/pi'
+import { UserGameCard } from './userGamesComponents/userGameCard'
+import type { TotalPerStatus, UserGameDlcBase } from '../types/user'
 
-interface GameStatus {
-    userGames: UserGameDlcBase[]
-    totalPerStatus: TotalPerStatus[]
-    statusMap: any
+// Interface correta do objeto de mapeamento
+interface StatusMapType {
+  finished: number
+  playing: number
+  paused: number
 }
 
-export function UserGamesDiv ({ userGames, totalPerStatus, statusMap } : GameStatus) {
-  console.log(userGames)
-  // Agrupa os jogos por status
-  const gamesByStatus = userGames.reduce((groups: any , game) => {
-    const status = game.UserGamesStatus.status;
-    if (!groups[status]) {
-      groups[status] = []
-    }
-    groups[status].push(game)
-    return groups
-  }, {});
+interface UserGameDivProps {
+  userGames: UserGameDlcBase[]
+  totalPerStatus: TotalPerStatus[]
+  statusMap: StatusMapType
+}
 
+export function UserGamesDiv({
+  userGames,
+  totalPerStatus,
+  statusMap,
+}: UserGameDivProps) {
+  const userGamesByStatus = userGames.reduce((userGamesByStatus, userGame) => {
+    const gameStatus = userGame.UserGamesStatus.status
+    if (!userGamesByStatus.has(gameStatus)) {
+      userGamesByStatus.set(gameStatus, [])
+    }
+    userGamesByStatus.get(gameStatus)!.push(userGame)
+    return userGamesByStatus
+  }, new Map<string, UserGameDlcBase[]>())
 
   return (
-    <div className="space-y-8">
-      {Object.entries<UserGameDlcBase[]>(gamesByStatus).map(([status, games]) => {
-        const statusId = statusMap[status];
-        const total = totalPerStatus.find(t => t.statusId === statusId)?.totalGames || 0;
+    <div className="space-y-8 mb-4">
+      {Array.from(userGamesByStatus.entries()).map(
+        ([gameStatus, userGames]) => {
+          const statusId = statusMap[gameStatus as keyof StatusMapType]
+          const total =
+            totalPerStatus.find(t => t.statusId === statusId)?.totalGames || 0
 
-        return (
-          <div key={status} className="mt-8 bg-[#272932] lg:bg-black lg:ml-28 lg:mr-8">
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-white capitalize">
-                  {status}
-                </h2>
-                <PiGameControllerBold className="text-white w-6 h-6" />
-                <span className="text-white font-bold">{total}</span>
+          return (
+            <div
+              key={gameStatus}
+              className="mt-8 bg-[#272932] rounded ml-24 w-[370px] sm:w-[500px] sm:ml-24 md:min-w-[650px] lg:ml-32 
+              lg:min-w-[850px] xl:ml-32 xl:mr-8 xl:min-w-[1070px] 2xl:ml-24 2xl:min-w-[1280px] p-2"
+            >
+              <div className="flex items-center justify-between px-4">
+                <div className="flex flex-row items-center gap-2 pb-2">
+                  <h2 className="text-2xl font-bold text-white capitalize">
+                    {gameStatus}
+                  </h2>
+                  <div className="flex gap-1">
+                    <PiGameControllerBold className="text-white size-6" />
+                    <span className="text-white font-bold">{total}</span>
+                  </div>
+                </div>
+
+                {userGames.length > 0 && (
+                  <Link
+                    to={`/userLibrary/${gameStatus}Games`}
+                    className="text-[#7A38CA] font-bold"
+                  >
+                    Show all
+                  </Link>
+                )}
               </div>
-              
-              {games.length > 0 && (
-                <Link to={`/userLibrary/${status}Games`} className="text-[#7A38CA] font-bold">
-                  Show all
-                </Link>
+
+              {userGames.length > 0 ? (
+                <div className="flex justify-center py-2 px-2">
+                  <div className="grid grid-cols-3 gap-x-3 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-6 md:gap-x-4 lg:gap-x-4 2xl:gap-x-6">
+                    <UserGameCard userGamesAndDlcs={userGames.slice(0, 6)} />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center p-4">
+                  <h2 className="text-black text-xl font-bold">
+                    Sem jogos adicionados. Procure jogos{' '}
+                    <Link to="/games" className="text-red-500">
+                      aqui
+                    </Link>
+                    .
+                  </h2>
+                </div>
               )}
             </div>
-
-            {games.length > 0 ? (
-              <div className="px-4">
-                <div className="grid grid-cols-6 gap-4">
-                  <UserGameCard userGamesAndDlcs={games.slice(0, 6)} />
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-center p-4">
-                <h2 className="text-black text-xl font-bold">
-                  Sem jogos adicionados. Procure jogos{' '}
-                  <Link to="/games" className="text-red-500">aqui</Link>.
-                </h2>
-              </div>
-            )}
-          </div>
-        );
-      })}
+          )
+        }
+      )}
     </div>
-  );
-};
+  )
+}

@@ -8,7 +8,7 @@ import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { IconButton } from '../components/iconButton'
-import SideBar from '../components/sideBar'
+import { SideBar } from '../components/sideBar'
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { UserGameCard } from '../components/userGamesComponents/userGameCard'

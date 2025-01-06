@@ -24,8 +24,7 @@ export function UserGameCard({ userGamesAndDlcs }: GameCardProps) {
             }}
           >
             <img
-              className="w-[70px] h-[80px] sm:h-[90px] sm:w-[90px] md:w-[120px] md:h-[120px] lg:w-[140px] 
-              lg:h-[180px] rounded-lg" 
+              className="min-w-28 h-36 sm:min-w-36 sm:h-40 md:min-w-12 lg:min-w-32 lg:h-40 xl:min-w-40 xl:min-h-52 2xl:min-w-48 2xl:min-h-64 rounded-lg"
               src={item.banner}
               alt=""
             />

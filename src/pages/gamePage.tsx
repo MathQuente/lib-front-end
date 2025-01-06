@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useApi } from '../hooks/useApi'
 import { Link, useParams } from 'react-router-dom'
-import SideBar from '../components/sideBar'
+import { SideBar } from '../components/sideBar'
 import type { GameResponse, SimilarGamesResponse } from '../types/games'
 import { GameFormStatus } from '../components/gameFormStatus'
 import { PlatformDiv } from '../components/platformDiv'
