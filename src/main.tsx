@@ -7,13 +7,11 @@ import { App } from './app'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { UserLibrary } from './pages/userLibrary'
-import { PlayingGamesPage } from './pages/playingGamesPage'
-import { FinishedGamesPage } from './pages/finishedGamesPage'
-import { PausedGamesPage } from './pages/pausedGamesPage'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
 import { GamePage } from './pages/gamePage'
 import { RouletteWheel } from './pages/rouletteWheel'
+import { UserGamesPageByStatus } from './pages/userGamesPages'
 
 const queryClient = new QueryClient()
 
@@ -59,26 +57,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/userLibrary/playingGames',
+    path: '/userLibrary/:status',
     element: (
       <RequireAuth>
-        <PlayingGamesPage />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: '/userLibrary/finishedGames',
-    element: (
-      <RequireAuth>
-        <FinishedGamesPage />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: '/userLibrary/pausedGames',
-    element: (
-      <RequireAuth>
-        <PausedGamesPage />
+        <UserGamesPageByStatus />
       </RequireAuth>
     ),
   },

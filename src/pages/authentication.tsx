@@ -59,7 +59,7 @@ export function Authentication() {
           />
 
           <img
-            className="absolute top-[274px] lg:top-[322px] lg:right-0 lg:w-[380px] xl:right-0 xl:w-[380px] 2xl:right-0 2xl:w-[415px] asus:w-[277px] asus:top-[230px]"
+            className="absolute top-[274px] lg:top-[322px] lg:right-0 lg:w-[380px] xl:right-0 xl:w-[380px] 2xl:right-0 2xl:w-[400px] 2xl:top-[299px] asus:w-[277px] asus:top-[230px]"
             src={photo2}
             alt=""
           />
@@ -71,7 +71,7 @@ export function Authentication() {
           />
 
           <img
-            className="absolute right-[180px] top-[732px] lg:top-[727px] xl:top-[725px] z-0 asus:w-[680px] asus:top-[489px] asus:right-[100px]"
+            className="absolute right-[180px] top-[732px] lg:top-[727px] xl:top-[725px] 2xl:top-[737px] z-0 asus:w-[680px] asus:top-[489px] asus:right-[100px]"
             src={photo4}
             alt=""
           />

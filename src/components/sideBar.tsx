@@ -20,7 +20,6 @@ export function SideBar() {
     auth.logout()
     navigate('/auth')
   }
-  console.log(isOpen)
   return (
     <div className="flex">
       <div
