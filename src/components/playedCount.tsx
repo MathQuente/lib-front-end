@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { GameStatsResponse } from '../types/user'
 import { useApi } from '../hooks/useApi'
-import { useAuth } from '../contexts/auth/authContext'
+import { UseAuth } from '../contexts/auth/authContext'
 import type { GameDlcBase } from '../types/games'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ export function PlayedCount({
   isPlayed: boolean
 }) {
   const api = useApi()
-  const { user } = useAuth()
+  const { user } = UseAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
 
