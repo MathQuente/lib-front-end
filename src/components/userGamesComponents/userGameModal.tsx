@@ -21,7 +21,7 @@ export function UserGameModal({
         <Dialog.Description>
           <VisuallyHidden.Root />
         </Dialog.Description>
-        <Dialog.Content className="w-[800px] h-[500px] fixed bg-[#272932] text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
+        <Dialog.Content className="w-[700px] h-[500px] fixed bg-[#272932] text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
           {children}
         </Dialog.Content>
       </Dialog.Portal>

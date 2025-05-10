@@ -1,28 +1,18 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { FormEvent } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { FiPause } from 'react-icons/fi'
-import { IoMdHourglass } from 'react-icons/io'
-import { PiFlagCheckeredBold } from 'react-icons/pi'
-import { SlOptionsVertical } from 'react-icons/sl'
+
 import { toast } from 'react-toastify'
 import { useApi } from '../../hooks/useApi'
 import type { GameDlcBase } from '../../types/games'
 import type { GameStatusResponse } from '../../types/games'
-import { GameModal } from './gameModal'
-import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-
-interface FormValues {
-  statusId: string | undefined
-}
+import { IoGameController, IoLibrary } from 'react-icons/io5'
+import { FaGift, FaPlay } from 'react-icons/fa'
+import { IoReload } from 'react-icons/io5'
+import { PlayedCount } from '../playedCount'
 
 export function GameForm({
-  afterSave,
   item,
 }: {
-  afterSave: () => void
   item: GameDlcBase | undefined
 }) {
   const api = useApi()
@@ -36,12 +26,14 @@ export function GameForm({
     enabled: !!item?.id,
   })
 
-  const { mutateAsync: addGameFn, isPending: isAddingGame } = useMutation({
+  const currentStatuses = GameStatus?.statuses ?? []
+
+  const { mutateAsync: addGameFn } = useMutation({
     mutationFn: (data: {
       userId: string | null
       gameId: string | undefined
-      statusId: string | undefined
-    }) => api.addGame(data.userId, data.gameId, data.statusId),
+      statusIds: number[]
+    }) => api.addGame(data.userId, data.gameId, data.statusIds),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['gamesStatus', userId, variables.gameId],
@@ -55,25 +47,24 @@ export function GameForm({
     },
   })
 
-  const { mutateAsync: updateGameStatusFn, isPending: isUpdatingStatus } =
-    useMutation({
-      mutationFn: (data: {
-        userId: string | null
-        gameId: string | undefined
-        statusId: string | null | undefined
-      }) => api.updateGameStatus(data.userId, data.gameId, data.statusId),
-      onSuccess: (_, variables) => {
-        queryClient.invalidateQueries({
-          queryKey: ['gamesStatus', userId, variables.gameId],
-        })
-        toast.success('Game status updated successfully 👌')
-      },
-      onError: error => {
-        toast.error(
-          `Update game error: ${error instanceof Error ? error.message : 'Unknown error'} 🤯`
-        )
-      },
-    })
+  const { mutateAsync: updateGameStatusFn } = useMutation({
+    mutationFn: (data: {
+      userId: string | null
+      gameId: string | undefined
+      statusIds: number[]
+    }) => api.updateGameStatus(data.userId, data.gameId, data.statusIds),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['gamesStatus', userId, variables.gameId],
+      })
+      toast.success('Game status updated successfully 👌')
+    },
+    onError: error => {
+      toast.error(
+        `Update game error: ${error instanceof Error ? error.message : 'Unknown error'} 🤯`
+      )
+    },
+  })
 
   const { mutateAsync: removeGameFn } = useMutation({
     mutationFn: (data: {
@@ -134,182 +125,146 @@ export function GameForm({
     },
   })
 
-  const { handleSubmit, control, watch, setValue, trigger } =
-    useForm<FormValues>({
-      values: { statusId: GameStatus?.id.toString() },
-    })
-
-  const gameStatus = watch('statusId')
-
   if (!item) {
     return null
   }
 
-  async function handleAddGame(
-    data: FormValues,
-    event: FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault()
-    if (!data.statusId) {
-      toast.warning('Select some status')
-      return null
-    }
+  const STATUS = {
+    PLAYED: 1,
+    PLAYING: 2,
+    REPLAYING: 3,
+    BACKLOG: 4,
+    WISHLIST: 5,
+  }
 
-    if (!GameStatus) {
-      await addGameFn({ userId, gameId: item?.id, statusId: data.statusId })
-      afterSave()
+  const hasStatus = (statusId: number) => {
+    return currentStatuses.some(status => status.id === statusId)
+  }
+
+  const isPlayed = hasStatus(STATUS.PLAYED)
+  const isReplaying = hasStatus(STATUS.REPLAYING)
+  const isPlaying = hasStatus(STATUS.PLAYING)
+
+  async function handleAddGame(statusId: number) {
+    const existingIds = currentStatuses.map(s => s.id)
+
+    // === Caso REPLAYING (tratamento especial) ===
+    if (statusId === STATUS.REPLAYING) {
+      const hasPlayed = hasStatus(STATUS.PLAYED)
+      const hasReplaying = hasStatus(STATUS.REPLAYING)
+
+      if (hasPlayed && hasReplaying) {
+        // já teve os dois: remove REPLAYING
+        await updateGameStatusFn({
+          userId,
+          gameId: item?.id,
+          statusIds: [STATUS.PLAYED],
+        })
+      } else if (hasPlayed) {
+        // só PLAYED → adiciona REPLAYING
+        await updateGameStatusFn({
+          userId,
+          gameId: item?.id,
+          statusIds: [STATUS.PLAYED, STATUS.REPLAYING],
+        })
+      } else if (hasReplaying) {
+        // só REPLAYING → remove tudo
+        await removeGameFn({ userId, gameId: item?.id })
+      } else {
+        // nenhum → adiciona REPLAYING
+        await addGameFn({
+          userId,
+          gameId: item?.id,
+          statusIds: [STATUS.REPLAYING],
+        })
+      }
       return
     }
 
-    await updateGameStatusFn({
-      userId,
-      gameId: item?.id,
-      statusId: data.statusId,
-    })
-    afterSave()
-  }
+    // === Regra‑mãe para os demais status ===
+    const isTarget = hasStatus(statusId)
+    const hasAny = existingIds.length > 0
 
-  async function handleSubmitRemoveGame() {
-    await removeGameFn({ userId, gameId: item?.id })
-    afterSave()
+    if (isTarget) {
+      // toggle off
+      await removeGameFn({ userId, gameId: item?.id })
+    } else if (hasAny) {
+      // já existe outro: substitui
+      await updateGameStatusFn({
+        userId,
+        gameId: item?.id,
+        statusIds: [statusId],
+      })
+    } else {
+      // não existe nenhum: adiciona
+      await addGameFn({
+        userId,
+        gameId: item?.id,
+        statusIds: [statusId],
+      })
+    }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((data, event) =>
-        handleAddGame(data, event as FormEvent<HTMLFormElement>)
-      )}
-      className="flex flex-col justify-center"
-    >
-      <div className="flex flex-row justify-center gap-2 h-[90px]">
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
-            <button
-              type="button"
-              className="rounded-2xl w-48 h-10 flex flex-row items-center justify-center gap-2 text-white 
-      bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF] 
-      text-lg font-bold"
-              aria-label="Customise options"
-            >
-              {gameStatus === '1' && <PiFlagCheckeredBold className="size-4" />}
-              {gameStatus === '2' && <IoMdHourglass className="size-4" />}
-              {gameStatus === '3' && <FiPause className="size-4" />}
-              <p>
-                {gameStatus === '1'
-                  ? 'Finished'
-                  : gameStatus === '2'
-                    ? 'Playing'
-                    : gameStatus === '3'
-                      ? 'Paused'
-                      : 'Selecione um status'}
-              </p>
-            </button>
-          </DropdownMenu.Trigger>
-
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className="w-36 flex flex-col items-center justify-center bg-white rounded-2xl p-[5px]
-       will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade"
-              sideOffset={5}
-            >
-              <Controller
-                name="statusId"
-                control={control}
-                render={({ field }) => (
-                  <DropdownMenu.RadioGroup
-                    value={field.value} // Controla o valor do RadioGroup
-                    onValueChange={value => {
-                      // Atualiza o valor no formulário e força uma validação
-                      setValue('statusId', value)
-                      trigger('statusId') // Isso força o react-hook-form a atualizar o valor
-                      field.onChange(value) // Chama o onChange para sincronizar o valor
-                    }}
-                    className="flex flex-col items-center justify-center w-full"
-                  >
-                    <DropdownMenu.RadioItem
-                      value="1"
-                      className="flex items-center gap-4 w-full justify-center py-1
-               hover:bg-gray-100 text-violet-600 cursor-pointer"
-                    >
-                      <PiFlagCheckeredBold className="size-4" />
-                      Finished
-                    </DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem
-                      value="2"
-                      className="flex items-center gap-4 w-full justify-center py-1 hover:bg-gray-100 cursor-pointer 
-              text-violet-600"
-                    >
-                      <IoMdHourglass className="size-4" />
-                      Playing
-                    </DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem
-                      value="3"
-                      className="flex items-center gap-4 w-full justify-center py-1 hover:bg-gray-100 cursor-pointer 
-              text-violet-600"
-                    >
-                      <FiPause className="size-4" />
-                      Paused
-                    </DropdownMenu.RadioItem>
-                  </DropdownMenu.RadioGroup>
-                )}
-              />
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
-
-        {GameStatus && (
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger
-              className="rounded-xl w-12 h-10 flex items-center justify-center text-white 
-            bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF]"
-            >
-              <SlOptionsVertical />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content
-              className="bg-red-600 rounded-md p-2 m-1  will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade 
-            data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade 
-            data-[side=left]:animate-slideRightAndFade hover:bg-red-700"
-            >
-              <button
-                type="button"
-                className="text-sm font-semibold text-white rounded-2xl flex flex-row items-center justify-center gap-1 w-full h-6 
-               select-none data-[highlighted]:bg-slate-700"
-                onClick={() => {
-                  handleSubmitRemoveGame()
-                }}
-              >
-                Remove from{' '}
-                {GameStatus.id.toString() === '3' && (
-                  <FiPause className="size-4" />
-                )}
-                {GameStatus.id.toString() === '1'
-                  ? 'finished'
-                  : GameStatus.id.toString() === '2'
-                    ? 'playing'
-                    : 'paused'}
-              </button>
-              <DropdownMenu.Arrow className="fill-red-600" />
-            </DropdownMenu.Content>
-          </DropdownMenu.Root>
-        )}
-      </div>
-      <div className="flex items-center justify-end">
-        <Link className="text-[#7A38CA] font-bold" to={`/games/${item.id}`}>
-          Game page
-        </Link>
-        <GameModal.Close className="rounded px-4 text-sm font-medium text-gray-500 hover:text-gray-600">
-          Cancel
-        </GameModal.Close>
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2">
         <button
-          type="submit"
-          className="flex items-center justify-center rounded-2xl bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF]  px-4 py-2 text-sm font-medium text-white group-disabled:pointer-events-none"
-          disabled={isAddingGame || isUpdatingStatus}
+          className="flex flex-col items-center"
+          type="button"
+          onClick={() => handleAddGame(STATUS.PLAYED)}
         >
-          <span className="group-disabled:opacity-0">
-            {isAddingGame || isUpdatingStatus ? 'Saving...' : 'Save'}
-          </span>
+          <IoGameController
+            className={`size-8 ${isPlayed ? 'text-green-600' : 'text-gray-600'}`}
+          />
+          <p className="text-gray-400 hover:text-gray-100">Played</p>
+        </button>
+        {isPlayed ? (
+          <button
+            className="flex flex-col items-center"
+            type="button"
+            onClick={() => handleAddGame(STATUS.REPLAYING)}
+          >
+            <IoReload
+              className={`size-8 ${
+                isReplaying ? 'text-green-600' : 'text-gray-600'
+              }`}
+            />
+            <p className="text-gray-400 hover:text-gray-100">Replaying</p>
+          </button>
+        ) : (
+          <button
+            className="flex flex-col items-center"
+            type="button"
+            onClick={() => handleAddGame(STATUS.PLAYING)}
+          >
+            <FaPlay
+              className={`size-8 ${isPlaying ? 'text-green-600' : 'text-gray-600'}`}
+            />
+            <p className="text-gray-400 hover:text-gray-100">Playing</p>
+          </button>
+        )}
+        <button
+          className="flex flex-col items-center"
+          type="button"
+          onClick={() => handleAddGame(STATUS.BACKLOG)}
+        >
+          <IoLibrary
+            className={`size-8 ${hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'}`}
+          />
+          <p className="text-gray-400 hover:text-gray-100">Backlog</p>
+        </button>
+        <button
+          className="flex flex-col items-center"
+          type="button"
+          onClick={() => handleAddGame(STATUS.WISHLIST)}
+        >
+          <FaGift
+            className={`size-8 ${hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'}`}
+          />
+          <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
       </div>
-    </form>
+      <PlayedCount item={item} isPlayed={isPlayed} />
+    </div>
   )
 }

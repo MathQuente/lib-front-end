@@ -1,103 +1,73 @@
 import type { GameDlcBase } from '../../types/games'
-import { CategoriesDiv } from '../categoriesDiv'
-import { PlatformDiv } from '../platformDiv'
+import Rating from '@mui/material/Rating'
+import Stack from '@mui/material/Stack'
+
+import { GameModal } from './gameModal'
 import { GameForm } from './gameForm'
+import { Link } from 'react-router-dom'
 
 export function GameInfo({
-  afterSave,
   gameAndDlc,
+  onClose,
 }: {
-  afterSave: () => void
   gameAndDlc: GameDlcBase | null
+  onClose: () => void
 }) {
   if (!gameAndDlc) {
     return null
   }
 
   return (
-    <div key={gameAndDlc.id} className="flex flex-row h-full w-full">
-      <div className="flex flex-col items-center justify-start w-2/5">
-        <img
-          className="rounded-s-lg h-[500px]"
-          src={gameAndDlc.banner}
-          alt=""
-        />
+    <div key={gameAndDlc.id} className="flex flex-col p-4">
+      <div className="flex flex-col md:flex-row md:justify-around py-4">
+        {/* Game Image */}
+        <div className="flex items-center">
+          <img
+            className="rounded-md w-[285px] h-[380px]"
+            src={gameAndDlc.banner}
+            alt=""
+          />
+        </div>
+
+        {/* Game Info */}
+        <div className="flex flex-col justify-around items-center">
+          <div className="flex flex-wrap flex-col items-center">
+            <h1 className="text-base md:text-xl font-bold">
+              {gameAndDlc.name}
+            </h1>
+          </div>
+
+          <GameForm item={gameAndDlc} />
+
+          <div>
+            <Stack spacing={4}>
+              <Rating
+                name="half-rating"
+                defaultValue={0}
+                precision={0.5}
+                size="large"
+              />
+            </Stack>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col justify-between p-4 w-3/5">
-        <div className="flex flex-col items-center gap-2">
-          <h1
-            className={`${(gameAndDlc.name.length || 0) < 30 ? 'text-xl font-bold' : 'text-lg font-bold'}`}
+
+      {/* Footer */}
+      <div className="flex justify-between pt-4 border-t border-gray-700">
+        <Link to={`/games/${gameAndDlc.id}`}>
+          <button
+            type="button"
+            className="ml-4 px-4 py-2 bg-gradient-to-t from-[#4D23A5] to-[#783FCF] hover:from-[#5D23A5] hover:to-[#813FCF] text-white rounded"
           >
-            {gameAndDlc.name}
-          </h1>
-        </div>
-        <div className="flex gap-2 flex-wrap justify-center">
-          {(gameAndDlc.platforms || []).slice(0, 4).map(platform => (
-            <PlatformDiv
-              key={platform.id}
-              platformName={platform.platformName}
-            />
-          ))}
-          {(gameAndDlc.platforms || []).length > 4 && (
-            <div>
-              <span className="flex flex-row gap-1 text-slate-300 font-semibold">
-                There are
-                <p className="text-[#7A38CA] font-bold">
-                  {(gameAndDlc.platforms || []).length - 4}
-                </p>
-                additional platforms.
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex flex-row gap-x-1 flex-wrap justify-center">
-            <h2 className="text-xl font-semibold">Developer:</h2>
-            {gameAndDlc.gameStudios?.map((gameStudio, index, array) => (
-              <p
-                className="text-xl font-bold text-slate-400"
-                key={gameStudio.id}
-              >
-                {gameStudio.studioName}
-                {index < array.length - 1 && (
-                  <span className="text-lg text-white">, </span>
-                )}
-              </p>
-            ))}
-          </div>
-          <div className="flex flex-row gap-x-1 flex-wrap justify-center">
-            <h2 className="text-xl font-semibold">Publisher:</h2>
-            {gameAndDlc.publishers?.map((publisher, index, array) => (
-              <p
-                className="text-xl font-bold text-slate-400"
-                key={publisher.id}
-              >
-                {publisher.publisherName}
-                {index < array.length - 1 && (
-                  <span className="text-xl text-white">, </span>
-                )}
-              </p>
-            ))}
-          </div>
-        </div>
-        <div className="flex gap-2 flex-wrap justify-center">
-          {(gameAndDlc.categories || []).slice(0, 3).map(category => (
-            <CategoriesDiv
-              key={category.id}
-              categoryName={category.categoryName}
-            />
-          ))}
-          {(gameAndDlc.categories || []).length > 3 && (
-            <span className="flex gap-1 text-slate-300 font-semibold">
-              There are
-              <p className="text-[#7A38CA] font-bold">
-                {(gameAndDlc.categories || []).length - 3}
-              </p>
-              additional categories.
-            </span>
-          )}
-        </div>
-        <GameForm afterSave={afterSave} item={gameAndDlc} />
+            View Details
+          </button>
+        </Link>
+        <GameModal.Close
+          onClick={onClose}
+          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600  text-sm font-medium text-gray-500 hover:text-white"
+        >
+          Cancel
+        </GameModal.Close>
       </div>
     </div>
   )

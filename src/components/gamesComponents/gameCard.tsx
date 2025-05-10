@@ -24,13 +24,8 @@ export function GameCard({ games }: GameCardProps) {
               setOpen(true)
             }}
           >
-            {item.type === 'dlc' && (
-              <div className="absolute ml-2 mt-1 w-10 h-7 flex items-center justify-center bg-zinc-800 rounded-xl">
-                <p className="font-normal text-gray-300 text-xs">DLC</p>
-              </div>
-            )}
             <img
-              className="w-[230px] h-[320px] rounded-lg"
+              className="w-32 h-16 sm:w-36 md:w-44 md:h-56 sm:h-40 lg:min-w-28 lg:h-44 xl:w-48 xl:h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
               src={item.banner}
               alt={item.name}
             />
@@ -47,8 +42,8 @@ export function GameCard({ games }: GameCardProps) {
         >
           <GameInfo
             gameAndDlc={currentGame}
-            afterSave={() => {
-              setOpen(false)
+            onClose={() => {
+              setOpen(true)
             }}
           />
         </GameModal>

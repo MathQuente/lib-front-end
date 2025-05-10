@@ -41,8 +41,8 @@ export function UserGameCard({ userGamesAndDlcs }: GameCardProps) {
         >
           <UserGameInfo
             userGame={currentGame}
-            afterSave={() => {
-              setOpen(false)
+            onClose={() => {
+              setOpen(true)
             }}
           />
         </UserGameModal>
