@@ -23,31 +23,30 @@ export function SideBar() {
   return (
     <div className="flex">
       <div
-        className={`fixed flex flex-col   top-0 left-0 h-full lg:w-36 bg-[#272932] transition-width duration-300 text-white ${isOpen ? 'w-28 sm:w-44 md:w-48' : 'w-20'}`}
+        className={`fixed flex flex-col top-0 left-0 h-full lg:w-36 xl:bg-[#272932] transition-width duration-300 text-white ${isOpen ? 'w-28 sm:w-44 md:w-40 bg-[#272932]' : 'w-0 md:w-0 md:left-4 lg:-left-4'}`}
       >
         <div
           className={`flex ${isOpen ? 'justify-between' : 'justify-center'} items-center px-4 pt-2`}
         >
           <h2
-            className={`text-xl font-bold lg:block ${isOpen ? 'block' : 'hidden'}`}
+            className={`text-xl font-bold xl:block ${isOpen ? 'block' : 'hidden'}`}
           >
             Logo
           </h2>
           <button
             type="button"
-            className="block lg:hidden"
+            className="block xl:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <IoCloseSharp size={24} /> : <IoMenu size={24} />}
           </button>
         </div>
 
-        <nav className="mt-4">
+        <nav className={'mt-4'}>
           <ul>
-            <li className="p-4 hover:bg-gray-700 cursor-pointer">
-              <Link
-                className={`flex  ${isOpen ? 'items-center' : 'justify-center'}`}
-                to="/"
+            <Link className="" to="/">
+              <li
+                className={`flex  ${isOpen ? 'items-center' : 'justify-center'} p-4 hover:bg-gray-700 cursor-pointer`}
               >
                 <IoHomeSharp size={24} />
                 <span
@@ -55,12 +54,11 @@ export function SideBar() {
                 >
                   Home
                 </span>
-              </Link>
-            </li>
-            <li className="p-4 hover:bg-gray-700 cursor-pointer">
-              <Link
-                to="/userLibrary"
-                className={`flex  ${isOpen ? 'items-center' : 'justify-center'}`}
+              </li>
+            </Link>
+            <Link to="/userLibrary">
+              <li
+                className={`flex  ${isOpen ? 'items-center' : 'justify-center'} p-4 hover:bg-gray-700 cursor-pointer`}
               >
                 <IoLibrary size={24} />
                 <span
@@ -68,12 +66,11 @@ export function SideBar() {
                 >
                   Library
                 </span>
-              </Link>
-            </li>
-            <li className="p-4 hover:bg-gray-700 cursor-pointer">
-              <Link
-                to="/games"
-                className={`flex  ${isOpen ? 'items-center' : 'justify-center'}`}
+              </li>
+            </Link>
+            <Link to="/games">
+              <li
+                className={`flex  ${isOpen ? 'items-center' : 'justify-center'} p-4 hover:bg-gray-700 cursor-pointer`}
               >
                 <IoGameController size={24} />
                 <span
@@ -81,23 +78,27 @@ export function SideBar() {
                 >
                   Games
                 </span>
-              </Link>
-            </li>
+              </li>
+            </Link>
             <hr
-              className={`w-12 lg:w-28 mx-auto ${isOpen ? 'w-28' : 'w-12'}`}
+              className={`w-12 lg:w-28 mx-auto ${isOpen ? 'w-20' : 'w-12 hidden'}`}
             />
-            <li
-              className={`flex p-4 hover:bg-gray-700 cursor-pointer ${isOpen ? 'items-center' : 'justify-center'}`}
+            <button
+              className="flex px-5 py-4 w-full hover:bg-gray-700 "
+              type="button"
+              onClick={handleLogout}
             >
-              <button className="flex" type="button" onClick={handleLogout}>
+              <li
+                className={`flex cursor-pointer ${isOpen ? 'items-center' : 'justify-center hidden'}`}
+              >
                 <IoLogOut size={24} />
                 <span
-                  className={`ml-4 lg:block ${isOpen ? 'block' : 'hidden'}`}
+                  className={`ml-2 lg:block ${isOpen ? 'block' : 'hidden'}`}
                 >
                   Logout
                 </span>
-              </button>
-            </li>
+              </li>
+            </button>
           </ul>
         </nav>
       </div>
