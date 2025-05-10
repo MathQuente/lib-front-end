@@ -49,7 +49,7 @@ export function GamePage() {
               alt=""
             />
           </div>
-          <GameFormStatus item={GameResponse.gameAndDlc} />
+          {/* <GameFormStatus item={GameResponse.gameAndDlc} /> */}
           <div className="flex flex-row gap-2">
             {GameResponse.gameAndDlc.platforms.map(platform => (
               <PlatformDiv
