@@ -33,7 +33,7 @@ export const useApi = () => ({
     }
   },
   signup: async (email: string, password: string) => {
-    const response = await api.post('/users', { email, password })
+    const response = await api.post('/auth/', { email, password })
     return response.data
   },
   logout: async () => {
@@ -116,7 +116,7 @@ export const useApi = () => ({
         Authorization: `Bearer ${accessToken}`
       }
     })
-    return response.data.UserGamesStatus
+    return response.data
   },
   getSimilarGames: async (gameId: string | undefined) => {
     const response = await api.get(`/games/similarGames/${gameId}`)
@@ -125,12 +125,14 @@ export const useApi = () => ({
   addGame: async (
     userId: string | null,
     gameId: string | undefined,
-    statusId: string | undefined
+    statusIds: number[]
   ) => {
     const accessToken = tokenService.getAccessToken()
     const response = await api.post(
-      `/users/${userId}/addGame/${gameId}/${statusId}`,
-      {},
+      `/users/${userId}/addGame/${gameId}`,
+      {
+        statusIds
+      },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }
@@ -140,12 +142,12 @@ export const useApi = () => ({
   updateGameStatus: async (
     userId: string | null,
     gameId: string | undefined,
-    statusId: string | null | undefined
+    statusIds: number[]
   ) => {
     const accessToken = tokenService.getAccessToken()
     const response = await api.patch(
-      `/users/userGamesStatus/${userId}/${gameId}/${statusId}`,
-      {},
+      `/users/userGamesStatus/${userId}/${gameId}`,
+      { statusIds },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }
@@ -182,5 +184,31 @@ export const useApi = () => ({
       }
     )
     return response.data
+  },
+  getGameStats: async (userId: string | null, itemId: string | undefined) => {
+    const accessToken = tokenService.getAccessToken()
+    const response = await api.get(`/users/${userId}/gameInfo/${itemId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  },
+  updateCompletionCount: async (
+    userId: string | null,
+    gameId: string | undefined,
+    incrementValue: number
+  ) => {
+    const accessToken = tokenService.getAccessToken()
+    const response = await api.patch(
+      `/users/${userId}/playedCount/${gameId}`,
+      {
+        incrementValue
+      }, // corpo vazio, pois todos os parâmetros estão na URL
+      {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }
+    )
+    return response
   }
 })
