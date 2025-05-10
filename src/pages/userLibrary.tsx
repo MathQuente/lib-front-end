@@ -21,22 +21,11 @@ export function UserLibrary() {
     queryKey: ['userGames', userId],
     queryFn: async () => api.getUserGames(userId),
     placeholderData: keepPreviousData,
+    staleTime: 0,
   })
 
   if (!UserGamesResponse) {
     return null
-  }
-
-  interface StatusMapType {
-    finished: number
-    playing: number
-    paused: number
-  }
-
-  const STATUS_MAP: StatusMapType = {
-    finished: 1,
-    playing: 2,
-    paused: 3,
   }
 
   return (
@@ -51,7 +40,6 @@ export function UserLibrary() {
           <UserGamesDiv
             userGames={UserGamesResponse.userGames}
             totalPerStatus={UserGamesResponse.totalPerStatus}
-            statusMap={STATUS_MAP}
           />
         </div>
       </div>

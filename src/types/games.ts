@@ -49,9 +49,13 @@ export interface SimilarGame {
   dlcBanner?: string
 }
 
-export type GameStatusResponse = {
+export type GameStatus = {
   id: number
   status: string
+}
+
+export type GameStatusResponse = {
+  statuses: GameStatus[]
 }
 
 export interface GameResponse {
@@ -81,4 +85,12 @@ export interface GameStudio {
 export interface Publisher {
   id: string
   publisherName: string
+}
+
+export enum Status {
+  PLAYED = 'PLAYED',
+  REPLAYING = 'REPLAYING',
+  PLAYING = 'PLAYING',
+  BACKLOG = 'BACKLOG',
+  WISHLIST = 'WISHLIST'
 }

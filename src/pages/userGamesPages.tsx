@@ -66,15 +66,13 @@ export function UserGamesPageByStatus() {
     return null
   }
 
-  const userGamesTotal = UserGamesResponse.totalPerStatus.find(
-    total => total.statusId === 1
-  )
+  const userGamesTotal = UserGamesResponse.totalGames
 
   if (!userGamesTotal) {
     return null
   }
 
-  const totalPages = Math.ceil(userGamesTotal.totalGames / 18)
+  const totalPages = Math.ceil(userGamesTotal / 18)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -142,13 +140,22 @@ export function UserGamesPageByStatus() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-6 pt-5 pb-5">
-            <p className="text-[#FFFFFF]">
-              Mostrando {UserGamesResponse.userGames.length} de{' '}
-              {userGamesTotal?.totalGames} items
-            </p>
-            <span className="text-[#FFFFFF]">
-              Página {page} de {totalPages}
+          <div className="flex flex-col items-center gap-6 pt-5 pb-5">
+            <span className="flex gap-1">
+              <p className="text-[#6930CD]">Mostrando</p>
+              <p className="text-gray-500">
+                {UserGamesResponse.userGames.length}
+              </p>
+              <p className="text-[#6930CD]">de</p>
+              <p className="text-gray-500"> {UserGamesResponse.totalGames}</p>
+              <p className="text-[#6930CD]">items</p>
+            </span>
+            <span className="flex gap-1">
+              <p className="text-[#6930CD]">Página</p>
+              <p className="text-gray-500">{page}</p>
+              <p className="text-[#6930CD]">de</p>
+              <p className="text-gray-500">{totalPages}</p>
+              <p className="text-[#6930CD]">items</p>
             </span>
             <div className="flex gap-1.5">
               <IconButton onClick={goToFirstPage} disabled={page === 1}>
