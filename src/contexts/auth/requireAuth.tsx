@@ -1,19 +1,25 @@
-import { useContext, useEffect } from 'react'
-import { AuthContext } from './authContext'
+import { useEffect } from 'react'
+
 import { Navigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-  const auth = useContext(AuthContext)
+  const { user, loading } = useAuth() // REMOVE checkAuth daqui
   const location = useLocation()
 
   useEffect(() => {
-    if (!auth.user) {
+    if (!loading && !user) {
       localStorage.setItem('redirectAfterLogin', location.pathname)
     }
-  }, [auth.user, location])
+  }, [loading, user, location])
 
-  if (!auth.user) {
+  if (loading) {
+    return <div>Verificando autenticação...</div>
+  }
+
+  if (!user) {
     return <Navigate to="/auth" replace />
   }
+
   return children
 }

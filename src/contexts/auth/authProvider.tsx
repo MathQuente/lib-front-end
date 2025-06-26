@@ -2,143 +2,78 @@ import { useEffect, useState } from 'react'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
 import { useApi } from '../../hooks/useApi'
-import { tokenProvider } from '../../hooks/token'
+import Cookies from 'js-cookie'
 
-type tokenResponse = {
-  accessToken: string
-  refreshToken: string
-}
-
-const redirectToAuth = () => {
-  window.location.href = '/auth'
-}
+// const redirectToAuth = () => {
+//   window.location.href = '/auth'
+// }
 
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<Partial<User> | null>(null)
   const [loading, setLoading] = useState(true)
   const api = useApi()
-  const tokenService = tokenProvider()
-
-  const handleTokens = (tokens: tokenResponse) => {
-    tokenService.setAccessToken(tokens.accessToken)
-    tokenService.setRefreshToken(tokens.refreshToken)
-  }
-
-  const validateAndSetUser = (accessToken: string) => {
-    const userData = tokenService.extractUserFromToken(accessToken)
-    if (userData) {
-      setUser(userData)
-      return true
-    }
-    return false
-  }
-
-  const isAuthRoute = () => {
-    return window.location.pathname.includes('/auth')
-  }
-
-  const handleFailedAuth = () => {
-    setUser(null)
-    tokenService.removeTokens()
-    if (!isAuthRoute()) {
-      redirectToAuth()
-    }
-  }
-
-  const refreshUserToken = async (refreshToken: string) => {
-    const newTokens = await api.refreshToken(refreshToken)
-    if (!newTokens) {
-      throw new Error('Could not refresh token')
-    }
-
-    handleTokens(newTokens)
-    const userData = tokenService.extractUserFromToken(newTokens.accessToken)
-
-    if (!userData) {
-      throw new Error('Invalid token after refresh')
-    }
-
-    setUser(userData)
-  }
 
   const login = async (email: string, password: string) => {
-    const data = await api.login(email, password)
-    if (data?.accessToken && data?.refreshToken) {
-      tokenService.setRefreshToken(data.refreshToken)
-      localStorage.setItem('accessToken', data.accessToken)
-
-      const userData = tokenService.extractUserFromToken(data.accessToken)
-      if (userData) {
-        setUser(userData)
-        return true
-      }
-      logout()
+    try {
+      const response = await api.login(email, password)
+      const loggedUser = response.user
+      setUser(loggedUser)
+      return true
+    } catch {
+      return false
     }
-    return false
   }
 
   const signup = async (email: string, password: string) => {
-    const data = await api.signup(email, password)
-    if (data.user && data.token) {
-      setUser(data.user)
-      tokenService.setRefreshToken(data.token)
+    try {
+      const { user: newUser } = await api.signup(email, password)
+      setUser(newUser)
       return true
+    } catch {
+      return false
     }
-    return false
   }
 
   const logout = async () => {
-    await api.logout()
+    try {
+      await api.logout()
+    } catch (error) {
+      Cookies.remove('accessToken')
+      Cookies.remove('refreshToken')
+    }
     setUser(null)
-    tokenService.removeTokens()
   }
 
-  const checkToken = async () => {
+  const checkAuth = async () => {
     setLoading(true)
+
     try {
-      const refreshToken = tokenService.getRefreshToken()
-      const accessToken = tokenService.getAccessToken()
+      const hasAccessToken = Cookies.get('accessToken')
+      const hasRefreshToken = Cookies.get('refreshToken')
 
-      if (!refreshToken || !accessToken) {
-        handleFailedAuth()
+      if (!hasAccessToken && !hasRefreshToken) {
+        setUser(null)
         return
       }
-
-      if (tokenService.isTokenCloseToExpire(refreshToken)) {
-        handleFailedAuth()
-        return
-      }
-
-      if (validateAndSetUser(accessToken)) {
-        return
-      }
-
-      if (tokenService.isTokenCloseToExpire(accessToken)) {
-        await refreshUserToken(refreshToken)
-        return
-      }
-
-      if (tokenService.isTokenExpired(accessToken)) {
-        await api.logout()
-        handleFailedAuth()
-        return
-      }
-    } catch (error) {
-      console.error('Error checking token:', error)
+      const { user: currentUser } = await api.me()
+      setUser(currentUser)
+    } catch {
       setUser(null)
+      Cookies.remove('accessToken')
+      Cookies.remove('refreshToken')
     } finally {
       setLoading(false)
     }
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies(checkToken): <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    checkToken()
+    checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signup }}>
       {!loading && children}
     </AuthContext.Provider>
   )
