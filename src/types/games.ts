@@ -1,5 +1,13 @@
+export enum GameStatusEnum {
+  Finished = 1,
+  Playing = 2,
+  Replaying = 3,
+  Backlog = 4,
+  Wishlist = 5
+}
+
 export interface GamesResponse {
-  games: GameDlcResponse
+  games: Game[]
   total: number
 }
 
@@ -7,41 +15,20 @@ export interface SimilarGamesResponse {
   similarGames: SimilarGame[]
 }
 
-export interface GameDlcBase {
+export interface Game {
   id: string
-  name: string
-  banner: string
+  gameName: string
+  gameBanner: string
   gameStudios: GameStudio[]
   categories: Category[]
   publishers: Publisher[]
   platforms: Platform[]
   summary: string
-  game?: Game
-  dlcs?: Dlc[]
   gameLaunchers: GameLauncher[]
-  type: 'game' | 'dlc' // Diferencia se é jogo ou DLC
+  isDlc: boolean
+  dlcs: Game[]
+  parentGame: Game | null
 }
-
-export enum GameStatusEnum {
-  Finished = 1,
-  Playing = 2,
-  Paused = 3
-}
-
-// Interface específica para Game
-interface Game extends GameDlcBase {
-  type: 'game' // Tipo exclusivo para jogos
-  dlcs: Dlc[]
-}
-
-// Interface específica para DLC
-interface Dlc extends GameDlcBase {
-  type: 'dlc' // Tipo exclusivo para DLCs
-  game: Game
-}
-
-// Tipagem do array de jogos e DLCs combinados
-export type GameDlcResponse = (Game | Dlc)[]
 
 export interface SimilarGame {
   id: string
@@ -55,11 +42,11 @@ export type GameStatus = {
 }
 
 export type GameStatusResponse = {
-  statuses: GameStatus[]
+  userGameStatuses: GameStatus
 }
 
 export interface GameResponse {
-  gameAndDlc: GameDlcBase
+  game: Game
 }
 
 export interface Category {
@@ -74,7 +61,7 @@ export interface Platform {
 
 export interface GameLauncher {
   dateRelease: string
-  platforms: Platform
+  platform: Platform
 }
 
 export interface GameStudio {
@@ -85,12 +72,4 @@ export interface GameStudio {
 export interface Publisher {
   id: string
   publisherName: string
-}
-
-export enum Status {
-  PLAYED = 'PLAYED',
-  REPLAYING = 'REPLAYING',
-  PLAYING = 'PLAYING',
-  BACKLOG = 'BACKLOG',
-  WISHLIST = 'WISHLIST'
 }

@@ -3,51 +3,53 @@ import { useState } from 'react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 
-import type { GameDlcBase } from '../../types/games'
+import type { Game } from '../../types/games'
 
 interface GameCardProps {
-  games: GameDlcBase[]
+  games: Game[]
 }
 
 export function GameCard({ games }: GameCardProps) {
-  const [currentGame, setCurrentGame] = useState<GameDlcBase | null>(null)
+  const [currentGame, setCurrentGame] = useState<Game | null>(null)
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      {games.map(item => (
-        <div key={item.id}>
+      {games.map(game => (
+        <div key={game.id}>
           <button
             type="button"
             onClick={() => {
-              setCurrentGame(item)
+              setCurrentGame(game)
               setOpen(true)
             }}
           >
             <img
               className="w-32 h-16 sm:w-36 md:w-44 md:h-56 sm:h-40 lg:min-w-28 lg:h-44 xl:w-48 xl:h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
-              src={item.banner}
-              alt={item.name}
+              src={game.gameBanner}
+              alt={game.gameName}
             />
           </button>
         </div>
       ))}
 
-      <div>
-        <GameModal
-          open={open}
-          onOpenChange={open => {
-            setOpen(open)
-          }}
-        >
-          <GameInfo
-            gameAndDlc={currentGame}
-            onClose={() => {
-              setOpen(true)
+      {currentGame && (
+        <div>
+          <GameModal
+            open={open}
+            onOpenChange={open => {
+              setOpen(open)
             }}
-          />
-        </GameModal>
-      </div>
+          >
+            <GameInfo
+              game={currentGame}
+              onClose={() => {
+                setOpen(false)
+              }}
+            />
+          </GameModal>
+        </div>
+      )}
     </>
   )
 }

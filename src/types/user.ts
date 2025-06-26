@@ -1,5 +1,6 @@
 import type {
   Category,
+  Game,
   GameLauncher,
   GameStudio,
   Platform,
@@ -10,37 +11,24 @@ export interface UserGamesStatus {
   status: string
 }
 
-// Interface específica para Game
-interface Game extends UserGameDlcBase {
-  type: 'game' // Tipo exclusivo para jogos
-  UserGamesStatus: UserGamesStatus[]
-}
-
-// Interface específica para DLC
-interface Dlc extends UserGameDlcBase {
-  type: 'dlc' // Tipo exclusivo para DLCs
-  UserGamesStatus: UserGamesStatus[]
-  gameId: number // Referência ao jogo associado
-}
-
-export interface UserGameDlcBase {
+export interface UserGame {
   id: string
-  name: string
-  banner: string
+  gameName: string
+  gameBanner: string
   gameStudios: GameStudio[]
   categories: Category[]
   publishers: Publisher[]
   platforms: Platform[]
   summary: string
   gameLaunchers: GameLauncher[]
-  type: 'game' | 'dlc' // Diferencia se é jogo ou DLC
-  UserGamesStatus: UserGamesStatus[]
+  isDlc: boolean
+  dlcs: Game[]
+  parentGame: Game | null
+  statuses?: string
 }
 
-export type UserGameAndDlcResponse = (Game | Dlc)[]
-
 export interface UserGamesResponse {
-  userGames: UserGameAndDlcResponse
+  userGames: UserGame[]
   totalPerStatus: TotalPerStatus[]
   totalGames: number
 }
@@ -56,6 +44,7 @@ export interface UserProfileResponse {
 
 export interface User {
   id: string
+  email: string
   userName: string
   profilePicture: string
   userBanner: string
@@ -68,7 +57,11 @@ export interface GameStatus {
 }
 
 export interface GameStatsResponse {
-  UserGameStats: {
+  userGameStats: {
     completions: number
   }
+}
+
+export interface RatingResponse {
+  rating: number | null
 }
