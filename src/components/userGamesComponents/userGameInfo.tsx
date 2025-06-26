@@ -1,19 +1,39 @@
-import { Rating, Stack } from '@mui/material'
-import type { UserGameDlcBase } from '../../types/user'
+import { Rating, Skeleton, Stack, Typography } from '@mui/material'
+import type { UserGame } from '../../types/user'
 
 import { Link } from 'react-router-dom'
 import { UserGameModal } from './userGameModal'
 import { UserGameForm } from './userGameForm'
+import { useRating } from '../../hooks/useRating'
+import type { SyntheticEvent } from 'react'
+import { X } from 'lucide-react'
+import { useAuth } from '../../hooks/useAuth'
 
 export function UserGameInfo({
   onClose,
   userGame,
 }: {
   onClose: () => void
-  userGame: UserGameDlcBase | null
+  userGame: UserGame
 }) {
-  if (!userGame) {
-    return null
+  const { rating, isLoading, isError, addRating, removeRating, isMutating } =
+    useRating(userGame.id)
+
+  const { user } = useAuth()
+
+  if (isLoading) return <Skeleton variant="rounded" width={200} height={40} />
+  if (isError) return <div>Erro ao carregar avaliação</div>
+
+  const handleRatingChange = async (
+    _: SyntheticEvent,
+    newValue: number | null
+  ) => {
+    if (newValue === null) return
+    await addRating(newValue)
+  }
+
+  async function handleDelete() {
+    await removeRating()
   }
 
   return (
@@ -23,7 +43,7 @@ export function UserGameInfo({
         <div className="flex items-center">
           <img
             className="rounded-md w-[285px] h-[380px]"
-            src={userGame.banner}
+            src={userGame.gameBanner}
             alt=""
           />
         </div>
@@ -31,20 +51,45 @@ export function UserGameInfo({
         {/* Game Info */}
         <div className="flex flex-col justify-around items-center">
           <div className="flex flex-wrap flex-col items-center">
-            <h1 className="text-base md:text-xl font-bold">{userGame.name}</h1>
+            <h1 className="text-base md:text-xl font-bold">
+              {userGame.gameName}
+            </h1>
           </div>
 
-          <UserGameForm item={userGame} />
+          {user && <UserGameForm onClose={onClose} userGame={userGame} />}
 
           <div>
-            <Stack spacing={4}>
+            <Stack
+              spacing={2}
+              direction="row"
+              alignItems="center"
+              sx={{ position: 'relative' }}
+            >
+              {rating && (
+                <button
+                  type="button"
+                  aria-label="Delete rating"
+                  onClick={handleDelete}
+                  disabled={!rating || isMutating}
+                  className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
+                  style={{}}
+                >
+                  <X />
+                </button>
+              )}
+
               <Rating
                 name="half-rating"
-                defaultValue={0}
+                value={rating}
+                onChange={handleRatingChange}
+                disabled={isMutating}
                 precision={0.5}
                 size="large"
               />
             </Stack>
+            <Typography>
+              Avaliação: {rating !== null ? rating : 'Nenhuma'}
+            </Typography>
           </div>
         </div>
       </div>
