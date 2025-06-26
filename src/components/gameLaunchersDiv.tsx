@@ -11,7 +11,7 @@ export function GameLaunchersDiv({ gameLaucher }: GameLaunchersDivProps) {
   return (
     <div className="bg-gray-800 border-2 border-gray-600 rounded-lg px-4 py-2 flex flex-row items-center justify-center gap-2">
       <p className="text-slate-400 text-xl font-normal">
-        {gameLaucher.platforms.platformName}:
+        {gameLaucher.platform.platformName}:
       </p>
       <div className="flex flex-row items-center justify-center gap-1">
         <p className="text-slate-400 text-xl font-normal">

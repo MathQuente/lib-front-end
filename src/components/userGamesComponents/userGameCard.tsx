@@ -1,31 +1,31 @@
 import { useState } from 'react'
 
-import type { UserGameDlcBase } from '../../types/user'
+import type { UserGame } from '../../types/user'
 import { UserGameInfo } from './userGameInfo'
 import { UserGameModal } from './userGameModal'
 
 interface GameCardProps {
-  userGamesAndDlcs: UserGameDlcBase[]
+  userGames: UserGame[]
 }
 
-export function UserGameCard({ userGamesAndDlcs }: GameCardProps) {
-  const [currentGame, setCurrentGame] = useState<UserGameDlcBase | null>(null)
+export function UserGameCard({ userGames }: GameCardProps) {
+  const [currentGame, setCurrentGame] = useState<UserGame | null>(null)
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      {userGamesAndDlcs.map(item => (
-        <div key={item.id}>
+      {userGames.map(userGame => (
+        <div key={userGame.id}>
           <button
             type="button"
             onClick={() => {
-              setCurrentGame(item)
+              setCurrentGame(userGame)
               setOpen(true)
             }}
           >
             <img
               className="w-32 h-36 sm:w-36 md:w-36 lg:w-40 sm:h-40 lg:h-48 xl:w-40 xl:min-h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
-              src={item.banner}
+              src={userGame.gameBanner}
               alt=""
             />
           </button>
@@ -42,7 +42,7 @@ export function UserGameCard({ userGamesAndDlcs }: GameCardProps) {
           <UserGameInfo
             userGame={currentGame}
             onClose={() => {
-              setOpen(true)
+              setOpen(false)
             }}
           />
         </UserGameModal>
