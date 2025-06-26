@@ -1,6 +1,8 @@
 import { SideBar } from '../components/sideBar'
 
 import {
+  ArrowDown,
+  ArrowUp,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -13,14 +15,14 @@ import { CiSearch } from 'react-icons/ci'
 import { ToastContainer } from 'react-toastify'
 
 import { IconButton } from '../components/iconButton'
-import { useApi } from '../hooks/useApi'
 
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import type { GamesResponse } from '../types/games'
 import { GameCard } from '../components/gamesComponents/gameCard'
+import { useGames } from '../hooks/useGames'
+
+type SortField = 'gameName' | 'dateRelease'
+type SortOrder = 'asc' | 'desc'
 
 export function Games() {
-  const api = useApi()
   const topRef = useRef<HTMLDivElement>(null)
   const [search, setSearch] = useState(() => {
     const url = new URL(window.location.toString())
@@ -42,11 +44,10 @@ export function Games() {
     return 1
   })
 
-  const { data: GamesResponse } = useQuery<GamesResponse>({
-    queryKey: ['games', page, search],
-    queryFn: async () => api.getGames(page, search),
-    placeholderData: keepPreviousData,
-  })
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
+  const [sortField, setSortField] = useState<SortField>('gameName')
+
+  const { GamesResponse } = useGames(page, search, sortField, sortOrder)
 
   if (!GamesResponse) {
     return null
@@ -104,6 +105,20 @@ export function Games() {
     }
   }
 
+  function onSortFieldChange(event: ChangeEvent<HTMLSelectElement>) {
+    console.log(event.target.value)
+    const value = event.target.value as SortField
+    setSortField(value)
+  }
+
+  function setSortOrderAsc() {
+    setSortOrder('asc')
+  }
+
+  function setSortOrderDesc() {
+    setSortOrder('desc')
+  }
+
   return (
     <>
       <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
@@ -111,22 +126,82 @@ export function Games() {
 
         <div ref={topRef} />
         <div className="flex gap-3 items-center justify-center">
-          <div className="mt-10">
-            <CiSearch
-              className="size-6 text-[#8F8F8F] absolute top-[3.725rem] 
-            left-[6rem] md:left-[16.8rem] lg:left-[25rem] lg:top-[3.7rem] xl:left-[33rem] 2xl:left-[52.5rem]"
-            />
-            <input
-              onChange={onSearchInputChange}
-              value={search}
-              className="bg-[#272932] text-[#8F8F8F] rounded-2xl block w-full sm:w-72 h-[62px] pl-[62px] focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              type="text"
-              placeholder="Search"
-            />
+          <div className="mt-10 relative">
+            <div className="relative w-full sm:w-72">
+              <CiSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 size-6 text-[#8F8F8F] pointer-events-none" />
+              <input
+                onChange={onSearchInputChange}
+                value={search}
+                className="bg-[#272932] text-[#8F8F8F] rounded-2xl block w-full h-[62px] pl-[62px] focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                type="text"
+                placeholder="Search"
+              />
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center mt-4 flex-1">
+          <div className="flex flex-col sm:flex-row gap-4 w-[350px] sm:w-[500px] md:w-[640px] lg:w-[800px] xl:w-[1200px] 2xl:min-w-[1400px] justify-end">
+            {/* Ordenação */}
+            <div className="flex flex-row gap-4 mb-2">
+              <div className="flex items-center gap-2">
+                <h1 className="text-[#8F8F8F] text-sm whitespace-nowrap">
+                  Ordenar por:
+                </h1>
+
+                <div className="flex flex-col items-center">
+                  <div className="relative inline-block group">
+                    <button
+                      type="button"
+                      onClick={setSortOrderAsc}
+                      className={`flex items-center rounded-lg text-sm font-medium transition-colors ${
+                        sortOrder === 'asc' ? 'text-[#6930CD]' : 'text-[#272932'
+                      }`}
+                    >
+                      <ArrowUp className="size-4" />
+                    </button>
+                    <div
+                      className="absolute left-1/2 bottom-full mb-2 w-max px-2 py-1 rounded-md 
+                      bg-indigo-100 text-indigo-800 text-sm  transform -translate-x-1/2 translate-y-2 invisible opacity-0
+                      transition-all duration-200 group-hover:-translate-y-2 group-hover:opacity-100 group-hover:visible pointer-events-none"
+                    >
+                      Ascending
+                    </div>
+                  </div>
+                  <div className="relative inline-block group">
+                    <button
+                      type="button"
+                      onClick={setSortOrderDesc}
+                      className={`flex items-center rounded-lg text-sm font-medium transition-colors ${
+                        sortOrder === 'desc'
+                          ? 'text-[#6930CD]'
+                          : 'text-[#272932'
+                      }`}
+                    >
+                      <ArrowDown className="size-4" />
+                    </button>
+                    <div
+                      className="absolute left-1/2 bottom-full mb-2 w-max px-2 py-1 rounded-md 
+                      bg-indigo-100 text-indigo-800 text-sm  transform -translate-x-1/2 translate-y-2 invisible opacity-0
+                      transition-all duration-200 group-hover:-translate-y-2 group-hover:opacity-100 group-hover:visible pointer-events-none"
+                    >
+                      Descending
+                    </div>
+                  </div>
+                </div>
+
+                <select
+                  value={sortField}
+                  onChange={onSortFieldChange}
+                  className="bg-[#272932] text-[#8F8F8F] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                >
+                  <option value="gameName">Nome do Jogo</option>
+                  <option value="dateRelease">Data de Lançamento</option>
+                  <option value="rating">Avaliação</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col xl:ml-52 xl:mr-20 2xl:ml-48 bg-[#272932] w-[350px] sm:w-[500px] md:w-[640px] lg:w-[800px] xl:w-[1100px] 2xl:min-w-[1300px] flex-grow">
             <div className="py-6 px-4 xl:px-7">
               <div className="grid grid-cols-6 gap-x-3 gap-y-3 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-3 md:grid-cols-3 md:gap-x-6 md:gap-y-4 lg:grid-cols-6 lg:gap-y-4 xl:gap-y-4 xl:grid-cols-6 2xl:grid-cols-6">

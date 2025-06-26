@@ -1,22 +1,38 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { tokenProvider } from './token'
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
-})
+import Cookies from 'js-cookie'
 
-const tokenService = tokenProvider()
+type UpdateUserPayload = {
+  userName?: string
+  profilePicture?: string
+  userBanner?: string | null
+}
+
+const api = axios.create({
+  baseURL: '/api',
+  withCredentials: true
+})
 
 api.interceptors.response.use(
   response => response,
-  async error => {
+  error => {
     if (error.response?.status === 401) {
-      tokenService.removeTokens()
-      window.location.href = '/auth'
+      const errorData = error.response.data
+
+      if (
+        errorData.status === 'session_expired' ||
+        errorData.status === 'unauthorized'
+      ) {
+        Cookies.remove('accessToken')
+        Cookies.remove('refreshToken')
+        // window.location.href = '/'
+      }
+
+      return Promise.reject(error)
     }
-    return Promise.reject(error)
   }
 )
+
 export const useApi = () => ({
   login: async (email: string, password: string) => {
     try {
@@ -33,40 +49,23 @@ export const useApi = () => ({
     }
   },
   signup: async (email: string, password: string) => {
-    const response = await api.post('/auth/', { email, password })
+    const response = await api.post('/auth/register', { email, password })
     return response.data
   },
   logout: async () => {
-    const accessToken = tokenService.getAccessToken()
     try {
-      await api.post(
-        '/auth/logout',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      )
+      await api.post('/auth/logout', {}, {})
     } catch (error) {
       console.error('Logout failed:', error)
     }
   },
-  refreshToken: async (refreshToken: string) => {
+  refreshToken: async () => {
     try {
-      const response = await api.post(
-        '/auth/refresh',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`
-          }
-        }
-      )
-      return {
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken
-      }
+      // Envia automaticamente os cookies (incluindo refreshToken)
+      const response = await api.post('/auth/refresh', {})
+
+      // O backend deve definir novos cookies na resposta
+      return response.data
     } catch (error) {
       console.error('Error refreshing token:', error)
       return null
@@ -78,29 +77,31 @@ export const useApi = () => ({
     search?: string,
     filter?: number
   ) => {
-    const accessToken = tokenService.getAccessToken()
     const response = await api.get(`/users/${userId}/userGames`, {
       params: {
         filter: filter,
         pageIndex: page ? page - 1 : undefined,
         query: search || undefined
-      },
-      headers: { Authorization: `Bearer ${accessToken}` }
+      }
     })
     return response.data
   },
   getUserProfile: async (userId: string | null) => {
-    const accessToken = tokenService.getAccessToken()
-    const response = await api.get(`/users/${userId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    const response = await api.get(`/users/${userId}`, {})
     return response.data
   },
-  getGames: async (page: number, search: string) => {
+  getGames: async (
+    page: number,
+    search: string,
+    sortBy: 'gameName' | 'dateRelease',
+    sortOrder: 'asc' | 'desc'
+  ) => {
     const response = await api.get('/games', {
       params: {
         pageIndex: page - 1,
-        query: search || undefined
+        query: search,
+        sortBy: sortBy,
+        sortOrder: sortOrder
       }
     })
     return response.data
@@ -109,13 +110,8 @@ export const useApi = () => ({
     const response = await api.get(`/games/${gameId}`)
     return response.data
   },
-  getGameStatus: async (userId: string | null, itemId: string | undefined) => {
-    const accessToken = tokenService.getAccessToken()
-    const response = await api.get(`/users/${userId}/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+  getGameStatus: async (userId: string | null, gameId: string | undefined) => {
+    const response = await api.get(`/users/${userId}/${gameId}`, {})
     return response.data
   },
   getSimilarGames: async (gameId: string | undefined) => {
@@ -125,73 +121,57 @@ export const useApi = () => ({
   addGame: async (
     userId: string | null,
     gameId: string | undefined,
-    statusIds: number[]
+    statusIds: number
   ) => {
-    const accessToken = tokenService.getAccessToken()
     const response = await api.post(
-      `/users/${userId}/addGame/${gameId}`,
+      `/users/${userId}/games/${gameId}`,
       {
         statusIds
       },
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }
+      {}
     )
     return response
   },
   updateGameStatus: async (
     userId: string | null,
     gameId: string | undefined,
-    statusIds: number[]
+    statusIds: number
   ) => {
-    const accessToken = tokenService.getAccessToken()
     const response = await api.patch(
-      `/users/userGamesStatus/${userId}/${gameId}`,
+      `/users/${userId}/gameStatus/${gameId}`,
       { statusIds },
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }
+      {}
     )
     return response
   },
   removeGame: async (userId: string | null, gameId: string | undefined) => {
-    const accessToken = tokenService.getAccessToken()
-    const response = await api.delete(`/users/${userId}/removeItem/${gameId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+    const response = await api.delete(`/users/${userId}/games/${gameId}`, {
+      headers: {}
     })
     return response
   },
-  updateUser: async (
-    userId: string | null,
-    userName?: string,
-    profilePicture?: string,
-    userBanner?: string
-  ) => {
-    const accessToken = tokenService.getAccessToken()
-    const response = await api.patch(
-      `/users/${userId}`,
-      {
-        userName,
-        profilePicture,
-        userBanner
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
+  uploadFile: async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'images_preset')
+
+    const response = await axios.post(
+      'https://api.cloudinary.com/v1_1/dtdkzusmw/image/upload',
+      formData
     )
+    return response.data.secure_url
+  },
+  updateUser: async (userId: string, payload: UpdateUserPayload) => {
+    const body: Record<string, string | null> = {}
+    if (payload.userName !== undefined) body.userName = payload.userName
+    if (payload.profilePicture !== undefined)
+      body.profilePicture = payload.profilePicture
+    if (payload.userBanner !== undefined) body.userBanner = payload.userBanner
+    const response = await api.patch(`/users/${userId}`, body, {})
     return response.data
   },
-  getGameStats: async (userId: string | null, itemId: string | undefined) => {
-    const accessToken = tokenService.getAccessToken()
-    const response = await api.get(`/users/${userId}/gameInfo/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+  getGameStats: async (gameId: string | undefined, userId: string | null) => {
+    const response = await api.get(`/users/${userId}/gameInfo/${gameId}`, {})
     return response.data
   },
   updateCompletionCount: async (
@@ -199,16 +179,46 @@ export const useApi = () => ({
     gameId: string | undefined,
     incrementValue: number
   ) => {
-    const accessToken = tokenService.getAccessToken()
     const response = await api.patch(
       `/users/${userId}/playedCount/${gameId}`,
       {
         incrementValue
       }, // corpo vazio, pois todos os parâmetros estão na URL
-      {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }
+      {}
     )
     return response
+  },
+  addRatingForUserGame: async (
+    gameId: string | undefined,
+    value: number | null
+  ) => {
+    const response = await api.post(
+      `/rating/${gameId}`,
+      {
+        value
+      },
+      {}
+    )
+    return response
+  },
+  getUserGameRating: async (gameId: string | undefined) => {
+    const response = await api.get(`/rating/${gameId}`, {})
+    return response.data
+  },
+  removeRating: async (gameId: string | undefined) => {
+    const response = await api.delete(`/rating/${gameId}`, {})
+    return response
+  },
+  me: async () => {
+    const response = await api.get('/users/me', {})
+    return response.data
+  },
+  test: async () => {
+    const response = await api.get('/games/test', {})
+    return response.data
+  },
+  getAverageRating: async (gameId: string) => {
+    const response = await api.get(`/rating/${gameId}/average`, {})
+    return response.data
   }
 })
