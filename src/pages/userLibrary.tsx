@@ -1,28 +1,13 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-
 import { ToastContainer } from 'react-toastify'
 
 import { SideBar } from '../components/sideBar'
 
-import { useAuth } from '../hooks/useAuth'
-import { useApi } from '../hooks/useApi'
-
-import type { UserGamesResponse } from '../types/user'
-
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
 import { UserGamesDiv } from '../components/UserGamesDiv'
+import { useUserGames } from '../hooks/useUserGames'
 
 export function UserLibrary() {
-  const api = useApi()
-  const { user } = useAuth()
-  const userId = user?.id ?? ''
-
-  const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
-    queryKey: ['userGames', userId],
-    queryFn: async () => api.getUserGames(userId),
-    placeholderData: keepPreviousData,
-    staleTime: 0,
-  })
+  const { UserGamesResponse } = useUserGames()
 
   if (!UserGamesResponse) {
     return null
