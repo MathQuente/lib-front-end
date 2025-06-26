@@ -22,27 +22,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: (
-      <RequireAuth>
-        <App />
-      </RequireAuth>
-    ),
+    element: <App />,
   },
   {
     path: '/games',
-    element: (
-      <RequireAuth>
-        <Games />
-      </RequireAuth>
-    ),
+    element: <Games />,
   },
   {
     path: '/games/:gameId',
-    element: (
-      <RequireAuth>
-        <GamePage />
-      </RequireAuth>
-    ),
+    element: <GamePage />,
   },
   {
     path: '/roulette',
