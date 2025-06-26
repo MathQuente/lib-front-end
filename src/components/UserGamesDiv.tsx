@@ -1,46 +1,34 @@
 import { Link } from 'react-router-dom'
 import { PiGameControllerBold } from 'react-icons/pi'
 import { UserGameCard } from './userGamesComponents/userGameCard'
-import type { TotalPerStatus, UserGameDlcBase } from '../types/user'
+import type { TotalPerStatus, UserGame } from '../types/user'
 
 interface UserGameDivProps {
-  userGames: UserGameDlcBase[]
+  userGames: UserGame[]
   totalPerStatus: TotalPerStatus[]
 }
 
 export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
   const userGamesByStatus = userGames.reduce((map, ug) => {
-    if (!ug.UserGamesStatus || ug.UserGamesStatus.length === 0) {
-      const noStatusKey = 'NO_STATUS'
-      if (!map.has(noStatusKey)) map.set(noStatusKey, [])
-      map.get(noStatusKey)!.push(ug)
-      return map
-    }
+    // Como agora cada UserGame tem apenas um status, não um array
+    const statusKey = ug.statuses?.toUpperCase() ?? 'NO_STATUS'
 
-    for (const statusObj of ug.UserGamesStatus) {
-      const status = statusObj.status?.toUpperCase() ?? 'NO_STATUS'
-      if (!map.has(status)) map.set(status, [])
-      map.get(status)!.push(ug)
+    if (!map.has(statusKey)) {
+      map.set(statusKey, [])
     }
+    map.get(statusKey)!.push(ug)
 
     return map
-  }, new Map<string, UserGameDlcBase[]>())
+  }, new Map<string, UserGame[]>())
 
   const statusTranslations: Record<string, string> = {
     PLAYED: 'Played',
-    REPLAYING: 'Replaying',
     PLAYING: 'Playing',
     BACKLOG: 'Backlog',
     WISHLIST: 'Wishlist',
   }
 
-  const statusOrder: string[] = [
-    'PLAYED',
-    'PLAYING',
-    'REPLAYING',
-    'BACKLOG',
-    'WISHLIST',
-  ]
+  const statusOrder: string[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
 
   // Preparar entradas de status ordenadas
   const statusEntries = Array.from(userGamesByStatus.entries()).sort((a, b) => {
@@ -51,7 +39,7 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
     <div className="space-y-8 mb-4">
       {/* Primeiro exibimos as categorias onde o usuário tem jogos */}
       {statusEntries
-        .filter(([games]) => games.length > 0)
+        .filter(([, games]) => games.length > 0)
         .map(([gameStatus, statusGames]) => {
           // Encontrar o total de jogos para este status
           const total =
@@ -83,7 +71,7 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
 
   function renderStatusSection(
     gameStatus: string,
-    userGames: UserGameDlcBase[],
+    userGames: UserGame[],
     total: number,
     displayStatus: string
   ) {
@@ -106,7 +94,7 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
 
           {userGames.length > 0 && (
             <Link
-              to={`/userLibrary/${gameStatus}Games`}
+              to={`/userLibrary/${gameStatus.toLowerCase()}Games`}
               className="text-[#7A38CA] font-bold"
             >
               See all
@@ -117,7 +105,7 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
         {userGames.length > 0 ? (
           <div className="flex justify-center py-2 px-2">
             <div className="grid grid-cols-3 gap-x-3 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-6 md:gap-x-4 lg:gap-x-4 2xl:gap-x-6">
-              <UserGameCard userGamesAndDlcs={userGames.slice(0, 6)} />
+              <UserGameCard userGames={userGames.slice(0, 6)} />
             </div>
           </div>
         ) : (
