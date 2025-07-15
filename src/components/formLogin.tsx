@@ -7,6 +7,7 @@ import { AuthContext } from '../contexts/auth/authContext'
 import { useNavigate } from 'react-router-dom'
 import { RxEnvelopeClosed, RxLockOpen2 } from 'react-icons/rx'
 import logoGoogle from '../assets/Google__G__logo.svg.png'
+import { Button } from './button'
 
 export function FormLogin() {
   const GOOGLE_AUTH_URL = 'http://localhost:3333/auth/google'
@@ -18,9 +19,9 @@ export function FormLogin() {
   const {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
-    formState: { errors: errorsLogin },
+    formState: { errors: errorsLogin }
   } = useForm<loginForm>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema)
   })
 
   async function loginHandleSubmit(data: loginForm) {
@@ -38,9 +39,9 @@ export function FormLogin() {
       onSubmit={handleSubmitLogin(loginHandleSubmit)}
       className="flex flex-col"
     >
-      <div className="px-2 w-full flex flex-col pt-[66px] nesthub:pt-8 asus:pt-4 flex-grow">
+      <div className="px-2 w-full flex flex-col pt-[42px] nesthub:pt-8 asus:pt-4 flex-grow">
         <div>
-          <div className="mt-6 flex justify-center">
+          <div className=" flex justify-center">
             <a
               href={GOOGLE_AUTH_URL}
               className="inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium
@@ -124,12 +125,9 @@ export function FormLogin() {
       </div>
 
       <div className="w-full pt-32 sm:pt-80 nesthub:pt-16 asus:pt-32">
-        <button
-          type="submit"
-          className="w-full text-xl md:text-xl font-semibold h-12 md:h-14 inline-flex items-center justify-center text-[#FFFFFF] bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF] focus:ring-4 rounded-xl"
-        >
+        <Button variant="primary" fullWidth>
           Login
-        </button>
+        </Button>
       </div>
     </form>
   )
