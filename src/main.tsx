@@ -12,29 +12,34 @@ import { RequireAuth } from './contexts/auth/requireAuth'
 import { GamePage } from './pages/gamePage'
 import { RouletteWheel } from './pages/rouletteWheel'
 import { UserGamesPageByStatus } from './pages/userGamesPages'
+import { SearchResults } from './pages/searchResults'
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
     path: '/auth',
-    element: <Authentication />,
+    element: <Authentication />
   },
   {
     path: '/',
-    element: <App />,
+    element: <App />
+  },
+  {
+    path: '/search/:query',
+    element: <SearchResults />
   },
   {
     path: '/games',
-    element: <Games />,
+    element: <Games />
   },
   {
     path: '/games/:gameId',
-    element: <GamePage />,
+    element: <GamePage />
   },
   {
     path: '/roulette',
-    element: <RouletteWheel />,
+    element: <RouletteWheel />
   },
   {
     path: '/userLibrary',
@@ -42,7 +47,7 @@ const router = createBrowserRouter([
       <RequireAuth>
         <UserLibrary />
       </RequireAuth>
-    ),
+    )
   },
   {
     path: '/userLibrary/:status',
@@ -50,8 +55,8 @@ const router = createBrowserRouter([
       <RequireAuth>
         <UserGamesPageByStatus />
       </RequireAuth>
-    ),
-  },
+    )
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
