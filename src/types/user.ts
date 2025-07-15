@@ -28,7 +28,12 @@ export interface UserGame {
 }
 
 export interface UserGamesResponse {
-  userGames: UserGame[]
+  userGames: {
+    PLAYED: UserGame[]
+    PLAYING: UserGame[]
+    BACKLOG: UserGame[]
+    WISHLIST: UserGame[]
+  }
   totalPerStatus: TotalPerStatus[]
   totalGames: number
 }

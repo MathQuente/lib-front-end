@@ -6,7 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight,
+  ChevronsRight
 } from 'lucide-react'
 
 import type { ChangeEvent } from 'react'
@@ -205,7 +205,10 @@ export function Games() {
           <div className="flex flex-col xl:ml-52 xl:mr-20 2xl:ml-48 bg-[#272932] w-[350px] sm:w-[500px] md:w-[640px] lg:w-[800px] xl:w-[1100px] 2xl:min-w-[1300px] flex-grow">
             <div className="py-6 px-4 xl:px-7">
               <div className="grid grid-cols-6 gap-x-3 gap-y-3 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-3 md:grid-cols-3 md:gap-x-6 md:gap-y-4 lg:grid-cols-6 lg:gap-y-4 xl:gap-y-4 xl:grid-cols-6 2xl:grid-cols-6">
-                <GameCard games={GamesResponse.games} />
+                {GamesResponse.games.length > 0 &&
+                  GamesResponse.games.map(game => (
+                    <GameCard key={game.id} game={game} enableModal />
+                  ))}
               </div>
             </div>
           </div>

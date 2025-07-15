@@ -33,7 +33,7 @@ export function Authentication() {
                   LOGIN
                 </Tabs.Trigger>
                 <Tabs.Trigger
-                  className="w-80 md:w-80 h-[60px] flex items-center justify-center data-[state=active]:shadow-[inset_0_-5px_0_0,0_1px_0_0] 
+                  className="w-80 lg:w-[400px] h-[60px] flex items-center justify-center data-[state=active]:shadow-[inset_0_-5px_0_0,0_1px_0_0] 
               cursor-default data-[state=active]:text-[#8C67F6] text-[#3F4149] 
               font-bold md:text-lg shadow-[inset_0_-5px_0_0,0_1px_0_0]"
                   value="signUp"

@@ -2,7 +2,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight,
+  ChevronsRight
 } from 'lucide-react'
 import type { ChangeEvent } from 'react'
 import { useState } from 'react'
@@ -13,12 +13,16 @@ import { SideBar } from '../components/sideBar'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
-import type { UserGamesResponse } from '../types/user'
+import type { UserGame, UserGamesResponse } from '../types/user'
 import { useAuth } from '../hooks/useAuth'
 import { GameStatusEnum } from '../types/games'
 import { useParams } from 'react-router-dom'
 
-type StatusKey = 'finishedGames' | 'playingGames' | 'pausedGames'
+type StatusKey =
+  | 'playedGames'
+  | 'playingGames'
+  | 'backlogGames'
+  | 'wishlistGames'
 
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: StatusKey }>()
@@ -49,32 +53,31 @@ export function UserGamesPageByStatus() {
   const userId = user?.id ?? ''
 
   const statusMap: Record<string, GameStatusEnum> = {
-    finishedGames: GameStatusEnum.Finished,
+    Played: GameStatusEnum.Played,
     playingGames: GameStatusEnum.Playing,
-    pausedGames: GameStatusEnum.Replaying,
     backlogGames: GameStatusEnum.Backlog,
-    wishlistGames: GameStatusEnum.Wishlist,
+    wishlistGames: GameStatusEnum.Wishlist
   }
 
-  const filter = statusMap[status ?? 'finishedGames'] || GameStatusEnum.Finished
+  const filter = statusMap[status ?? 'playedGames'] || 'PLAYED'
 
   const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId, page, search, filter],
     queryFn: async () => api.getUserGames(userId, page, search, filter),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData
   })
+
+  const gamesForPage: UserGame[] = UserGamesResponse?.userGames[filter] ?? []
+
+  const totalOfThisStatus =
+    UserGamesResponse?.totalPerStatus.find(t => t.status === filter)
+      ?.totalGames ?? 0
+
+  const totalPages = Math.ceil(totalOfThisStatus / 18)
 
   if (!UserGamesResponse) {
     return null
   }
-
-  const userGamesTotal = UserGamesResponse.totalGames
-
-  if (!userGamesTotal) {
-    return null
-  }
-
-  const totalPages = Math.ceil(userGamesTotal / 18)
 
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
@@ -138,18 +141,16 @@ export function UserGamesPageByStatus() {
           <div className="flex flex-col ml-20 sm:ml-20 md:ml-20 lg:ml-52 lg:mr-20 xl:ml-52 xl:mr-20 2xl:ml-48 bg-[#272932] w-[400px] sm:w-[500px] md:w-[650px] lg:w-[750px] xl:w-[1050px] 2xl:min-w-[1300px] min-h-[1085px]">
             <div className="flex justify-center py-5 px-4">
               <div className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-3 md:grid-cols-4 md:gap-x-4 md:gap-y-4 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-4 xl:grid-cols-6 xl:gap-5">
-                <UserGameCard userGames={UserGamesResponse.userGames} />
+                <UserGameCard userGames={gamesForPage} />
               </div>
             </div>
           </div>
           <div className="flex flex-col items-center gap-6 pt-5 pb-5">
             <span className="flex gap-1">
               <p className="text-[#6930CD]">Mostrando</p>
-              <p className="text-gray-500">
-                {UserGamesResponse.userGames.length}
-              </p>
+              <p className="text-gray-500">{gamesForPage.length}</p>
               <p className="text-[#6930CD]">de</p>
-              <p className="text-gray-500"> {UserGamesResponse.totalGames}</p>
+              <p className="text-gray-500"> {totalOfThisStatus}</p>
               <p className="text-[#6930CD]">items</p>
             </span>
             <span className="flex gap-1">

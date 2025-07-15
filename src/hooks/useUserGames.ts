@@ -18,7 +18,8 @@ export const useUserGames = () => {
     queryKey: queryKey,
     queryFn: async () => api.getUserGames(userId),
     placeholderData: keepPreviousData,
-    staleTime: 0
+    staleTime: 0,
+    enabled: Boolean(userId)
   })
 
   return {

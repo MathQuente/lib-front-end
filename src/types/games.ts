@@ -1,14 +1,20 @@
 export enum GameStatusEnum {
-  Finished = 1,
-  Playing = 2,
-  Replaying = 3,
-  Backlog = 4,
-  Wishlist = 5
+  Played = 'PLAYED',
+  Playing = 'PLAYING',
+  Backlog = 'BACKLOG',
+  Wishlist = 'WISHLIST'
 }
 
 export interface GamesResponse {
   games: Game[]
   total: number
+}
+
+export interface GamesFromHomePageResponse {
+  mostBeateds: Game[]
+  gamesTrending: Game[]
+  recentGames: Game[]
+  futureGames: Game[]
 }
 
 export interface SimilarGamesResponse {

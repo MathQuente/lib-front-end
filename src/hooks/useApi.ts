@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Cookies from 'js-cookie'
+import type { GameStatusEnum } from '../types/games'
 
 type UpdateUserPayload = {
   userName?: string
@@ -75,7 +76,7 @@ export const useApi = () => ({
     userId: string | null,
     page?: number,
     search?: string,
-    filter?: number
+    filter?: GameStatusEnum
   ) => {
     const response = await api.get(`/users/${userId}/userGames`, {
       params: {
@@ -92,7 +93,7 @@ export const useApi = () => ({
   },
   getGames: async (
     page: number,
-    search: string,
+    search: string | undefined,
     sortBy: 'gameName' | 'dateRelease',
     sortOrder: 'asc' | 'desc'
   ) => {
