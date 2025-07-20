@@ -1,30 +1,22 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useApi } from '../hooks/useApi'
 import { Link, useParams } from 'react-router-dom'
 import { SideBar } from '../components/sideBar'
-import type { GameResponse, SimilarGamesResponse } from '../types/games'
 import { GameForm } from '../components/gamesComponents/gameForm'
 import { PlatformDiv } from '../components/platformDiv'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
-import { CategoriesDiv } from '../components/categoriesDiv'
 import { useAuth } from '../hooks/useAuth'
 
+import { RatingChart } from '../components/ratingChart'
+import { Details } from '../components/details'
+import { PlayersInfo } from '../components/playersInfo'
+import { useGame } from '../hooks/useGame'
+import { SimilarGamesSlider } from '../components/similarGamesSlider'
+import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
+import { RatingAverage } from '../components/ratingAverage'
+
 export function GamePage() {
-  const api = useApi()
   const { user } = useAuth()
-
-  const { gameId } = useParams()
-
-  const { data: GameResponse } = useQuery<GameResponse>({
-    queryKey: ['game', gameId],
-    queryFn: async () => api.getGame(gameId),
-  })
-
-  const { data: SimilarGames } = useQuery<SimilarGamesResponse>({
-    queryKey: ['similarGames'],
-    queryFn: async () => api.getSimilarGames(gameId),
-    placeholderData: keepPreviousData,
-  })
+  const { gameId } = useParams<{ gameId: string }>()
+  const { GameResponse, SimilarGames } = useGame(gameId)
 
   if (!GameResponse) {
     return null
@@ -38,165 +30,94 @@ export function GamePage() {
     <div className="flex flex-col w-full min-h-dvh bg-[#1A1C26]">
       <SideBar />
 
-      <div className=" flex flex-col items-center ml-28">
-        <div className="flex flex-col items-center gap-4 w-full pt-2 pb-4">
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl font-bold text-white">
-              {GameResponse?.game?.gameName}
-            </p>
-            <img
-              className="w-80 rounded-lg"
-              src={GameResponse?.game?.gameBanner}
-              alt=""
-            />
-          </div>
-          {user && <GameForm game={GameResponse.game} />}
-          <div className="flex flex-row gap-2">
-            {GameResponse.game.platforms.map(platform => (
-              <PlatformDiv
-                key={platform.id}
-                platformName={platform.platformName}
-              />
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {GameResponse.game.gameLaunchers.map(gameLaunchers => (
-              <GameLaunchersDiv
-                key={gameLaunchers.platform.id}
-                gameLaucher={gameLaunchers}
-              />
-            ))}
-          </div>
-          <div className="flex flex-col flex-wrap items-center justify-center gap-2">
-            <div className="flex flex-row gap-2">
-              <h2 className="text-xl font-semibold text-slate-200">
-                Developer:
-              </h2>
-              {GameResponse.game.gameStudios.map((gameStudio, index, array) => (
-                <div key={gameStudio.id}>
-                  <p className="text-xl font-bold text-slate-400">
-                    {gameStudio.studioName}
-                    {index < array.length - 1 && (
-                      <span className="text-xl text-white">, </span>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-row gap-2">
-              <h2 className="text-xl font-semibold  text-slate-200">
-                Publisher:
-              </h2>
-              {GameResponse.game.publishers.map((publisher, index, array) => (
-                <div key={publisher.id}>
-                  <p className="text-xl font-bold text-slate-400">
-                    {publisher.publisherName}
-                    {index < array.length - 1 && (
-                      <span className="text-xl text-white">, </span>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col items-center w-11/12">
-            <h2 className="font-bold text-xl text-white">Summary</h2>
-            <div className="flex flex-col">
-              <p className="text-gray-400 text-lg">
-                {GameResponse.game.summary}
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {GameResponse.game.categories.map(category => (
-              <CategoriesDiv
-                categoryName={category.categoryName}
-                key={category.id}
-              />
-            ))}
-          </div>
-          <div className="flex flex-col flex-wrap items-center justify-center gap-2">
-            <div className="flex flex-row gap-2">
-              <h2 className="text-xl font-semibold text-slate-200">
-                Developer:
-              </h2>
-              {GameResponse.game.gameStudios.map((gameStudio, index, array) => (
-                <div key={gameStudio.id}>
-                  <p className="text-xl font-bold text-slate-400">
-                    {gameStudio.studioName}
-                    {index < array.length - 1 && (
-                      <span className="text-xl">, </span>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-row gap-2">
-              <h2 className="text-xl font-semibold  text-slate-200">
-                Publisher:
-              </h2>
-              {GameResponse.game.publishers.map((publisher, index, array) => (
-                <div key={publisher.id}>
-                  <p className="text-xl font-bold text-slate-400">
-                    {publisher.publisherName}
-                    {index < array.length - 1 && (
-                      <span className="text-xl">, </span>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {GameResponse.game.isDlc ? (
-            <div className="flex flex-col items-center gap-2">
-              <h2 className="text-xl font-semibold text-white">
-                Original Game
-              </h2>
-              <Link to={`/games/${GameResponse.game.id}`}>
+      <div className=" max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-20">
+          <div className="lg:col-span-1">
+            <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-6 border-gray-700-50 top-8">
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xl font-bold text-white">
+                  {GameResponse?.game?.gameName}
+                </p>
                 <img
-                  className="w-52 h-64 rounded-lg"
-                  src={GameResponse.game?.parentGame?.gameBanner}
+                  className="w-72 rounded-lg"
+                  src={GameResponse?.game?.gameBanner}
                   alt=""
                 />
-              </Link>
-            </div>
-          ) : !GameResponse.game.isDlc ? (
-            <div className="flex flex-col items-center gap-2">
-              <h2 className="text-xl font-semibold text-white">DLCS</h2>
-              <div className="flex gap-2">
-                {GameResponse.game.dlcs?.map(dlc => (
-                  <div key={dlc.id}>
-                    <Link to={`/games/${dlc.id}`}>
-                      <img
-                        className="w-32 h-16 sm:w-36 md:w-44 md:h-56 sm:h-40 lg:min-w-28 lg:h-44 xl:w-48 xl:h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
-                        src={dlc.gameBanner}
-                        alt=""
+              </div>
+              {user ? (
+                <div className="w-full flex flex-col items-center justify-center mt-4">
+                  <RatingAverage gameId={GameResponse.game.id} isForGamePage />
+                  <GameForm game={GameResponse.game} />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center mt-4 gap-1">
+                  <Link
+                    to={'/auth'}
+                    className="text-base font-bold text-[#7A38CA]"
+                  >
+                    Log in
+                  </Link>
+                  <p className="text-base font-bold text-white">
+                    for access to rating features
+                  </p>
+                </div>
+              )}
+              <div className="flex flex-col items-center mt-4">
+                <p className="text-gray-400">Avg Rating </p>
+
+                <RatingAverage gameId={GameResponse.game.id} justAverage />
+              </div>
+
+              <RatingChart GameResponse={GameResponse} />
+
+              <PlayersInfo GameResponse={GameResponse} />
+
+              <div className="mb-6 mt-2">
+                <h3 className="text-lg font-semibold mb-3 text-gray-200">
+                  Platforms
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {GameResponse.game.platforms.map(platform => {
+                    return (
+                      <PlatformDiv
+                        platformName={platform.platformName}
+                        key={platform.id}
                       />
-                    </Link>
-                  </div>
-                ))}
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-lg font-semibold mb-3 text-gray-200">
+                  Avaliable on
+                </h3>
+                <div className="space-y-2">
+                  {GameResponse.game.gameLaunchers.map(launcher => (
+                    <GameLaunchersDiv
+                      key={launcher.platform.id}
+                      gameLaucher={launcher}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          ) : (
-            <div>
-              <h1 className="text-2xl font-semibold text-white">No DLC yet</h1>
-            </div>
-          )}
-          <div className="flex flex-col items-center gap-2">
-            <h2 className="font-bold text-xl text-white">Similar games</h2>
-            <div className="flex justify-center gap-2">
-              {SimilarGames.similarGames.map(gameAndDlc => (
-                <div key={gameAndDlc.id}>
-                  <Link to={`/games/${gameAndDlc.id}`}>
-                    <img
-                      className="w-32 h-16 sm:w-36 md:w-44 md:h-56 sm:h-40 lg:min-w-28 lg:h-44 xl:w-48 xl:h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
-                      src={gameAndDlc.gameBanner || gameAndDlc.dlcBanner}
-                      alt=""
-                    />
-                  </Link>
-                </div>
-              ))}
+          </div>
+          <div className="lg:col-span-2 mt-4 lg:mt-0">
+            <div className="space-y-6">
+              <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
+                <h2 className="text-2xl font-semibold mb-4 text-gray-200">
+                  About the game
+                </h2>
+                <p className="text-gray-300 leading-relaxed text-lg">
+                  {GameResponse.game.summary}
+                </p>
+              </div>
+
+              <Details GameResponse={GameResponse} />
+
+              <DlcAndOriginalGameArea gameResponse={GameResponse} />
+
+              <SimilarGamesSlider SimilarGames={SimilarGames} />
             </div>
           </div>
         </div>
