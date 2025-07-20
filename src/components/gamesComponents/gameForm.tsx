@@ -5,11 +5,7 @@ import { PlayedCount } from '../playedCount'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
 
-export function GameForm({
-  game,
-}: {
-  game: Game
-}) {
+export function GameForm({ game }: { game: Game }) {
   const { gameStatus, updateGameStatus } = useGameStatus(game.id)
   const { addGame, removeGame } = useAddGame(game.id)
 
@@ -24,7 +20,7 @@ export function GameForm({
     PLAYING: 2,
     REPLAYING: 3,
     BACKLOG: 4,
-    WISHLIST: 5,
+    WISHLIST: 5
   }
 
   const hasStatus = (statusId: number) => {
@@ -44,12 +40,12 @@ export function GameForm({
     } else if (hasAny) {
       // já existe outro status: substitui
       await updateGameStatus({
-        statusIds: statusId,
+        statusIds: statusId
       })
     } else {
       // não existe nenhum: adiciona
       await addGame({
-        statusIds: statusId,
+        statusIds: statusId
       })
     }
   }
@@ -63,7 +59,9 @@ export function GameForm({
           onClick={() => handleAddGame(STATUS.PLAYED)}
         >
           <IoGameController
-            className={`size-8 ${isPlayed ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              isPlayed ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Played</p>
         </button>
@@ -74,7 +72,9 @@ export function GameForm({
           onClick={() => handleAddGame(STATUS.PLAYING)}
         >
           <FaPlay
-            className={`size-8 ${isPlaying ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              isPlaying ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Playing</p>
         </button>
@@ -85,7 +85,9 @@ export function GameForm({
           onClick={() => handleAddGame(STATUS.BACKLOG)}
         >
           <IoLibrary
-            className={`size-8 ${hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Backlog</p>
         </button>
@@ -95,7 +97,9 @@ export function GameForm({
           onClick={() => handleAddGame(STATUS.WISHLIST)}
         >
           <FaGift
-            className={`size-8 ${hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
