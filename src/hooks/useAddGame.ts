@@ -68,7 +68,9 @@ export const useAddGame = (gameId?: string) => {
       queryClient.removeQueries({
         queryKey: ['gamesStatus', userId, gameId]
       })
-
+      queryClient.invalidateQueries({
+        queryKey: ['gameStats', userId, gameId]
+      })
       toast.success('Game removed successfully 👌')
     },
     onError: (err, _variables, context) => {

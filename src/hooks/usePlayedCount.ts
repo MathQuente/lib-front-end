@@ -10,7 +10,7 @@ export const getGameStatsQueryKey = (userId: string, gameId: string) => [
   gameId
 ]
 
-export const usePlayedCount = (gameId: string, isPlayed: boolean) => {
+export const usePlayedCount = (gameId: string) => {
   const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
@@ -21,7 +21,7 @@ export const usePlayedCount = (gameId: string, isPlayed: boolean) => {
   const { data: completionsData } = useQuery<GameStatsResponse>({
     queryKey: queryKey,
     queryFn: () => api.getGameStats(gameId, userId),
-    enabled: Boolean(gameId && userId && isPlayed),
+    enabled: Boolean(gameId && userId),
     staleTime: 1000 * 60 * 5
   })
 

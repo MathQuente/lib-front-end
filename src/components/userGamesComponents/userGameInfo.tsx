@@ -1,40 +1,19 @@
-import { Rating, Skeleton, Stack, Typography } from '@mui/material'
 import type { UserGame } from '../../types/user'
 
 import { Link } from 'react-router-dom'
 import { UserGameModal } from './userGameModal'
 import { UserGameForm } from './userGameForm'
-import { useRating } from '../../hooks/useRating'
-import type { SyntheticEvent } from 'react'
-import { X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
+import { RatingAverage } from '../ratingAverage'
 
 export function UserGameInfo({
   onClose,
-  userGame,
+  userGame
 }: {
   onClose: () => void
   userGame: UserGame
 }) {
-  const { rating, isLoading, isError, addRating, removeRating, isMutating } =
-    useRating(userGame.id)
-
   const { user } = useAuth()
-
-  if (isLoading) return <Skeleton variant="rounded" width={200} height={40} />
-  if (isError) return <div>Erro ao carregar avaliação</div>
-
-  const handleRatingChange = async (
-    _: SyntheticEvent,
-    newValue: number | null
-  ) => {
-    if (newValue === null) return
-    await addRating(newValue)
-  }
-
-  async function handleDelete() {
-    await removeRating()
-  }
 
   return (
     <div key={userGame.id} className="flex flex-col p-4">
@@ -58,39 +37,7 @@ export function UserGameInfo({
 
           {user && <UserGameForm onClose={onClose} userGame={userGame} />}
 
-          <div>
-            <Stack
-              spacing={2}
-              direction="row"
-              alignItems="center"
-              sx={{ position: 'relative' }}
-            >
-              {rating && (
-                <button
-                  type="button"
-                  aria-label="Delete rating"
-                  onClick={handleDelete}
-                  disabled={!rating || isMutating}
-                  className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
-                  style={{}}
-                >
-                  <X />
-                </button>
-              )}
-
-              <Rating
-                name="half-rating"
-                value={rating}
-                onChange={handleRatingChange}
-                disabled={isMutating}
-                precision={0.5}
-                size="large"
-              />
-            </Stack>
-            <Typography>
-              Avaliação: {rating !== null ? rating : 'Nenhuma'}
-            </Typography>
-          </div>
+          <RatingAverage gameId={userGame.id} />
         </div>
       </div>
 

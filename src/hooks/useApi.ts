@@ -218,8 +218,12 @@ export const useApi = () => ({
     const response = await api.get('/games/test', {})
     return response.data
   },
-  getAverageRating: async (gameId: string) => {
+  getAverageRating: async (gameId: string | undefined) => {
     const response = await api.get(`/rating/${gameId}/average`, {})
+    return response.data
+  },
+  getRatingDistribution: async (gameId: string | undefined) => {
+    const response = await api.get(`/rating/ratingDistribution/${gameId}`, {})
     return response.data
   }
 })

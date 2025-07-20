@@ -35,6 +35,9 @@ export const useGameStatus = (gameId: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
+      queryClient.invalidateQueries({
+        queryKey: ['gameStats', userId, gameId]
+      })
       toast.success('Status do jogo atualizado com sucesso 👌')
     },
     onError: error => {
@@ -64,6 +67,10 @@ export const useGameStatus = (gameId: string) => {
 
       queryClient.invalidateQueries({
         queryKey: ['userGames', userId]
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ['gameStats', userId, gameId]
       })
 
       toast.success('Status do jogo atualizado com sucesso 👌')

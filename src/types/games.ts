@@ -18,7 +18,7 @@ export interface GamesFromHomePageResponse {
 }
 
 export interface SimilarGamesResponse {
-  similarGames: SimilarGame[]
+  similarGames: Game[]
 }
 
 export interface Game {
@@ -34,6 +34,24 @@ export interface Game {
   isDlc: boolean
   dlcs: Game[]
   parentGame: Game | null
+  ratingAvrg: number
+  ratings: {
+    value: number
+    _count: {
+      value: number
+    }
+  }[]
+  totalOfRating: {
+    value: number
+  }
+  userGames: {
+    PLAYED: number
+    PLAYING: number
+    PAUSED: number
+    BACKLOCK: number
+    WISHLIST: number
+  }
+  userWhoOwnThisGame: { userId: string }[]
 }
 
 export interface SimilarGame {
@@ -78,4 +96,13 @@ export interface GameStudio {
 export interface Publisher {
   id: string
   publisherName: string
+}
+
+export interface RatingsResponse {
+  ratings: {
+    value: number
+    _count: {
+      value: number
+    }
+  }[]
 }

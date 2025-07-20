@@ -1,15 +1,15 @@
-import type { UserGame } from '../../types/user'
 import { PlayedCount } from '../playedCount'
 import { FaGift, FaPlay } from 'react-icons/fa'
 import { IoGameController, IoLibrary } from 'react-icons/io5'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
+import type { Game } from '../../types/games'
 
 export function UserGameForm({
   userGame,
-  onClose,
+  onClose
 }: {
-  userGame: UserGame
+  userGame: Game
   onClose: () => void
 }) {
   const { gameStatus, updateUserGameStatus } = useGameStatus(userGame.id)
@@ -26,7 +26,7 @@ export function UserGameForm({
     PLAYING: 2,
     REPLAYING: 3,
     BACKLOG: 4,
-    WISHLIST: 5,
+    WISHLIST: 5
   }
 
   const hasStatus = (statusId: number) => {
@@ -46,7 +46,7 @@ export function UserGameForm({
     } else if (hasAny) {
       // já existe outro status: substitui
       await updateUserGameStatus({
-        statusIds: statusId,
+        statusIds: statusId
       })
     } else {
       // não existe nenhum: adiciona (caso não deveria acontecer no UserGameForm)
@@ -66,7 +66,9 @@ export function UserGameForm({
           onClick={() => handleAddGame(STATUS.PLAYED)}
         >
           <IoGameController
-            className={`size-8 ${isPlayed ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              isPlayed ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Played</p>
         </button>
@@ -77,7 +79,9 @@ export function UserGameForm({
           onClick={() => handleAddGame(STATUS.PLAYING)}
         >
           <FaPlay
-            className={`size-8 ${isPlaying ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              isPlaying ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Playing</p>
         </button>
@@ -88,7 +92,9 @@ export function UserGameForm({
           onClick={() => handleAddGame(STATUS.BACKLOG)}
         >
           <IoLibrary
-            className={`size-8 ${hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Backlog</p>
         </button>
@@ -98,7 +104,9 @@ export function UserGameForm({
           onClick={() => handleAddGame(STATUS.WISHLIST)}
         >
           <FaGift
-            className={`size-8 ${hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'}`}
+            className={`size-8 ${
+              hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'
+            }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
