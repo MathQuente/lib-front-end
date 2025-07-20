@@ -1,7 +1,7 @@
 import type { GameLauncher } from '../types/games'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
-import { CiCalendar } from 'react-icons/ci'
+import { Download } from 'lucide-react'
 
 interface GameLaunchersDivProps {
   gameLaucher: GameLauncher
@@ -9,18 +9,16 @@ interface GameLaunchersDivProps {
 
 export function GameLaunchersDiv({ gameLaucher }: GameLaunchersDivProps) {
   return (
-    <div className="bg-gray-800 border-2 border-gray-600 rounded-lg px-4 py-2 flex flex-row items-center justify-center gap-2">
-      <p className="text-slate-400 text-xl font-normal">
-        {gameLaucher.platform.platformName}:
-      </p>
-      <div className="flex flex-row items-center justify-center gap-1">
-        <p className="text-slate-400 text-xl font-normal">
-          <CiCalendar className="size-5" />
-        </p>
-        <p className="text-slate-400 text-xl font-normal">
-          {dayjs(gameLaucher.dateRelease).format('DD/MM/YYYY')}
-        </p>
-      </div>
-    </div>
+    <button
+      type="button"
+      key={gameLaucher.platform.id}
+      className="w-full flex items-center gap-3 px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors"
+    >
+      <Download className="w-4 h-4" />
+      <span className="w-full flex gap-1">
+        <p>{dayjs(gameLaucher.dateRelease).format('DD/MM/YYYY')}</p>
+        <p>on {gameLaucher.platform.platformName}</p>
+      </span>
+    </button>
   )
 }
