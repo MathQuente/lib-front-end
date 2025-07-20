@@ -65,7 +65,7 @@ export function GameListSection({
                   </Link>
                   <div>
                     <Link to={`/games/${game.id}`}>
-                      <p className="text-white font-sans text-lg font-medium hover:text-[#7A38CA] ">
+                      <p className="text-white font-sans lg:text-base lg:font-normal xl:text-lg font-medium hover:text-[#7A38CA]">
                         {game.gameName}
                       </p>
                     </Link>
