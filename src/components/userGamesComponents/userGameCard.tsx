@@ -4,49 +4,44 @@ import type { UserGame } from '../../types/user'
 import { UserGameInfo } from './userGameInfo'
 import { UserGameModal } from './userGameModal'
 
-interface GameCardProps {
-  userGames: UserGame[]
+interface UserGameCardProps {
+  userGame: UserGame
+
+  enableModal?: boolean
 }
 
-export function UserGameCard({ userGames }: GameCardProps) {
-  const [currentGame, setCurrentGame] = useState<UserGame | null>(null)
+export function UserGameCard({
+  userGame,
+
+  enableModal = true
+}: UserGameCardProps) {
   const [open, setOpen] = useState(false)
+
+  const handleClick = () => {
+    if (enableModal) setOpen(true)
+  }
 
   return (
     <>
-      {userGames.map(userGame => (
-        <div key={userGame.id}>
-          <button
-            type="button"
-            onClick={() => {
-              setCurrentGame(userGame)
-              setOpen(true)
-            }}
-          >
-            <img
-              className="w-32 h-36 sm:w-36 md:w-36 lg:w-40 sm:h-40 lg:h-48 xl:w-40 xl:min-h-52 2xl:w-48 2xl:min-h-64 rounded-lg"
-              src={userGame.gameBanner}
-              alt=""
-            />
-          </button>
-        </div>
-      ))}
-
       <div>
-        <UserGameModal
-          open={open}
-          onOpenChange={open => {
-            setOpen(open)
-          }}
+        <button
+          type="button"
+          onClick={handleClick}
+          className="transition-transform hover:scale-105 hover:ring-2 hover:ring-purple-500 rounded-lg"
         >
-          <UserGameInfo
-            userGame={currentGame}
-            onClose={() => {
-              setOpen(false)
-            }}
+          <img
+            className="w-32 h-36 sm:w-36 md:w-36 lg:w-40 sm:h-40 lg:h-48 xl:w-40 xl:min-h-52 2xl:w-48 2xl:h-64 rounded-lg"
+            src={userGame.gameBanner}
+            alt=""
           />
-        </UserGameModal>
+        </button>
       </div>
+
+      {enableModal && (
+        <UserGameModal open={open} onOpenChange={setOpen}>
+          <UserGameInfo userGame={userGame} onClose={() => setOpen(false)} />
+        </UserGameModal>
+      )}
     </>
   )
 }

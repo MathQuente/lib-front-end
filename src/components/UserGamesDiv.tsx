@@ -63,7 +63,9 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
                                 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-6
                                 md:gap-x-4 lg:gap-x-4 2xl:gap-x-6"
                 >
-                  <UserGameCard userGames={gamesForStatus.slice(0, 6)} />
+                  {gamesForStatus.slice(0, 6).map(userGame => (
+                    <UserGameCard userGame={userGame} key={userGame.id} />
+                  ))}
                 </div>
               </div>
             ) : (
