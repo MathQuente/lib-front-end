@@ -5,12 +5,12 @@ import { usePlayedCount } from '../hooks/usePlayedCount'
 
 export function PlayedCount({
   game,
-  isPlayed,
+  isPlayed
 }: {
   game: Game
   isPlayed: boolean
 }) {
-  const { completions, updatePlayedCount } = usePlayedCount(game.id, isPlayed)
+  const { completions, updatePlayedCount } = usePlayedCount(game.id)
 
   const completionCount = Math.max(completions ?? 0, 1)
 
@@ -57,7 +57,9 @@ export function PlayedCount({
           disabled={completionCount <= 1}
         >
           <ArrowDown
-            className={`size-5 ${completionCount <= 1 ? 'text-black' : 'text-[#6930CD]'}`}
+            className={`size-5 ${
+              completionCount <= 1 ? 'text-black' : 'text-[#6930CD]'
+            }`}
           />
         </IconButton>
         <input
