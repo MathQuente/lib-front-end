@@ -1,15 +1,9 @@
-import type { Game } from '../types/games'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { IconButton } from './iconButton'
 import { usePlayedCount } from '../hooks/usePlayedCount'
+import type { GameBase } from '../types/games'
 
-export function PlayedCount({
-  game,
-  isPlayed
-}: {
-  game: Game
-  isPlayed: boolean
-}) {
+export function PlayedCount({ game }: { game: GameBase }) {
   const { completions, updatePlayedCount } = usePlayedCount(game.id)
 
   const completionCount = Math.max(completions ?? 0, 1)
@@ -30,22 +24,6 @@ export function PlayedCount({
 
   const handleCompletionCountBlur = async () => {
     await updatePlayedCount(1)
-  }
-
-  // Only show the counter if the game is marked as played
-  if (!isPlayed || !completionCount) {
-    return (
-      <>
-        {isPlayed && (
-          <button
-            type="button"
-            className="mt-2 px-2 py-1 text-sm text-gray-300 bg-gray-800 hover:bg-gray-700 rounded"
-          >
-            Show completion count
-          </button>
-        )}
-      </>
-    )
   }
 
   return (
