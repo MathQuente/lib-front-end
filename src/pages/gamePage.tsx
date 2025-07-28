@@ -30,10 +30,10 @@ export function GamePage() {
     <div className="flex flex-col w-full min-h-dvh bg-[#1A1C26]">
       <SideBar />
 
-      <div className=" max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-20">
           <div className="lg:col-span-1">
-            <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-6 border-gray-700-50 top-8">
+            <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-10 border-gray-700-50 top-8 lg:w-[400px]">
               <div className="flex flex-col items-center gap-2">
                 <p className="text-xl font-bold text-white">
                   {GameResponse?.game?.gameName}
@@ -73,10 +73,10 @@ export function GamePage() {
               <PlayersInfo GameResponse={GameResponse} />
 
               <div className="mb-6 mt-2">
-                <h3 className="text-lg font-semibold mb-3 text-gray-200">
+                <h3 className="text-lg mb-3 font-semibold text-gray-200">
                   Platforms
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-row flex-wrap gap-x-1 gap-y-1.5">
                   {GameResponse.game.platforms.map(platform => {
                     return (
                       <PlatformDiv
@@ -87,11 +87,11 @@ export function GamePage() {
                   })}
                 </div>
               </div>
-              <div className="flex flex-col">
-                <h3 className="text-lg font-semibold mb-3 text-gray-200">
-                  Avaliable on
+              <div className="mt-2">
+                <h3 className="text-lg mb-3 font-semibold text-gray-200">
+                  Date release
                 </h3>
-                <div className="space-y-2">
+                <div className="flex flex-row flex-wrap gap-x-1 gap-y-1.5">
                   {GameResponse.game.gameLaunchers.map(launcher => (
                     <GameLaunchersDiv
                       key={launcher.platform.id}
@@ -102,8 +102,9 @@ export function GamePage() {
               </div>
             </div>
           </div>
+
           <div className="lg:col-span-2 mt-4 lg:mt-0">
-            <div className="space-y-6">
+            <div className="space-y-6 ">
               <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
                 <h2 className="text-2xl font-semibold mb-4 text-gray-200">
                   About the game
