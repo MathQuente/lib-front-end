@@ -1,15 +1,15 @@
-import type { Game } from '../../types/games'
 import { IoGameController, IoLibrary } from 'react-icons/io5'
 import { FaGift, FaPlay } from 'react-icons/fa'
 import { PlayedCount } from '../playedCount'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
+import type { GameBase } from '../../types/games'
 
-export function GameForm({ game }: { game: Game }) {
-  const { gameStatus, updateGameStatus } = useGameStatus(game.id)
-  const { addGame, removeGame } = useAddGame(game.id)
+export function GameForm({ game }: { game: GameBase | undefined }) {
+  const { gameStatus, updateGameStatus } = useGameStatus(game?.id)
+  const { addGame, removeGame } = useAddGame(game?.id)
 
-  const currentStatuses = gameStatus?.userGameStatuses
+  const currentStatuses = gameStatus?.userGameStatus
 
   if (!game) {
     return null
@@ -104,7 +104,7 @@ export function GameForm({ game }: { game: Game }) {
           <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
       </div>
-      <PlayedCount game={game} isPlayed={isPlayed} />
+      {isPlayed && <PlayedCount game={game} />}
     </div>
   )
 }

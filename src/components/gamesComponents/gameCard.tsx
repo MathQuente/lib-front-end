@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 
-import type { Game } from '../../types/games'
 import { twMerge } from 'tailwind-merge'
+import type { GameBase } from '../../types/games'
 
 interface GameCardProps {
-  game: Game
+  game: GameBase | undefined
   className?: string
   size?: 'small' | 'medium' | 'larger'
   enableModal?: boolean
@@ -42,8 +42,8 @@ export function GameCard({
         >
           <img
             className={twMerge(sizes[size])}
-            src={game.gameBanner}
-            alt={`${game.gameName} banner`}
+            src={game?.gameBanner}
+            alt={`${game?.gameName} banner`}
           />
         </button>
       </div>

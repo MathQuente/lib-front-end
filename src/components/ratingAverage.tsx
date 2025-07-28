@@ -4,7 +4,7 @@ import { useState, type SyntheticEvent } from 'react'
 import { X } from 'lucide-react'
 
 interface RatingAverageProps {
-  gameId: string
+  gameId: string | undefined
   isForGamePage?: boolean
   justAverage?: boolean
 }
@@ -15,7 +15,7 @@ export function RatingAverage({
   justAverage
 }: RatingAverageProps) {
   const {
-    rating,
+    userRating,
     average,
     isAverageError,
     isAverageLoading,
@@ -64,12 +64,12 @@ export function RatingAverage({
         alignItems="center"
         sx={{ position: 'relative' }}
       >
-        {rating && (
+        {userRating && (
           <button
             type="button"
             aria-label="Delete rating"
             onClick={handleDelete}
-            disabled={!rating || isMutating}
+            disabled={!userRating || isMutating}
             className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
             style={{}}
           >
@@ -82,7 +82,7 @@ export function RatingAverage({
           {/* Rating fixo (valor já avaliado) */}
           <Rating
             name="fixed-rating"
-            value={rating}
+            value={userRating}
             readOnly
             precision={0.5}
             size="large"
@@ -98,7 +98,7 @@ export function RatingAverage({
           {/* Rating interativo (hover) */}
           <Rating
             name="hover-rating"
-            value={hoverValue || rating}
+            value={hoverValue || userRating}
             onChange={handleRatingChange}
             onChangeActive={(_, newHover) => setHoverValue(newHover)}
             onMouseLeave={() => setHoverValue(null)}
@@ -135,12 +135,12 @@ export function RatingAverage({
         alignItems="center"
         sx={{ position: 'relative' }}
       >
-        {rating && (
+        {userRating && (
           <button
             type="button"
             aria-label="Delete rating"
             onClick={handleDelete}
-            disabled={!rating || isMutating}
+            disabled={!userRating || isMutating}
             className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
             style={{}}
           >
@@ -152,7 +152,7 @@ export function RatingAverage({
           {/* Rating fixo (valor já avaliado) */}
           <Rating
             name="fixed-rating"
-            value={rating}
+            value={userRating}
             readOnly
             precision={0.5}
             size="large"
@@ -168,7 +168,7 @@ export function RatingAverage({
           {/* Rating interativo (hover) */}
           <Rating
             name="hover-rating"
-            value={hoverValue || rating}
+            value={hoverValue || userRating}
             onChange={handleRatingChange}
             onChangeActive={(_, newHover) => setHoverValue(newHover)}
             onMouseLeave={() => setHoverValue(null)}
@@ -188,7 +188,7 @@ export function RatingAverage({
       </Stack>
       <div className="flex flex-col">
         <Typography>
-          Sua avaliação: {rating !== null ? rating : 'Nenhuma'}
+          Sua avaliação: {userRating !== null ? userRating : 'Nenhuma'}
         </Typography>
         <Typography>Avaliação geral: {getAverageRatingDisplay()}</Typography>
       </div>

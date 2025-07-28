@@ -1,13 +1,12 @@
-import type { Game } from '../../types/games'
-
 import { GameModal } from './gameModal'
 import { GameForm } from './gameForm'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { RatingAverage } from '../ratingAverage'
+import type { GameBase } from '../../types/games'
 
 interface GameInfoProps {
-  game: Game
+  game: GameBase | undefined
   onClose: () => void
 }
 
@@ -15,26 +14,26 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()
 
   return (
-    <div key={game.id} className="flex flex-col p-4">
+    <div key={game?.id} className="flex flex-col p-4">
       <div className="flex flex-col md:flex-row md:justify-around py-4">
         {/* Game Image */}
         <div className="flex items-center">
           <img
             className="rounded-md w-[285px] h-[380px]"
-            src={game.gameBanner}
-            alt={`Capa do jogo ${game.gameName}`}
+            src={game?.gameBanner}
+            alt={`Capa do jogo ${game?.gameName}`}
           />
         </div>
 
         {/* Game Info */}
         <div className="flex flex-col justify-around items-center">
           <div className="flex flex-wrap flex-col items-center">
-            <h1 className="text-base md:text-xl font-bold">{game.gameName}</h1>
+            <h1 className="text-base md:text-xl font-bold">{game?.gameName}</h1>
           </div>
 
           {user && <GameForm game={game} />}
 
-          {user && <RatingAverage gameId={game.id} />}
+          {user && <RatingAverage gameId={game?.id} />}
 
           {!user && (
             <div className="flex gap-1">
@@ -49,7 +48,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
 
       {/* Footer */}
       <div className="flex justify-between pt-4 border-t border-gray-700">
-        <Link to={`/games/${game.id}`}>
+        <Link to={`/games/${game?.id}`}>
           <button
             type="button"
             className="ml-4 px-4 py-2 bg-gradient-to-t from-[#4D23A5] to-[#783FCF] hover:from-[#5D23A5] hover:to-[#813FCF] text-white rounded"
