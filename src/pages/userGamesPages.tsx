@@ -141,7 +141,9 @@ export function UserGamesPageByStatus() {
           <div className="flex flex-col ml-20 sm:ml-20 md:ml-20 lg:ml-52 lg:mr-20 xl:ml-52 xl:mr-20 2xl:ml-48 bg-[#272932] w-[400px] sm:w-[500px] md:w-[650px] lg:w-[750px] xl:w-[1050px] 2xl:min-w-[1300px] min-h-[1085px]">
             <div className="flex justify-center py-5 px-4">
               <div className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-3 md:grid-cols-4 md:gap-x-4 md:gap-y-4 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-4 xl:grid-cols-6 xl:gap-5">
-                <UserGameCard userGames={gamesForPage} />
+                {gamesForPage.map(userGame => (
+                  <UserGameCard userGame={userGame} key={userGame.id} />
+                ))}
               </div>
             </div>
           </div>
