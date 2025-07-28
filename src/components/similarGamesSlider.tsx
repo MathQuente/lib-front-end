@@ -14,7 +14,7 @@ interface SimilarGamesSliderProps {
 
 export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
   return (
-    <div className="w-full lg:max-w-6xl md:max-w-2xl">
+    <div className="w-full lg:max-w-5xl md:max-w-2xl">
       <Swiper
         slidesPerView={3}
         breakpoints={{
@@ -38,7 +38,7 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
           delay: 1500,
           disableOnInteraction: false
         }}
-        spaceBetween={20}
+        spaceBetween={15}
         loop={true}
         modules={[Autoplay]}
         className="h-60"
