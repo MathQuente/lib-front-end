@@ -2,8 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useApi } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
-import type { RatingResponse } from '../types/user'
-import type { RatingsResponse } from '../types/games'
+import type {
+  RatingResponse,
+  RatingsDistributionResponse
+} from '../types/rating'
 
 export const getRatingQueryKey = (
   userId: string,
@@ -19,7 +21,7 @@ export const useRating = (gameId: string | undefined) => {
   const queryKey = getRatingQueryKey(userId, gameId)
 
   const {
-    data: ratingResponse,
+    data: userRatingResponse,
     isLoading: ratingIsLoading,
     isError: ratingIsError
   } = useQuery<RatingResponse>({
@@ -49,7 +51,7 @@ export const useRating = (gameId: string | undefined) => {
         queryKey: ['ratings', gameId]
       })
       queryClient.invalidateQueries({
-        queryKey: [gameId, ratingResponse?.rating, 'averageRating']
+        queryKey: [gameId, userRatingResponse?.rating, 'averageRating']
       })
       toast.success('Avaliação atualizada com sucesso 👌')
     },
@@ -84,7 +86,7 @@ export const useRating = (gameId: string | undefined) => {
         queryKey: ['ratings', gameId]
       })
       queryClient.invalidateQueries({
-        queryKey: [gameId, ratingResponse?.rating, 'averageRating']
+        queryKey: [gameId, userRatingResponse?.rating, 'averageRating']
       })
       toast.success('Avaliação removida com sucesso 👌')
     },
@@ -108,16 +110,16 @@ export const useRating = (gameId: string | undefined) => {
     isError: isAverageError
   } = useQuery({
     queryFn: () => api.getAverageRating(gameId),
-    queryKey: [gameId, ratingResponse?.rating, 'averageRating'],
+    queryKey: [gameId, userRatingResponse?.rating, 'averageRating'],
     enabled: Boolean(gameId),
     staleTime: 1000 * 60 * 5
   })
 
   const {
-    data: allRatingsResponse,
+    data: RatingDistrubution,
     isLoading: isLoadingRating,
     isError: isErrorRatings
-  } = useQuery<RatingsResponse>({
+  } = useQuery<RatingsDistributionResponse>({
     queryFn: () => api.getRatingDistribution(gameId),
     queryKey: ['ratings', gameId],
     enabled: Boolean(gameId),
@@ -125,9 +127,9 @@ export const useRating = (gameId: string | undefined) => {
   })
 
   return {
-    rating: ratingResponse?.rating ?? null,
+    userRating: userRatingResponse?.rating ?? null,
     average,
-    allRatingsResponse: allRatingsResponse?.ratings,
+    allRatingsResponse: RatingDistrubution?.ratings,
     isLoadingRating,
     isErrorRatings,
     isLoading: ratingIsLoading,

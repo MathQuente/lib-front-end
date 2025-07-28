@@ -18,11 +18,11 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
 
   const allRatings = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
   const totalRating = allRatingsResponse?.reduce(
-    (sum, rating) => sum + rating._count.value,
+    (sum, rating) => sum + rating.count,
     0
   )
   const ratings = Object.fromEntries(
-    allRatingsResponse?.map(rating => [rating.value, rating._count.value])
+    allRatingsResponse?.map(rating => [rating.rating, rating.count])
   )
 
   const chartData = allRatings.map(ratingValue => {
