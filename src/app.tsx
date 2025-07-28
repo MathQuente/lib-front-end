@@ -21,7 +21,10 @@ import { Button } from './components/button'
 import { GameListSection } from './components/gameListSection'
 import { GameCard } from './components/gamesComponents/gameCard'
 import { useUserGames } from './hooks/useUserGames'
-import type { GamesFromHomePageResponse } from './types/games'
+import type {
+  GamesFromHomePageResponse,
+  GameToDisplayResponse
+} from './types/games'
 import { useGames } from './hooks/useGames'
 
 export function App() {
@@ -37,82 +40,19 @@ export function App() {
     placeholderData: keepPreviousData
   })
 
+  const { data: GamesToDisplay } = useQuery<GameToDisplayResponse>({
+    queryKey: ['games', userId],
+    queryFn: async () => api.getGamesToDisplay(userId),
+    placeholderData: keepPreviousData,
+    enabled: Boolean(userId)
+  })
+
   const { UserGamesResponse } = useUserGames()
   const { GamesResponse } = useGames(1, '', 'gameName', 'asc')
 
   if (!GamesResponse2) return null
 
   if (!GamesResponse) return null
-
-  function getSecureRandomInt(max: number) {
-    const array = new Uint32Array(1)
-    crypto.getRandomValues(array)
-    return array[0] % max
-  }
-
-  function welcomeBackMessage() {
-    if (
-      UserGamesResponse?.userGames.PLAYING &&
-      UserGamesResponse?.userGames.PLAYING.length > 0
-    ) {
-      const game = getSecureRandomInt(
-        UserGamesResponse.userGames.PLAYING.length
-      )
-      return (
-        <div className="flex flex-col items-center gap-3">
-          <h1>Que tal terminar esse que começou?</h1>
-          <Link to={`/games/${UserGamesResponse?.userGames.PLAYING[game].id}`}>
-            <GameCard
-              size="medium"
-              game={UserGamesResponse?.userGames.PLAYING[game]}
-            />
-          </Link>
-        </div>
-      )
-    }
-
-    if (
-      UserGamesResponse?.userGames.BACKLOG &&
-      UserGamesResponse?.userGames.BACKLOG?.length > 0
-    ) {
-      const game = getSecureRandomInt(
-        UserGamesResponse.userGames.BACKLOG.length
-      )
-
-      return (
-        <div className="flex flex-col items-center gap-3">
-          <h1>Que tal começar algo novo do seu backlog?</h1>
-          <Link to={`/games/${UserGamesResponse?.userGames.BACKLOG[game].id}`}>
-            <GameCard
-              size="medium"
-              game={UserGamesResponse.userGames.BACKLOG[game]}
-            />
-          </Link>
-        </div>
-      )
-    }
-
-    const length =
-      GamesResponse?.games.filter(g =>
-        g.userWhoOwnThisGame.every(id => id.userId !== user?.id)
-      ).length ?? 0
-
-    const gameIndex = getSecureRandomInt(length)
-
-    return (
-      <div className="flex flex-col items-center mt-6">
-        <h1 className="text-xl text-center text-[#FFFFFF] font-semibold">
-          Parece que você não tem jogos na sua lista!
-        </h1>
-        <p className="text-gray-400">
-          Que tal adicionar este game para começar?
-        </p>
-        <Link to={`/games/${GamesResponse?.games[gameIndex].id}`}>
-          <GameCard size="medium" game={GamesResponse?.games[gameIndex]} />
-        </Link>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -122,13 +62,22 @@ export function App() {
           {isLogged ? (
             <>
               <div className="flex flex-col items-center gap-2 pt-4">
-                <span className="text-4xl lg:text-5xl text-white flex gap-2">
-                  Welcome back to Lib,{' '}
-                  <p className="text-4xl lg:text-5xl text-[#7A38CA]">
+                <span className="flex flex-row gap-1">
+                  <p className="text-2xl lg:text-5xl text-white">
+                    Welcome back to Lib
+                  </p>
+                  <p className="text-2xl lg:text-5xl text-[#7A38CA]">
                     {user?.userName}
                   </p>
                 </span>
-                {welcomeBackMessage()}
+                <div className="flex flex-col items-center mt-6">
+                  <p className="text-gray-400 mb-2">
+                    {GamesToDisplay?.message}
+                  </p>
+                  <Link to={`/games/${GamesToDisplay?.game.id}`}>
+                    <GameCard size="medium" game={GamesToDisplay?.game} />
+                  </Link>
+                </div>
 
                 <div className="flex flex-col items-center">
                   <p className="text-zinc-200">Profile stats</p>
@@ -224,13 +173,13 @@ export function App() {
         </div>
 
         <div className="flex flex-col items-center justify-center pb-10 mt-8 max-w-6xl lg:ml-60 lg:mr-44 xl:ml-96 xl:mr-40 px-4">
-          <h1 className="text-4xl text-[#7A38CA] font-medium">
+          <h1 className="text-2xl lg:text-4xl text-[#7A38CA] font-medium">
             Recently releases
           </h1>
 
           <div className="w-full lg:max-w-6xl md:max-w-2xl">
             <Swiper
-              slidesPerView={3} // Valor padrão para mobile
+              slidesPerView={2} // Valor padrão para mobile
               breakpoints={{
                 640: {
                   slidesPerView: 2,
@@ -279,13 +228,13 @@ export function App() {
           />
 
           <GameListSection
-            games={GamesResponse2.mostBeateds}
+            games={GamesResponse2.mostBeatedsGames}
             title="Most Beateds"
             className="lg:ml-5"
           />
 
           <GameListSection
-            games={GamesResponse2.mostBeateds}
+            games={GamesResponse2.mostBeatedsGames}
             title="Trending Games"
           />
         </div>
