@@ -4,7 +4,12 @@ import {
   useQuery
 } from '@tanstack/react-query'
 import { useApi } from './useApi'
-import type { GamesResponse } from '../types/games'
+import type { GameBase } from '../types/games'
+
+interface UseGamesProps {
+  games: GameBase[]
+  total: number
+}
 
 export const useGames = (
   page: number,
@@ -20,7 +25,7 @@ export const useGames = (
     data: GamesResponse,
     isLoading,
     isError
-  } = useQuery<GamesResponse>({
+  } = useQuery<UseGamesProps>({
     queryKey: queryKey,
     queryFn: async () => api.getGames(page, search, sortBy, sortOrder),
     placeholderData: keepPreviousData
@@ -33,7 +38,7 @@ export const useGames = (
     hasNextPage,
     isLoading: isLoadingInfinite,
     isError: isErrorInfinite
-  } = useInfiniteQuery<GamesResponse>({
+  } = useInfiniteQuery<UseGamesProps>({
     queryKey: ['gamesInfinite', search, sortBy, sortOrder],
     queryFn: async ({ pageParam }) =>
       api.getGames(pageParam as number, search, sortBy, sortOrder),

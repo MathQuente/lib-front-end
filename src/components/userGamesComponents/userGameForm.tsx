@@ -3,19 +3,19 @@ import { FaGift, FaPlay } from 'react-icons/fa'
 import { IoGameController, IoLibrary } from 'react-icons/io5'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
-import type { Game } from '../../types/games'
+import type { UserGame } from '../../types/user'
 
 export function UserGameForm({
   userGame,
   onClose
 }: {
-  userGame: Game
+  userGame: UserGame
   onClose: () => void
 }) {
   const { gameStatus, updateUserGameStatus } = useGameStatus(userGame.id)
   const { removeUserGame } = useAddGame(userGame.id)
 
-  const currentStatuses = gameStatus?.userGameStatuses
+  const currentStatuses = gameStatus?.userGameStatus
 
   if (!userGame) {
     return null
@@ -111,7 +111,7 @@ export function UserGameForm({
           <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
       </div>
-      <PlayedCount game={userGame} isPlayed={isPlayed} />
+      {isPlayed && <PlayedCount game={userGame} />}
     </div>
   )
 }
