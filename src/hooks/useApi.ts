@@ -111,42 +111,34 @@ export const useApi = () => ({
     const response = await api.get(`/games/${gameId}`)
     return response.data
   },
-  getGameStatus: async (userId: string | null, gameId: string | undefined) => {
-    const response = await api.get(`/users/${userId}/${gameId}`, {})
+  getGameStatus: async (gameId: string | undefined) => {
+    const response = await api.get(`/users/gameStatus/${gameId}`, {})
     return response.data
   },
   getSimilarGames: async (gameId: string | undefined) => {
     const response = await api.get(`/games/similarGames/${gameId}`)
     return response.data
   },
-  addGame: async (
-    userId: string | null,
-    gameId: string | undefined,
-    statusIds: number
-  ) => {
+  addGame: async (gameId: string | undefined, statusId: number) => {
     const response = await api.post(
-      `/users/${userId}/games/${gameId}`,
+      `/users/games/${gameId}`,
       {
-        statusIds
+        statusId
       },
       {}
     )
     return response
   },
-  updateGameStatus: async (
-    userId: string | null,
-    gameId: string | undefined,
-    statusIds: number
-  ) => {
+  updateGameStatus: async (gameId: string | undefined, statusId: number) => {
     const response = await api.patch(
-      `/users/${userId}/gameStatus/${gameId}`,
-      { statusIds },
+      `/users/gameStatus/${gameId}`,
+      { statusId },
       {}
     )
     return response
   },
-  removeGame: async (userId: string | null, gameId: string | undefined) => {
-    const response = await api.delete(`/users/${userId}/games/${gameId}`, {
+  removeGame: async (gameId: string | undefined) => {
+    const response = await api.delete(`/users/games/${gameId}`, {
       headers: {}
     })
     return response
@@ -162,26 +154,25 @@ export const useApi = () => ({
     )
     return response.data.secure_url
   },
-  updateUser: async (userId: string, payload: UpdateUserPayload) => {
+  updateUser: async (payload: UpdateUserPayload) => {
     const body: Record<string, string | null> = {}
     if (payload.userName !== undefined) body.userName = payload.userName
     if (payload.profilePicture !== undefined)
       body.profilePicture = payload.profilePicture
     if (payload.userBanner !== undefined) body.userBanner = payload.userBanner
-    const response = await api.patch(`/users/${userId}`, body, {})
+    const response = await api.patch('/users', body, {})
     return response.data
   },
-  getGameStats: async (gameId: string | undefined, userId: string | null) => {
-    const response = await api.get(`/users/${userId}/gameInfo/${gameId}`, {})
+  getGameStats: async (gameId: string | undefined) => {
+    const response = await api.get(`/users/playedCount/${gameId}`, {})
     return response.data
   },
   updateCompletionCount: async (
-    userId: string | null,
     gameId: string | undefined,
     incrementValue: number
   ) => {
     const response = await api.patch(
-      `/users/${userId}/playedCount/${gameId}`,
+      `/users/playedCount/${gameId}`,
       {
         incrementValue
       }, // corpo vazio, pois todos os parâmetros estão na URL
@@ -215,7 +206,7 @@ export const useApi = () => ({
     return response.data
   },
   test: async () => {
-    const response = await api.get('/games/test', {})
+    const response = await api.get('/games/featured', {})
     return response.data
   },
   getAverageRating: async (gameId: string | undefined) => {
@@ -224,6 +215,10 @@ export const useApi = () => ({
   },
   getRatingDistribution: async (gameId: string | undefined) => {
     const response = await api.get(`/rating/ratingDistribution/${gameId}`, {})
+    return response.data
+  },
+  getGamesToDisplay: async () => {
+    const response = await api.get('/users/featuredGames')
     return response.data
   }
 })

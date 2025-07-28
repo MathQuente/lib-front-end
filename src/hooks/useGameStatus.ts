@@ -4,13 +4,12 @@ import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
 import type { GameStatusResponse } from '../types/games'
 
-export const getGameStatusQueryKey = (userId: string, gameId: string) => [
-  'gamesStatus',
-  userId,
-  gameId
-]
+export const getGameStatusQueryKey = (
+  userId: string,
+  gameId: string | undefined
+) => ['gamesStatus', userId, gameId]
 
-export const useGameStatus = (gameId: string) => {
+export const useGameStatus = (gameId: string | undefined) => {
   const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
@@ -20,14 +19,14 @@ export const useGameStatus = (gameId: string) => {
 
   const { data: gameStatusResponse } = useQuery<GameStatusResponse>({
     queryKey,
-    queryFn: () => api.getGameStatus(userId, gameId),
+    queryFn: () => api.getGameStatus(gameId),
     enabled: Boolean(userId && gameId),
     staleTime: 1000 * 60 * 5
   })
 
   const updateGameStatus = useMutation({
     mutationFn: (data: { statusIds: number }) =>
-      api.updateGameStatus(userId, gameId, data.statusIds),
+      api.updateGameStatus(gameId, data.statusIds),
     onMutate: async statusIds => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -56,7 +55,7 @@ export const useGameStatus = (gameId: string) => {
 
   const updateUserGameStatus = useMutation({
     mutationFn: async (data: { statusIds: number }) => {
-      return api.updateGameStatus(userId, gameId, data.statusIds)
+      return api.updateGameStatus(gameId, data.statusIds)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

@@ -12,7 +12,7 @@ export const useAddGame = (gameId?: string) => {
 
   const addGame = useMutation({
     mutationFn: (data: { statusIds: number }) =>
-      api.addGame(userId, gameId, data.statusIds),
+      api.addGame(gameId, data.statusIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['gamesStatus', userId, gameId]
@@ -37,7 +37,7 @@ export const useAddGame = (gameId?: string) => {
   })
 
   const removeGame = useMutation({
-    mutationFn: () => api.removeGame(userId, gameId),
+    mutationFn: () => api.removeGame(gameId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['games'] })
       await queryClient.cancelQueries({
@@ -100,7 +100,7 @@ export const useAddGame = (gameId?: string) => {
   })
 
   const removeUserGame = useMutation({
-    mutationFn: () => api.removeGame(userId, gameId),
+    mutationFn: () => api.removeGame(gameId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['userGames', userId] })
       await queryClient.cancelQueries({

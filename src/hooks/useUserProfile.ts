@@ -75,7 +75,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         userBannerUrl = await uploadImageIfNeeded(data.userBanner)
       }
 
-      return api.updateUser(userId, {
+      return api.updateUser({
         userName: data.userName, // ou conditional ↑
         profilePicture: profilePictureUrl, // idem, pode ser optional
         userBanner: userBannerUrl // string | null | undefined
