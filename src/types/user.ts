@@ -62,11 +62,5 @@ export interface GameStatus {
 }
 
 export interface GameStatsResponse {
-  userGameStats: {
-    completions: number
-  }
-}
-
-export interface RatingResponse {
-  rating: number | null
+  playedCount: number
 }

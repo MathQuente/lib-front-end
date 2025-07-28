@@ -52,7 +52,7 @@ export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
             <p className="text-gray-500 font-medium">Ratings</p>
           </span>
           <p className="text-gray-300 font-medium">
-            {GameResponse.game.totalOfRating.value}
+            {GameResponse.game.amountOfRatings}
           </p>
         </div>
       </div>

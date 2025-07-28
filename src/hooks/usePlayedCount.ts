@@ -20,14 +20,14 @@ export const usePlayedCount = (gameId: string) => {
 
   const { data: completionsData } = useQuery<GameStatsResponse>({
     queryKey: queryKey,
-    queryFn: () => api.getGameStats(gameId, userId),
+    queryFn: () => api.getGameStats(gameId),
     enabled: Boolean(gameId && userId),
     staleTime: 1000 * 60 * 5
   })
 
   const updatePlayedCount = useMutation({
     mutationFn: (incrementValue: number) => {
-      return api.updateCompletionCount(userId, gameId, incrementValue)
+      return api.updateCompletionCount(gameId, incrementValue)
     },
     onMutate: async incrementValue => {
       await queryClient.cancelQueries({ queryKey: queryKey })
@@ -36,15 +36,12 @@ export const usePlayedCount = (gameId: string) => {
 
       if (previousData) {
         const newCompletions = Math.max(
-          (previousData.userGameStats?.completions || 0) + incrementValue,
+          (previousData.playedCount || 0) + incrementValue,
           1
         )
         queryClient.setQueryData<GameStatsResponse>(queryKey, {
           ...previousData,
-          userGameStats: {
-            ...previousData.userGameStats,
-            completions: newCompletions
-          }
+          playedCount: newCompletions
         })
       }
 
@@ -73,7 +70,7 @@ export const usePlayedCount = (gameId: string) => {
   })
 
   return {
-    completions: completionsData?.userGameStats?.completions ?? 0,
+    completions: completionsData?.playedCount ?? 0,
     updatePlayedCount: (incrementValue: number) =>
       updatePlayedCount.mutateAsync(incrementValue),
     isLoading: updatePlayedCount.isPending

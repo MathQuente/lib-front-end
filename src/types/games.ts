@@ -5,14 +5,14 @@ export enum GameStatusEnum {
   Wishlist = 'WISHLIST'
 }
 
-export interface GamesResponse {
-  games: Game[]
-  total: number
+export interface GameToDisplayResponse {
+  game: Game
+  message: string
 }
 
 export interface GamesFromHomePageResponse {
-  mostBeateds: Game[]
-  gamesTrending: Game[]
+  mostBeatedsGames: Game[]
+  trendingGames: Game[]
   recentGames: Game[]
   futureGames: Game[]
 }
@@ -20,6 +20,8 @@ export interface GamesFromHomePageResponse {
 export interface SimilarGamesResponse {
   similarGames: Game[]
 }
+
+export type GameBase = Pick<Game, 'id' | 'gameBanner' | 'gameName' | 'isDlc'>
 
 export interface Game {
   id: string
@@ -34,16 +36,12 @@ export interface Game {
   isDlc: boolean
   dlcs: Game[]
   parentGame: Game | null
-  ratingAvrg: number
   ratings: {
-    value: number
-    _count: {
-      value: number
-    }
+    rating: number
+    count: number
   }[]
-  totalOfRating: {
-    value: number
-  }
+  ratingAvg: number
+  amountOfRatings: number
   userGames: {
     PLAYED: number
     PLAYING: number
@@ -66,7 +64,7 @@ export type GameStatus = {
 }
 
 export type GameStatusResponse = {
-  userGameStatuses: GameStatus
+  userGameStatus: GameStatus
 }
 
 export interface GameResponse {
@@ -96,13 +94,4 @@ export interface GameStudio {
 export interface Publisher {
   id: string
   publisherName: string
-}
-
-export interface RatingsResponse {
-  ratings: {
-    value: number
-    _count: {
-      value: number
-    }
-  }[]
 }
