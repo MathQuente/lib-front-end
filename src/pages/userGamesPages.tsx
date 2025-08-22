@@ -63,7 +63,7 @@ export function UserGamesPageByStatus() {
 
   const { data: UserGamesResponse } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId, page, search, filter],
-    queryFn: async () => api.getUserGames(userId, page, search, filter),
+    queryFn: async () => api.getUserGames(page, search, filter),
     placeholderData: keepPreviousData
   })
 

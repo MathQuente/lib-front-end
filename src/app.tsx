@@ -36,7 +36,7 @@ export function App() {
 
   const { data: GamesResponse2 } = useQuery<GamesFromHomePageResponse>({
     queryKey: ['games', '', ''],
-    queryFn: async () => api.test(),
+    queryFn: async () => api.getGamesFeatured(),
     placeholderData: keepPreviousData
   })
 

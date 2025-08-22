@@ -60,25 +60,12 @@ export const useApi = () => ({
       console.error('Logout failed:', error)
     }
   },
-  refreshToken: async () => {
-    try {
-      // Envia automaticamente os cookies (incluindo refreshToken)
-      const response = await api.post('/auth/refresh', {})
-
-      // O backend deve definir novos cookies na resposta
-      return response.data
-    } catch (error) {
-      console.error('Error refreshing token:', error)
-      return null
-    }
-  },
   getUserGames: async (
-    userId: string | null,
     page?: number,
     search?: string,
     filter?: GameStatusEnum
   ) => {
-    const response = await api.get(`/users/${userId}/userGames`, {
+    const response = await api.get('/users/userGames', {
       params: {
         filter: filter,
         pageIndex: page ? page - 1 : undefined,
@@ -175,7 +162,7 @@ export const useApi = () => ({
       `/users/playedCount/${gameId}`,
       {
         incrementValue
-      }, // corpo vazio, pois todos os parâmetros estão na URL
+      },
       {}
     )
     return response
@@ -205,7 +192,7 @@ export const useApi = () => ({
     const response = await api.get('/users/me', {})
     return response.data
   },
-  test: async () => {
+  getGamesFeatured: async () => {
     const response = await api.get('/games/featured', {})
     return response.data
   },

@@ -16,7 +16,7 @@ export const useUserGames = () => {
     isError
   } = useQuery<UserGamesResponse>({
     queryKey: queryKey,
-    queryFn: async () => api.getUserGames(userId),
+    queryFn: async () => api.getUserGames(),
     placeholderData: keepPreviousData,
     staleTime: 0,
     enabled: Boolean(userId)

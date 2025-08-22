@@ -43,7 +43,7 @@ export function GameListSection({
                     {
                       <p className="text-gray-400">
                         {dayjs(game.gameLaunchers[0].dateRelease).format(
-                          'MMM DD'
+                          'MMM DD YYYY'
                         )}
                       </p>
                     }
