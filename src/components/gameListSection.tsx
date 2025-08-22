@@ -40,11 +40,13 @@ export function GameListSection({
                         {game.gameName}
                       </p>
                     </Link>
-                    <p className="text-gray-400">
-                      {dayjs(game.gameLaunchers[0].dateRelease).format(
-                        'MMM DD'
-                      )}
-                    </p>
+                    {
+                      <p className="text-gray-400">
+                        {dayjs(game.gameLaunchers[0].dateRelease).format(
+                          'MMM DD'
+                        )}
+                      </p>
+                    }
                   </div>
                 </div>
               ))}
@@ -69,11 +71,13 @@ export function GameListSection({
                         {game.gameName}
                       </p>
                     </Link>
-                    <p className="text-gray-400">
-                      {dayjs(game.gameLaunchers[0].dateRelease).format(
-                        'MMM DD'
-                      )}
-                    </p>
+                    {
+                      <p className="text-gray-400">
+                        {dayjs(game.gameLaunchers[0].dateRelease).format(
+                          'MMM DD'
+                        )}
+                      </p>
+                    }
                   </div>
                 </div>
               ))}

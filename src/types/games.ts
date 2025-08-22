@@ -21,7 +21,10 @@ export interface SimilarGamesResponse {
   similarGames: Game[]
 }
 
-export type GameBase = Pick<Game, 'id' | 'gameBanner' | 'gameName' | 'isDlc'>
+export type GameBase = Pick<
+  Game,
+  'id' | 'gameBanner' | 'gameName' | 'isDlc' | 'gameLaunchers'
+>
 
 export interface Game {
   id: string

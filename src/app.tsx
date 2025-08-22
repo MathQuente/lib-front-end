@@ -42,7 +42,7 @@ export function App() {
 
   const { data: GamesToDisplay } = useQuery<GameToDisplayResponse>({
     queryKey: ['games', userId],
-    queryFn: async () => api.getGamesToDisplay(userId),
+    queryFn: async () => api.getGamesToDisplay(),
     placeholderData: keepPreviousData,
     enabled: Boolean(userId)
   })
