@@ -11,7 +11,7 @@ export interface GameToDisplayResponse {
 }
 
 export interface GamesFromHomePageResponse {
-  mostBeatedsGames: Game[]
+  mostRatedGames: Game[]
   trendingGames: Game[]
   recentGames: Game[]
   futureGames: Game[]
@@ -23,7 +23,7 @@ export interface SimilarGamesResponse {
 
 export type GameBase = Pick<
   Game,
-  'id' | 'gameBanner' | 'gameName' | 'isDlc' | 'gameLaunchers'
+  'id' | 'gameBanner' | 'gameName' | 'isDlc' | 'gameLaunchers' | 'ratingAvg'
 >
 
 export interface Game {

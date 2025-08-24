@@ -34,7 +34,7 @@ export function App() {
 
   const api = useApi()
 
-  const { data: GamesResponse2 } = useQuery<GamesFromHomePageResponse>({
+  const { data: gamesFeatured } = useQuery<GamesFromHomePageResponse>({
     queryKey: ['games', '', ''],
     queryFn: async () => api.getGamesFeatured(),
     placeholderData: keepPreviousData
@@ -50,7 +50,7 @@ export function App() {
   const { UserGamesResponse } = useUserGames()
   const { GamesResponse } = useGames(1, '', 'gameName', 'asc')
 
-  if (!GamesResponse2) return null
+  if (!gamesFeatured) return null
 
   if (!GamesResponse) return null
 
@@ -61,16 +61,16 @@ export function App() {
         <div className="flex flex-col items-center justify-center max-w-6xl md:ml-40 md:mr-20 lg:ml-60 lg:mr-44 xl:ml-96 xl:mr-40 px-4">
           {isLogged ? (
             <>
-              <div className="flex flex-col items-center gap-2 pt-4">
-                <span className="flex flex-row gap-1">
+              <div className="flex flex-col items-center gap-2 mt-2">
+                <div className="flex flex-row gap-1">
                   <p className="text-2xl lg:text-5xl text-white">
-                    Welcome back to Lib
+                    Welcome back to Lib,
                   </p>
                   <p className="text-2xl lg:text-5xl text-[#7A38CA]">
                     {user?.userName}
                   </p>
-                </span>
-                <div className="flex flex-col items-center mt-6">
+                </div>
+                <div className="flex flex-col items-center mt-1">
                   <p className="text-gray-400 mb-2">
                     {GamesToDisplay?.message}
                   </p>
@@ -163,7 +163,7 @@ export function App() {
                     <p className="text-gray-500">
                       You can log any game you've played or you are playing in
                       this moment and wish to play. More details of platforms
-                      and time tracking will be add soon.
+                      and time tracking could be add soon.
                     </p>
                   </div>
                 </div>
@@ -172,70 +172,83 @@ export function App() {
           )}
         </div>
 
-        <div className="flex flex-col items-center justify-center pb-10 mt-8 max-w-6xl lg:ml-60 lg:mr-44 xl:ml-96 xl:mr-40 px-4">
+        <div className="flex flex-col items-center justify-center pb-5 mt-8 max-w-6xl lg:ml-60 lg:mr-44 xl:ml-96 xl:mr-40 px-4 py-2 mb-5">
           <h1 className="text-2xl lg:text-4xl text-[#7A38CA] font-medium">
             Recently releases
           </h1>
 
           <div className="w-full lg:max-w-6xl md:max-w-2xl">
-            <Swiper
-              slidesPerView={2} // Valor padrão para mobile
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 20
-                },
-                768: {
-                  slidesPerView: 3,
-                  spaceBetween: 0
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 50
-                },
-                1280: {
-                  slidesPerView: 5
-                }
-              }}
-              autoplay={{
-                delay: 1500,
-                disableOnInteraction: false
-              }}
-              spaceBetween={20} // Valor padrão para mobile
-              loop={true}
-              modules={[Autoplay]}
-              className="h-60"
-            >
-              {GamesResponse2.recentGames.map(game => (
-                <SwiperSlide
-                  key={game.id}
-                  className="!flex !items-center !justify-center"
-                >
-                  <Link to={`/games/${game.id}`}>
-                    <GameCard game={game} size="larger" />
-                  </Link>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            {gamesFeatured.recentGames.length > 0 ? (
+              <Swiper
+                slidesPerView={2}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20
+                  },
+                  768: {
+                    slidesPerView: 3,
+                    spaceBetween: 0
+                  },
+                  1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 50
+                  },
+                  1280: {
+                    slidesPerView: 5
+                  }
+                }}
+                autoplay={{
+                  delay: 1500,
+                  disableOnInteraction: false
+                }}
+                spaceBetween={20}
+                loop={true}
+                modules={[Autoplay]}
+                className="h-60"
+              >
+                {gamesFeatured.recentGames.map(game => (
+                  <SwiperSlide
+                    key={game.id}
+                    className="!flex !items-center !justify-center"
+                  >
+                    <Link to={`/games/${game.id}`}>
+                      <GameCard game={game} size="larger" />
+                    </Link>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full px-4 py-2 rounded-md flex flex-col items-center">
+                <h3 className="text-lg font-medium text-white mb-2">
+                  Nenhum jogo encontrado
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  Não há jogos disponíveis no momento.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:max-w-4xl xl:max-w-6xl md:ml-40 md:mr-20 lg:ml-60 lg:mr-44 xl:ml-96 xl:mr-40 px-4 mb-6">
           <GameListSection
-            games={GamesResponse2.futureGames}
-            seeMore
+            type="coming"
+            games={gamesFeatured.futureGames}
             title="Coming Soon"
           />
 
           <GameListSection
-            games={GamesResponse2.mostBeatedsGames}
-            title="Most Beateds"
-            className="lg:ml-5"
+            type="trending"
+            games={gamesFeatured.trendingGames}
+            title="Trending Games"
           />
 
           <GameListSection
-            games={GamesResponse2.mostBeatedsGames}
-            title="Trending Games"
+            type="rateds"
+            games={gamesFeatured.mostRatedGames}
+            title="Most Rateds"
+            className=""
           />
         </div>
       </div>

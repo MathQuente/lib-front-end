@@ -58,6 +58,10 @@ export const useApi = () => ({
       await api.post('/auth/logout', {}, {})
     } catch (error) {
       console.error('Logout failed:', error)
+    } finally {
+      Cookies.remove('accessToken')
+      Cookies.remove('refreshToken')
+      window.location.href = '/'
     }
   },
   getUserGames: async (
