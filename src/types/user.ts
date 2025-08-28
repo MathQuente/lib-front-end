@@ -4,63 +4,63 @@ import type {
   GameLauncher,
   GameStudio,
   Platform,
-  Publisher
-} from './games'
+  Publisher,
+} from "./games";
 
 export interface UserGamesStatus {
-  status: string
+  status: string;
 }
 
 export interface UserGame {
-  id: string
-  gameName: string
-  gameBanner: string
-  gameStudios: GameStudio[]
-  categories: Category[]
-  publishers: Publisher[]
-  platforms: Platform[]
-  summary: string
-  gameLaunchers: GameLauncher[]
-  isDlc: boolean
-  dlcs: Game[]
-  parentGame: Game | null
-  statuses?: string
+  id: string;
+  gameName: string;
+  gameBanner: string;
+  gameStudios: GameStudio[];
+  categories: Category[];
+  publishers: Publisher[];
+  platforms: Platform[];
+  summary: string;
+  gameLaunchers: GameLauncher[];
+  isDlc: boolean;
+  dlcs: Game[];
+  parentGame: Game | null;
+  statuses?: string;
 }
 
-export interface UserGamesResponse {
-  userGames: {
-    PLAYED: UserGame[]
-    PLAYING: UserGame[]
-    BACKLOG: UserGame[]
-    WISHLIST: UserGame[]
-  }
-  totalPerStatus: TotalPerStatus[]
-  totalGames: number
-}
+// export interface UserGamesResponse {
+//   userGames: {
+//     PLAYED: UserGame[]
+//     PLAYING: UserGame[]
+//     BACKLOG: UserGame[]
+//     WISHLIST: UserGame[]
+//   }
+//   totalPerStatus: TotalPerStatus[]
+//   totalGames: number
+// }
 
 export interface TotalPerStatus {
-  status: string
-  totalGames: number
+  status: string;
+  totalGames: number;
 }
 
 export interface UserProfileResponse {
-  user: User
+  user: User;
 }
 
 export interface User {
-  id: string
-  email: string
-  userName: string
-  profilePicture: string
-  userBanner: string
-  gamesAmount: number
+  id: string;
+  email: string;
+  userName: string;
+  profilePicture: string;
+  userBanner: string;
+  gamesAmount: number;
 }
 
 export interface GameStatus {
-  id: number
-  status: string
+  id: number;
+  status: string;
 }
 
 export interface GameStatsResponse {
-  playedCount: number
+  playedCount: number;
 }

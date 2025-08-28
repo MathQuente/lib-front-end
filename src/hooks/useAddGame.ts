@@ -29,7 +29,7 @@ export const useAddGame = (gameId?: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
-      queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesStatus', userId, gameId] })
       queryClient.invalidateQueries({
         queryKey: ['rating', userId, gameId]
       })

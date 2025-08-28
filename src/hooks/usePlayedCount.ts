@@ -3,6 +3,7 @@ import { useAuth } from './useAuth'
 import { useApi } from './useApi'
 import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
+import { useGameStatus } from './useGameStatus'
 
 export const getGameStatsQueryKey = (userId: string, gameId: string) => [
   'gameStats',
@@ -15,13 +16,16 @@ export const usePlayedCount = (gameId: string) => {
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
+  
+    const { gameStatus } = useGameStatus(gameId)
+    const isPlayed = gameStatus?.userGameStatus?.id === 1
 
   const queryKey = getGameStatsQueryKey(userId, gameId)
 
   const { data: completionsData } = useQuery<GameStatsResponse>({
     queryKey: queryKey,
     queryFn: () => api.getGameStats(gameId),
-    enabled: Boolean(gameId && userId),
+    enabled: Boolean(gameId && userId && isPlayed),
     staleTime: 1000 * 60 * 5
   })
 

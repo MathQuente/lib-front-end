@@ -1,32 +1,34 @@
-import { Link } from 'react-router-dom'
-import { PiGameControllerBold } from 'react-icons/pi'
-import { UserGameCard } from './userGamesComponents/userGameCard'
-import type { TotalPerStatus, UserGame } from '../types/user'
+import { Link } from "react-router-dom";
+import { PiGameControllerBold } from "react-icons/pi";
 
-type Status = 'BACKLOG' | 'PLAYED' | 'PLAYING' | 'WISHLIST'
+import type { TotalPerStatus } from "../types/user";
+import { GameBase } from "../types/games";
+import { GameCard } from "./gamesComponents/gameCard";
+
+type Status = "BACKLOG" | "PLAYED" | "PLAYING" | "WISHLIST";
 
 interface UserGameDivProps {
-  userGames: Record<Status, UserGame[]>
-  totalPerStatus: TotalPerStatus[]
+  Games: Record<Status, GameBase[]>;
+  totalPerStatus: TotalPerStatus[];
 }
 
-export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
+export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
   const statusTranslations: Record<string, string> = {
-    PLAYED: 'Played',
-    PLAYING: 'Playing',
-    BACKLOG: 'Backlog',
-    WISHLIST: 'Wishlist'
-  }
+    PLAYED: "Played",
+    PLAYING: "Playing",
+    BACKLOG: "Backlog",
+    WISHLIST: "Wishlist",
+  };
 
-  const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
+  const statusOrder: Status[] = ["PLAYED", "PLAYING", "BACKLOG", "WISHLIST"];
 
   return (
     <div className="space-y-8 mb-4">
-      {statusOrder.map(statusKey => {
-        const gamesForStatus = userGames[statusKey] || []
+      {statusOrder.map((statusKey) => {
+        const gamesForStatus = Games[statusKey] || [];
         const total =
-          totalPerStatus.find(t => t.status === statusKey)?.totalGames ?? 0
-        const displayStatus = statusTranslations[statusKey]
+          totalPerStatus.find((t) => t.status === statusKey)?.totalGames ?? 0;
+        const displayStatus = statusTranslations[statusKey];
 
         return (
           <div
@@ -63,15 +65,20 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
                                 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-6
                                 md:gap-x-4 lg:gap-x-4 2xl:gap-x-6"
                 >
-                  {gamesForStatus.slice(0, 6).map(userGame => (
-                    <UserGameCard userGame={userGame} key={userGame.id} />
+                  {gamesForStatus.slice(0, 6).map((game) => (
+                    <GameCard
+                      game={game}
+                      key={game.id}
+                      size="medium"
+                      enableModal
+                    />
                   ))}
                 </div>
               </div>
             ) : (
               <div className="flex justify-center p-4">
                 <h2 className="text-xl font-bold text-gray-300">
-                  No games added yet. Search for it{' '}
+                  No games added yet. Search for it{" "}
                   <Link to="/games" className="text-[#7A38CA]">
                     here
                   </Link>
@@ -80,8 +87,8 @@ export function UserGamesDiv({ userGames, totalPerStatus }: UserGameDivProps) {
               </div>
             )}
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

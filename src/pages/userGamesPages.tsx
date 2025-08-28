@@ -11,12 +11,12 @@ import { IconButton } from '../components/iconButton'
 import { SideBar } from '../components/sideBar'
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { UserGameCard } from '../components/userGamesComponents/userGameCard'
 import { useApi } from '../hooks/useApi'
-import type { UserGame, UserGamesResponse } from '../types/user'
+import type { GameBase, UserGamesResponse } from '../types/games'
 import { useAuth } from '../hooks/useAuth'
 import { GameStatusEnum } from '../types/games'
 import { useParams } from 'react-router-dom'
+import { GameCard } from '../components/gamesComponents/gameCard'
 
 type StatusKey =
   | 'playedGames'
@@ -67,7 +67,7 @@ export function UserGamesPageByStatus() {
     placeholderData: keepPreviousData
   })
 
-  const gamesForPage: UserGame[] = UserGamesResponse?.userGames[filter] ?? []
+  const gamesForPage: GameBase[] = UserGamesResponse?.games[filter] ?? []
 
   const totalOfThisStatus =
     UserGamesResponse?.totalPerStatus.find(t => t.status === filter)
@@ -141,8 +141,8 @@ export function UserGamesPageByStatus() {
           <div className="flex flex-col ml-20 sm:ml-20 md:ml-20 lg:ml-52 lg:mr-20 xl:ml-52 xl:mr-20 2xl:ml-48 bg-[#272932] w-[400px] sm:w-[500px] md:w-[650px] lg:w-[750px] xl:w-[1050px] 2xl:min-w-[1300px] min-h-[1085px]">
             <div className="flex justify-center py-5 px-4">
               <div className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-3 md:grid-cols-4 md:gap-x-4 md:gap-y-4 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-4 xl:grid-cols-6 xl:gap-5">
-                {gamesForPage.map(userGame => (
-                  <UserGameCard userGame={userGame} key={userGame.id} />
+                {gamesForPage.map(game => (
+                  <GameCard game={game} key={game.id} size='medium' enableModal />
                 ))}
               </div>
             </div>
