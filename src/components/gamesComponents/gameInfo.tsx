@@ -15,8 +15,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
 
   return (
     <div key={game?.id} className="flex flex-col p-4">
-      <div className="flex flex-col md:flex-row md:justify-around py-4">
-        {/* Game Image */}
+      <div className="flex flex-col items-center md:flex-row md:justify-around py-4">
         <div className="flex items-center">
           <img
             className="rounded-md w-[285px] h-[380px]"
@@ -25,8 +24,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
           />
         </div>
 
-        {/* Game Info */}
-        <div className="flex flex-col justify-around items-center">
+        <div className="flex flex-col justify-around items-center mt-2">
           <div className="flex flex-wrap flex-col items-center">
             <h1 className="text-base md:text-xl font-bold">{game?.gameName}</h1>
           </div>
@@ -46,12 +44,11 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="flex justify-between pt-4 border-t border-gray-700">
         <Link to={`/games/${game?.id}`}>
           <button
             type="button"
-            className="ml-4 px-4 py-2 bg-gradient-to-t from-[#4D23A5] to-[#783FCF] hover:from-[#5D23A5] hover:to-[#813FCF] text-white rounded"
+            className="px-4 py-2 bg-gradient-to-t from-[#4D23A5] to-[#783FCF] hover:from-[#5D23A5] hover:to-[#813FCF] text-white rounded"
           >
             View Details
           </button>

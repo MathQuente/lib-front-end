@@ -5,12 +5,13 @@ import type { FieldValues } from 'react-hook-form'
 import type { z } from 'zod'
 
 import { RxCross2 } from 'react-icons/rx'
-import { TbCameraPlus } from 'react-icons/tb'
+import { TbCameraPlus, TbUser } from 'react-icons/tb'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 
 import { updateProfileSchema } from '../../schemas/profileSchema'
 
 import { useUserProfile } from '../../hooks/useUserProfile'
+import { Button } from '../button'
 
 type UserGamesFormProps = {
   afterSave: () => void
@@ -22,24 +23,24 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
   const [profilePicturePreview, setProfilePicturePreview] = useState('')
   const [userBannerPreview, setUserBannerPreview] = useState('')
 
-  // Estado que só indica “o usuário já tem banner salvo”
+  // Estado que só indica "o usuário já tem banner salvo"
   const [hasExistingBanner, setHasExistingBanner] = useState(false)
-  // Estado que indica “o usuário clicou em remover”
+  // Estado que indica "o usuário clicou em remover"
   const [shouldRemoveBanner, setShouldRemoveBanner] = useState(false)
 
   const { UserProfileResponse, updateUserProfile, isUpdatingProfile } =
     useUserProfile({
       onUpdateSuccess: afterSave,
-      removeUserBanner: shouldRemoveBanner,
+      removeUserBanner: shouldRemoveBanner
     })
 
   const {
     register: registerUpdateProfile,
     setValue,
     handleSubmit,
-    formState: { errors: errosUpdateProfile },
+    formState: { errors: errosUpdateProfile }
   } = useForm<profileForm>({
-    resolver: zodResolver(updateProfileSchema),
+    resolver: zodResolver(updateProfileSchema)
   })
 
   useEffect(() => {
@@ -92,12 +93,13 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(profileHandleSubmit)}>
-        <div className="flex flex-row items-center bg-[#272932] rounded-md w-[650px] h-[260px]">
+    <div className="w-full max-w-xs py-4 lg:max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit(profileHandleSubmit)} className="space-y-6">
+        {/* Banner Section */}
+        <div className="relative overflow-hidden bg-[#1a1c26] rounded-xl shadow-lg">
           {!userBannerPreview && (!hasExistingBanner || shouldRemoveBanner) && (
-            <div className="flex items-center justify-center w-[650px] h-[200px]">
-              <label htmlFor="userBanner">
+            <div className="flex flex-col items-center justify-center w-full h-[200px] text-center">
+              <label htmlFor="userBanner" className="cursor-pointer group">
                 <input
                   id="userBanner"
                   type="file"
@@ -107,70 +109,82 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
                   {...registerUpdateProfile('userBanner', {
                     onChange: e => {
                       handleUserBanner(e)
-                    },
+                    }
                   })}
                 />
-                <div className="rounded-full bg-black opacity-60 w-10 h-10  flex items-center justify-center hover:bg-black hover:brightness-150 hover:opacity-45 hover:cursor-pointer delay-100">
-                  <TbCameraPlus className="size-6 text-[#d0cac7]" />
+                <div className="rounded-full bg-white/10 backdrop-blur-sm border border-white/20 w-16 h-16 flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-300 shadow-lg">
+                  <TbCameraPlus className="w-8 h-8 text-white" />
                 </div>
               </label>
             </div>
           )}
           {(userBannerPreview || hasExistingBanner) && (
-            <div>
+            <div className="relative w-full h-full group">
               <img
                 src={userBannerPreview || UserProfileResponse?.user?.userBanner}
                 alt=""
-                className="rounded w-[650px] h-[200px] opacity-65"
+                className="rounded-2xl w-full h-[200px] "
               />
-              <label htmlFor="userBanner">
-                <input
-                  id="userBanner"
-                  type="file"
-                  accept="image/*"
-                  style={{ position: 'fixed', top: '-100em' }}
-                  {...registerUpdateProfile('userBanner', {
-                    onChange: e => {
-                      const file = e.target.files?.[0] ?? null
-                      if (file) {
-                        const url = URL.createObjectURL(file)
-                        setUserBannerPreview(url)
-                      }
-                      return file
-                    },
-                  })}
-                />
-                <div className="rounded-full bg-black opacity-60 w-10 h-10 absolute left-[330px] top-[130px] flex items-center justify-center hover:bg-black hover:brightness-150 hover:opacity-45 hover:cursor-pointer delay-100">
-                  <TbCameraPlus className="size-6 text-[#d0cac7]" />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-center justify-center pointer-events-none group-hover:pointer-events-auto">
+                <div className="flex items-center space-x-3">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ position: 'fixed', top: '-100em' }}
+                      {...registerUpdateProfile('userBanner', {
+                        onChange: e => {
+                          const file = e.target.files?.[0] ?? null
+                          if (file) {
+                            const url = URL.createObjectURL(file)
+                            setUserBannerPreview(url)
+                          }
+                          return file
+                        }
+                      })}
+                    />
+                    <div className="rounded-full bg-gradient-to-t from-[#4D23A5]/70 to-[#783FCF]/70  hover:from-[#5D23A5] hover:to-[#813FCF] backdrop-blur-sm border border-white/30 w-12 h-12 flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg">
+                      <TbCameraPlus className="w-6 h-6 text-white" />
+                    </div>
+                  </label>
+
+                  <button
+                    type="button"
+                    className="rounded-full bg-red-500/80 backdrop-blur-sm border border-red-400/50 w-12 h-12 flex items-center justify-center hover:bg-red-600/90 hover:scale-110 transition-all duration-300 shadow-lg"
+                    onClick={handleRemoveBanner}
+                  >
+                    <RxCross2 className="w-6 h-6 text-white" />
+                  </button>
                 </div>
-              </label>
-              <button
-                type="button"
-                className="rounded-full bg-black opacity-60 w-10 h-10 absolute left-[385px] top-[130px] flex items-center justify-center hover:bg-black hover:brightness-150 hover:opacity-45 hover:cursor-pointer delay-100"
-                onClick={handleRemoveBanner}
-              >
-                <RxCross2 className="size-6 text-[#d0cac7]" />
-              </button>
+              </div>
             </div>
           )}
+        </div>
 
-          <div className="absolute top-[200px] left-[17%] transform -translate-x-1/2 size-28 bg-[#272932] rounded-full flex items-center justify-center">
-            <img
-              src={
-                profilePicturePreview ||
-                (UserProfileResponse?.user?.profilePicture === null
-                  ? userProfilePictureDefault
-                  : UserProfileResponse?.user?.profilePicture)
-              }
-              alt=""
-              className="size-24 rounded-full"
-            />
-            <label htmlFor="profilePicture">
+        <div className="absolute top-36 left-20">
+          <div className="relative">
+            <div className="w-24 h-24 bg-[#272932] shadow-lg ring-4 ring-[#272932] rounded-full">
+              <img
+                src={
+                  profilePicturePreview ||
+                  (UserProfileResponse?.user?.profilePicture === null
+                    ? userProfilePictureDefault
+                    : UserProfileResponse?.user?.profilePicture)
+                }
+                alt=""
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+
+            <label
+              htmlFor="profilePicture"
+              className="absolute -bottom-1 -right-1 cursor-pointer group"
+            >
               <input
                 id="profilePicture"
                 type="file"
                 accept="image/*"
-                style={{ position: 'fixed', top: '-100em' }}
+                className="sr-only"
                 {...registerUpdateProfile('profilePicture', {
                   onChange: e => {
                     const file = e.target.files?.[0] ?? null
@@ -179,51 +193,75 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
                       setProfilePicturePreview(url)
                     }
                     return file
-                  },
+                  }
                 })}
               />
-              <div className="rounded-full bg-black opacity-60 w-10 h-10 absolute left-[35px] top-[40px] flex items-center justify-center hover:bg-black hover:brightness-150 hover:opacity-45 hover:cursor-pointer delay-100">
-                <TbCameraPlus className="size-6 text-white" />
+              <div className="rounded-full bg-gradient-to-t from-[#4D23A5] to-[#783FCF] p-2 hover:from-[#5D23A5] hover:to-[#813FCF] transition-all duration-300 group-hover:scale-110 shadow-lg">
+                <TbCameraPlus className="w-4 h-4 text-white" />
               </div>
-              {errosUpdateProfile.profilePicture && (
-                <span className="text-red-600">
-                  {errosUpdateProfile.profilePicture.message}
-                </span>
-              )}
             </label>
           </div>
-        </div>
-        <div className="w-full flex justify-end px-4 h-10">
-          {isUpdatingProfile ? (
-            'Uploading...'
-          ) : (
-            <button
-              type="submit"
-              className="p-2 rounded-2xl bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105
-              hover:from-[#5D23A5] hover:to-[#813FCF]
-               text-white font-semibold w-24"
-            >
-              Save
-            </button>
+
+          {errosUpdateProfile.profilePicture && (
+            <div className="absolute top-full mt-2 left-0">
+              <span className="text-red-400 text-sm bg-red-900/20 px-2 py-1 rounded backdrop-blur-sm">
+                {errosUpdateProfile.profilePicture.message}
+              </span>
+            </div>
           )}
         </div>
-        <div className="flex justify-start w-full pb-4">
-          <label htmlFor="userName">
-            <p className="mb-2 text-[#bcb3b3]">Username</p>
-            <input
-              type="text"
-              className="bg-[#1A1C26] text-[#8F8F8F] rounded-lg block p-2.5 pl-10"
-              defaultValue={UserProfileResponse?.user?.userName}
-              {...registerUpdateProfile('userName')}
-            />
-            {errosUpdateProfile.userName && (
-              <span className="text-red-600 font-semibold">
-                {errosUpdateProfile.userName.message}
-              </span>
+
+        {/* Username Section */}
+        <div className="pt-16 space-y-6">
+          <div className="bg-[#272932] rounded-xl p-6 shadow-lg border border-[#3a3d4a]">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="rounded-full bg-gradient-to-t from-[#4D23A5] to-[#783FCF] p-2">
+                <TbUser className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-[#d0cac7] font-semibold text-lg">
+                Profile Information
+              </h3>
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="userName"
+                className="block text-[#bcb3b3] font-medium"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="userName"
+                className="w-full bg-[#1A1C26] text-[#d0cac7] rounded-lg px-4 py-3 border border-[#3a3d4a] focus:border-[#4D23A5] focus:ring-2 focus:ring-[#4D23A5]/20 focus:outline-none transition-all duration-300 placeholder-[#8F8F8F]"
+                placeholder="Enter your username"
+                defaultValue={UserProfileResponse?.user?.userName}
+                {...registerUpdateProfile('userName')}
+              />
+              {errosUpdateProfile.userName && (
+                <span className="text-red-400 text-sm flex items-center space-x-1 mt-2">
+                  <span>⚠️</span>
+                  <span>{errosUpdateProfile.userName.message}</span>
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end">
+            {isUpdatingProfile ? (
+              <div className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-[#272932] border border-[#3a3d4a]">
+                <div className="w-5 h-5 border-2 border-[#4D23A5] border-t-transparent rounded-full animate-spin" />
+                <span className="text-[#d0cac7] font-medium">Uploading...</span>
+              </div>
+            ) : (
+              <Button variant="primary" loading={isUpdatingProfile}>
+                Save Changes
+              </Button>
             )}
-          </label>
+          </div>
         </div>
       </form>
-    </>
+    </div>
   )
 }

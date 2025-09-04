@@ -11,7 +11,7 @@ interface ButtonProps extends ComponentProps<'button'> {
 
 export function Button({
   variant = 'primary',
-  size = 'md',
+  size = 'sm',
   children,
   loading = false,
   fullWidth = false,

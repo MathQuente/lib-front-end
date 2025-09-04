@@ -1,23 +1,15 @@
 import { SideBar } from '../components/sideBar'
 
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight
-} from 'lucide-react'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 
 import type { ChangeEvent } from 'react'
 import { useRef, useState } from 'react'
-import { CiSearch } from 'react-icons/ci'
 import { ToastContainer } from 'react-toastify'
 
-import { IconButton } from '../components/iconButton'
-
-import { GameCard } from '../components/gamesComponents/gameCard'
 import { useGames } from '../hooks/useGames'
+import { SearchInput } from '../components/searchInput'
+import { Pagination } from '../components/pagination'
+import { GamesGrid } from '../components/gamesComponents/gamesGrid'
 
 type SortField = 'gameName' | 'dateRelease'
 type SortOrder = 'asc' | 'desc'
@@ -85,26 +77,6 @@ export function Games() {
     setCurrentPage(1)
   }
 
-  function goToFirstPage() {
-    setCurrentPage(1)
-  }
-
-  function goToLastPage() {
-    setCurrentPage(totalPages)
-  }
-
-  function goToNextPage() {
-    if (page < totalPages) {
-      setCurrentPage(page + 1)
-    }
-  }
-
-  function goToPreviousPage() {
-    if (page > 1) {
-      setCurrentPage(page - 1)
-    }
-  }
-
   function onSortFieldChange(event: ChangeEvent<HTMLSelectElement>) {
     console.log(event.target.value)
     const value = event.target.value as SortField
@@ -119,28 +91,21 @@ export function Games() {
     setSortOrder('desc')
   }
 
+  function handleClearSearch() {
+    setCurrentSearch('')
+    setCurrentPage(1)
+  }
+
   return (
     <>
       <div className="flex min-h-screen bg-[#1A1C26]">
-        <SideBar />
-
         <div className="flex-1 flex flex-col md:ml-0">
+          <SideBar />
           <div ref={topRef} />
 
           <div className="flex flex-col items-center justify-center w-full px-6 md:px-6 lg:px-8">
-            <div className="flex gap-3 items-center justify-center mt-10">
-              <div className="relative">
-                <div className="relative w-full sm:w-72">
-                  <CiSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 size-6 text-[#8F8F8F] pointer-events-none" />
-                  <input
-                    onChange={onSearchInputChange}
-                    value={search}
-                    className="bg-[#272932] text-[#8F8F8F] rounded-2xl block w-full h-[62px] pl-[62px] focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    type="text"
-                    placeholder="Search"
-                  />
-                </div>
-              </div>
+            <div className="flex gap-3 items-center justify-center mt-4">
+              <SearchInput value={search} onChange={onSearchInputChange} />
             </div>
 
             <div className="flex flex-col items-center mt-4 w-full max-w-7xl">
@@ -207,116 +172,21 @@ export function Games() {
 
               <div className="flex flex-col w-full bg-[#272932] rounded-lg">
                 <div className="py-4 px-4 xl:px-7">
-                  {GamesResponse.games.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-x-2 gap-y-2 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 md:gap-6 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6 xl:gap-4 2xl:grid-cols-6 2xl:gap-4">
-                      {GamesResponse.games.map(game => (
-                        <GameCard
-                          size="medium"
-                          key={game.id}
-                          game={game}
-                          enableModal
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center w-full py-16">
-                      <div className="text-center space-y-4">
-                        <CiSearch className="mx-auto size-16 text-[#8F8F8F]" />
-                        <div className="space-y-2">
-                          <h3 className="text-xl font-semibold text-white">
-                            Nenhum jogo encontrado
-                          </h3>
-                          {search ? (
-                            <p className="text-[#8F8F8F] max-w-md">
-                              Não encontramos jogos que correspondam à sua busca
-                              por{' '}
-                              <span className="text-[#6930CD] font-medium">
-                                "{search}"
-                              </span>
-                              . Tente usar termos diferentes ou verifique a
-                              ortografia.
-                            </p>
-                          ) : (
-                            <p className="text-[#8F8F8F] max-w-md">
-                              Não há jogos disponíveis no momento. Tente
-                              novamente mais tarde.
-                            </p>
-                          )}
-                        </div>
-                        {search && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCurrentSearch('')
-                              setCurrentPage(1)
-                            }}
-                            className="mt-4 px-6 py-2 bg-[#6930CD] text-white rounded-lg hover:bg-[#5a28a8] transition-colors duration-200"
-                          >
-                            Limpar pesquisa
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  <GamesGrid
+                    games={GamesResponse.games}
+                    search={search}
+                    onClearSearch={handleClearSearch}
+                  />
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-6 pt-5 pb-5">
-                <span className="flex gap-1">
-                  <p className="text-[#6930CD]">Mostrando</p>
-                  <p className="text-gray-500">{GamesResponse.games.length}</p>
-                  <p className="text-[#6930CD]">de</p>
-                  <p className="text-gray-500"> {GamesResponse.total}</p>
-                  <p className="text-[#6930CD]">items</p>
-                </span>
-                <span className="flex gap-1">
-                  <p className="text-[#6930CD]">Página</p>
-                  <p className="text-gray-500">{page}</p>
-                  <p className="text-[#6930CD]">de</p>
-                  <p className="text-gray-500">{totalPages}</p>
-                  <p className="text-[#6930CD]">items</p>
-                </span>
-                <div className="flex gap-1.5">
-                  <IconButton onClick={goToFirstPage} disabled={page === 1}>
-                    <ChevronsLeft
-                      className={`${
-                        page === 1
-                          ? 'size-4 text-black'
-                          : 'size-4 text-[#6930CD]'
-                      }`}
-                    />
-                  </IconButton>
-                  <IconButton onClick={goToPreviousPage} disabled={page === 1}>
-                    <ChevronLeft
-                      className={`${
-                        page === 1
-                          ? 'size-4 text-black'
-                          : 'size-4 text-[#6930CD]'
-                      }`}
-                    />
-                  </IconButton>
-                  <IconButton
-                    onClick={goToNextPage}
-                    disabled={page === totalPages}
-                  >
-                    <ChevronRight
-                      className={`size-4 ${
-                        page === totalPages ? 'text-black' : 'text-[#6930CD]'
-                      }`}
-                    />
-                  </IconButton>
-                  <IconButton
-                    onClick={goToLastPage}
-                    disabled={page === totalPages}
-                  >
-                    <ChevronsRight
-                      className={`size-4 ${
-                        page === totalPages ? 'text-black' : 'text-[#6930CD]'
-                      }`}
-                    />
-                  </IconButton>
-                </div>
-              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={GamesResponse.total}
+                itemsPerPage={GamesResponse.games.length}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>

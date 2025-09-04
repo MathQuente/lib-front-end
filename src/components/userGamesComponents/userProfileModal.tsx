@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 export function UserProfileModal({
   open,
   onOpenChange,
-  children,
+  children
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -21,7 +21,7 @@ export function UserProfileModal({
         <Dialog.Description>
           <VisuallyHidden.Root />
         </Dialog.Description>
-        <Dialog.Content className="fixed bg-[#272932] pt-4 px-12 text-white top-1/2 left-1/2 delay-3000 -translate-x-1/2 -translate-y-1/2 rounded-lg">
+        <Dialog.Content className="w-[380px] lg:w-[750px] fixed bg-[#272932] lg:pt-4 lg:px-12 text-white top-1/2 left-1/2 delay-3000 -translate-x-1/2 -translate-y-1/2 rounded-lg">
           {children}
         </Dialog.Content>
       </Dialog.Portal>

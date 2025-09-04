@@ -1,39 +1,39 @@
-import { Link } from "react-router-dom";
-import { PiGameControllerBold } from "react-icons/pi";
+import { Link } from 'react-router-dom'
+import { PiGameControllerBold } from 'react-icons/pi'
 
-import type { TotalPerStatus } from "../types/user";
-import { GameBase } from "../types/games";
-import { GameCard } from "./gamesComponents/gameCard";
+import type { TotalPerStatus } from '../types/user'
+import type { GameBase } from '../types/games'
+import { GameCard } from './gamesComponents/gameCard'
 
-type Status = "BACKLOG" | "PLAYED" | "PLAYING" | "WISHLIST";
+type Status = 'BACKLOG' | 'PLAYED' | 'PLAYING' | 'WISHLIST'
 
 interface UserGameDivProps {
-  Games: Record<Status, GameBase[]>;
-  totalPerStatus: TotalPerStatus[];
+  Games: Record<Status, GameBase[]>
+  totalPerStatus: TotalPerStatus[]
 }
 
 export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
   const statusTranslations: Record<string, string> = {
-    PLAYED: "Played",
-    PLAYING: "Playing",
-    BACKLOG: "Backlog",
-    WISHLIST: "Wishlist",
-  };
+    PLAYED: 'Played',
+    PLAYING: 'Playing',
+    BACKLOG: 'Backlog',
+    WISHLIST: 'Wishlist'
+  }
 
-  const statusOrder: Status[] = ["PLAYED", "PLAYING", "BACKLOG", "WISHLIST"];
+  const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
 
   return (
-    <div className="space-y-8 mb-4">
-      {statusOrder.map((statusKey) => {
-        const gamesForStatus = Games[statusKey] || [];
+    <div className="space-y-8 mb-6">
+      {statusOrder.map(statusKey => {
+        const gamesForStatus = Games[statusKey] || []
         const total =
-          totalPerStatus.find((t) => t.status === statusKey)?.totalGames ?? 0;
-        const displayStatus = statusTranslations[statusKey];
+          totalPerStatus.find(t => t.status === statusKey)?.totalGames ?? 0
+        const displayStatus = statusTranslations[statusKey]
 
         return (
           <div
             key={statusKey}
-            className="mt-8 bg-[#272932] rounded ml-24 w-[370px] sm:w-[500px] sm:ml-24
+            className="mt-8 bg-[#272932] rounded w-[370px] sm:w-[500px] sm:ml-24
                        md:min-w-[650px] lg:ml-32 lg:min-w-[850px]
                        xl:ml-32 xl:mr-8 xl:min-w-[1070px] 2xl:ml-24 2xl:min-w-[1280px] p-2"
           >
@@ -61,11 +61,11 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
             {gamesForStatus.length > 0 ? (
               <div className="flex justify-center py-2 px-2">
                 <div
-                  className="grid grid-cols-3 gap-x-3
+                  className="grid grid-cols-3 gap-x-3 gap-y-1
                                 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-6
                                 md:gap-x-4 lg:gap-x-4 2xl:gap-x-6"
                 >
-                  {gamesForStatus.slice(0, 6).map((game) => (
+                  {gamesForStatus.slice(0, 6).map(game => (
                     <GameCard
                       game={game}
                       key={game.id}
@@ -78,7 +78,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
             ) : (
               <div className="flex justify-center p-4">
                 <h2 className="text-xl font-bold text-gray-300">
-                  No games added yet. Search for it{" "}
+                  No games added yet. Search for it{' '}
                   <Link to="/games" className="text-[#7A38CA]">
                     here
                   </Link>
@@ -87,8 +87,8 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
               </div>
             )}
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

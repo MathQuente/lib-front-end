@@ -70,7 +70,7 @@ export function SideBar() {
       <>
         {/* Botão hambúrguer fixo */}
         <button
-          className="fixed top-4 left-4 z-50 p-2 bg-[#272932] text-white rounded-lg shadow-lg md:hidden"
+          className="ml-2 mt-2 w-10 h-12 p-2 bg-[#272932] text-white rounded-lg shadow-lg md:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
         >
