@@ -15,22 +15,31 @@ import { Button } from '../button'
 
 type UserGamesFormProps = {
   afterSave: () => void
+  onCancel?: () => void
 }
 
 type profileForm = z.infer<typeof updateProfileSchema>
 
-export function UserProfileForm({ afterSave }: UserGamesFormProps) {
+export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
   const [profilePicturePreview, setProfilePicturePreview] = useState('')
   const [userBannerPreview, setUserBannerPreview] = useState('')
-
-  // Estado que só indica "o usuário já tem banner salvo"
   const [hasExistingBanner, setHasExistingBanner] = useState(false)
-  // Estado que indica "o usuário clicou em remover"
   const [shouldRemoveBanner, setShouldRemoveBanner] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [originalValues, setOriginalValues] = useState({
+    userName: '',
+    profilePicture: '',
+    userBanner: ''
+  })
 
   const { UserProfileResponse, updateUserProfile, isUpdatingProfile } =
     useUserProfile({
-      onUpdateSuccess: afterSave,
+      onUpdateSuccess: () => {
+        setHasChanges(false)
+        afterSave()
+      },
       removeUserBanner: shouldRemoveBanner
     })
 
@@ -38,27 +47,62 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
     register: registerUpdateProfile,
     setValue,
     handleSubmit,
+    watch,
     formState: { errors: errosUpdateProfile }
   } = useForm<profileForm>({
     resolver: zodResolver(updateProfileSchema)
   })
 
+  const watchedValues = watch()
+
   useEffect(() => {
     if (UserProfileResponse?.user.userBanner) {
       setHasExistingBanner(true)
     }
-  }, [UserProfileResponse?.user.userBanner])
+
+    if (UserProfileResponse?.user) {
+      const original = {
+        userName: UserProfileResponse.user.userName || '',
+        profilePicture: UserProfileResponse.user.profilePicture || '',
+        userBanner: UserProfileResponse.user.userBanner || ''
+      }
+      setOriginalValues(original)
+    }
+  }, [UserProfileResponse?.user])
+
+  useEffect(() => {
+    if (!UserProfileResponse?.user) return
+
+    const currentUserName = watchedValues.userName || ''
+    const hasUserNameChanged = currentUserName !== originalValues.userName
+    const hasProfilePictureChanged = !!profilePicturePreview
+    const hasBannerChanged = !!userBannerPreview || shouldRemoveBanner
+
+    const hasAnyChanges =
+      hasUserNameChanged || hasProfilePictureChanged || hasBannerChanged
+
+    setHasChanges(hasAnyChanges)
+  }, [
+    watchedValues,
+    profilePicturePreview,
+    userBannerPreview,
+    shouldRemoveBanner,
+    originalValues,
+    UserProfileResponse?.user
+  ])
 
   async function profileHandleSubmit(data: FieldValues) {
-    if (!data) return
+    if (!data || !hasChanges) return
 
-    // Preparar dados para envio
+    setIsSubmitting(true)
+
     const updateData: {
       userName?: string
       profilePicture?: File
       userBanner?: File | null
     } = {}
-    if (data.userName) {
+
+    if (data.userName && data.userName !== originalValues.userName) {
       updateData.userName = data.userName
     }
 
@@ -72,13 +116,23 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
       updateData.userBanner = null
     }
 
-    updateUserProfile(updateData)
+    if (Object.keys(updateData).length === 0) {
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      updateUserProfile(updateData)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleUserBanner = (e: FieldValues) => {
     const file = e.target.files[0]
     if (file) {
       setUserBannerPreview(URL.createObjectURL(file))
+      setShouldRemoveBanner(false)
     }
   }
 
@@ -92,10 +146,23 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
     setHasExistingBanner(false)
   }
 
+  const handleCancel = () => {
+    setProfilePicturePreview('')
+    setUserBannerPreview('')
+    setShouldRemoveBanner(false)
+    setHasExistingBanner(!!UserProfileResponse?.user.userBanner)
+    setHasChanges(false)
+
+    setValue('userName', UserProfileResponse?.user?.userName || '')
+    setValue('profilePicture', null)
+    setValue('userBanner', null)
+
+    onCancel?.()
+  }
+
   return (
     <div className="w-full max-w-xs py-4 lg:max-w-4xl mx-auto">
       <form onSubmit={handleSubmit(profileHandleSubmit)} className="space-y-6">
-        {/* Banner Section */}
         <div className="relative overflow-hidden bg-[#1a1c26] rounded-xl shadow-lg">
           {!userBannerPreview && (!hasExistingBanner || shouldRemoveBanner) && (
             <div className="flex flex-col items-center justify-center w-full h-[200px] text-center">
@@ -138,6 +205,7 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
                           if (file) {
                             const url = URL.createObjectURL(file)
                             setUserBannerPreview(url)
+                            setShouldRemoveBanner(false)
                           }
                           return file
                         }
@@ -211,7 +279,6 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
           )}
         </div>
 
-        {/* Username Section */}
         <div className="pt-16 space-y-6">
           <div className="bg-[#272932] rounded-xl p-6 shadow-lg border border-[#3a3d4a]">
             <div className="flex items-center space-x-3 mb-4">
@@ -247,18 +314,31 @@ export function UserProfileForm({ afterSave }: UserGamesFormProps) {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-end">
-            {isUpdatingProfile ? (
+          <div className="flex justify-end space-x-4">
+            {isSubmitting ? (
               <div className="flex items-center space-x-3 px-6 py-3 rounded-xl bg-[#272932] border border-[#3a3d4a]">
                 <div className="w-5 h-5 border-2 border-[#4D23A5] border-t-transparent rounded-full animate-spin" />
                 <span className="text-[#d0cac7] font-medium">Uploading...</span>
               </div>
             ) : (
-              <Button variant="primary" loading={isUpdatingProfile}>
+              <Button
+                variant="primary"
+                loading={isUpdatingProfile}
+                disabled={!hasChanges || isSubmitting}
+                className={!hasChanges ? 'opacity-50 cursor-not-allowed' : ''}
+              >
                 Save Changes
               </Button>
             )}
+
+            <Button
+              type="button"
+              variant="cancel"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
           </div>
         </div>
       </form>

@@ -46,7 +46,7 @@ export function GamePage() {
               </div>
               {user ? (
                 <div className="w-full flex flex-col items-center justify-center mt-4">
-                  <RatingAverage gameId={GameResponse.game.id} isForGamePage />
+                  <RatingAverage game={GameResponse.game} isForGamePage />
                   <GameForm game={GameResponse.game} />
                 </div>
               ) : (
@@ -65,7 +65,7 @@ export function GamePage() {
               <div className="flex flex-col items-center mt-4">
                 <p className="text-gray-400">Avg Rating </p>
 
-                <RatingAverage gameId={GameResponse.game.id} justAverage />
+                <RatingAverage game={GameResponse.game} justAverage />
               </div>
 
               <RatingChart GameResponse={GameResponse} />

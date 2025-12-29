@@ -6,9 +6,8 @@ import { useUserProfile } from '../hooks/useUserProfile'
 import { SideBarItem } from './sidebarItem'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import { useState, useEffect } from 'react'
-import { ChevronFirst, ChevronLast } from 'lucide-react'
-import { IoLogOut } from 'react-icons/io5'
-import { CiSearch } from 'react-icons/ci'
+import { IoArrowDown, IoLogOut } from 'react-icons/io5'
+import { MdKeyboardArrowDown } from 'react-icons/md'
 import { HiMenu, HiX } from 'react-icons/hi'
 import { SearchBar } from './searchBar'
 import { useApi } from '../hooks/useApi'
@@ -16,10 +15,13 @@ import { useApi } from '../hooks/useApi'
 export function SideBar() {
   const { user } = useAuth()
   const api = useApi()
-  const [expanded, setExpanded] = useState(false)
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [openProfileMenu, setOpenProfileMenu] = useState(false)
   const { UserProfileResponse } = useUserProfile()
+
+  // const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Detecta se é mobile
   useEffect(() => {
@@ -81,7 +83,7 @@ export function SideBar() {
         {mobileMenuOpen && (
           // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50  md:hidden"
             onClick={closeMobileMenu}
           />
         )}
@@ -120,7 +122,6 @@ export function SideBar() {
                         key={key}
                         {...restItem}
                         active={location.pathname === item.to}
-                        expanded={true}
                       />
                     </div>
                   )
@@ -169,7 +170,6 @@ export function SideBar() {
                         key={key}
                         {...loginProps}
                         active={location.pathname === loginItem.to}
-                        expanded={true}
                       />
                     )
                   })()}
@@ -182,50 +182,83 @@ export function SideBar() {
     )
   }
 
-  // Versão desktop (original com pequenos ajustes)
   return (
-    <aside className="fixed h-screen z-50 hidden md:block">
-      <nav className="h-full flex flex-col bg-[#272932] border-r shadow-sm">
-        <div className="p-4 pb-2 flex justify-between items-center">
-          <h1
-            className={`overflow-hidden transition-all text-white font-bold ${
-              expanded ? 'w-32' : 'w-0'
-            }`}
-          >
-            Logo
-          </h1>
-          <button
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-            type="button"
-            onClick={() => setExpanded(curr => !curr)}
-          >
-            {expanded ? <ChevronFirst /> : <ChevronLast />}
-          </button>
+    <aside className="w-full h-9">
+      <nav className="h-full flex items-center justify-between">
+        <div className="flex">
+          <Link to={'/'}>
+            <h1
+              className={'overflow-hidden transition-all text-white font-bold'}
+            >
+              Logo
+            </h1>
+          </Link>
         </div>
 
-        <div className="px-3 pb-2">
-          {expanded ? (
+        {isLoggedIn ? (
+          <div className="flex gap-3 items-center">
+            <div
+              onMouseEnter={() => setOpenProfileMenu(true)}
+              onMouseLeave={() => setOpenProfileMenu(false)}
+              className={`relative ${
+                openProfileMenu ? 'bg-dark-bg-lighter rounded-t-md' : ''
+              }`}
+            >
+              <p className="text-primary hover:text-primary-light flex items-center gap-1 px-3 py-2 hover:cursor-pointer">
+                {user?.userName}
+                <MdKeyboardArrowDown />
+              </p>
+
+              {openProfileMenu && (
+                <div className="absolute top-full right-0 w-full bg-dark-bg-lighter rounded-b-md shadow-lg flex flex-col gap-1 z-10">
+                  <Link
+                    to="/userLibrary"
+                    className="block text-gray-500 hover:text-white hover:bg-gray-600 transition-colors pl-3"
+                  >
+                    Minha Biblioteca
+                  </Link>
+                  <Link
+                    onClick={handleLogout}
+                    className="block text-gray-500 hover:text-white hover:bg-gray-600 rounded-b-md transition-colors pl-3"
+                    to={'/'}
+                  >
+                    Log out
+                  </Link>
+                </div>
+              )}
+            </div>
+            <Link
+              to={'/games'}
+              className="text-primary hover:text-primary-light"
+            >
+              Games
+            </Link>
             <SearchBar isMobile={isMobile} />
-          ) : (
-            <>
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  title="Expand to search"
-                  onClick={() => setExpanded(true)}
-                  className="group p-3 rounded-lg hover:bg-indigo-50 transition-colors relative"
-                >
-                  <CiSearch className="text-gray-600" size={20} />
-                  <div className="absolute left-full top-1/2 -translate-y-1/2 rounded-md px-2 py-1 ml-6 bg-indigo-100 text-[#7A38CA] text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
-                    Search
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-
-        <ul className="flex-1 px-3">
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <Link
+              to={'/auth'}
+              className="text-primary hover:text-primary-light"
+            >
+              Log in
+            </Link>
+            <Link
+              to={'/auth'}
+              className="text-primary hover:text-primary-light"
+            >
+              Register
+            </Link>
+            <Link
+              to={'/games'}
+              className="text-primary hover:text-primary-light"
+            >
+              Games
+            </Link>
+            <SearchBar isMobile={isMobile} />
+          </div>
+        )}
+        {/* <ul className="flex-1 px-3">
           {menuItems
             .filter(item => !item.requiresAuth || isLoggedIn)
             .map(item => {
@@ -235,63 +268,10 @@ export function SideBar() {
                   key={key}
                   {...restItem}
                   active={location.pathname === item.to}
-                  expanded={expanded}
                 />
               )
             })}
-        </ul>
-        <div className="flex items-center p-3 border-t">
-          {isLoggedIn && UserProfileResponse ? (
-            <>
-              <Link to="/userLibrary">
-                <img
-                  src={
-                    UserProfileResponse.user.profilePicture === null
-                      ? userProfilePictureDefault
-                      : UserProfileResponse.user.profilePicture
-                  }
-                  alt=""
-                  className="object-fill size-10 rounded-md"
-                />
-              </Link>
-              <div
-                className={`flex justify-between items-center overflow-hidden transition-all ${
-                  expanded ? 'w-52 ml-3' : 'w-0'
-                }`}
-              >
-                <div className="leading-4">
-                  <p className="font-semibold text-white">
-                    {UserProfileResponse.user.userName}
-                  </p>
-                  <span className="text-xs text-gray-300">
-                    {UserProfileResponse.user.email}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="ml-4 hover:bg-gray-600 p-2 rounded-md"
-                >
-                  <IoLogOut className="text-[#7A38CA]" size={20} />
-                </button>
-              </div>
-            </>
-          ) : (
-            <div>
-              {(() => {
-                const { key, ...loginProps } = loginItem
-                return (
-                  <SideBarItem
-                    key={key}
-                    {...loginProps}
-                    active={location.pathname === loginItem.to}
-                    expanded={expanded}
-                  />
-                )
-              })()}
-            </div>
-          )}
-        </div>
+        </ul> */}
       </nav>
     </aside>
   )

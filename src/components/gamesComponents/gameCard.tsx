@@ -37,9 +37,8 @@ export function GameCard({
   const sizes = {
     small: 'w-12 h-16 rounded-lg',
     medium:
-      'rounded-lg w-28 h-32 sm:w-36 md:w-44 md:h-56 sm:h-40 lg:min-w-28 lg:h-44 xl:w-48 xl:h-52 2xl:w-48 2xl:min-h-64 transition-opacity duration-200 ease-in-out',
-    larger:
-      'w-40 h-48 lg:w-44 lg:h-52 rounded-lg transition-opacity duration-200 ease-in-out'
+      'rounded-lg aspect-[7/10] w-full transition-opacity duration-200 ease-in-out',
+    larger: 'w-44 h-56 rounded-lg transition-opacity duration-200 ease-in-out'
   }
 
   if (size === 'small') {
@@ -82,10 +81,11 @@ export function GameCard({
           onMouseLeave={handleMouseLeave}
         >
           {game?.isDlc && (
-            <span className="absolute left-2 bg-[#272932] mt-2 px-1.5 py-0.5 rounded-md z-10">
+            <span className="absolute left-2 bg-[#272932] mt-2 px-1.5 py-1 rounded-md">
               <p className="text-white text-xs">DLC</p>
             </span>
           )}
+
           <img
             className={twMerge(
               sizes[size],
@@ -95,7 +95,6 @@ export function GameCard({
             alt={`${game?.gameName} banner`}
           />
 
-          {/* Tooltip apenas para tamanho medium */}
           {
             <div
               className={`absolute inset-0 flex items-center justify-center bg-black rounded-lg transition-all duration-200 ease-in-out ${

@@ -50,47 +50,55 @@ export function GameForm({ game }: { game: GameBase | undefined }) {
     }
   }
 
+  const dateRelease = game?.gameLaunchers?.[0]?.dateRelease
+  const gameIsReleased = dateRelease ? new Date() > new Date(dateRelease) : true
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <button
-          className="flex flex-col items-center"
-          type="button"
-          onClick={() => handleAddGame(STATUS.PLAYED)}
-        >
-          <IoGameController
-            className={`size-8 ${
-              isPlayed ? 'text-green-600' : 'text-gray-600'
-            }`}
-          />
-          <p className="text-gray-400 hover:text-gray-100">Played</p>
-        </button>
+      <div className="flex justify-center gap-2">
+        {gameIsReleased && (
+          <>
+            <button
+              className="flex flex-col items-center"
+              type="button"
+              onClick={() => handleAddGame(STATUS.PLAYED)}
+            >
+              <IoGameController
+                className={`size-8 ${
+                  isPlayed ? 'text-[#7A38CA]' : 'text-gray-600'
+                }`}
+              />
+              <p className="text-gray-400 hover:text-gray-100">Played</p>
+            </button>
 
-        <button
-          className="flex flex-col items-center"
-          type="button"
-          onClick={() => handleAddGame(STATUS.PLAYING)}
-        >
-          <FaPlay
-            className={`size-8 ${
-              isPlaying ? 'text-green-600' : 'text-gray-600'
-            }`}
-          />
-          <p className="text-gray-400 hover:text-gray-100">Playing</p>
-        </button>
+            <button
+              className="flex flex-col items-center"
+              type="button"
+              onClick={() => handleAddGame(STATUS.PLAYING)}
+            >
+              <FaPlay
+                className={`size-8 ${
+                  isPlaying ? 'text-[#7A38CA]' : 'text-gray-600'
+                }`}
+              />
+              <p className="text-gray-400 hover:text-gray-100">Playing</p>
+            </button>
 
-        <button
-          className="flex flex-col items-center"
-          type="button"
-          onClick={() => handleAddGame(STATUS.BACKLOG)}
-        >
-          <IoLibrary
-            className={`size-8 ${
-              hasStatus(STATUS.BACKLOG) ? 'text-green-600' : 'text-gray-600'
-            }`}
-          />
-          <p className="text-gray-400 hover:text-gray-100">Backlog</p>
-        </button>
+            <button
+              className="flex flex-col items-center"
+              type="button"
+              onClick={() => handleAddGame(STATUS.BACKLOG)}
+            >
+              <IoLibrary
+                className={`size-8 ${
+                  hasStatus(STATUS.BACKLOG) ? 'text-[#7A38CA]' : 'text-gray-600'
+                }`}
+              />
+              <p className="text-gray-400 hover:text-gray-100">Backlog</p>
+            </button>
+          </>
+        )}
+
         <button
           className="flex flex-col items-center"
           type="button"
@@ -98,12 +106,13 @@ export function GameForm({ game }: { game: GameBase | undefined }) {
         >
           <FaGift
             className={`size-8 ${
-              hasStatus(STATUS.WISHLIST) ? 'text-green-600' : 'text-gray-600'
+              hasStatus(STATUS.WISHLIST) ? 'text-[#7A38CA]' : 'text-gray-600'
             }`}
           />
           <p className="text-gray-400 hover:text-gray-100">Wishlist</p>
         </button>
       </div>
+
       {isPlayed && <PlayedCount game={game} />}
     </div>
   )

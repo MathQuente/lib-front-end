@@ -18,15 +18,20 @@ export function GameListSection({
   className,
   type
 }: GameListSectionProps) {
-  const baseStyles = 'flex flex-col items-center justify-center'
+  const baseStyles = 'flex flex-col items-center justify-center w-full'
 
   if (games.length > 0 && type === 'coming') {
     return (
       <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
+        <div className="w-full max-w-sm py-2 rounded-md min-h-[550px]">
           <div className="flex flex-row justify-between w-full mb-3">
             <p className="text-[#7A38CA] font-medium">{title}</p>
-            <p className="text-gray-600">See more</p>
+            <Link
+              to="/games/comingSoon"
+              className="text-gray-600 hover:text-[#7A38CA]"
+            >
+              See More
+            </Link>
           </div>
           <div className="flex flex-col gap-y-3">
             {games.map(game => (
@@ -62,12 +67,13 @@ export function GameListSection({
         <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
           <div className="flex flex-row justify-between w-full mb-3">
             <p className="text-[#7A38CA] font-medium">{title}</p>
-            <p className="text-gray-600">See more</p>
+            <Link to="/games/comingSoon" className="hover:text-[#7A38CA]">
+              See More
+            </Link>
           </div>
           <div className="flex flex-col items-center justify-center h-full py-8">
             <div className="text-center">
               <div className="mb-4">
-                {/* Ícone opcional */}
                 <FaTimes className="w-16 h-16 mx-auto text-gray-500" />
               </div>
               <h3 className="text-lg font-medium text-white mb-2">
@@ -93,7 +99,6 @@ export function GameListSection({
           <div className="flex flex-col items-center justify-center h-full py-8">
             <div className="text-center">
               <div className="mb-4">
-                {/* Ícone opcional */}
                 <FaTimes className="w-16 h-16 mx-auto text-gray-500" />
               </div>
               <h3 className="text-lg font-medium text-white mb-2">

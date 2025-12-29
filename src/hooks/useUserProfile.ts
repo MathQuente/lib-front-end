@@ -44,12 +44,10 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
     if (!file) return null
 
     if (typeof file === 'string') {
-      return file // Já é uma URL
+      return file
     }
 
     if (file instanceof File) {
-      // Aqui você pode implementar sua lógica de upload
-      // Por exemplo, usando Cloudinary como no seu código original
       return await api.uploadFile(file)
     }
 
@@ -59,7 +57,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
   const updateUserProfile = useMutation({
     mutationFn: async (data: UpdateUserProfileData) => {
       let profilePictureUrl: string | undefined
-      let userBannerUrl: string | null = null
+      let userBannerUrl: string | null | undefined
 
       if (data.profilePicture) {
         const uploadedUrl = await uploadImageIfNeeded(data.profilePicture)
@@ -69,23 +67,41 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       }
 
       if (options?.removeUserBanner) {
+        console.log('remove banner')
         userBannerUrl = null
       } else if (data.userBanner) {
-        console.log('oi')
         userBannerUrl = await uploadImageIfNeeded(data.userBanner)
+      } else {
+        userBannerUrl = undefined
+      }
+
+      const updatePayload: {
+        userName?: string
+        profilePicture?: string
+        userBanner?: string | null
+      } = {}
+
+      if (data.userName !== undefined) {
+        updatePayload.userName = data.userName
+      }
+
+      if (profilePictureUrl !== undefined) {
+        updatePayload.profilePicture = profilePictureUrl
+      }
+
+      if (userBannerUrl !== undefined) {
+        updatePayload.userBanner = userBannerUrl
       }
 
       return api.updateUser({
-        userName: data.userName, // ou conditional ↑
-        profilePicture: profilePictureUrl, // idem, pode ser optional
-        userBanner: userBannerUrl // string | null | undefined
+        userName: data.userName,
+        profilePicture: profilePictureUrl,
+        userBanner: userBannerUrl
       })
     },
     onMutate: async newData => {
-      // Cancel outgoing queries para evitar conflitos
       await queryClient.cancelQueries({ queryKey })
 
-      // Snapshot do valor anterior para rollback
       const previousProfile =
         queryClient.getQueryData<UserProfileResponse>(queryKey)
 

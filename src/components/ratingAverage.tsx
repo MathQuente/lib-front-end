@@ -2,15 +2,16 @@ import { Rating, Skeleton, Stack, Typography } from '@mui/material'
 import { useRating } from '../hooks/useRating'
 import { useState, type SyntheticEvent } from 'react'
 import { X } from 'lucide-react'
+import type { GameBase } from '../types/games'
 
 interface RatingAverageProps {
-  gameId: string | undefined
+  game: GameBase | undefined
   isForGamePage?: boolean
   justAverage?: boolean
 }
 
 export function RatingAverage({
-  gameId,
+  game,
   isForGamePage,
   justAverage
 }: RatingAverageProps) {
@@ -24,7 +25,7 @@ export function RatingAverage({
     addRating,
     removeRating,
     isMutating
-  } = useRating(gameId)
+  } = useRating(game?.id)
 
   const [hoverValue, setHoverValue] = useState<number | null>(null)
 
@@ -35,7 +36,6 @@ export function RatingAverage({
     _: SyntheticEvent,
     newValue: number | null
   ) => {
-    // Se newValue é null, usa o hoverValue; senão usa newValue
     const valueToUse = newValue === null ? hoverValue : newValue
 
     if (valueToUse !== null) {
@@ -54,6 +54,35 @@ export function RatingAverage({
       return 'Sem avaliações'
     }
     return Math.floor(average.average * 10) / 10
+  }
+
+  if (justAverage) {
+    return (
+      <p className="text-xl font-bold text-white">
+        {getAverageRatingDisplay()}
+      </p>
+    )
+  }
+
+  const dateRelease = game?.gameLaunchers?.[0]?.dateRelease
+  const gameIsReleased = dateRelease
+    ? new Date() > new Date(dateRelease)
+    : false
+
+  if (!gameIsReleased) {
+    return (
+      <>
+        <p className="text-lg font-semibold text-white">
+          This game hasn't been released yet
+        </p>
+        <div className="flex flex-col">
+          <Typography>
+            Sua avaliação: {userRating !== null ? userRating : 0}
+          </Typography>
+          <Typography>Avaliação geral: {getAverageRatingDisplay()}</Typography>
+        </div>
+      </>
+    )
   }
 
   if (isForGamePage) {
@@ -77,9 +106,7 @@ export function RatingAverage({
           </button>
         )}
 
-        {/* Container para as duas avaliações */}
         <div className="relative">
-          {/* Rating fixo (valor já avaliado) */}
           <Rating
             name="fixed-rating"
             value={userRating}
@@ -95,7 +122,6 @@ export function RatingAverage({
             }}
           />
 
-          {/* Rating interativo (hover) */}
           <Rating
             name="hover-rating"
             value={hoverValue || userRating}
@@ -110,7 +136,7 @@ export function RatingAverage({
               zIndex: 2,
               '& .MuiRating-icon': {
                 color: '#9d7dd1',
-                opacity: 0.7 // Permite ver parcialmente o rating fixo atrás
+                opacity: 0.7
               }
             }}
           />
@@ -119,16 +145,8 @@ export function RatingAverage({
     )
   }
 
-  if (justAverage) {
-    return (
-      <p className="text-xl font-bold text-white">
-        {getAverageRatingDisplay()}
-      </p>
-    )
-  }
-
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <Stack
         spacing={2}
         direction="row"
@@ -149,7 +167,6 @@ export function RatingAverage({
         )}
 
         <div className="relative">
-          {/* Rating fixo (valor já avaliado) */}
           <Rating
             name="fixed-rating"
             value={userRating}
@@ -165,7 +182,6 @@ export function RatingAverage({
             }}
           />
 
-          {/* Rating interativo (hover) */}
           <Rating
             name="hover-rating"
             value={hoverValue || userRating}
@@ -180,7 +196,7 @@ export function RatingAverage({
               zIndex: 2,
               '& .MuiRating-icon': {
                 color: '#9d7dd1',
-                opacity: 0.7 // Permite ver parcialmente o rating fixo atrás
+                opacity: 0.7
               }
             }}
           />
@@ -188,7 +204,7 @@ export function RatingAverage({
       </Stack>
       <div className="flex flex-col">
         <Typography>
-          Sua avaliação: {userRating !== null ? userRating : 'Nenhuma'}
+          Sua avaliação: {userRating !== null ? userRating : 0}
         </Typography>
         <Typography>Avaliação geral: {getAverageRatingDisplay()}</Typography>
       </div>

@@ -12,6 +12,7 @@ export function UserProfilePicture({
       <img
         src={profilePicture || userProfilePictureDefault}
         alt={`Foto de perfil de ${userName}`}
+        loading="lazy"
         className="size-14 sm:size-16 md:size-20 lg:size-[6.7rem] rounded-full object-cover"
       />
     </div>

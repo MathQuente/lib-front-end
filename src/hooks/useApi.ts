@@ -26,7 +26,6 @@ api.interceptors.response.use(
       ) {
         Cookies.remove('accessToken')
         Cookies.remove('refreshToken')
-        // window.location.href = '/'
       }
 
       return Promise.reject(error)
@@ -55,25 +54,29 @@ export const useApi = () => ({
   },
   logout: async () => {
     try {
-      await api.post('/auth/logout', {}, {})
+      await api.post('/auth/logout')
     } catch (error) {
       console.error('Logout failed:', error)
     } finally {
       Cookies.remove('accessToken')
       Cookies.remove('refreshToken')
-      window.location.href = '/'
+      window.location.reload()
     }
   },
   getUserGames: async (
     page?: number,
-    search?: string,
-    filter?: GameStatusEnum
+    search?: string | undefined,
+    filter?: GameStatusEnum,
+    sortBy?: 'gameName' | 'dateRelease',
+    sortOrder?: 'asc' | 'desc'
   ) => {
     const response = await api.get('/users/userGames', {
       params: {
-        filter: filter,
         pageIndex: page ? page - 1 : undefined,
-        query: search || undefined
+        query: search || undefined,
+        filter: filter,
+        sortBy,
+        sortOrder
       }
     })
     return response.data
@@ -86,14 +89,16 @@ export const useApi = () => ({
     page: number,
     search: string | undefined,
     sortBy: 'gameName' | 'dateRelease',
-    sortOrder: 'asc' | 'desc'
+    sortOrder: 'asc' | 'desc',
+    limit?: number
   ) => {
     const response = await api.get('/games', {
       params: {
         pageIndex: page - 1,
         query: search,
         sortBy: sortBy,
-        sortOrder: sortOrder
+        sortOrder: sortOrder,
+        limit: limit ? limit : null
       }
     })
     return response.data
@@ -209,7 +214,24 @@ export const useApi = () => ({
     return response.data
   },
   getGamesToDisplay: async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
     const response = await api.get('/users/featuredGames')
+    return response.data
+  },
+  getComingSoon: async (
+    page: number,
+    search: string | undefined,
+    sortOrder: 'asc' | 'desc',
+    sortBy: 'gameName' | 'dateRelease'
+  ) => {
+    const response = await api.get('/games/comingSoon', {
+      params: {
+        pageIndex: page - 1,
+        query: search,
+        sortBy: sortBy,
+        sortOrder: sortOrder
+      }
+    })
     return response.data
   }
 })

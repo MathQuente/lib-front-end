@@ -5,8 +5,6 @@ import type { GameBase } from '../../types/games'
 
 interface GamesGridProps {
   games: GameBase[]
-  search?: string
-  onClearSearch?: () => void
   emptyStateTitle?: string
   emptyStateDescription?: string
   className?: string
@@ -14,11 +12,9 @@ interface GamesGridProps {
 
 export function GamesGrid({
   games,
-  search,
-  onClearSearch,
   emptyStateTitle = 'Nenhum jogo encontrado',
-  emptyStateDescription,
-  className = 'grid grid-cols-3 gap-x-2 gap-y-2 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 md:gap-6 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6 xl:gap-4 2xl:grid-cols-6 2xl:gap-4'
+  emptyStateDescription = 'Você não adicionou nenhum jogo no momento.',
+  className = 'grid grid-cols-5 md:grid-cols-6 gap-2 md:gap-4'
 }: GamesGridProps) {
   if (games.length === 0) {
     return (
@@ -29,30 +25,8 @@ export function GamesGrid({
             <h3 className="text-xl font-semibold text-white">
               {emptyStateTitle}
             </h3>
-            {search ? (
-              <p className="text-[#8F8F8F] max-w-md">
-                {emptyStateDescription ||
-                  'Não encontramos jogos que correspondam à sua busca por '}
-                <span className="text-[#6930CD] font-medium">"{search}"</span>
-                {!emptyStateDescription &&
-                  '. Tente usar termos diferentes ou verifique a ortografia.'}
-              </p>
-            ) : (
-              <p className="text-[#8F8F8F] max-w-md">
-                {emptyStateDescription ||
-                  'Não há jogos disponíveis no momento. Tente novamente mais tarde.'}
-              </p>
-            )}
+            <p className="text-[#8F8F8F] max-w-md">{emptyStateDescription}</p>
           </div>
-          {search && onClearSearch && (
-            <button
-              type="button"
-              onClick={onClearSearch}
-              className="mt-4 px-6 py-2 bg-[#6930CD] text-white rounded-lg hover:bg-[#5a28a8] transition-colors duration-200"
-            >
-              Limpar pesquisa
-            </button>
-          )}
         </div>
       </div>
     )

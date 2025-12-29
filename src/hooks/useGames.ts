@@ -4,9 +4,9 @@ import {
   useQuery
 } from '@tanstack/react-query'
 import { useApi } from './useApi'
-import type { GameBase } from '../types/games'
+import type { GameBase, GamesFromHomePageResponse } from '../types/games'
 
-interface UseGamesProps {
+export interface UseGamesProps {
   games: GameBase[]
   total: number
 }
@@ -15,7 +15,8 @@ export const useGames = (
   page: number,
   search: string | undefined,
   sortBy: 'gameName' | 'dateRelease',
-  sortOrder: 'asc' | 'desc'
+  sortOrder: 'asc' | 'desc',
+  limit?: number
 ) => {
   const api = useApi()
 
@@ -41,7 +42,7 @@ export const useGames = (
   } = useInfiniteQuery<UseGamesProps>({
     queryKey: ['gamesInfinite', search, sortBy, sortOrder],
     queryFn: async ({ pageParam }) =>
-      api.getGames(pageParam as number, search, sortBy, sortOrder),
+      api.getGames(pageParam as number, search, sortBy, sortOrder, limit),
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage) {
         return undefined
@@ -62,9 +63,23 @@ export const useGames = (
     enabled: true
   })
 
+  const { data: ComingSoon } = useQuery<UseGamesProps>({
+    queryKey: ['comingSoon', page, search, sortBy, sortOrder],
+    queryFn: async () => api.getComingSoon(page, search, sortOrder, sortBy),
+    placeholderData: keepPreviousData
+  })
+
+  const { data: gamesFeatured } = useQuery<GamesFromHomePageResponse>({
+    queryKey: ['games', '', ''],
+    queryFn: async () => api.getGamesFeatured(),
+    placeholderData: keepPreviousData
+  })
+
   return {
     GamesResponse,
     GamesResponseInfinity,
+    ComingSoon,
+    gamesFeatured,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

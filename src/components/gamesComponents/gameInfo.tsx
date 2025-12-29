@@ -1,9 +1,9 @@
-import { GameModal } from './gameModal'
 import { GameForm } from './gameForm'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { RatingAverage } from '../ratingAverage'
 import type { GameBase } from '../../types/games'
+import { Button } from '../button'
 
 interface GameInfoProps {
   game: GameBase | undefined
@@ -24,14 +24,14 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
           />
         </div>
 
-        <div className="flex flex-col justify-around items-center mt-2">
+        <div className="flex flex-col justify-around items-center mt-2 gap-4">
           <div className="flex flex-wrap flex-col items-center">
             <h1 className="text-base md:text-xl font-bold">{game?.gameName}</h1>
           </div>
 
           {user && <GameForm game={game} />}
 
-          {user && <RatingAverage gameId={game?.id} />}
+          {user && <RatingAverage game={game} />}
 
           {!user && (
             <div className="flex gap-1">
@@ -44,21 +44,15 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
         </div>
       </div>
 
-      <div className="flex justify-between pt-4 border-t border-gray-700">
+      <div className="flex justify-end gap-4 pt-4 border-t border-gray-700">
         <Link to={`/games/${game?.id}`}>
-          <button
-            type="button"
-            className="px-4 py-2 bg-gradient-to-t from-[#4D23A5] to-[#783FCF] hover:from-[#5D23A5] hover:to-[#813FCF] text-white rounded"
-          >
+          <Button type="button" variant="primary" size="md">
             View Details
-          </button>
+          </Button>
         </Link>
-        <GameModal.Close
-          onClick={onClose}
-          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600  text-sm font-medium text-gray-500 hover:text-white"
-        >
+        <Button onClick={onClose} variant="cancel">
           Cancel
-        </GameModal.Close>
+        </Button>
       </div>
     </div>
   )

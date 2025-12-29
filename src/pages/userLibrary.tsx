@@ -1,7 +1,4 @@
 import { ToastContainer } from 'react-toastify'
-
-import { SideBar } from '../components/sideBar'
-
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
 import { UserGamesDiv } from '../components/UserGamesDiv'
 import { useUserGames } from '../hooks/useUserGames'
@@ -15,19 +12,13 @@ export function UserLibrary() {
 
   return (
     <>
-      <div className="flex flex-col w-full min-h-dvh bg-[#1A1C26] ">
-        <SideBar />
-        <div className="flex flex-col items-center mt-4">
-          <div className="">
-            <UserProfileDisplay />
-          </div>
+      <UserProfileDisplay />
 
-          <UserGamesDiv
-            Games={UserGamesResponse.games}
-            totalPerStatus={UserGamesResponse.totalPerStatus}
-          />
-        </div>
-      </div>
+      <UserGamesDiv
+        Games={UserGamesResponse.games}
+        totalPerStatus={UserGamesResponse.totalPerStatus}
+      />
+
       <ToastContainer />
     </>
   )

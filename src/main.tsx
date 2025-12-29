@@ -13,49 +13,60 @@ import { GamePage } from './pages/gamePage'
 import { RouletteWheel } from './pages/rouletteWheel'
 import { UserGamesPageByStatus } from './pages/userGamesPages'
 import { SearchResults } from './pages/searchResults'
+import { ComingSoonPage } from './pages/comingSoonPage'
+import { Layout } from './layout'
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
-    path: '/auth',
-    element: <Authentication />
-  },
-  {
-    path: '/',
-    element: <App />
-  },
-  {
-    path: '/search/:query',
-    element: <SearchResults />
-  },
-  {
-    path: '/games',
-    element: <Games />
-  },
-  {
-    path: '/games/:gameId',
-    element: <GamePage />
-  },
-  {
-    path: '/roulette',
-    element: <RouletteWheel />
-  },
-  {
-    path: '/userLibrary',
-    element: (
-      <RequireAuth>
-        <UserLibrary />
-      </RequireAuth>
-    )
-  },
-  {
-    path: '/userLibrary/:status',
-    element: (
-      <RequireAuth>
-        <UserGamesPageByStatus />
-      </RequireAuth>
-    )
+    element: <Layout />,
+    children: [
+      {
+        path: '/auth',
+        element: <Authentication />
+      },
+      {
+        path: '/',
+        element: <App />
+      },
+      {
+        path: '/search/:query',
+        element: <SearchResults />
+      },
+      {
+        path: '/games',
+        element: <Games />
+      },
+      {
+        path: '/games/:gameId',
+        element: <GamePage />
+      },
+      {
+        path: '/games/comingSoon',
+        element: <ComingSoonPage />
+      },
+      {
+        path: '/roulette',
+        element: <RouletteWheel />
+      },
+      {
+        path: '/userLibrary',
+        element: (
+          <RequireAuth>
+            <UserLibrary />
+          </RequireAuth>
+        )
+      },
+      {
+        path: '/userLibrary/:status',
+        element: (
+          <RequireAuth>
+            <UserGamesPageByStatus />
+          </RequireAuth>
+        )
+      }
+    ]
   }
 ])
 
