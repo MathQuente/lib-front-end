@@ -105,31 +105,27 @@ export function GameListPage({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="flex flex-col items-center mt-4 w-full max-w-7xl">
-        <SortControls
-          onSortFieldChange={onSortFieldChange}
-          onSortOrderChange={onSortOrderChange}
-          onSortFilterField={onSortFilterField}
-          filterField={filterField}
-          sortField={sortField}
-          sortOrder={sortOrder}
-          isUserLibrary={isUserLibrary}
-          totalGames={safeGamesArrayLength}
-        />
-        <div className="flex flex-col w-full bg-[#272932] rounded-lg">
-          <div className="py-4 px-4 xl:px-7">
-            <GamesGrid games={gamesArray} />
-          </div>
-        </div>
-        <Pagination
-          currentPage={safePage}
-          totalPages={totalPages}
-          totalItems={safeTotal}
-          itemsPerPage={safeGamesArrayLength}
-          onPageChange={setCurrentPage}
-        />
+    <div className="flex flex-col items-center mt-4 w-full max-w-6xl ">
+      <SortControls
+        onSortFieldChange={onSortFieldChange}
+        onSortOrderChange={onSortOrderChange}
+        onSortFilterField={onSortFilterField}
+        filterField={filterField}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        isUserLibrary={isUserLibrary}
+        totalGames={safeGamesArrayLength}
+      />
+      <div className="flex flex-col w-full rounded-lg">
+        <GamesGrid games={gamesArray} />
       </div>
+      <Pagination
+        currentPage={safePage}
+        totalPages={totalPages}
+        totalItems={safeTotal}
+        itemsPerPage={safeGamesArrayLength}
+        onPageChange={setCurrentPage}
+      />
     </div>
   )
 }

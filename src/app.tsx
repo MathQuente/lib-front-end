@@ -1,13 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { Autoplay } from 'swiper/modules'
-
-import { Swiper, SwiperSlide } from 'swiper/react'
-
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/scrollbar'
 import { useAuth } from './hooks/useAuth'
 
 import userLibrary from './assets/Screenshot From 2025-07-03 18-09-08.png'
@@ -55,7 +47,7 @@ export function App() {
                       to={`/games/${GamesToDisplay.game.id}`}
                       className="transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-[#7A38CA]/20"
                     >
-                      <GameCard game={GamesToDisplay.game} />
+                      <GameCard game={GamesToDisplay.game} size="medium" />
                     </Link>
                   </>
                 ) : (
@@ -199,51 +191,17 @@ export function App() {
           </p>
         </div>
 
-        <div className="w-full xl:max-w-6xl lg:max-w-4xl md:max-w-2xl">
+        <div className="w-full flex gap-8 xl:max-w-6xl lg:max-w-4xl md:max-w-2xl">
           {gamesFeatured.recentGames.length > 0 ? (
-            <Swiper
-              slidesPerView={2}
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 20
-                },
-                768: {
-                  slidesPerView: 3,
-                  spaceBetween: 24
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 32
-                },
-                1280: {
-                  slidesPerView: 5,
-                  spaceBetween: 32
-                }
-              }}
-              autoplay={{
-                delay: 2500,
-                disableOnInteraction: false
-              }}
-              spaceBetween={20}
-              loop={true}
-              modules={[Autoplay]}
-              className="h-72 pb-4"
-            >
-              {gamesFeatured.recentGames.map(game => (
-                <SwiperSlide
-                  key={game.id}
-                  className="!flex !items-center !justify-center"
-                >
-                  <Link
-                    to={`/games/${game.id}`}
-                    className="block transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-[#7A38CA]/20"
-                  >
-                    <GameCard game={game} size="larger" />
-                  </Link>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            gamesFeatured.recentGames.map(game => (
+              <Link
+                to={`/games/${game.id}`}
+                className="block transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-[#7A38CA]/20"
+                key={game.id}
+              >
+                <GameCard game={game} size="larger" />
+              </Link>
+            ))
           ) : (
             <div className="w-full px-8 py-12 rounded-2xl bg-gradient-to-r from-[#1F2029] to-[#25262F] border border-[#2A2B36] flex flex-col items-center">
               <h3 className="text-2xl font-semibold text-white mb-3">

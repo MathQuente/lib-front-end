@@ -7,11 +7,13 @@ import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import type { z } from 'zod'
 import logoGoogle from '../assets/Google__G__logo.svg.png'
+import logoDiscord from '../assets/5968756.png'
 
 import { Button } from './button'
 
 export function FormSignUp() {
   const GOOGLE_AUTH_URL = 'http://localhost:3333/auth/google'
+  const DISCORD_AUTH_URL = 'http://localhost:3333/auth/discord'
 
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
@@ -39,14 +41,23 @@ export function FormSignUp() {
     >
       <div className="px-2 w-full flex flex-col pt-[42px] nesthub:pt-8 asus:pt-4 flex-grow">
         <div>
-          <div className=" flex justify-center">
+          <div className="flex justify-center gap-4 mb-4">
             <a
               href={GOOGLE_AUTH_URL}
-              className="inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium
+              className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md shadow-sm text-sm font-medium
                      bg-[#1a1a1e] hover:bg-[#1a1a1e] text-white"
             >
               <img src={logoGoogle} alt="Google" className="h-5 w-5 mr-2" />
               Google
+            </a>
+
+            <a
+              href={DISCORD_AUTH_URL}
+              className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md shadow-sm text-sm font-medium
+                     bg-[#1a1a1e] hover:bg-[#1a1a1e] text-white"
+            >
+              <img src={logoDiscord} alt="Google" className="h-5 w-5 mr-2" />
+              Discord
             </a>
           </div>
           <label htmlFor="email" className="relative block text-[#ECECEC]">
@@ -61,7 +72,7 @@ export function FormSignUp() {
               type="email"
               id="email"
               placeholder="Please Enter your Email"
-              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
+              className={`bg-dark-bg-lighter text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
                p-2.5 pl-12 h-14 md:pl-14 
             ${
               errorsSignUp.email
@@ -94,7 +105,7 @@ export function FormSignUp() {
               type="password"
               id="password"
               placeholder="Please Enter your Password"
-              className={`bg-[#1A1C26] text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
+              className={`bg-dark-bg-lighter text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
                p-2.5 pl-12 h-14 md:pl-14 
             ${
               errorsSignUp.password

@@ -14,7 +14,7 @@ export function GamesGrid({
   games,
   emptyStateTitle = 'Nenhum jogo encontrado',
   emptyStateDescription = 'Você não adicionou nenhum jogo no momento.',
-  className = 'grid grid-cols-5 md:grid-cols-6 gap-2 md:gap-4'
+  className = 'grid grid-cols-5 md:grid-cols-6'
 }: GamesGridProps) {
   if (games.length === 0) {
     return (
@@ -33,9 +33,9 @@ export function GamesGrid({
   }
 
   return (
-    <div className={className}>
+    <div className={`${className} p-2 gap-x-2 gap-y-4`}>
       {games.map(game => (
-        <GameCard size="medium" key={game.id} game={game} enableModal />
+        <GameCard key={game.id} game={game} size="medium" enableModal />
       ))}
     </div>
   )

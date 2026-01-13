@@ -3,6 +3,7 @@ import type { FormEvent, RefObject } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useMobileMenu } from '../contexts/useMobileMenu'
 
 interface SearchBarProps {
   isMobile: boolean
@@ -13,6 +14,7 @@ interface SearchBarProps {
 export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
   const { query } = useParams()
   const navigate = useNavigate()
+  const { setMobileMenuOpen } = useMobileMenu()
   const internalInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>('')
 
@@ -43,13 +45,20 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
     e.preventDefault()
     if (search.trim()) {
       navigate(`/search/${search}`)
+      setSearch('')
+      if (isMobile) {
+        setMobileMenuOpen(false)
+      }
     }
   }
 
   return (
     <form onSubmit={handleSearch} className="relative">
       <div className="relative flex items-center">
-        <CiSearch className="absolute left-1 text-gray-400" size={18} />
+        <CiSearch
+          className="absolute left-1 top-[3px] text-gray-400"
+          size={18}
+        />
         <input
           ref={actualInputRef}
           className={`${

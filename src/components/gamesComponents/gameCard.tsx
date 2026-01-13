@@ -37,18 +37,18 @@ export function GameCard({
   const sizes = {
     small: 'w-12 h-16 rounded-lg',
     medium:
-      'rounded-lg aspect-[7/10] w-full transition-opacity duration-200 ease-in-out',
-    larger: 'w-44 h-56 rounded-lg transition-opacity duration-200 ease-in-out'
+      'w-24 h-32 lg:w-[168px] lg:h-56 rounded-lg transition-opacity duration-200',
+    larger: 'w-full aspect-[3/4] rounded-lg transition-opacity duration-200'
   }
 
   if (size === 'small') {
     return (
       <>
-        <div className={className}>
+        <div className={twMerge('flex justify-center', className)}>
           <button
             type="button"
             onClick={handleClick}
-            className={`relative transition-all duration-200 ease-in-out rounded-lg transform ${'hover:scale-105 hover:ring-2 hover:ring-purple-500'}`}
+            className={`relative transition-all duration-200 ease-in-out rounded-lg ${'hover:ring-2 hover:ring-purple-500'}`}
           >
             <img
               className={twMerge(sizes[size])}
@@ -68,14 +68,12 @@ export function GameCard({
 
   return (
     <>
-      <div className={className}>
+      <div className={twMerge('flex justify-center', className)}>
         <button
           type="button"
           onClick={handleClick}
-          className={`relative transition-all duration-200 ease-in-out rounded-lg transform ${
-            showTooltip
-              ? 'scale-105 ring-2 ring-purple-500'
-              : 'scale-100 ring-0'
+          className={`relative transition-all duration-200 ease-in-out rounded-lg  ${
+            showTooltip ? 'ring-2 ring-purple-500' : 'ring-0'
           }`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -104,10 +102,8 @@ export function GameCard({
               }`}
             >
               <span
-                className={`text-white font-semibold text-center px-2 text-sm md:text-base lg:text-lg drop-shadow-lg transition-all duration-300 ease-in-out transform ${
-                  showTooltip
-                    ? 'translate-y-0 scale-100'
-                    : 'translate-y-2 scale-95'
+                className={`text-white font-semibold text-center px-2 text-sm md:text-base lg:text-lg drop-shadow-lg transition-all duration-300 ease-in-out  ${
+                  showTooltip ? 'translate-y-0' : 'translate-y-2'
                 }`}
               >
                 {game?.gameName}

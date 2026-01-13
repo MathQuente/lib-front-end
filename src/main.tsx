@@ -15,6 +15,7 @@ import { UserGamesPageByStatus } from './pages/userGamesPages'
 import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
 import { Layout } from './layout'
+import { MobileMenuProvider } from './contexts/mobileMenuContext'
 
 const queryClient = new QueryClient()
 
@@ -73,9 +74,11 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <MobileMenuProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </MobileMenuProvider>
     </QueryClientProvider>
   </React.StrictMode>
 )
