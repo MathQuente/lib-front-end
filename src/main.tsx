@@ -40,12 +40,12 @@ const router = createBrowserRouter([
         element: <Games />
       },
       {
-        path: '/games/:gameId',
-        element: <GamePage />
-      },
-      {
         path: '/games/comingSoon',
         element: <ComingSoonPage />
+      },
+      {
+        path: '/games/:gameId',
+        element: <GamePage />
       },
       {
         path: '/roulette',

@@ -1,5 +1,3 @@
-import { SideBar } from '../components/sideBar'
-
 import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useState } from 'react'
@@ -19,14 +17,9 @@ export function ComingSoonPage() {
     return 1
   })
 
-  const [search, setSearch] = useState(() => {
+  const [search] = useState(() => {
     const url = new URL(window.location.toString())
-
-    if (url.searchParams.has('search')) {
-      return url.searchParams.get('search') ?? ''
-    }
-
-    return ''
+    return url.searchParams.get('search') ?? ''
   })
 
   const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
@@ -49,23 +42,15 @@ export function ComingSoonPage() {
 
   return (
     <>
-      <div className="flex min-h-screen bg-[#1A1C26]">
-        <div className="flex-1 flex flex-col md:ml-0">
-          <SideBar />
-
-          <GameListPage
-            games={ComingSoon}
-            page={page}
-            setPage={setPage}
-            search={search}
-            setSearch={setSearch}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-            sortField={sortField}
-            setSortField={setSortField}
-          />
-        </div>
-      </div>
+      <GameListPage
+        games={ComingSoon}
+        page={page}
+        setPage={setPage}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        sortField={sortField}
+        setSortField={setSortField}
+      />
       <ToastContainer />
     </>
   )

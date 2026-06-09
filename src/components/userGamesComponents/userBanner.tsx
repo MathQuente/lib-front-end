@@ -1,18 +1,15 @@
 export function UserBanner({ bannerUrl }: { bannerUrl?: string }) {
-  if (bannerUrl) {
-    return (
-      <img
-        src={bannerUrl}
-        alt="Banner do usuário"
-        className="w-full h-[90px] sm:h-[100px] md:h-[120px] lg:h-[150px] object-cover rounded-t"
-      />
-    )
-  }
-
   return (
-    <div
-      className="flex items-center justify-center w-full h-[90px] sm:h-[100px] md:h-[120px] lg:h-[150px] bg-gray-700 rounded-t"
-      aria-label="Banner padrão"
-    />
+    <div className="w-full h-28 md:h-36 rounded-t-lg overflow-hidden">
+      {bannerUrl ? (
+        <img
+          src={bannerUrl}
+          alt="Banner do usuário"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="w-full h-full bg-[#2A2B36]" />
+      )}
+    </div>
   )
 }

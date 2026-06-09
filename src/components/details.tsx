@@ -7,56 +7,50 @@ interface DetailsProps {
 }
 
 export function Details({ GameResponse }: DetailsProps) {
-  return (
-    <div className="bg-[#272932]/50 backdrop-blur-sm rounded-2xl p-6 borer border-gray-700/50">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-200">Details</h2>
+  const { game } = GameResponse
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  return (
+    <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg p-5">
+      <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide mb-5">
+        Detalhes
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-200">
-            <Building className="w-5 h-5" />
-            Developer
+          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <Building className="size-3.5" />
+            Desenvolvedor
           </h3>
-          <div className="spcace-y-2">
-            {GameResponse.game.gameStudios.map(studio => (
-              <span
-                key={studio.id}
-                className="block px-3 py-2 bg-gray-700/50 rounded-lg"
-              >
-                <p className="text-gray-300 leading-relaxed text-lg">
-                  {studio.studioName}
-                </p>
+          <div className="flex flex-col gap-1">
+            {game.gameStudios.map(studio => (
+              <span key={studio.id} className="text-gray-300 text-sm">
+                {studio.studioName}
               </span>
             ))}
           </div>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-200">
-            <Star className="w-5 h-5" />
-            Publisher
+          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <Star className="size-3.5" />
+            Publicadora
           </h3>
-          <div className="space-y-2">
-            {GameResponse.game.publishers.map(publisher => (
-              <span
-                key={publisher.id}
-                className="block px-3 py-2 bg-gray-700/50 rounded-lg"
-              >
-                <p className="text-gray-300 leading-relaxed text-lg">
-                  {publisher.publisherName}
-                </p>
+          <div className="flex flex-col gap-1">
+            {game.publishers.map(publisher => (
+              <span key={publisher.id} className="text-gray-300 text-sm">
+                {publisher.publisherName}
               </span>
             ))}
           </div>
         </div>
 
         <div className="md:col-span-2">
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-200">
-            <Tag className="w-5 h-5" />
-            Categories
+          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <Tag className="size-3.5" />
+            Categorias
           </h3>
-          <div className="flex flex-wrap gap-2">
-            {GameResponse.game.categories.map(category => (
+          <div className="flex flex-wrap gap-1.5">
+            {game.categories.map(category => (
               <CategoriesDiv
                 key={category.id}
                 categoryName={category.categoryName}

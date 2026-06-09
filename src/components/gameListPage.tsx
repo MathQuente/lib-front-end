@@ -17,9 +17,9 @@ interface GameListProps {
   page: number
   setPage: (page: number) => void
   sortOrder: SortOrder
-  setSortOrder: (SortOrder: SortOrder) => void
+  setSortOrder: (order: SortOrder) => void
   sortField: SortField
-  setSortField: (SortField: SortField) => void
+  setSortField: (field: SortField) => void
   filterField?: GameStatusEnum
   setFilterField?: (filterField: GameStatusEnum) => void
   currentStatus?: string
@@ -44,43 +44,31 @@ export function GameListPage({
   const isGamesArray = Array.isArray(games.games)
   const gamesArray: GameBase[] = isGamesArray
     ? (games.games as GameBase[])
-    : Object.values(
-        games.games as {
-          PLAYED: GameBase[]
-          PLAYING: GameBase[]
-          BACKLOG: GameBase[]
-          WISHLIST: GameBase[]
-        }
-      ).flat()
+    : Object.values(games.games as Record<string, GameBase[]>).flat()
 
   const totalGames =
     'total' in games
       ? games.total
       : currentStatus
-      ? games.totalPerStatus?.find(status => status.status === currentStatus)
-          ?.totalGames || 0
-      : games.totalPerStatus?.reduce(
-          (sum, status) => sum + status.totalGames,
-          0
-        ) || 0
+        ? (games.totalPerStatus?.find(s => s.status === currentStatus)
+            ?.totalGames ?? 0)
+        : (games.totalPerStatus?.reduce((sum, s) => sum + s.totalGames, 0) ?? 0)
 
   const safeTotal =
     typeof totalGames === 'number' && !Number.isNaN(totalGames) ? totalGames : 0
-  const safeGamesArrayLength = gamesArray ? gamesArray.length : 0
   const safePage =
     typeof page === 'number' && !Number.isNaN(page) && page > 0 ? page : 1
-
   const totalPages = Math.ceil(safeTotal / 36) || 1
 
-  function setCurrentPage(page: number) {
+  function setCurrentPage(p: number) {
     const url = new URL(window.location.toString())
-    url.searchParams.set('page', String(page))
+    url.searchParams.set('page', String(p))
     window.history.pushState({}, '', url)
-    setPage(page)
+    setPage(p)
   }
 
-  function onSortFieldChange(event: ChangeEvent<HTMLSelectElement>) {
-    const value = event.target.value as SortField
+  function onSortFieldChange(e: ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value as SortField
     const url = new URL(window.location.toString())
     url.searchParams.set('field', value)
     window.history.pushState({}, '', url)
@@ -94,18 +82,14 @@ export function GameListPage({
     setSortOrder(order)
   }
 
-  function onSortFilterField(event: ChangeEvent<HTMLSelectElement>) {
-    const value = event.target.value as GameStatusEnum
-
-    if (onFilterChange) {
-      onFilterChange(value)
-    } else if (setFilterField) {
-      setFilterField(value)
-    }
+  function onSortFilterField(e: ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value as GameStatusEnum
+    if (onFilterChange) onFilterChange(value)
+    else setFilterField?.(value)
   }
 
   return (
-    <div className="flex flex-col items-center mt-4 w-full max-w-6xl ">
+    <div className="flex flex-col gap-4 w-full mt-4">
       <SortControls
         onSortFieldChange={onSortFieldChange}
         onSortOrderChange={onSortOrderChange}
@@ -114,16 +98,18 @@ export function GameListPage({
         sortField={sortField}
         sortOrder={sortOrder}
         isUserLibrary={isUserLibrary}
-        totalGames={safeGamesArrayLength}
+        totalGames={gamesArray.length}
       />
-      <div className="flex flex-col w-full rounded-lg">
+
+      <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg py-4 px-4 xl:px-6">
         <GamesGrid games={gamesArray} />
       </div>
+
       <Pagination
         currentPage={safePage}
         totalPages={totalPages}
         totalItems={safeTotal}
-        itemsPerPage={safeGamesArrayLength}
+        itemsPerPage={gamesArray.length}
         onPageChange={setCurrentPage}
       />
     </div>

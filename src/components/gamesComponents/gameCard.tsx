@@ -11,6 +11,12 @@ interface GameCardProps {
   enableModal?: boolean
 }
 
+const sizes = {
+  small: 'w-14 h-16',
+  medium: 'aspect-[7/10] w-full',
+  larger: 'w-44 h-56'
+}
+
 export function GameCard({
   game,
   className,
@@ -18,100 +24,47 @@ export function GameCard({
   enableModal
 }: GameCardProps) {
   const [open, setOpen] = useState(false)
-  const [showTooltip, setShowTooltip] = useState(false)
-
-  const handleClick = () => {
-    if (enableModal) {
-      setOpen(true)
-    }
-  }
-
-  const handleMouseEnter = () => {
-    setShowTooltip(true)
-  }
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false)
-  }
-
-  const sizes = {
-    small: 'w-12 h-16 rounded-lg',
-    medium:
-      'w-24 h-32 lg:w-[168px] lg:h-56 rounded-lg transition-opacity duration-200',
-    larger: 'w-full aspect-[3/4] rounded-lg transition-opacity duration-200'
-  }
-
-  if (size === 'small') {
-    return (
-      <>
-        <div className={twMerge('flex justify-center', className)}>
-          <button
-            type="button"
-            onClick={handleClick}
-            className={`relative transition-all duration-200 ease-in-out rounded-lg ${'hover:ring-2 hover:ring-purple-500'}`}
-          >
-            <img
-              className={twMerge(sizes[size])}
-              src={game?.gameBanner}
-              alt={`${game?.gameName} banner`}
-            />
-          </button>
-        </div>
-        {enableModal && (
-          <GameModal open={open} onOpenChange={setOpen}>
-            <GameInfo game={game} onClose={() => setOpen(false)} />
-          </GameModal>
-        )}
-      </>
-    )
-  }
 
   return (
     <>
       <div className={twMerge('flex justify-center', className)}>
         <button
           type="button"
-          onClick={handleClick}
-          className={`relative transition-all duration-200 ease-in-out rounded-lg  ${
-            showTooltip ? 'ring-2 ring-purple-500' : 'ring-0'
-          }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onClick={() => enableModal && setOpen(true)}
+          className={twMerge(
+            'group relative rounded-lg overflow-hidden transition-transform duration-200',
+            size !== 'small' &&
+              'hover:scale-105 hover:ring-2 ring-[#7A38CA] block w-full',
+            size === 'small' && 'hover:ring-2 ring-[#7A38CA]'
+          )}
         >
           {game?.isDlc && (
-            <span className="absolute left-2 bg-[#272932] mt-2 px-1.5 py-1 rounded-md">
-              <p className="text-white text-xs">DLC</p>
+            <span className="absolute top-2 left-2 z-10 bg-[#1F2029]/90 px-1.5 py-0.5 rounded text-white text-xs font-medium">
+              DLC
             </span>
           )}
 
           <img
             className={twMerge(
               sizes[size],
-              showTooltip ? 'opacity-25' : 'opacity-100'
+              'rounded-lg object-cover',
+              size !== 'small' &&
+                'transition-opacity duration-200 group-hover:opacity-20'
             )}
             src={game?.gameBanner}
             alt={`${game?.gameName} banner`}
           />
 
-          {
-            <div
-              className={`absolute inset-0 flex items-center justify-center bg-black rounded-lg transition-all duration-200 ease-in-out ${
-                showTooltip
-                  ? 'bg-opacity-60 opacity-100'
-                  : 'bg-opacity-0 opacity-0 pointer-events-none'
-              }`}
-            >
-              <span
-                className={`text-white font-semibold text-center px-2 text-sm md:text-base lg:text-lg drop-shadow-lg transition-all duration-300 ease-in-out  ${
-                  showTooltip ? 'translate-y-0' : 'translate-y-2'
-                }`}
-              >
+          {size !== 'small' && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <span className="text-white font-semibold text-center px-3 text-sm md:text-base translate-y-2 group-hover:translate-y-0 transition-transform duration-200 drop-shadow-lg">
                 {game?.gameName}
               </span>
             </div>
-          }
+          )}
         </button>
       </div>
+
       {enableModal && (
         <GameModal open={open} onOpenChange={setOpen}>
           <GameInfo game={game} onClose={() => setOpen(false)} />

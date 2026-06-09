@@ -53,33 +53,33 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
   }
 
   return (
-    <form onSubmit={handleSearch} className="relative">
+    <form onSubmit={handleSearch}>
       <div className="relative flex items-center">
         <CiSearch
-          className="absolute left-1 top-[3px] text-gray-400"
-          size={18}
+          className="absolute left-2.5 text-gray-600 pointer-events-none"
+          size={16}
         />
         <input
           ref={actualInputRef}
           className={`${
-            isMobile ? 'w-72' : 'w-48'
-          } pl-6 bg-[#3a3b47] text-white placeholder-gray-400 rounded-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#7A38CA] focus:border-transparent transition-all`}
+            isMobile ? 'w-full' : 'w-48'
+          } pl-8 pr-7 py-1.5 bg-[#13141C] text-sm text-white placeholder-gray-600 rounded-lg border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150`}
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search"
+          placeholder="Buscar"
         />
         {search && (
           <button
             type="button"
-            className="absolute right-1 text-gray-400 hover:text-gray-200 transition-all duration-200 z-10 p-0.5 rounded-full hover:bg-gray-600 hover:scale-110 active:scale-95"
+            className="absolute right-2 text-gray-600 hover:text-gray-300 transition-colors"
             onClick={() => {
               setSearch('')
               actualInputRef.current?.focus()
             }}
-            aria-label="Clear search"
+            aria-label="Limpar busca"
           >
-            <IoClose size={16} />
+            <IoClose size={15} />
           </button>
         )}
       </div>

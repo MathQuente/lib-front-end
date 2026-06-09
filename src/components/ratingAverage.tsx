@@ -1,4 +1,4 @@
-import { Rating, Skeleton, Stack, Typography } from '@mui/material'
+import { Rating, Skeleton } from '@mui/material'
 import { useRating } from '../hooks/useRating'
 import { useState, type SyntheticEvent } from 'react'
 import { X } from 'lucide-react'
@@ -29,39 +29,18 @@ export function RatingAverage({
 
   const [hoverValue, setHoverValue] = useState<number | null>(null)
 
-  if (isLoading) return <Skeleton variant="rounded" width={200} height={40} />
-  if (isError) return <div>Erro ao carregar avaliação</div>
+  if (isLoading) return <Skeleton variant="rounded" width={160} height={32} />
+  if (isError) return null
 
-  const handleRatingChange = async (
-    _: SyntheticEvent,
-    newValue: number | null
-  ) => {
-    const valueToUse = newValue === null ? hoverValue : newValue
-
-    if (valueToUse !== null) {
-      await addRating(valueToUse)
-    }
-  }
-
-  async function handleDelete() {
-    await removeRating()
-  }
-
-  const getAverageRatingDisplay = () => {
-    if (isAverageLoading) return 'Carregando...'
-    if (isAverageError) return 'Erro ao carregar'
-    if (!average || average.average === undefined || average.average === null) {
+  const averageDisplay = (() => {
+    if (isAverageLoading) return '—'
+    if (isAverageError || !average || average.average == null)
       return 'Sem avaliações'
-    }
     return Math.floor(average.average * 10) / 10
-  }
+  })()
 
   if (justAverage) {
-    return (
-      <p className="text-xl font-bold text-white">
-        {getAverageRatingDisplay()}
-      </p>
-    )
+    return <p className="text-xl font-bold text-white">{averageDisplay}</p>
   }
 
   const dateRelease = game?.gameLaunchers?.[0]?.dateRelease
@@ -71,143 +50,88 @@ export function RatingAverage({
 
   if (!gameIsReleased) {
     return (
-      <>
-        <p className="text-lg font-semibold text-white">
-          This game hasn't been released yet
-        </p>
-        <div className="flex flex-col">
-          <Typography>
-            Sua avaliação: {userRating !== null ? userRating : 0}
-          </Typography>
-          <Typography>Avaliação geral: {getAverageRatingDisplay()}</Typography>
-        </div>
-      </>
+      <p className="text-sm text-gray-500">Este jogo ainda não foi lançado.</p>
     )
   }
 
+  const handleRatingChange = async (
+    _: SyntheticEvent,
+    newValue: number | null
+  ) => {
+    const value = newValue ?? hoverValue
+    if (value !== null) await addRating(value)
+  }
+
+  const ratingStars = (
+    <div className="relative inline-flex">
+      <Rating
+        name="fixed-rating"
+        value={userRating}
+        readOnly
+        precision={0.5}
+        size="large"
+        sx={{
+          position: 'absolute',
+          zIndex: 1,
+          '& .MuiRating-icon': { color: '#783FCF' }
+        }}
+      />
+      <Rating
+        name="hover-rating"
+        value={hoverValue ?? userRating}
+        onChange={handleRatingChange}
+        onChangeActive={(_, v) => setHoverValue(v)}
+        onMouseLeave={() => setHoverValue(null)}
+        disabled={isMutating}
+        precision={0.5}
+        size="large"
+        sx={{
+          position: 'relative',
+          zIndex: 2,
+          '& .MuiRating-icon': { color: '#9d7dd1', opacity: 0.7 }
+        }}
+      />
+    </div>
+  )
+
   if (isForGamePage) {
     return (
-      <Stack
-        spacing={2}
-        direction="row"
-        alignItems="center"
-        sx={{ position: 'relative' }}
-      >
+      <div className="flex items-center gap-2">
+        {ratingStars}
         {userRating && (
           <button
             type="button"
-            aria-label="Delete rating"
-            onClick={handleDelete}
-            disabled={!userRating || isMutating}
-            className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
-            style={{}}
+            aria-label="Remover avaliação"
+            onClick={removeRating}
+            disabled={isMutating}
+            className="text-gray-600 hover:text-white transition-colors"
           >
-            <X />
+            <X size={16} />
           </button>
         )}
-
-        <div className="relative">
-          <Rating
-            name="fixed-rating"
-            value={userRating}
-            readOnly
-            precision={0.5}
-            size="large"
-            sx={{
-              position: 'absolute',
-              zIndex: 1,
-              '& .MuiRating-icon': {
-                color: '#783FCF'
-              }
-            }}
-          />
-
-          <Rating
-            name="hover-rating"
-            value={hoverValue || userRating}
-            onChange={handleRatingChange}
-            onChangeActive={(_, newHover) => setHoverValue(newHover)}
-            onMouseLeave={() => setHoverValue(null)}
-            disabled={isMutating}
-            precision={0.5}
-            size="large"
-            sx={{
-              position: 'relative',
-              zIndex: 2,
-              '& .MuiRating-icon': {
-                color: '#9d7dd1',
-                opacity: 0.7
-              }
-            }}
-          />
-        </div>
-      </Stack>
+      </div>
     )
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <Stack
-        spacing={2}
-        direction="row"
-        alignItems="center"
-        sx={{ position: 'relative' }}
-      >
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        {ratingStars}
         {userRating && (
           <button
             type="button"
-            aria-label="Delete rating"
-            onClick={handleDelete}
-            disabled={!userRating || isMutating}
-            className="absolute -left-3 text-gray-400 hover:text-white text-sm translate-x-1"
-            style={{}}
+            aria-label="Remover avaliação"
+            onClick={removeRating}
+            disabled={isMutating}
+            className="text-gray-600 hover:text-white transition-colors"
           >
-            <X />
+            <X size={16} />
           </button>
         )}
-
-        <div className="relative">
-          <Rating
-            name="fixed-rating"
-            value={userRating}
-            readOnly
-            precision={0.5}
-            size="large"
-            sx={{
-              position: 'absolute',
-              zIndex: 1,
-              '& .MuiRating-icon': {
-                color: '#783FCF'
-              }
-            }}
-          />
-
-          <Rating
-            name="hover-rating"
-            value={hoverValue || userRating}
-            onChange={handleRatingChange}
-            onChangeActive={(_, newHover) => setHoverValue(newHover)}
-            onMouseLeave={() => setHoverValue(null)}
-            disabled={isMutating}
-            precision={0.5}
-            size="large"
-            sx={{
-              position: 'relative',
-              zIndex: 2,
-              '& .MuiRating-icon': {
-                color: '#9d7dd1',
-                opacity: 0.7
-              }
-            }}
-          />
-        </div>
-      </Stack>
-      <div className="flex flex-col">
-        <Typography>
-          Sua avaliação: {userRating !== null ? userRating : 0}
-        </Typography>
-        <Typography>Avaliação geral: {getAverageRatingDisplay()}</Typography>
       </div>
+      <p className="text-xs text-gray-500">
+        Sua avaliação: {userRating ?? 0} · Média: {averageDisplay}
+      </p>
     </div>
   )
 }

@@ -11,25 +11,16 @@ export function UserProfileDisplay() {
   const [isOpen, setIsOpen] = useState(false)
   const { UserProfileResponse, isLoading, isError } = useUserProfile()
 
-  if (!UserProfileResponse) {
-    return null
-  }
-
-  const handleEditProfile = () => setIsOpen(true)
-  const handleCloseModal = () => setIsOpen(false)
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center w-[350px] h-[180px] lg:ml-24 rounded border-zinc-500 border-2 bg-[#272932]">
-        <div className="text-white">Carregando perfil...</div>
-      </div>
+      <div className="w-full h-36 rounded-lg border border-[#2A2B36] bg-[#1F2029] animate-pulse" />
     )
   }
 
   if (isError || !UserProfileResponse) {
     return (
-      <div className="flex items-center justify-center w-[350px] h-[180px] ml-24 rounded border-zinc-500 border-2 bg-[#272932]">
-        <div className="text-red-400">Erro ao carregar perfil</div>
+      <div className="w-full rounded-lg border border-[#2A2B36] bg-[#1F2029] px-6 py-4">
+        <p className="text-red-400 text-sm">Erro ao carregar perfil.</p>
       </div>
     )
   }
@@ -37,32 +28,37 @@ export function UserProfileDisplay() {
   const { user: profileUser } = UserProfileResponse
 
   return (
-    <div className="flex flex-col w-[350px] h-[180px] lg:ml-24 sm:w-[350px] sm:h-[200px] md:w-[450px] md:h-[230px] lg:w-[600px] lg:h-[270px] gap-3 rounded border-purple-500 border-2 bg-[#272932]">
-      <div className="relative w-full">
-        <UserBanner bannerUrl={profileUser.userBanner} />
-        <UserProfilePicture
-          profilePicture={profileUser.profilePicture}
-          userName={profileUser.userName}
-        />
-      </div>
-
-      <div className="w-full flex justify-end px-2">
-        <Button type="button" variant="primary" onClick={handleEditProfile}>
-          Edit Profile
-        </Button>
-
-        <UserProfileModal open={isOpen} onOpenChange={setIsOpen}>
-          <UserProfileForm
-            afterSave={handleCloseModal}
-            onCancel={handleCloseModal} //
+    <>
+      <div className="w-full rounded-lg border border-[#2A2B36] overflow-hidden">
+        <div className="relative">
+          <UserBanner bannerUrl={profileUser.userBanner} />
+          <UserProfilePicture
+            profilePicture={profileUser.profilePicture}
+            userName={profileUser.userName}
           />
-        </UserProfileModal>
+        </div>
+
+        <div className="bg-[#1F2029] px-6 pt-10 md:pt-12 pb-4 flex items-center justify-between">
+          <UserInfo
+            userName={profileUser.userName}
+            gamesAmount={profileUser.gamesAmount}
+          />
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => setIsOpen(true)}
+          >
+            Editar perfil
+          </Button>
+        </div>
       </div>
 
-      <UserInfo
-        userName={profileUser.userName}
-        gamesAmount={profileUser.gamesAmount}
-      />
-    </div>
+      <UserProfileModal open={isOpen} onOpenChange={setIsOpen}>
+        <UserProfileForm
+          afterSave={() => setIsOpen(false)}
+          onCancel={() => setIsOpen(false)}
+        />
+      </UserProfileModal>
+    </>
   )
 }

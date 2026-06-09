@@ -9,6 +9,10 @@ import { RxEnvelopeClosed, RxLockOpen2 } from 'react-icons/rx'
 import logoGoogle from '../assets/Google__G__logo.svg.png'
 import logoDiscord from '../assets/5968756.png'
 import { Button } from './button'
+import { GoogleAuthButton } from './googleAuthButton'
+import { AuthInput } from './authInput'
+
+type LoginForm = z.infer<typeof loginSchema>
 
 export function FormLogin() {
   const GOOGLE_AUTH_URL = 'http://localhost:3333/auth/google'
@@ -17,18 +21,16 @@ export function FormLogin() {
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
 
-  type loginForm = z.infer<typeof loginSchema>
   const {
-    register: registerLogin,
-    handleSubmit: handleSubmitLogin,
-    formState: { errors: errorsLogin }
-  } = useForm<loginForm>({
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema)
   })
 
-  async function loginHandleSubmit(data: loginForm) {
+  async function onSubmit(data: LoginForm) {
     const success = await auth.login(data.email, data.password)
-
     if (success) {
       const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
       navigate(redirectTo, { replace: true })
@@ -37,109 +39,48 @@ export function FormLogin() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmitLogin(loginHandleSubmit)}
-      className="flex flex-col"
-    >
-      <div className="px-2 w-full flex flex-col pt-[42px] nesthub:pt-8 asus:pt-4 flex-grow">
-        <div>
-          <div className=" flex justify-center mb-4 gap-4">
-            <a
-              href={GOOGLE_AUTH_URL}
-              className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md shadow-sm text-sm font-medium
-                     bg-[#1a1a1e] hover:bg-[#1a1a1e] text-white"
-            >
-              <img src={logoGoogle} alt="Google" className="h-5 w-5 mr-2" />
-              Google
-            </a>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <AuthInput
+        id="email"
+        label="Email"
+        type="email"
+        placeholder="seu@email.com"
+        icon={<RxEnvelopeClosed size={18} />}
+        error={errors.email}
+        {...register('email')}
+      />
 
-            <a
-              href={DISCORD_AUTH_URL}
-              className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md shadow-sm text-sm font-medium
-                                 bg-[#1a1a1e] hover:bg-[#1a1a1e] text-white"
-            >
-              <img src={logoDiscord} alt="Google" className="h-5 w-5 mr-2" />
-              Discord
-            </a>
-          </div>
-          <label htmlFor="email" className="relative block text-[#ECECEC]">
-            <p className="mb-4 text-base md:text-xl text-[#ECECEC] font-medium">
-              Email Adress
-            </p>
-            <RxEnvelopeClosed
-              className="pointer-events-none absolute top-[70px] md:top-[74px] transform -translate-y-1/2 left-5 size-5 md:size-6"
-              color="#8F8F8F"
-            />
-            <input
-              type="email"
-              id="email"
-              placeholder="Please Enter your Email"
-              className={`bg-dark-bg-lighter text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
-               p-2.5 pl-12 h-14 md:pl-14 
-            ${
-              errorsLogin.email
-                ? 'border-2 border-red-500 focus:outline-none'
-                : 'border-transparent'
-            } 
-            ${
-              !errorsLogin.email
-                ? 'focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent'
-                : ''
-            }`}
-              {...registerLogin('email')}
-            />
-          </label>
-          {errorsLogin.email && (
-            <span className="text-red-500">{errorsLogin.email.message}</span>
-          )}
-        </div>
-
-        <div className="pt-[35px]">
-          <label htmlFor="password" className="relative block text-[#ECECEC]">
-            <p className="mb-4 text-base md:text-xl text-[#ECECEC] font-medium">
-              Password
-            </p>
-            <RxLockOpen2
-              className="pointer-events-none absolute top-[70px] md:top-[74px] transform -translate-y-1/2 left-5 size-5 md:size-6"
-              color="#8F8F8F"
-            />
-            <input
-              type="password"
-              id="password"
-              placeholder="Please Enter your Password"
-              className={`bg-dark-bg-lighter text-[#8F8F8F] rounded-xl block w-full sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full text-sm md:text-xl
-               p-2.5 pl-12 h-14 md:pl-14 
-            ${
-              errorsLogin.password
-                ? 'border-2 border-red-500 focus:outline-none'
-                : 'border-transparent'
-            } 
-            ${
-              !errorsLogin.password
-                ? 'focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent'
-                : ''
-            }`}
-              {...registerLogin('password')}
-            />
-          </label>
-          {errorsLogin.password && (
-            <span className="text-red-500">{errorsLogin.password.message}</span>
-          )}
-        </div>
-
+      <div className="flex flex-col gap-1">
+        <AuthInput
+          id="password"
+          label="Senha"
+          type="password"
+          placeholder="••••••••"
+          icon={<RxLockOpen2 size={18} />}
+          error={errors.password}
+          {...register('password')}
+        />
         <a
           href="/forgotPasswordPage"
-          className="pt-2 text-sm sm:text-lg md:text-xl text-primary-600 hover:underline text-[#8C67F6]"
+          className="text-xs text-[#8C67F6] hover:underline self-end mt-1"
         >
-          Forgot Password?
+          Esqueceu a senha?
         </a>
       </div>
 
-      <div className="w-full pt-32 sm:pt-72 nesthub:pt-16 asus:pt-32">
-        <Button variant="primary" fullWidth>
-          Login
-        </Button>
+      <Button variant="primary" fullWidth>
+        Entrar
+      </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#2A2B36]" />
+        <span className="text-[11px] text-gray-600 uppercase tracking-wider">
+          ou
+        </span>
+        <div className="h-px flex-1 bg-[#2A2B36]" />
       </div>
+
+      <GoogleAuthButton />
     </form>
   )
 }

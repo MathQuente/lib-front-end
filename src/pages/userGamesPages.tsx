@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { SideBar } from '../components/sideBar'
-
 import { GameStatusEnum } from '../types/games'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
@@ -77,28 +75,22 @@ export function UserGamesPageByStatus() {
 
   return (
     <>
-      <div className="flex min-h-screen bg-[#1A1C26]">
-        <div className="flex-1 flex flex-col md:ml-0">
-          <SideBar />
-
-          {UserGamesResponse && (
-            <GameListPage
-              games={UserGamesResponse}
-              page={page}
-              setPage={setPage}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
-              sortField={sortField}
-              setSortField={setSortField}
-              currentStatus={currentEnumStatus}
-              filterField={filterField}
-              setFilterField={setFilterField}
-              onFilterChange={handleFilterChange}
-              isUserLibrary
-            />
-          )}
-        </div>
-      </div>
+      {UserGamesResponse && (
+        <GameListPage
+          games={UserGamesResponse}
+          page={page}
+          setPage={setPage}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          sortField={sortField}
+          setSortField={setSortField}
+          currentStatus={currentEnumStatus}
+          filterField={filterField}
+          setFilterField={setFilterField}
+          onFilterChange={handleFilterChange}
+          isUserLibrary
+        />
+      )}
       <ToastContainer />
     </>
   )

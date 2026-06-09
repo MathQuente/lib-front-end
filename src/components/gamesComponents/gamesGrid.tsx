@@ -1,4 +1,3 @@
-// components/GamesGrid.tsx
 import { CiSearch } from 'react-icons/ci'
 import { GameCard } from '../gamesComponents/gameCard'
 import type { GameBase } from '../../types/games'
@@ -18,16 +17,12 @@ export function GamesGrid({
 }: GamesGridProps) {
   if (games.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center w-full py-16">
-        <div className="text-center space-y-4">
-          <CiSearch className="mx-auto size-16 text-[#8F8F8F]" />
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold text-white">
-              {emptyStateTitle}
-            </h3>
-            <p className="text-[#8F8F8F] max-w-md">{emptyStateDescription}</p>
-          </div>
-        </div>
+      <div className="flex flex-col items-center justify-center w-full py-16 text-center">
+        <CiSearch className="size-12 text-gray-700 mb-4" />
+        <h3 className="text-white font-medium mb-1">{emptyStateTitle}</h3>
+        <p className="text-gray-500 text-sm max-w-xs">
+          {emptyStateDescription}
+        </p>
       </div>
     )
   }

@@ -1,6 +1,4 @@
 import { Link } from 'react-router-dom'
-import { PiGameControllerBold } from 'react-icons/pi'
-
 import type { TotalPerStatus } from '../types/user'
 import type { GameBase } from '../types/games'
 import { GameCard } from './gamesComponents/gameCard'
@@ -12,77 +10,64 @@ interface UserGameDivProps {
   totalPerStatus: TotalPerStatus[]
 }
 
+const statusLabels: Record<Status, string> = {
+  PLAYED: 'Played',
+  PLAYING: 'Playing',
+  BACKLOG: 'Backlog',
+  WISHLIST: 'Wishlist'
+}
+
+const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
+
 export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
-  const statusTranslations: Record<string, string> = {
-    PLAYED: 'Played',
-    PLAYING: 'Playing',
-    BACKLOG: 'Backlog',
-    WISHLIST: 'Wishlist'
-  }
-
-  const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
-
   return (
-    <div className="lg:w-[60rem] xl:w-[68rem]">
+    <div className="w-full mt-6 flex flex-col gap-4">
       {statusOrder.map(statusKey => {
         const gamesForStatus = Games[statusKey] || []
         const total =
           totalPerStatus.find(t => t.status === statusKey)?.totalGames ?? 0
-        const displayStatus = statusTranslations[statusKey]
 
         return (
           <div
             key={statusKey}
-            className="mt-8 bg-[#272932] rounded px-6 py-4 w-full"
+            className="bg-[#1F2029] border border-[#2A2B36] rounded-lg px-6 py-4"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex flex-row items-center gap-2 pb-2">
-                <h2 className="text-2xl font-bold text-white capitalize">
-                  {displayStatus}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide">
+                  {statusLabels[statusKey]}
                 </h2>
-                <div className="flex gap-1">
-                  <PiGameControllerBold className="text-white size-6" />
-                  <span className="text-white font-bold">{total}</span>
-                </div>
+                <span className="text-xs text-gray-600">{total}</span>
               </div>
 
               {gamesForStatus.length > 0 && (
                 <Link
                   to={`/userLibrary/${statusKey.toLowerCase()}Games`}
-                  className="text-[#7A38CA] font-bold"
+                  className="text-xs text-gray-600 hover:text-[#7A38CA] transition-colors"
                 >
-                  See all
+                  Ver todos
                 </Link>
               )}
             </div>
 
             {gamesForStatus.length > 0 ? (
-              <div className="flex">
-                <div
-                  className="grid grid-cols-3 gap-x-3 gap-y-1
-                                sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6
-                                md:gap-x-4 lg:gap-x-4 2xl:gap-x-4"
-                >
-                  {gamesForStatus.slice(0, 6).map(game => (
-                    <GameCard
-                      game={game}
-                      key={game.id}
-                      size="medium"
-                      enableModal
-                    />
-                  ))}
-                </div>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {gamesForStatus.slice(0, 6).map(game => (
+                  <GameCard
+                    game={game}
+                    key={game.id}
+                    size="medium"
+                    enableModal
+                  />
+                ))}
               </div>
             ) : (
-              <div className="flex justify-center p-4">
-                <h2 className="text-xl font-bold text-gray-300">
-                  No games added yet. Search for it{' '}
-                  <Link to="/games" className="text-[#7A38CA]">
-                    here
-                  </Link>
-                  .
-                </h2>
-              </div>
+              <p className="text-gray-600 text-sm py-1">
+                Nenhum jogo adicionado.{' '}
+                <Link to="/games" className="text-[#7A38CA] hover:underline">
+                  Explorar jogos
+                </Link>
+              </p>
             )}
           </div>
         )

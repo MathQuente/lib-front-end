@@ -1,226 +1,209 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { useUserProfile } from '../hooks/useUserProfile'
-
 import { useState, useEffect } from 'react'
 import { MdKeyboardArrowDown } from 'react-icons/md'
 import { HiMenu, HiX } from 'react-icons/hi'
 import { SearchBar } from './searchBar'
 import { useApi } from '../hooks/useApi'
-import { useMobileMenu } from '../contexts/useMobileMenu'
 
 export function SideBar() {
   const { user } = useAuth()
   const api = useApi()
-  const { mobileMenuOpen, setMobileMenuOpen } = useMobileMenu()
 
-  const [isMobile, setIsMobile] = useState(false)
-  const [openProfileMenu, setOpenProfileMenu] = useState(false)
-  const { UserProfileResponse } = useUserProfile()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [openMobileProfileMenu, setOpenMobileProfileMenu] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : 'unset'
+    return () => {
+      document.body.style.overflow = 'unset'
     }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (!isMobile) {
-      setMobileMenuOpen(false)
-    }
-  }, [isMobile, setMobileMenuOpen])
+  }, [mobileMenuOpen])
 
   const handleLogout = async () => {
     api.logout()
     setMobileMenuOpen(false)
   }
 
-  const isLoggedIn = user?.id ?? ''
+  const isLoggedIn = !!user?.id
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false)
+    setOpenMobileProfileMenu(false)
   }
 
-  if (isMobile) {
-    return (
-      <>
-        <div className="w-full flex items-center justify-between">
-          <h1 className={'overflow-hidden transition-all text-white font-bold'}>
-            Logo
-          </h1>
-
-          <button
-            className="p-2 bg-[#272932] text-white rounded-lg shadow-lg md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            type="button"
-          >
-            {mobileMenuOpen ? <HiX size={24} /> : <HiMenu size={24} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-[999]"
-            onClick={closeMobileMenu}
-          />
-        )}
-
-        <aside
-          className={`fixed right-0 top-0 h-full w-72 bg-[#272932] transform transition-transform duration-300 ease-in-out z-[1000] md:hidden ${
-            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+  return (
+    <>
+      <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-[#2A2B36] mb-4">
+        <Link to="/">
+          <h1 className="text-white font-bold">Logo</h1>
+        </Link>
+        <button
+          className="p-2 text-gray-400 hover:text-white transition-colors"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          type="button"
+          aria-label="Abrir menu"
         >
-          <nav className="h-full flex flex-col border-r shadow-sm">
-            <div className="p-3 pb-2 flex justify-between items-center">
-              <h1 className="text-white font-bold text-xl">Logo</h1>
-              <button
-                className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-                type="button"
-                onClick={closeMobileMenu}
-              >
-                <HiX />
-              </button>
-            </div>
+          <HiMenu size={22} />
+        </button>
+      </div>
 
-            <div className="flex flex-col border-t">
-              {isLoggedIn && UserProfileResponse ? (
+      {mobileMenuOpen && (
+        // biome-ignore lint/a11y/useKeyWithClickEvents: overlay intencional
+        <div
+          className="fixed inset-0 bg-black/60 md:hidden z-40"
+          onClick={closeMobileMenu}
+        />
+      )}
+
+      <aside
+        className={`fixed right-0 top-0 h-full w-64 bg-[#1F2029] border-l border-[#2A2B36] transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between px-4 py-4 border-b border-[#2A2B36]">
+            <Link to="/" onClick={closeMobileMenu}>
+              <h1 className="text-white font-bold">Logo</h1>
+            </Link>
+            <button
+              className="p-1.5 text-gray-400 hover:text-white transition-colors"
+              type="button"
+              onClick={closeMobileMenu}
+              aria-label="Fechar menu"
+            >
+              <HiX size={20} />
+            </button>
+          </div>
+
+          <div className="flex flex-col px-4 py-4 gap-3 flex-1">
+            <SearchBar isMobile={true} />
+
+            <div className="flex flex-col gap-0.5 mt-1">
+              {isLoggedIn ? (
                 <>
-                  <Link
-                    to="/userLibrary"
-                    className="text-primary hover:text-primary-light pl-3 pt-2"
-                    onClick={closeMobileMenu}
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 py-2 text-sm text-[#7A38CA] hover:text-[#9D52E8] w-full text-left transition-colors"
+                    onClick={() =>
+                      setOpenMobileProfileMenu(!openMobileProfileMenu)
+                    }
                   >
-                    My Library
-                  </Link>
+                    {user?.userName}
+                    <MdKeyboardArrowDown
+                      className={`transition-transform duration-150 ${openMobileProfileMenu ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+
+                  {openMobileProfileMenu && (
+                    <div className="flex flex-col gap-0.5 pl-3 border-l border-[#2A2B36] mb-1">
+                      <Link
+                        to="/userLibrary"
+                        onClick={closeMobileMenu}
+                        className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
+                      >
+                        Minha Biblioteca
+                      </Link>
+                      <Link
+                        to="/"
+                        onClick={handleLogout}
+                        className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
+                      >
+                        Log out
+                      </Link>
+                    </div>
+                  )}
+
                   <Link
-                    to={'/games'}
-                    className="text-primary hover:text-primary-light pl-3"
+                    to="/games"
                     onClick={closeMobileMenu}
+                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
                   >
                     Games
                   </Link>
-                  <Link
-                    onClick={handleLogout}
-                    className="text-primary hover:text-primary-light pl-3"
-                    to={'/'}
-                  >
-                    Log out
-                  </Link>
                 </>
               ) : (
-                <div className="flex flex-col px-4 pt-2 gap-1">
+                <>
                   <Link
-                    to={'/auth'}
-                    className="text-primary hover:text-primary-light"
+                    to="/auth?tab=login"
                     onClick={closeMobileMenu}
+                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
                   >
                     Log in
                   </Link>
                   <Link
-                    to={
-                      '/auth?tab=signUp                                                                                                                     '
-                    }
-                    className="text-primary hover:text-primary-light"
+                    to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
+                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
                   >
                     Register
                   </Link>
-
-                  <SearchBar isMobile={isMobile} />
-                </div>
+                  <Link
+                    to="/games"
+                    onClick={closeMobileMenu}
+                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
+                  >
+                    Games
+                  </Link>
+                </>
               )}
             </div>
-          </nav>
-        </aside>
-      </>
-    )
-  }
-
-  return (
-    <aside className="w-full h-9">
-      <nav className="h-full flex items-center justify-between">
-        <div className="flex">
-          <Link to={'/'}>
-            <h1
-              className={'overflow-hidden transition-all text-white font-bold'}
-            >
-              Logo
-            </h1>
-          </Link>
+          </div>
         </div>
+      </aside>
+
+      <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-[#2A2B36] mb-6">
+        <Link to="/">
+          <h1 className="text-white font-bold">Logo</h1>
+        </Link>
 
         {isLoggedIn ? (
-          <div className="flex gap-3 items-center">
-            <div
-              onMouseEnter={() => setOpenProfileMenu(true)}
-              onMouseLeave={() => setOpenProfileMenu(false)}
-              className={`relative ${
-                openProfileMenu ? 'bg-dark-bg-lighter rounded-t-md' : ''
-              }`}
-            >
-              <p className="text-primary hover:text-primary-light flex items-center gap-1 px-3 py-2 hover:cursor-pointer">
-                {user?.userName}
-                <MdKeyboardArrowDown />
-              </p>
-
-              {openProfileMenu && (
-                <div className="absolute top-full right-0 w-full bg-dark-bg-lighter rounded-b-md shadow-lg flex flex-col gap-1 z-10">
-                  <Link
-                    to="/userLibrary"
-                    className="block text-gray-500 hover:text-white hover:bg-gray-600 transition-colors pl-3"
-                  >
-                    My Library
-                  </Link>
-                  <Link
-                    onClick={handleLogout}
-                    className="block text-gray-500 hover:text-white hover:bg-gray-600 rounded-b-md transition-colors pl-3"
-                    to={'/'}
-                  >
-                    Log out
-                  </Link>
-                </div>
-              )}
-            </div>
+          <div className="flex items-center gap-5">
             <Link
-              to={'/games'}
-              className="text-primary hover:text-primary-light"
+              to="/userLibrary"
+              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+            >
+              Minha Biblioteca
+            </Link>
+            <Link
+              to="/games"
+              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
               Games
             </Link>
-            <SearchBar isMobile={isMobile} />
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-sm text-gray-500 hover:text-white transition-colors"
+            >
+              Log out
+            </button>
+            <SearchBar isMobile={false} />
           </div>
         ) : (
-          <div className="flex gap-3">
+          <div className="flex items-center gap-5">
             <Link
-              to={'/auth'}
-              className="text-primary hover:text-primary-light"
+              to="/auth?tab=login"
+              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
               Log in
             </Link>
             <Link
-              to={
-                '/auth?tab=signUp                                                                                                                     '
-              }
-              className="text-primary hover:text-primary-light"
+              to="/auth?tab=signUp"
+              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
               Register
             </Link>
             <Link
-              to={'/games'}
-              className="text-primary hover:text-primary-light"
+              to="/games"
+              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
               Games
             </Link>
-            <SearchBar isMobile={isMobile} />
+            <SearchBar isMobile={false} />
           </div>
         )}
       </nav>
-    </aside>
+    </>
   )
 }

@@ -4,12 +4,14 @@ import { GameCard } from './gamesComponents/gameCard'
 import { Link } from 'react-router-dom'
 import type { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { FaStar, FaTimes } from 'react-icons/fa'
+import { FaStar } from 'react-icons/fa'
+
+type SectionType = 'coming' | 'trending' | 'rateds'
 
 interface GameListSectionProps extends ComponentProps<'div'> {
   games: Game[]
   title: string
-  type: string
+  type: SectionType
 }
 
 export function GameListSection({
@@ -18,166 +20,56 @@ export function GameListSection({
   className,
   type
 }: GameListSectionProps) {
-  const baseStyles = 'flex flex-col items-center justify-center w-full'
-
-  if (games.length > 0 && type === 'coming') {
-    return (
-      <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm py-2 rounded-md min-h-[550px]">
-          <div className="flex flex-row justify-between w-full mb-3">
-            <p className="text-[#7A38CA] font-medium">{title}</p>
-            <Link
-              to="/games/comingSoon"
-              className="text-gray-600 hover:text-[#7A38CA]"
-            >
-              See More
-            </Link>
-          </div>
-          <div className="flex flex-col gap-y-3">
-            {games.map(game => (
-              <div className="flex flex-row w-full gap-2" key={game.id}>
-                <Link to={`/games/${game.id}`}>
-                  <GameCard game={game} size="small" />
-                </Link>
-                <div>
-                  <Link to={`/games/${game.id}`}>
-                    <p className="text-white font-sans lg:text-base lg:font-normal xl:text-base xl:font-medium hover:text-[#7A38CA]">
-                      {game.gameName}
-                    </p>
-                  </Link>
-                  {
-                    <p className="text-gray-400">
-                      {dayjs(game.gameLaunchers[0].dateRelease).format(
-                        'MMM DD YYYY'
-                      )}
-                    </p>
-                  }
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (games.length === 0 && type === 'coming') {
-    return (
-      <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
-          <div className="flex flex-row justify-between w-full mb-3">
-            <p className="text-[#7A38CA] font-medium">{title}</p>
-            <Link to="/games/comingSoon" className="hover:text-[#7A38CA]">
-              See More
-            </Link>
-          </div>
-          <div className="flex flex-col items-center justify-center h-full py-8">
-            <div className="text-center">
-              <div className="mb-4">
-                <FaTimes className="w-16 h-16 mx-auto text-gray-500" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">
-                Nenhum jogo encontrado
-              </h3>
-              <p className="text-gray-400 text-sm">
-                Não há jogos disponíveis no momento.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (games.length === 0) {
-    return (
-      <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
-          <div className="flex flex-row justify-between w-full mb-3">
-            <p className="text-[#7A38CA] font-medium">{title}</p>
-          </div>
-          <div className="flex flex-col items-center justify-center h-full py-8">
-            <div className="text-center">
-              <div className="mb-4">
-                <FaTimes className="w-16 h-16 mx-auto text-gray-500" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">
-                Nenhum jogo encontrado
-              </h3>
-              <p className="text-gray-400 text-sm">
-                Não há jogos disponíveis no momento.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (type === 'rateds') {
-    return (
-      <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
-          <div className="flex flex-row justify-between w-full mb-3">
-            <p className="text-[#7A38CA] font-medium">{title}</p>
-          </div>
-          <div className="flex flex-col gap-y-3">
-            {games.map(game => (
-              <div className="flex flex-row w-full gap-2" key={game.id}>
-                <Link to={`/games/${game.id}`}>
-                  <GameCard game={game} size="small" />
-                </Link>
-                <div>
-                  <Link to={`/games/${game.id}`}>
-                    <p className="text-white font-sans lg:text-base lg:font-normal xl:text-base xl:font-medium hover:text-[#7A38CA]">
-                      {game.gameName}
-                    </p>
-                  </Link>
-                  <div className="flex items-center gap-x-0.5">
-                    <p className="text-gray-400 text-sm">{game.ratingAvg}</p>
-                    <FaStar className="size-3 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <>
-      <div className={twMerge(baseStyles, className)}>
-        <div className="w-full max-w-sm  px-4 py-2 rounded-md min-h-[550px]">
-          <div className="flex flex-row justify-between w-full mb-3">
-            <p className="text-[#7A38CA] font-medium">{title}</p>
-          </div>
-          <div className="flex flex-col gap-y-3">
-            {games.map(game => (
-              <div className="flex flex-row w-full gap-2" key={game.id}>
-                <Link to={`/games/${game.id}`}>
-                  <GameCard game={game} size="small" />
-                </Link>
-                <div>
-                  <Link to={`/games/${game.id}`}>
-                    <p className="text-white font-sans lg:text-base lg:font-normal xl:text-base xl:font-medium hover:text-[#7A38CA]">
-                      {game.gameName}
-                    </p>
-                  </Link>
-                  {
-                    <p className="text-gray-400">
-                      {dayjs(game.gameLaunchers[0].dateRelease).format(
-                        'MMM DD YYYY'
-                      )}
-                    </p>
-                  }
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className={twMerge('flex flex-col w-full', className)}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide">
+          {title}
+        </h2>
+        {type === 'coming' && (
+          <Link
+            to="/games/comingSoon"
+            className="text-xs text-gray-600 hover:text-[#7A38CA] transition-colors"
+          >
+            Ver mais
+          </Link>
+        )}
       </div>
-    </>
+
+      {games.length === 0 ? (
+        <p className="text-gray-600 text-sm py-2">Nenhum jogo disponível.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {games.map(game => (
+            <div key={game.id} className="flex gap-3 items-center">
+              <Link to={`/games/${game.id}`} className="flex-shrink-0">
+                <GameCard game={game} size="small" />
+              </Link>
+              <div className="min-w-0">
+                <Link to={`/games/${game.id}`}>
+                  <p className="text-sm text-white hover:text-[#7A38CA] transition-colors truncate">
+                    {game.gameName}
+                  </p>
+                </Link>
+                {type === 'rateds' ? (
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="text-xs text-gray-500">
+                      {game.ratingAvg}
+                    </span>
+                    <FaStar className="size-2.5 text-gray-500" />
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {dayjs(game.gameLaunchers[0].dateRelease).format(
+                      'DD MMM YYYY'
+                    )}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

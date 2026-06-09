@@ -8,18 +8,12 @@ interface GameLaunchersDivProps {
 
 export function GameLaunchersDiv({ gameLaucher }: GameLaunchersDivProps) {
   return (
-    <div
-      key={gameLaucher.platform.id}
-      className="flex items-center gap-1 px-2 py-2 bg-gray-700/50 rounded-lg transition-colors"
-    >
-      <span className="w-full flex gap-1">
-        <p className="text-gray-300 md:text-sm lg:text-base">
-          {gameLaucher.platform.platformName}:
-        </p>
-
-        <p className="text-gray-300">
-          {dayjs(gameLaucher.dateRelease).format('DD/MM/YYYY')}
-        </p>
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#25262F] border border-[#2A2B36] rounded-full text-sm">
+      <span className="text-gray-500">
+        {gameLaucher.platform.platformName}:
+      </span>
+      <span className="text-gray-300">
+        {dayjs(gameLaucher.dateRelease).format('DD/MM/YYYY')}
       </span>
     </div>
   )

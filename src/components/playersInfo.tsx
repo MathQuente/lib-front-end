@@ -6,55 +6,37 @@ interface PlayerInfosProps {
   GameResponse: GameResponse
 }
 
+const rows = [
+  { icon: IoGameController, label: 'Played', key: 'PLAYED' },
+  { icon: FaPlay, label: 'Playing', key: 'PLAYING' },
+  { icon: IoLibrary, label: 'Backlog', key: 'BACKLOCK' },
+  { icon: FaGift, label: 'Wishlist', key: 'WISHLIST' }
+] as const
+
 export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
+  const { userGames, amountOfRatings } = GameResponse.game
+
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col items-center">
-        <div className="flex w-full justify-between">
-          <span className="flex items-center gap-1">
-            <IoGameController className="w-5 h-5 text-gray-500" />
-            <p className="text-gray-500 font-medium">Played</p>
+    <div className="flex flex-col gap-1 py-2 border-t border-[#2A2B36]">
+      {rows.map(({ icon: Icon, label, key }) => (
+        <div key={key} className="flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-gray-500 text-sm">
+            <Icon className="size-4" />
+            {label}
           </span>
-          <p className="text-gray-300 font-medium">
-            {GameResponse.game.userGames.PLAYED || 0}
-          </p>
-        </div>
-        <div className="flex w-full justify-between">
-          <span className="flex items-center gap-1">
-            <FaPlay className="w-5 h-4 text-gray-500" />
-            <p className="text-gray-500 font-medium">Playing</p>
+          <span className="text-gray-300 text-sm font-medium">
+            {userGames[key] || 0}
           </span>
-          <p className="text-gray-300 font-medium">
-            {GameResponse.game.userGames.PLAYING || 0}
-          </p>
         </div>
-        <div className="flex w-full justify-between">
-          <span className="flex items-center gap-1">
-            <IoLibrary className="w-5 h-4 text-gray-500" />
-            <p className="text-gray-500 font-medium">Backlog</p>
-          </span>
-          <p className="text-gray-300 font-medium">
-            {GameResponse.game.userGames.BACKLOCK || 0}
-          </p>
-        </div>
-        <div className="flex w-full justify-between">
-          <span className="flex items-center gap-1">
-            <FaGift className="w-5 h-4 text-gray-500" />
-            <p className="text-gray-500 font-medium">Wishlist</p>
-          </span>
-          <p className="text-gray-300 font-medium">
-            {GameResponse.game.userGames.WISHLIST || 0}
-          </p>
-        </div>
-        <div className="flex w-full justify-between">
-          <span className="flex items-center gap-1">
-            <FaStar className="w-5 h-4 text-gray-500" />
-            <p className="text-gray-500 font-medium">Ratings</p>
-          </span>
-          <p className="text-gray-300 font-medium">
-            {GameResponse.game.amountOfRatings}
-          </p>
-        </div>
+      ))}
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-1.5 text-gray-500 text-sm">
+          <FaStar className="size-4" />
+          Avaliações
+        </span>
+        <span className="text-gray-300 text-sm font-medium">
+          {amountOfRatings}
+        </span>
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ export const useGame = (gameId: string | undefined) => {
   })
 
   const { data: SimilarGames } = useQuery<SimilarGamesResponse>({
-    queryKey: ['similarGames'],
+    queryKey: ['similarGames', gameId],
     queryFn: async () => api.getSimilarGames(gameId),
     placeholderData: keepPreviousData
   })

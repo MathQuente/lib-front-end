@@ -16,6 +16,9 @@ interface SortControlsProps {
   isUserLibrary?: boolean
 }
 
+const selectClass =
+  'bg-[#13141C] text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150 cursor-pointer'
+
 export function SortControls({
   sortField,
   sortOrder,
@@ -26,62 +29,48 @@ export function SortControls({
   onSortFilterField,
   isUserLibrary
 }: SortControlsProps) {
+  const toggleOrder = () =>
+    onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')
+
   return (
-    <div className="flex flex-row gap-4 mb-2 w-full justify-between items-center">
-      <div>
-        <p className="text-[#8F8F8F] text-sm">{totalGames} Games</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <h1 className="text-[#8F8F8F] text-sm whitespace-nowrap">
-          Ordenar por:
-        </h1>
+    <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
+      <p className="text-gray-500 text-sm">
+        {totalGames} {totalGames === 1 ? 'jogo' : 'jogos'}
+      </p>
 
-        <div className="flex flex-col items-center">
-          <div className="relative inline-block group">
-            <button
-              type="button"
-              onClick={() => onSortOrderChange('asc')}
-              className={`flex items-center rounded-lg text-sm font-medium transition-colors ${
-                sortOrder === 'asc' ? 'text-[#6930CD]' : 'text-[#272932]'
-              }`}
-            >
-              <ArrowUp className="size-4" />
-            </button>
-            <div className="absolute left-1/2 bottom-full mb-2 w-max px-2 py-1 rounded-md bg-indigo-100 text-indigo-800 text-sm transform -translate-x-1/2 translate-y-2 invisible opacity-0 transition-all duration-200 group-hover:-translate-y-2 group-hover:opacity-100 group-hover:visible pointer-events-none">
-              Ascending
-            </div>
-          </div>
-
-          <div className="relative inline-block group">
-            <button
-              type="button"
-              onClick={() => onSortOrderChange('desc')}
-              className={`flex items-center rounded-lg text-sm font-medium transition-colors ${
-                sortOrder === 'desc' ? 'text-[#6930CD]' : 'text-[#272932]'
-              }`}
-            >
-              <ArrowDown className="size-4" />
-            </button>
-            <div className="absolute left-1/2 bottom-full mb-2 w-max px-2 py-1 rounded-md bg-indigo-100 text-indigo-800 text-sm transform -translate-x-1/2 translate-y-2 invisible opacity-0 transition-all duration-200 group-hover:-translate-y-2 group-hover:opacity-100 group-hover:visible pointer-events-none">
-              Descending
-            </div>
-          </div>
-        </div>
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-gray-600 text-xs whitespace-nowrap">
+          Ordenar por
+        </span>
 
         <select
           value={sortField}
           onChange={onSortFieldChange}
-          className="bg-[#272932] text-[#8F8F8F] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+          className={selectClass}
         >
-          <option value="gameName">Nome do Jogo</option>
-          <option value="dateRelease">Data de Lançamento</option>
+          <option value="gameName">Nome</option>
+          <option value="dateRelease">Lançamento</option>
           <option value="rating">Avaliação</option>
         </select>
+
+        <button
+          type="button"
+          title={sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
+          onClick={toggleOrder}
+          className="p-1.5 text-[#7A38CA] hover:text-[#9D52E8] border border-[#2A2B36] hover:border-[#7A38CA] rounded-lg transition-colors duration-150"
+        >
+          {sortOrder === 'asc' ? (
+            <ArrowUp className="size-4" />
+          ) : (
+            <ArrowDown className="size-4" />
+          )}
+        </button>
+
         {isUserLibrary && (
           <select
             value={filterField}
             onChange={onSortFilterField}
-            className="bg-[#272932] text-[#8F8F8F] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            className={selectClass}
           >
             <option value={GameStatusEnum.Played}>Played</option>
             <option value={GameStatusEnum.Playing}>Playing</option>

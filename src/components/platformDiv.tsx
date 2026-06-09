@@ -1,42 +1,30 @@
 import { Gamepad2, Monitor } from 'lucide-react'
 
-interface PlaformDivProps {
+interface PlatformDivProps {
   platformName: string
 }
 
-export function PlatformDiv({ platformName }: PlaformDivProps) {
-  const getPlatformIcon = (platformName: string) => {
-    const name = platformName.toLowerCase()
-
-    if (
-      name.includes('pc') ||
-      name.includes('windows') ||
-      name.includes('steam') ||
-      name.includes('epic')
-    ) {
-      return Monitor
-    }
-    if (
-      name.includes('xbox') ||
-      name.includes('playstation') ||
-      name.includes('ps') ||
-      name.includes('nintendo') ||
-      name.includes('switch')
-    ) {
-      return Gamepad2
-    }
-
-    return Monitor
+function getPlatformIcon(name: string) {
+  const n = name.toLowerCase()
+  if (
+    n.includes('xbox') ||
+    n.includes('playstation') ||
+    n.includes('ps') ||
+    n.includes('nintendo') ||
+    n.includes('switch')
+  ) {
+    return Gamepad2
   }
+  return Monitor
+}
 
-  const PlatformIcon = getPlatformIcon(platformName)
+export function PlatformDiv({ platformName }: PlatformDivProps) {
+  const Icon = getPlatformIcon(platformName)
 
   return (
-    <div className="px-3 py-1 bg-gray-700/50 rounded-full text-sm inline-flex items-center justify-center gap-1">
-      <PlatformIcon className="text-gray-300 w-5 h-5 font-normal" />
-      <p className="text-gray-300 md:text-sm lg:text-base font-normal">
-        {platformName}
-      </p>
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#25262F] border border-[#2A2B36] rounded-full text-sm">
+      <Icon className="size-4 text-gray-500 flex-shrink-0" />
+      <span className="text-gray-300">{platformName}</span>
     </div>
   )
 }

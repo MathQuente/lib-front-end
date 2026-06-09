@@ -1,25 +1,30 @@
 import { useEffect, useState } from 'react'
 
-import type { Game, UserGame } from '../types'
-import { SideBar } from '../components/sideBar'
+import type { Game } from '../types/games'
+
+interface UserGameEntry {
+  game: Game
+}
 
 import { Flip, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { useApi } from '../hooks/useApi'
+import { useAuth } from '../hooks/useAuth'
 
 export function RouletteWheel() {
-  const [options, setOptions] = useState<UserGame[]>([])
+  const [options, setOptions] = useState<UserGameEntry[]>([])
   const [gameWinner, setGameWinner] = useState<Game>()
 
   const api = useApi()
-  const userId = api.getUserIdFromToken()
+  const { user } = useAuth()
+  const userId = user?.id ?? ''
 
   useEffect(() => {
     const fetchFinishedGames = async () => {
       if (userId) {
-        const data = await api.getUserGamesFinished(userId, 1)
-        setOptions(data.userFinishedGames)
+        const data = await api.getUserGames(1, '', undefined, 'gameName', 'asc')
+        setOptions(data.userFinishedGames ?? [])
       }
     }
     fetchFinishedGames()
@@ -27,17 +32,17 @@ export function RouletteWheel() {
   }, [userId])
 
   function drawGame() {
-    const games = options.filter(({ game }) => game.id !== gameWinner?.id)
+    const games = options.filter(({ game }) => game?.id !== gameWinner?.id)
     const sort = Math.floor(Math.random() * games.length)
-    setGameWinner(games[sort]?.game)
+    setGameWinner(games[sort]?.game as Game | undefined)
   }
 
   async function addGametoPlaying() {
-    await api.updateGameStatus(userId, gameWinner.id, '2')
-    setOptions((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== gameWinner?.id)
+    if (!gameWinner) return
+    await api.updateGameStatus(gameWinner.id, 2)
+    setOptions((oldData: UserGameEntry[]) =>
+      oldData.filter(({ game }) => game?.id !== gameWinner?.id)
     )
-    const gameIdAdd = gameWinner?.id
     toast.success('game add to playing', {
       position: 'top-right',
       autoClose: 4000,
@@ -47,21 +52,20 @@ export function RouletteWheel() {
       progress: undefined,
       theme: 'dark',
       transition: Flip,
-      toastId: gameIdAdd,
+      toastId: gameWinner.id
     })
     drawGame()
   }
 
   function removeGame() {
-    setOptions((oldData: UserGame[]) =>
-      oldData.filter(({ game }) => game.id !== gameWinner?.id)
+    setOptions((oldData: UserGameEntry[]) =>
+      oldData.filter(({ game }) => game?.id !== gameWinner?.id)
     )
     drawGame()
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#1A1C26]">
-      <SideBar />
+    <div className="flex flex-col w-full min-h-screen">
       <div className="flex flex-col items-center mt-4">
         <ToastContainer />
 
@@ -80,12 +84,14 @@ export function RouletteWheel() {
                 className="w-12 p-1 rounded-sm bg-red-600 text-white font-semibold"
                 onClick={removeGame}
                 disabled={options.length === 0}
+                type="button"
               >
                 &#10005;
               </button>
               <button
                 className="w-12 p-1 rounded-sm bg-green-500 text-white font-semibold"
                 onClick={addGametoPlaying}
+                type="button"
               >
                 &#10003;
               </button>
@@ -99,6 +105,7 @@ export function RouletteWheel() {
             </div>
             <button
               onClick={drawGame}
+              type="button"
               className="w-60 p-2 rounded-2xl bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105
               hover:from-[#5D23A5] hover:to-[#813FCF]
                text-white font-semibold"
@@ -114,7 +121,7 @@ export function RouletteWheel() {
             </div>
             <Link to="/games">
               <button
-                onClick={drawGame}
+                type="button"
                 className="p-2 rounded-2xl bg-gradient-to-t from-[#4D23A5] to-[#783FCF] brightness-105
               hover:from-[#5D23A5] hover:to-[#813FCF]
                text-white font-semibold w-44"

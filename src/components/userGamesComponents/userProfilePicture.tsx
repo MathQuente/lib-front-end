@@ -8,12 +8,12 @@ export function UserProfilePicture({
   userName: string
 }) {
   return (
-    <div className="absolute top-[58px] left-[16%] sm:top-[60px] sm:left-[16%] md:top-[70px] lg:top-[90px] lg:left-[15%] md:left-[16%] transform -translate-x-1/2 size-16 sm:size-20 md:size-24 lg:size-28 bg-[#272932] rounded-full flex items-center justify-center border-2 border-purple-500">
+    <div className="absolute left-6 bottom-0 translate-y-1/2 size-16 md:size-20 rounded-full border-2 border-[#7A38CA] bg-[#1A1C26] overflow-hidden flex-shrink-0">
       <img
         src={profilePicture || userProfilePictureDefault}
         alt={`Foto de perfil de ${userName}`}
         loading="lazy"
-        className="size-14 sm:size-16 md:size-20 lg:size-[6.7rem] rounded-full object-cover"
+        className="w-full h-full object-cover"
       />
     </div>
   )
