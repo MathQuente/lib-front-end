@@ -27,17 +27,6 @@ export interface UserGame {
   statuses?: string;
 }
 
-// export interface UserGamesResponse {
-//   userGames: {
-//     PLAYED: UserGame[]
-//     PLAYING: UserGame[]
-//     BACKLOG: UserGame[]
-//     WISHLIST: UserGame[]
-//   }
-//   totalPerStatus: TotalPerStatus[]
-//   totalGames: number
-// }
-
 export interface TotalPerStatus {
   status: string;
   totalGames: number;

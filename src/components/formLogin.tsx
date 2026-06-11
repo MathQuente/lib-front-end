@@ -6,18 +6,14 @@ import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import { useNavigate } from 'react-router-dom'
 import { RxEnvelopeClosed, RxLockOpen2 } from 'react-icons/rx'
-import logoGoogle from '../assets/Google__G__logo.svg.png'
-import logoDiscord from '../assets/5968756.png'
 import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
+import { DiscordAuthButton } from './discordAuthButton'
 import { AuthInput } from './authInput'
 
 type LoginForm = z.infer<typeof loginSchema>
 
 export function FormLogin() {
-  const GOOGLE_AUTH_URL = 'http://localhost:3333/auth/google'
-  const DISCORD_AUTH_URL = 'http://localhost:3333/auth/discord'
-
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -80,7 +76,10 @@ export function FormLogin() {
         <div className="h-px flex-1 bg-[#2A2B36]" />
       </div>
 
-      <GoogleAuthButton />
+      <div className="flex flex-col gap-2">
+        <GoogleAuthButton />
+        <DiscordAuthButton />
+      </div>
     </form>
   )
 }

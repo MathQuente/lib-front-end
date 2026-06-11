@@ -67,7 +67,6 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       }
 
       if (options?.removeUserBanner) {
-        console.log('remove banner')
         userBannerUrl = null
       } else if (data.userBanner) {
         userBannerUrl = await uploadImageIfNeeded(data.userBanner)

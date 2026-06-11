@@ -6,19 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import type { z } from 'zod'
-import logoGoogle from '../assets/Google__G__logo.svg.png'
-import logoDiscord from '../assets/5968756.png'
 
 import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
+import { DiscordAuthButton } from './discordAuthButton'
 import { AuthInput } from './authInput'
 
 type SignUpForm = z.infer<typeof signUpSchema>
 
 export function FormSignUp() {
-  const GOOGLE_AUTH_URL = 'http://localhost:3333/auth/google'
-  const DISCORD_AUTH_URL = 'http://localhost:3333/auth/discord'
-
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -73,7 +69,10 @@ export function FormSignUp() {
         <div className="h-px flex-1 bg-[#2A2B36]" />
       </div>
 
-      <GoogleAuthButton />
+      <div className="flex flex-col gap-2">
+        <GoogleAuthButton />
+        <DiscordAuthButton />
+      </div>
     </form>
   )
 }

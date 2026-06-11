@@ -72,7 +72,7 @@ export interface Game {
     PLAYED: number
     PLAYING: number
     PAUSED: number
-    BACKLOCK: number
+    BACKLOG: number
     WISHLIST: number
   }
   userWhoOwnThisGame: { userId: string }[]

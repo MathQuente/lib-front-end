@@ -98,7 +98,7 @@ export function GameListPage({
         sortField={sortField}
         sortOrder={sortOrder}
         isUserLibrary={isUserLibrary}
-        totalGames={gamesArray.length}
+        totalGames={safeTotal}
       />
 
       <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg py-4 px-4 xl:px-6">

@@ -214,7 +214,6 @@ export const useApi = () => ({
     return response.data
   },
   getGamesToDisplay: async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000))
     const response = await api.get('/users/featuredGames')
     return response.data
   },
