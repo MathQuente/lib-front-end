@@ -54,7 +54,11 @@ export function UserGamesPageByStatus() {
       : GameStatusEnum.Played
   })
 
-  function handleFilterChange(newFilter: GameStatusEnum) {
+  function handleFilterChange(newFilter: GameStatusEnum | '') {
+    if (!newFilter) {
+      navigate('/userLibrary')
+      return
+    }
     const newRoute = enumToRouteMap[newFilter]
     navigate(`/userLibrary/${newRoute}`)
     setFilterField(newFilter)

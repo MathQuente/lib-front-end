@@ -4,22 +4,22 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { useRef } from 'react'
 import 'swiper/css'
 
-import { useAuth } from './hooks/useAuth'
-import userLibrary from './assets/Screenshot From 2025-07-03 18-09-08.png'
-import { Button } from './components/button'
-import { GameListSection } from './components/gameListSection'
-import { GameCard } from './components/gamesComponents/gameCard'
-import { useUserGames } from './hooks/useUserGames'
-import { useGames } from './hooks/useGames'
+import { useAuth } from '../hooks/useAuth'
+import userLibrary from '../assets/Screenshot From 2025-07-03 18-09-08.png'
+import { Button } from '../components/button'
+import { GameListSection } from '../components/gameListSection'
+import { GameCard } from '../components/gamesComponents/gameCard'
+import { useUserGames } from '../hooks/useUserGames'
+import { useGames } from '../hooks/useGames'
 
 const STAT_KEYS = [
-  { label: 'Played', status: 'PLAYED' },
-  { label: 'Playing', status: 'PLAYING' },
+  { label: 'Jogado', status: 'PLAYED' },
+  { label: 'Jogando', status: 'PLAYING' },
   { label: 'Backlog', status: 'BACKLOG' },
-  { label: 'Wishlist', status: 'WISHLIST' }
+  { label: 'Lista de Desejos', status: 'WISHLIST' }
 ] as const
 
-export function App() {
+export function Home() {
   const { user } = useAuth()
   const isLogged = !!user?.id
 
@@ -39,7 +39,7 @@ export function App() {
         <div className="flex flex-col gap-6 mt-8 w-full">
           <div className="">
             <h1 className="text-xl font-semibold text-white">
-              Olá, <span className="text-[#7A38CA]">{user.userName}</span>
+              Olá, <span className="text-primary">{user.userName}</span>
             </h1>
 
             <div className="flex gap-x-4">
@@ -76,7 +76,7 @@ export function App() {
                     <p className="text-gray-600 text-xs mb-0.5">
                       {stableGame.current.message}
                     </p>
-                    <p className="text-white text-sm font-medium group-hover:text-[#9D52E8] transition-colors duration-150 truncate">
+                    <p className="text-white text-sm font-medium group-hover:text-primary-light transition-colors duration-150 truncate">
                       {stableGame.current.game.gameName}
                     </p>
                   </div>
@@ -91,7 +91,7 @@ export function App() {
             <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
               Organize seus jogos
               <br />
-              com <span className="text-[#7A38CA]">Lib</span>
+              com <span className="text-primary">Lib</span>
             </h1>
             <p className="text-gray-400 leading-relaxed max-w-md">
               Marque o que jogou, está jogando ou quer jogar. Um projeto pessoal
@@ -110,14 +110,14 @@ export function App() {
             <img
               src={userLibrary}
               alt="Screenshot da biblioteca"
-              className="w-full rounded-lg border border-[#2A2B36]"
+              className="w-full rounded-lg border border-dark-border"
             />
           </div>
         </div>
       )}
 
       <section className="mt-10 mb-6">
-        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 mb-5 uppercase tracking-wide">
+        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 mb-5 uppercase tracking-wide">
           Lançamentos Recentes
         </h2>
 

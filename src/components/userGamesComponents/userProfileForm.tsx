@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form'
 import type { FieldValues } from 'react-hook-form'
 import type { z } from 'zod'
 
-import { RxCross2 } from 'react-icons/rx'
-import { TbCameraPlus } from 'react-icons/tb'
+import { X, Camera } from 'lucide-react'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 
 import { updateProfileSchema } from '../../schemas/profileSchema'
@@ -175,7 +174,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                 })}
               />
               <div className="p-2 rounded-lg bg-[#1F2029]/80 border border-[#2A2B36] text-gray-300 hover:text-white transition-colors">
-                <TbCameraPlus size={18} />
+                <Camera size={18} />
               </div>
             </label>
 
@@ -185,7 +184,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                 onClick={handleRemoveBanner}
                 className="p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors"
               >
-                <RxCross2 size={18} />
+                <X size={18} />
               </button>
             )}
           </div>
@@ -199,7 +198,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-              <TbCameraPlus size={16} className="text-white" />
+              <Camera size={16} className="text-white" />
             </div>
             <input
               type="file"

@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import { useNavigate } from 'react-router-dom'
-import { RxEnvelopeClosed, RxLockOpen2 } from 'react-icons/rx'
+import { Mail, LockOpen } from 'lucide-react'
 import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
 import { DiscordAuthButton } from './discordAuthButton'
@@ -41,7 +41,7 @@ export function FormLogin() {
         label="Email"
         type="email"
         placeholder="seu@email.com"
-        icon={<RxEnvelopeClosed size={18} />}
+        icon={<Mail size={18} />}
         error={errors.email}
         {...register('email')}
       />
@@ -52,7 +52,7 @@ export function FormLogin() {
           label="Senha"
           type="password"
           placeholder="••••••••"
-          icon={<RxLockOpen2 size={18} />}
+          icon={<LockOpen size={18} />}
           error={errors.password}
           {...register('password')}
         />

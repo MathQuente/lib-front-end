@@ -47,8 +47,8 @@ export const useGameStatus = (gameId: string | undefined) => {
     },
     onError: (error) => {
       toast.error(
-        `Update game error: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Erro ao atualizar status: ${
+          error instanceof Error ? error.message : "Erro desconhecido"
         } 🤯`,
       );
     },

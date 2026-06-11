@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
-import { MdKeyboardArrowDown } from 'react-icons/md'
-import { HiMenu, HiX } from 'react-icons/hi'
+import { ChevronDown, Menu, X } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { useApi } from '../hooks/useApi'
 
@@ -44,7 +43,7 @@ export function SideBar() {
           type="button"
           aria-label="Abrir menu"
         >
-          <HiMenu size={22} />
+          <Menu size={22} />
         </button>
       </div>
 
@@ -72,7 +71,7 @@ export function SideBar() {
               onClick={closeMobileMenu}
               aria-label="Fechar menu"
             >
-              <HiX size={20} />
+              <X size={20} />
             </button>
           </div>
 
@@ -90,7 +89,7 @@ export function SideBar() {
                     }
                   >
                     {user?.userName}
-                    <MdKeyboardArrowDown
+                    <ChevronDown
                       className={`transition-transform duration-150 ${openMobileProfileMenu ? 'rotate-180' : ''}`}
                     />
                   </button>
@@ -109,7 +108,7 @@ export function SideBar() {
                         onClick={handleLogout}
                         className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
                       >
-                        Log out
+                        Sair
                       </Link>
                     </div>
                   )}
@@ -129,14 +128,14 @@ export function SideBar() {
                     onClick={closeMobileMenu}
                     className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
                   >
-                    Log in
+                    Entrar
                   </Link>
                   <Link
                     to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
                     className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
                   >
-                    Register
+                    Criar conta
                   </Link>
                   <Link
                     to="/games"
@@ -176,7 +175,7 @@ export function SideBar() {
               onClick={handleLogout}
               className="text-sm text-gray-500 hover:text-white transition-colors"
             >
-              Log out
+              Sair
             </button>
             <SearchBar isMobile={false} />
           </div>
@@ -186,13 +185,13 @@ export function SideBar() {
               to="/auth?tab=login"
               className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
-              Log in
+              Entrar
             </Link>
             <Link
               to="/auth?tab=signUp"
               className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
             >
-              Register
+              Criar conta
             </Link>
             <Link
               to="/games"

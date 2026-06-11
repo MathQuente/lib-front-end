@@ -23,7 +23,7 @@ interface GameListProps {
   filterField?: GameStatusEnum
   setFilterField?: (filterField: GameStatusEnum) => void
   currentStatus?: string
-  onFilterChange?: (filter: GameStatusEnum) => void
+  onFilterChange?: (filter: GameStatusEnum | '') => void
   isUserLibrary?: boolean
 }
 

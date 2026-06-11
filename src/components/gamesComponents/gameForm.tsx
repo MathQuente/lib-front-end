@@ -1,5 +1,4 @@
-import { IoGameController, IoLibrary } from 'react-icons/io5'
-import { FaGift, FaPlay } from 'react-icons/fa'
+import { Gamepad2, Library, Gift, Play } from 'lucide-react'
 import { PlayedCount } from '../playedCount'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
@@ -42,12 +41,12 @@ export function GameForm({ game }: { game: GameBase | undefined }) {
   const buttons = [
     ...(gameIsReleased
       ? [
-          { statusId: STATUS.PLAYED, icon: IoGameController, label: 'Played' },
-          { statusId: STATUS.PLAYING, icon: FaPlay, label: 'Playing' },
-          { statusId: STATUS.BACKLOG, icon: IoLibrary, label: 'Backlog' }
+          { statusId: STATUS.PLAYED, icon: Gamepad2, label: 'Jogado' },
+          { statusId: STATUS.PLAYING, icon: Play, label: 'Jogando' },
+          { statusId: STATUS.BACKLOG, icon: Library, label: 'Backlog' }
         ]
       : []),
-    { statusId: STATUS.WISHLIST, icon: FaGift, label: 'Wishlist' }
+    { statusId: STATUS.WISHLIST, icon: Gift, label: 'Lista de Desejos' }
   ]
 
   return (

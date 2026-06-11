@@ -11,10 +11,10 @@ interface UserGameDivProps {
 }
 
 const statusLabels: Record<Status, string> = {
-  PLAYED: 'Played',
-  PLAYING: 'Playing',
+  PLAYED: 'Jogado',
+  PLAYING: 'Jogando',
   BACKLOG: 'Backlog',
-  WISHLIST: 'Wishlist'
+  WISHLIST: 'Lista de Desejos'
 }
 
 const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']

@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { RxCross2 } from 'react-icons/rx'
+import { X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 export function UserProfileModal({
@@ -21,7 +21,7 @@ export function UserProfileModal({
               Editar perfil
             </Dialog.Title>
             <Dialog.Close className="text-gray-500 hover:text-white transition-colors p-0.5">
-              <RxCross2 size={18} />
+              <X size={18} />
             </Dialog.Close>
           </div>
           <Dialog.Description className="sr-only">

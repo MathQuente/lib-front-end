@@ -17,12 +17,12 @@ export const useAddGame = (gameId?: string) => {
       queryClient.invalidateQueries({
         queryKey: ['gamesStatus', userId, gameId]
       })
-      toast.success('Game added successfully 👌')
+      toast.success('Jogo adicionado com sucesso 👌')
     },
     onError: error => {
       toast.error(
-        `Add game error: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Erro ao adicionar jogo: ${
+          error instanceof Error ? error.message : 'Erro desconhecido'
         } 🤯`
       )
     },
@@ -85,8 +85,8 @@ export const useAddGame = (gameId?: string) => {
       )
 
       toast.error(
-        `Remove game error: ${
-          err instanceof Error ? err.message : 'Unknown error'
+        `Erro ao remover jogo: ${
+          err instanceof Error ? err.message : 'Erro desconhecido'
         } 🤯`
       )
     },
@@ -133,8 +133,8 @@ export const useAddGame = (gameId?: string) => {
         context?.previousGameStatus
       )
       toast.error(
-        `Remove game error: ${
-          err instanceof Error ? err.message : 'Unknown error'
+        `Erro ao remover jogo: ${
+          err instanceof Error ? err.message : 'Erro desconhecido'
         } 🤯`
       )
     },

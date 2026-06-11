@@ -68,14 +68,15 @@ export function SortControls({
 
         {isUserLibrary && (
           <select
-            value={filterField}
+            value={filterField ?? ''}
             onChange={onSortFilterField}
             className={selectClass}
           >
-            <option value={GameStatusEnum.Played}>Played</option>
-            <option value={GameStatusEnum.Playing}>Playing</option>
+            <option value="">Todos</option>
+            <option value={GameStatusEnum.Played}>Jogado</option>
+            <option value={GameStatusEnum.Playing}>Jogando</option>
             <option value={GameStatusEnum.Backlog}>Backlog</option>
-            <option value={GameStatusEnum.Wishlist}>Wishlist</option>
+            <option value={GameStatusEnum.Wishlist}>Lista de Desejos</option>
           </select>
         )}
       </div>

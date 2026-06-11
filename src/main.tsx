@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Authentication } from './pages/authentication'
-import { App } from './app'
+import { Home } from './pages/home'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { UserLibrary } from './pages/userLibrary'
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/',
-        element: <App />
+        element: <Home />
       },
       {
         path: '/search/:query',

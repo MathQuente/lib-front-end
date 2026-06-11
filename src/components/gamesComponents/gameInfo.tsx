@@ -36,9 +36,9 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
           {!user && (
             <div className="flex gap-1">
               <Link to="/auth" className="text-[#8C67F6]">
-                Log in
+                Entrar
               </Link>
-              <p>to access rating features.</p>
+              <p>para acessar as avaliações.</p>
             </div>
           )}
         </div>
@@ -47,11 +47,11 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
       <div className="flex justify-end gap-4 pt-4 border-t border-gray-700">
         <Link to={`/games/${game?.id}`}>
           <Button type="button" variant="primary" size="md">
-            View Details
+            Ver Detalhes
           </Button>
         </Link>
         <Button onClick={onClose} variant="cancel">
-          Cancel
+          Cancelar
         </Button>
       </div>
     </div>

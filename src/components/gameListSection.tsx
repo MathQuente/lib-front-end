@@ -4,7 +4,7 @@ import { GameCard } from './gamesComponents/gameCard'
 import { Link } from 'react-router-dom'
 import type { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { FaStar } from 'react-icons/fa'
+import { Star } from 'lucide-react'
 
 type SectionType = 'coming' | 'trending' | 'rateds'
 
@@ -56,7 +56,7 @@ export function GameListSection({
                     <span className="text-xs text-gray-500">
                       {game.ratingAvg}
                     </span>
-                    <FaStar className="size-2.5 text-gray-500" />
+                    <Star className="size-2.5 text-gray-500" />
                   </div>
                 ) : (
                   <p className="text-xs text-gray-500 mt-0.5">

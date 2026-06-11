@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { RxEnvelopeClosed, RxLockOpen2 } from 'react-icons/rx'
+import { Mail, LockOpen } from 'lucide-react'
 import { signUpSchema } from '../schemas/signUpSchema'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -42,7 +42,7 @@ export function FormSignUp() {
         label="Email"
         type="email"
         placeholder="seu@email.com"
-        icon={<RxEnvelopeClosed size={18} />}
+        icon={<Mail size={18} />}
         error={errors.email}
         {...register('email')}
       />
@@ -52,7 +52,7 @@ export function FormSignUp() {
         label="Senha"
         type="password"
         placeholder="••••••••"
-        icon={<RxLockOpen2 size={18} />}
+        icon={<LockOpen size={18} />}
         error={errors.password}
         {...register('password')}
       />

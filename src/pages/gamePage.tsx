@@ -16,7 +16,32 @@ export function GamePage() {
   const { gameId } = useParams<{ gameId: string }>()
   const { GameResponse, SimilarGames } = useGame(gameId)
 
-  if (!GameResponse || !SimilarGames) return null
+  if (!GameResponse || !SimilarGames) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4 w-full animate-pulse">
+        <div className="lg:col-span-1">
+          <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5 flex flex-col gap-5">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-56 h-80 rounded-lg bg-dark-bg-lighter" />
+              <div className="h-5 w-40 rounded bg-dark-bg-lighter" />
+            </div>
+            <div className="flex justify-center gap-4">
+              {Array.from({ length: 3 }, (_, i) => `sk${i}`).map(k => (
+                <div key={k} className="flex flex-col items-center gap-1">
+                  <div className="size-7 rounded bg-dark-bg-lighter" />
+                  <div className="h-3 w-10 rounded bg-dark-bg-lighter" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5 h-36" />
+          <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5 h-24" />
+        </div>
+      </div>
+    )
+  }
 
   const { game } = GameResponse
 

@@ -16,29 +16,40 @@ export function SearchResults() {
     isErrorInfinite
   } = useGames(1, query, 'gameName', 'asc', 10)
 
-  if (!GamesResponseInfinity) {
-    return null
-  }
-
   if (isLoadingInfinite) {
     return (
-      <div className="min-h-screen bg-[#1A1C26] flex items-center justify-center">
-        <p className="text-white">Loading games...</p>
+      <div className="flex flex-col gap-4 mt-4 animate-pulse">
+        <div className="h-6 bg-dark-bg-light rounded w-48" />
+        {Array.from({ length: 5 }, (_, i) => `sk${i}`).map(k => (
+          <div key={k} className="flex gap-4 p-4">
+            <div className="w-32 h-40 rounded-lg bg-dark-bg-light flex-shrink-0" />
+            <div className="flex-1 flex flex-col gap-3 py-1">
+              <div className="h-5 bg-dark-bg-light rounded w-3/4" />
+              <div className="h-4 bg-dark-bg-light rounded w-1/3" />
+              <div className="h-3 bg-dark-bg-light rounded w-full" />
+              <div className="h-3 bg-dark-bg-light rounded w-5/6" />
+            </div>
+          </div>
+        ))}
       </div>
     )
   }
 
   if (isErrorInfinite) {
     return (
-      <div className="min-h-screen bg-[#1A1C26] flex items-center justify-center">
+      <div className="flex items-center justify-center py-20">
         <div className="text-center">
-          <p className="text-red-400 mb-4">Error at load games</p>
+          <p className="text-red-400 mb-4">Erro ao carregar jogos</p>
           <Button variant="secondary" size="md">
-            Try again
+            Tentar novamente
           </Button>
         </div>
       </div>
     )
+  }
+
+  if (!GamesResponseInfinity) {
+    return null
   }
 
   const resultForSeachGames = GamesResponseInfinity.pages.flatMap(
@@ -50,8 +61,8 @@ export function SearchResults() {
     <>
       <div className="w-full mb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-1 text-center sm:text-left">
-          <p className="text-[#7A38CA] text-base sm:text-lg">
-            {total} results for
+          <p className="text-primary text-base sm:text-lg">
+            {total} {total === 1 ? 'resultado' : 'resultados'} para
           </p>
           <p className="text-[#FFFFFF] text-lg sm:text-xl font-bold break-words">
             {query}
@@ -68,10 +79,10 @@ export function SearchResults() {
             {isFetchingNextPage ? (
               <div className="flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#7A38CA] border-t-transparent" />
-                <p className="text-gray-400">Loading more games...</p>
+                <p className="text-gray-400">Carregando mais jogos...</p>
               </div>
             ) : (
-              <p className="text-gray-400">Loading...</p>
+              <p className="text-gray-400">Carregando...</p>
             )}
           </div>
         }

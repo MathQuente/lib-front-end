@@ -1,4 +1,4 @@
-import { CiSearch } from 'react-icons/ci'
+import { Search } from 'lucide-react'
 import { GameCard } from '../gamesComponents/gameCard'
 import type { GameBase } from '../../types/games'
 
@@ -18,7 +18,7 @@ export function GamesGrid({
   if (games.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center w-full py-16 text-center">
-        <CiSearch className="size-12 text-gray-700 mb-4" />
+        <Search className="size-12 text-gray-700 mb-4" />
         <h3 className="text-white font-medium mb-1">{emptyStateTitle}</h3>
         <p className="text-gray-500 text-sm max-w-xs">
           {emptyStateDescription}
