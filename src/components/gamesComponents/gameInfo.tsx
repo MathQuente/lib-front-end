@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { RatingAverage } from '../ratingAverage'
 import { Button } from '../button'
-import type { GameInfoProps } from '../../interfaces/games.interfaces'
+import type { GameInfoProps } from '../../interfaces/games'
 
 export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()

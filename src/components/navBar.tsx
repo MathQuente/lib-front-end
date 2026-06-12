@@ -5,7 +5,7 @@ import type { ChangeEvent } from 'react'
 import { z } from 'zod'
 // import { useForm } from 'react-hook-form'
 // import { zodResolver } from '@hookform/resolvers/zod'
-import { useApi } from '../hooks/useApi'
+import { api } from '../hooks/useApi'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { UserProfileResponse } from '../types/user'
 import { Link } from 'react-router-dom'
@@ -22,7 +22,6 @@ const searchSchema = z.object({
 })
 
 export function Navbar() {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const [search, setSearch] = useState(() => {

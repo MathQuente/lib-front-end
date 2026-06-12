@@ -1,55 +1,32 @@
-import { ArrowDown, ArrowUp } from 'lucide-react'
-import { IconButton } from './iconButton'
+import { Minus, Plus } from 'lucide-react'
 import { usePlayedCount } from '../hooks/usePlayedCount'
 import type { GameBase } from '../types/games'
 
 export function PlayedCount({ game }: { game: GameBase }) {
   const { completions, updatePlayedCount } = usePlayedCount(game.id)
 
-  const completionCount = Math.max(completions ?? 0, 1)
-
-  // Increment the completion count
-  const incrementCompletionCount = async () => {
-    await updatePlayedCount(1)
-  }
-
-  // Decrement the completion count (minimum 1)
-  const decrementCompletionCount = async () => {
-    if (completionCount > 1) {
-      await updatePlayedCount(-1)
-    }
-  }
-
-  // Manually update the completion count
-
-  const handleCompletionCountBlur = async () => {
-    await updatePlayedCount(1)
-  }
+  const count = Math.max(completions ?? 0, 1)
 
   return (
-    <div className="flex justify-center items-center bg-gray-800 rounded h-12 w-full">
-      <span className="text-gray-300">Times completed:</span>
-      <div className="flex items-center">
-        <IconButton
-          onClick={decrementCompletionCount}
-          disabled={completionCount <= 1}
+    <div className="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-dark-bg-lighter">
+      <span className="text-xs text-gray-400">Vezes zerado</span>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => updatePlayedCount(-1)}
+          disabled={count <= 1}
+          className="flex items-center justify-center size-6 rounded-md transition-colors text-primary hover:bg-dark-bg disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <ArrowDown
-            className={`size-5 ${
-              completionCount <= 1 ? 'text-black' : 'text-[#6930CD]'
-            }`}
-          />
-        </IconButton>
-        <input
-          disabled
-          value={completionCount}
-          onBlur={handleCompletionCountBlur}
-          className="w-8 text-center bg-gray-700 border-0 text-white"
-          readOnly
-        />
-        <IconButton onClick={incrementCompletionCount}>
-          <ArrowUp className="size-5 text-[#6930CD]" />
-        </IconButton>
+          <Minus className="size-3.5" />
+        </button>
+        <span className="w-5 text-center text-sm font-medium text-white">{count}</span>
+        <button
+          type="button"
+          onClick={() => updatePlayedCount(1)}
+          className="flex items-center justify-center size-6 rounded-md transition-colors text-primary hover:bg-dark-bg"
+        >
+          <Plus className="size-3.5" />
+        </button>
       </div>
     </div>
   )

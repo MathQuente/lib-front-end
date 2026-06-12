@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient
 } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import { useAuth } from './useAuth'
 import type { UserProfileResponse } from '../types/user'
 import { toast } from 'react-toastify'
@@ -21,7 +21,6 @@ interface UseUserProfileOptions {
 }
 
 export const useUserProfile = (options?: UseUserProfileOptions) => {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()

@@ -2,33 +2,31 @@ import { Gamepad2, Library, Gift, Play } from 'lucide-react'
 import { PlayedCount } from '../playedCount'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
-import type { GameBase } from '../../types/games'
+import type { GameFormProps } from '../../interfaces/games'
 
 const STATUS = {
   PLAYED: 1,
   PLAYING: 2,
-  REPLAYING: 3,
   BACKLOG: 4,
   WISHLIST: 5
 } as const
 
-export function GameForm({ game }: { game: GameBase | undefined }) {
+export function GameForm({ game }: GameFormProps) {
   const { gameStatus, updateGameStatus } = useGameStatus(game?.id)
   const { addGame, removeGame } = useAddGame(game?.id)
 
   if (!game) return null
 
-  const currentStatuses = gameStatus?.userGameStatus
+  const activeStatus = gameStatus?.userGameStatus
+  const hasStatus = (statusId: number) => activeStatus?.id === statusId
 
-  const hasStatus = (statusId: number) => currentStatuses?.id === statusId
+  async function handleStatusClick(statusId: number) {
+    const isAlreadyActive = hasStatus(statusId)
+    const hasExistingStatus = activeStatus != null
 
-  async function handleAddGame(statusId: number) {
-    const isTarget = hasStatus(statusId)
-    const hasAny = currentStatuses != null
-
-    if (isTarget) {
+    if (isAlreadyActive) {
       await removeGame()
-    } else if (hasAny) {
+    } else if (hasExistingStatus) {
       await updateGameStatus({ statusIds: statusId })
     } else {
       await addGame({ statusIds: statusId })
@@ -52,25 +50,34 @@ export function GameForm({ game }: { game: GameBase | undefined }) {
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="flex justify-center gap-4">
-        {buttons.map(({ statusId, icon: Icon, label }) => (
-          <button
-            key={statusId}
-            type="button"
-            onClick={() => handleAddGame(statusId)}
-            className="flex flex-col items-center gap-1 group"
-          >
-            <Icon
-              className={`size-7 transition-colors ${
-                hasStatus(statusId)
-                  ? 'text-primary'
-                  : 'text-gray-600 group-hover:text-gray-400'
+        {buttons.map(({ statusId, icon: Icon, label }) => {
+          const active = hasStatus(statusId)
+          return (
+            <button
+              key={statusId}
+              type="button"
+              onClick={() => handleStatusClick(statusId)}
+              className={`flex flex-col items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all group ${
+                active
+                  ? 'bg-primary/10 ring-1 ring-primary/30'
+                  : 'hover:bg-dark-bg-lighter'
               }`}
-            />
-            <span className="text-xs text-gray-500 group-hover:text-gray-300 transition-colors">
-              {label}
-            </span>
-          </button>
-        ))}
+            >
+              <Icon
+                className={`size-6 transition-colors ${
+                  active ? 'text-primary' : 'text-gray-600 group-hover:text-gray-400'
+                }`}
+              />
+              <span
+                className={`text-xs transition-colors ${
+                  active ? 'text-primary font-medium' : 'text-gray-500 group-hover:text-gray-300'
+                }`}
+              >
+                {label}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       {hasStatus(STATUS.PLAYED) && <PlayedCount game={game} />}

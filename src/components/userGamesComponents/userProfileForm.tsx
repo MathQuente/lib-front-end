@@ -225,7 +225,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             id="userName"
             type="text"
             placeholder={UserProfileResponse?.user?.userName}
-            className="bg-dark-input text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150"
+            className="bg-[#13141C] text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150"
             {...registerField('userName')}
           />
           {errors.userName && (

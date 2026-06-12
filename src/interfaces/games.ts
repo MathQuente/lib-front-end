@@ -21,6 +21,10 @@ export interface GameCardProps {
   enableModal?: boolean
 }
 
+export interface GameFormProps {
+  game: GameBase | undefined
+}
+
 export interface GameInfoProps {
   game: GameBase | undefined
   onClose: () => void

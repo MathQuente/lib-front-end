@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import { toast } from 'react-toastify'
 import type { Game } from '../types/games'
 import { useAuth } from './useAuth'
 
 export const useAddGame = (gameId?: string) => {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()

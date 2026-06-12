@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
 import { useGameStatus } from './useGameStatus'
@@ -12,7 +12,6 @@ export const getGameStatsQueryKey = (userId: string, gameId: string) => [
 ]
 
 export const usePlayedCount = (gameId: string) => {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()

@@ -3,7 +3,7 @@ import {
   useInfiniteQuery,
   useQuery
 } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import type { GameBase, GamesFromHomePageResponse } from '../types/games'
 
 export interface UseGamesProps {
@@ -18,7 +18,6 @@ export const useGames = (
   sortOrder: 'asc' | 'desc',
   limit?: number
 ) => {
-  const api = useApi()
 
   const queryKey = ['games', page, search, sortBy, sortOrder]
 
@@ -60,7 +59,7 @@ export const useGames = (
       return undefined
     },
     initialPageParam: 1,
-    enabled: true
+    enabled: !!limit
   })
 
   const { data: ComingSoon } = useQuery<UseGamesProps>({

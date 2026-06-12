@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
 import type {
@@ -13,7 +13,6 @@ export const getRatingQueryKey = (
 ) => ['rating', userId, gameId]
 
 export const useRating = (gameId: string | undefined) => {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
-import { useApi } from '../../hooks/useApi'
+import { api } from '../../hooks/useApi'
 import Cookies from 'js-cookie'
 
 // const redirectToAuth = () => {
@@ -11,7 +11,6 @@ import Cookies from 'js-cookie'
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<Partial<User> | null>(null)
   const [loading, setLoading] = useState(true)
-  const api = useApi()
 
   const login = async (email: string, password: string) => {
     try {

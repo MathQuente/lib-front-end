@@ -23,8 +23,7 @@ export default {
           'bg-lighter': '#25262F',
           'bg-darker': '#0F1117',
           card: '#181920',
-          border: '#2A2B36',
-          input: '#13141C'
+          border: '#2A2B36'
         }
       },
       textColor: {

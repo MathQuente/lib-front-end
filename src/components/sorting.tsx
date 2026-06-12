@@ -3,7 +3,7 @@ import { GameStatusEnum } from '../types/games'
 import type { SortControlsProps } from '../interfaces/games'
 
 const selectClass =
-  'bg-dark-input text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150 cursor-pointer'
+  'bg-[#13141C] text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150 cursor-pointer'
 
 export function SortControls({
   sortField,

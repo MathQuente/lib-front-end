@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useApi } from "./useApi";
+import { api } from "./useApi";
 import { useAuth } from "./useAuth";
 import { toast } from "react-toastify";
 import type { GameStatusResponse } from "../types/games";
@@ -10,7 +10,6 @@ export const getGameStatusQueryKey = (
 ) => ["gamesStatus", userId, gameId];
 
 export const useGameStatus = (gameId: string | undefined) => {
-  const api = useApi();
   const { user } = useAuth();
   const userId = user?.id ?? "";
   const queryClient = useQueryClient();
@@ -59,47 +58,9 @@ export const useGameStatus = (gameId: string | undefined) => {
     },
   });
 
-  const updateUserGameStatus = useMutation({
-    mutationFn: async (data: { statusIds: number }) => {
-      return api.updateGameStatus(gameId, data.statusIds);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: queryKey,
-      });
-
-      // Invalidar a lista de jogos do usuário
-
-      queryClient.invalidateQueries({
-        queryKey: ["userGames", userId],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["gameStats", userId, gameId],
-      });
-
-      toast.success("Status do jogo atualizado com sucesso 👌");
-    },
-    onError: (error) => {
-      toast.error(
-        `Erro ao atualizar status: ${
-          error instanceof Error ? error.message : "Erro desconhecido"
-        } 🤯`,
-      );
-    },
-    onSettled: () => {
-      // Invalidar outras queries relacionadas
-      queryClient.invalidateQueries({
-        queryKey: ["games"],
-      });
-    },
-  });
-
   return {
     gameStatus: gameStatusResponse,
     updateGameStatus: (data: { statusIds: number }) =>
       updateGameStatus.mutateAsync(data),
-    updateUserGameStatus: (data: { statusIds: number }) =>
-      updateUserGameStatus.mutateAsync(data),
   };
 };

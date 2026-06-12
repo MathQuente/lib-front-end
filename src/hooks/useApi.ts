@@ -9,12 +9,12 @@ type UpdateUserPayload = {
   userBanner?: string | null
 }
 
-const api = axios.create({
+const http = axios.create({
   baseURL: '/api',
   withCredentials: true
 })
 
-api.interceptors.response.use(
+http.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
@@ -33,10 +33,10 @@ api.interceptors.response.use(
   }
 )
 
-export const useApi = () => ({
+export const api = {
   login: async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password })
+      const response = await http.post('/auth/login', { email, password })
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -49,12 +49,12 @@ export const useApi = () => ({
     }
   },
   signup: async (email: string, password: string) => {
-    const response = await api.post('/auth/register', { email, password })
+    const response = await http.post('/auth/register', { email, password })
     return response.data
   },
   logout: async () => {
     try {
-      await api.post('/auth/logout')
+      await http.post('/auth/logout')
     } catch (error) {
       console.error('Logout failed:', error)
     } finally {
@@ -70,7 +70,7 @@ export const useApi = () => ({
     sortBy?: 'gameName' | 'dateRelease',
     sortOrder?: 'asc' | 'desc'
   ) => {
-    const response = await api.get('/users/userGames', {
+    const response = await http.get('/users/userGames', {
       params: {
         pageIndex: page ? page - 1 : undefined,
         query: search || undefined,
@@ -82,7 +82,7 @@ export const useApi = () => ({
     return response.data
   },
   getUserProfile: async (userId: string | null) => {
-    const response = await api.get(`/users/${userId}`, {})
+    const response = await http.get(`/users/${userId}`, {})
     return response.data
   },
   getGames: async (
@@ -92,7 +92,7 @@ export const useApi = () => ({
     sortOrder: 'asc' | 'desc',
     limit?: number
   ) => {
-    const response = await api.get('/games', {
+    const response = await http.get('/games', {
       params: {
         pageIndex: page - 1,
         query: search,
@@ -104,29 +104,27 @@ export const useApi = () => ({
     return response.data
   },
   getGame: async (gameId: string | undefined) => {
-    const response = await api.get(`/games/${gameId}`)
+    const response = await http.get(`/games/${gameId}`)
     return response.data
   },
   getGameStatus: async (gameId: string | undefined) => {
-    const response = await api.get(`/users/gameStatus/${gameId}`, {})
+    const response = await http.get(`/users/gameStatus/${gameId}`, {})
     return response.data
   },
   getSimilarGames: async (gameId: string | undefined) => {
-    const response = await api.get(`/games/similarGames/${gameId}`)
+    const response = await http.get(`/games/similarGames/${gameId}`)
     return response.data
   },
   addGame: async (gameId: string | undefined, statusId: number) => {
-    const response = await api.post(
+    const response = await http.post(
       `/users/games/${gameId}`,
-      {
-        statusId
-      },
+      { statusId },
       {}
     )
     return response
   },
   updateGameStatus: async (gameId: string | undefined, statusId: number) => {
-    const response = await api.patch(
+    const response = await http.patch(
       `/users/gameStatus/${gameId}`,
       { statusId },
       {}
@@ -134,7 +132,7 @@ export const useApi = () => ({
     return response
   },
   removeGame: async (gameId: string | undefined) => {
-    const response = await api.delete(`/users/games/${gameId}`, {
+    const response = await http.delete(`/users/games/${gameId}`, {
       headers: {}
     })
     return response
@@ -156,22 +154,20 @@ export const useApi = () => ({
     if (payload.profilePicture !== undefined)
       body.profilePicture = payload.profilePicture
     if (payload.userBanner !== undefined) body.userBanner = payload.userBanner
-    const response = await api.patch('/users', body, {})
+    const response = await http.patch('/users', body, {})
     return response.data
   },
   getGameStats: async (gameId: string | undefined) => {
-    const response = await api.get(`/users/playedCount/${gameId}`, {})
+    const response = await http.get(`/users/playedCount/${gameId}`, {})
     return response.data
   },
   updateCompletionCount: async (
     gameId: string | undefined,
     incrementValue: number
   ) => {
-    const response = await api.patch(
+    const response = await http.patch(
       `/users/playedCount/${gameId}`,
-      {
-        incrementValue
-      },
+      { incrementValue },
       {}
     )
     return response
@@ -180,41 +176,39 @@ export const useApi = () => ({
     gameId: string | undefined,
     value: number | null
   ) => {
-    const response = await api.post(
+    const response = await http.post(
       `/rating/${gameId}`,
-      {
-        value
-      },
+      { value },
       {}
     )
     return response
   },
   getUserGameRating: async (gameId: string | undefined) => {
-    const response = await api.get(`/rating/${gameId}`, {})
+    const response = await http.get(`/rating/${gameId}`, {})
     return response.data
   },
   removeRating: async (gameId: string | undefined) => {
-    const response = await api.delete(`/rating/${gameId}`, {})
+    const response = await http.delete(`/rating/${gameId}`, {})
     return response
   },
   me: async () => {
-    const response = await api.get('/users/me', {})
+    const response = await http.get('/users/me', {})
     return response.data
   },
   getGamesFeatured: async () => {
-    const response = await api.get('/games/featured', {})
+    const response = await http.get('/games/featured', {})
     return response.data
   },
   getAverageRating: async (gameId: string | undefined) => {
-    const response = await api.get(`/rating/${gameId}/average`, {})
+    const response = await http.get(`/rating/${gameId}/average`, {})
     return response.data
   },
   getRatingDistribution: async (gameId: string | undefined) => {
-    const response = await api.get(`/rating/ratingDistribution/${gameId}`, {})
+    const response = await http.get(`/rating/ratingDistribution/${gameId}`, {})
     return response.data
   },
   getGamesToDisplay: async () => {
-    const response = await api.get('/users/featuredGames')
+    const response = await http.get('/users/featuredGames')
     return response.data
   },
   getComingSoon: async (
@@ -223,7 +217,7 @@ export const useApi = () => ({
     sortOrder: 'asc' | 'desc',
     sortBy: 'gameName' | 'dateRelease'
   ) => {
-    const response = await api.get('/games/comingSoon', {
+    const response = await http.get('/games/comingSoon', {
       params: {
         pageIndex: page - 1,
         query: search,
@@ -233,4 +227,4 @@ export const useApi = () => ({
     })
     return response.data
   }
-})
+}

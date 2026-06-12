@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import { useAuth } from './useAuth'
 import type {
   GameStatusEnum,
@@ -18,7 +18,6 @@ export const useUserGames = (
   sortOrder?: 'asc' | 'desc',
   sortBy?: 'gameName' | 'dateRelease'
 ) => {
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
 

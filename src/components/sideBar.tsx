@@ -3,11 +3,10 @@ import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
 import { ChevronDown, Menu, X } from 'lucide-react'
 import { SearchBar } from './searchBar'
-import { useApi } from '../hooks/useApi'
+import { api } from '../hooks/useApi'
 
 export function SideBar() {
   const { user } = useAuth()
-  const api = useApi()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openMobileProfileMenu, setOpenMobileProfileMenu] = useState(false)

@@ -9,14 +9,13 @@ interface UserGameEntry {
 import { Flip, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
-import { useApi } from '../hooks/useApi'
+import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
 
 export function RouletteWheel() {
   const [options, setOptions] = useState<UserGameEntry[]>([])
   const [gameWinner, setGameWinner] = useState<Game>()
 
-  const api = useApi()
   const { user } = useAuth()
   const userId = user?.id ?? ''
 

@@ -1,9 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useApi } from './useApi'
+import { api } from './useApi'
 import type { GameResponse, SimilarGamesResponse } from '../types/games'
 
 export const useGame = (gameId: string | undefined) => {
-  const api = useApi()
 
   const queryKey = ['game', gameId]
 
