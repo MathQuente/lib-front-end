@@ -13,7 +13,7 @@ SideBarItemProps) {
     <li
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
         active
-          ? 'bg-gradient-to-tr from-indigo-200 to-indigo-100 text-[#7A38CA]'
+          ? 'bg-gradient-to-tr from-indigo-200 to-indigo-100 text-primary'
           : 'hover:bg-indigo-50 text-gray-600'
       }`}
     >
@@ -29,7 +29,7 @@ SideBarItemProps) {
         )}
       </Link>
       {/* {!expanded && (
-        <div className="absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-[#7A38CA] text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
+        <div className="absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-primary text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
           {text}
         </div>
       )} */}

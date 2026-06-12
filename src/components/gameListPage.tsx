@@ -80,7 +80,7 @@ export function GameListPage({
         totalGames={safeTotal}
       />
 
-      <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg py-4 px-4 xl:px-6">
+      <div className="bg-dark-bg-light border border-dark-border rounded-lg py-4 px-4 xl:px-6">
         <GamesGrid games={gamesArray} emptyState={emptyState} />
       </div>
 

@@ -13,13 +13,13 @@ export function UserProfileDisplay() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-36 rounded-lg border border-[#2A2B36] bg-[#1F2029] animate-pulse" />
+      <div className="w-full h-36 rounded-lg border border-dark-border bg-dark-bg-light animate-pulse" />
     )
   }
 
   if (isError || !UserProfileResponse) {
     return (
-      <div className="w-full rounded-lg border border-[#2A2B36] bg-[#1F2029] px-6 py-4">
+      <div className="w-full rounded-lg border border-dark-border bg-dark-bg-light px-6 py-4">
         <p className="text-red-400 text-sm">Erro ao carregar perfil.</p>
       </div>
     )
@@ -29,7 +29,7 @@ export function UserProfileDisplay() {
 
   return (
     <>
-      <div className="w-full rounded-lg border border-[#2A2B36] overflow-hidden">
+      <div className="w-full rounded-lg border border-dark-border overflow-hidden">
         <div className="relative">
           <UserBanner bannerUrl={profileUser.userBanner} />
           <UserProfilePicture
@@ -38,7 +38,7 @@ export function UserProfileDisplay() {
           />
         </div>
 
-        <div className="bg-[#1F2029] px-6 pt-10 md:pt-12 pb-4 flex items-center justify-between">
+        <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4 flex items-center justify-between">
           <UserInfo
             userName={profileUser.userName}
             gamesAmount={profileUser.gamesAmount}

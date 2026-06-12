@@ -6,7 +6,7 @@ import { FormSignUp } from '../components/formSignUp'
 
 const tabTrigger =
   'flex-1 py-3 text-sm font-semibold text-gray-600 border-b-2 border-transparent ' +
-  'data-[state=active]:text-white data-[state=active]:border-[#7A38CA] ' +
+  'data-[state=active]:text-white data-[state=active]:border-primary ' +
   'transition-colors duration-150 uppercase tracking-wide'
 
 export function Authentication() {
@@ -23,7 +23,7 @@ export function Authentication() {
     <div className="flex justify-center py-8 md:py-12">
       <div className="w-full max-w-md">
         <Tabs.Root value={tab} onValueChange={handleTabChange}>
-          <Tabs.List className="flex border-b border-[#2A2B36] mb-6">
+          <Tabs.List className="flex border-b border-dark-border mb-6">
             <Tabs.Trigger className={tabTrigger} value="login">
               Login
             </Tabs.Trigger>

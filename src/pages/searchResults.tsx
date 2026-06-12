@@ -12,7 +12,6 @@ export function SearchResults() {
     GamesResponseInfinity,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage,
     isLoadingInfinite,
     isErrorInfinite
   } = useGames(1, query, 'gameName', 'asc', 10)
@@ -49,14 +48,29 @@ export function SearchResults() {
     )
   }
 
-  if (!GamesResponseInfinity) {
-    return null
-  }
-
-  const resultForSeachGames = GamesResponseInfinity.pages.flatMap(
+  const resultForSearchGames = GamesResponseInfinity?.pages.flatMap(
     page => page.games
-  )
-  const total = GamesResponseInfinity.pages[0].total || 0
+  ) ?? []
+  const total = GamesResponseInfinity?.pages[0].total ?? 0
+
+  if (resultForSearchGames.length === 0) {
+    return (
+      <EmptyState
+        title="Nenhum jogo encontrado"
+        description={
+          query ? (
+            <span>
+              Não encontramos resultados para{' '}
+              <span className="text-primary font-medium">"{query}"</span>.
+              Tente termos diferentes ou verifique a ortografia.
+            </span>
+          ) : (
+            'Não há jogos disponíveis no momento.'
+          )
+        }
+      />
+    )
+  }
 
   return (
     <>
@@ -65,32 +79,28 @@ export function SearchResults() {
           <p className="text-primary text-base sm:text-lg">
             {total} {total === 1 ? 'resultado' : 'resultados'} para
           </p>
-          <p className="text-[#FFFFFF] text-lg sm:text-xl font-bold break-words">
+          <p className="text-white text-lg sm:text-xl font-bold break-words">
             {query}
           </p>
         </div>
       </div>
 
       <InfiniteScroll
-        dataLength={resultForSeachGames.length}
+        dataLength={resultForSearchGames.length}
         next={fetchNextPage}
         hasMore={hasNextPage}
         loader={
           <div className="flex justify-center py-4">
-            {isFetchingNextPage ? (
-              <div className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#7A38CA] border-t-transparent" />
-                <p className="text-gray-400">Carregando mais jogos...</p>
-              </div>
-            ) : (
-              <p className="text-gray-400">Carregando...</p>
-            )}
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
+              <p className="text-gray-400">Carregando mais jogos...</p>
+            </div>
           </div>
         }
       >
-        {resultForSeachGames.map(game => (
+        {resultForSearchGames.map(game => (
           <div key={game.id} className="group">
-            <div className="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-[#2a2b35] transition-colors duration-200">
+            <div className="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-dark-bg-lighter transition-colors duration-200">
               <Link
                 to={`/games/${game.id}`}
                 className="w-full sm:w-auto flex-shrink-0"
@@ -104,8 +114,8 @@ export function SearchResults() {
 
               <div className="flex-1 w-full sm:w-auto min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <Link to={`/games/${game.id}`} className="">
-                    <h3 className="text-white font-semibold text-lg sm:text-xl group-hover:text-[#7A38CA] transition-colors duration-200 truncate">
+                  <Link to={`/games/${game.id}`}>
+                    <h3 className="text-white font-semibold text-lg sm:text-xl group-hover:text-primary transition-colors duration-200 truncate">
                       {game.gameName}
                     </h3>
                   </Link>
@@ -117,7 +127,7 @@ export function SearchResults() {
                 {game.platforms && game.platforms.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3 text-sm text-gray-400">
                     <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 bg-[#7A38CA] rounded-full flex-shrink-0" />
+                      <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
                       <span className="break-words">
                         {game.platforms
                           .map(platform => platform.platformName)
@@ -135,27 +145,10 @@ export function SearchResults() {
               </div>
             </div>
 
-            <div className="border-b border-gray-700 mt-4 mb-4" />
+            <div className="border-b border-dark-border mt-4 mb-4" />
           </div>
         ))}
       </InfiniteScroll>
-
-      {resultForSeachGames.length === 0 && (
-        <EmptyState
-          title="Nenhum jogo encontrado"
-          description={
-            query ? (
-              <span>
-                Não encontramos resultados para{' '}
-                <span className="text-primary font-medium">"{query}"</span>.
-                Tente termos diferentes ou verifique a ortografia.
-              </span>
-            ) : (
-              'Não há jogos disponíveis no momento.'
-            )
-          }
-        />
-      )}
     </>
   )
 }

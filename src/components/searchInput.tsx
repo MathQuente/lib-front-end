@@ -1,4 +1,4 @@
-import { CiSearch } from 'react-icons/ci'
+import { Search } from 'lucide-react'
 import type { SearchInputProps } from '../interfaces/ui'
 
 export function SearchInput({
@@ -10,7 +10,7 @@ export function SearchInput({
   return (
     <div className="relative">
       <div className="relative w-full sm:w-72">
-        <CiSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 size-6 text-[#8F8F8F] pointer-events-none" />
+        <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 size-6 text-[#8F8F8F] pointer-events-none" />
         <input
           onChange={onChange}
           value={value}

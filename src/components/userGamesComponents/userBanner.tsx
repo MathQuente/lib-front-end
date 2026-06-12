@@ -8,7 +8,7 @@ export function UserBanner({ bannerUrl }: { bannerUrl?: string }) {
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className="w-full h-full bg-[#2A2B36]" />
+        <div className="w-full h-full bg-dark-border" />
       )}
     </div>
   )

@@ -62,7 +62,7 @@ export function GameForm({ game }: { game: GameBase | undefined }) {
             <Icon
               className={`size-7 transition-colors ${
                 hasStatus(statusId)
-                  ? 'text-[#7A38CA]'
+                  ? 'text-primary'
                   : 'text-gray-600 group-hover:text-gray-400'
               }`}
             />

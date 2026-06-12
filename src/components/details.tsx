@@ -6,8 +6,8 @@ export function Details({ GameResponse }: DetailsProps) {
   const { game } = GameResponse
 
   return (
-    <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg p-5">
-      <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide mb-5">
+    <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
+      <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide mb-5">
         Detalhes
       </h2>
 

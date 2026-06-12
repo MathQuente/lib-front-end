@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { CiSearch } from 'react-icons/ci'
-import { IoClose } from 'react-icons/io5'
+import { Search, X } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMobileMenu } from '../contexts/useMobileMenu'
 import type { SearchBarProps } from '../interfaces/ui'
@@ -50,15 +49,14 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
   return (
     <form onSubmit={handleSearch}>
       <div className="relative flex items-center">
-        <CiSearch
-          className="absolute left-2.5 text-gray-600 pointer-events-none"
-          size={16}
+        <Search
+          className="absolute left-2.5 text-gray-600 pointer-events-none size-4"
         />
         <input
           ref={actualInputRef}
           className={`${
             isMobile ? 'w-full' : 'w-48'
-          } pl-8 pr-7 py-1.5 bg-[#13141C] text-sm text-white placeholder-gray-600 rounded-lg border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150`}
+          } pl-8 pr-7 py-1.5 bg-dark-input text-sm text-white placeholder-gray-600 rounded-lg border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150`}
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -74,7 +72,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
             }}
             aria-label="Limpar busca"
           >
-            <IoClose size={15} />
+            <X size={15} />
           </button>
         )}
       </div>

@@ -4,7 +4,7 @@ import type { GameLaunchersDivProps } from '../interfaces/games'
 
 export function GameLaunchersDiv({ gameLaucher }: GameLaunchersDivProps) {
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#25262F] border border-[#2A2B36] rounded-full text-sm">
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm">
       <span className="text-gray-500">
         {gameLaucher.platform.platformName}:
       </span>

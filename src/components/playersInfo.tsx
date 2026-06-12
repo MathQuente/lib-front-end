@@ -1,19 +1,18 @@
-import { IoGameController, IoLibrary } from 'react-icons/io5'
-import { FaGift, FaPlay, FaStar } from 'react-icons/fa'
+import { Gamepad2, Play, Library, Gift, Star } from 'lucide-react'
 import type { PlayerInfosProps } from '../interfaces/games'
 
 const rows = [
-  { icon: IoGameController, label: 'Played', key: 'PLAYED' },
-  { icon: FaPlay, label: 'Playing', key: 'PLAYING' },
-  { icon: IoLibrary, label: 'Backlog', key: 'BACKLOG' },
-  { icon: FaGift, label: 'Wishlist', key: 'WISHLIST' }
+  { icon: Gamepad2, label: 'Jogado', key: 'PLAYED' },
+  { icon: Play, label: 'Jogando', key: 'PLAYING' },
+  { icon: Library, label: 'Backlog', key: 'BACKLOG' },
+  { icon: Gift, label: 'Lista de Desejos', key: 'WISHLIST' }
 ] as const
 
 export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
   const { userGames, amountOfRatings } = GameResponse.game
 
   return (
-    <div className="flex flex-col gap-1 py-2 border-t border-[#2A2B36]">
+    <div className="flex flex-col gap-1 py-2 border-t border-dark-border">
       {rows.map(({ icon: Icon, label, key }) => (
         <div key={key} className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-gray-500 text-sm">
@@ -27,7 +26,7 @@ export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
       ))}
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-gray-500 text-sm">
-          <FaStar className="size-4" />
+          <Star className="size-4" />
           Avaliações
         </span>
         <span className="text-gray-300 text-sm font-medium">

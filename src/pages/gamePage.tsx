@@ -48,7 +48,7 @@ export function GamePage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4 w-full">
       <div className="lg:col-span-1">
-        <div className="lg:sticky lg:top-6 bg-[#1F2029] border border-[#2A2B36] rounded-lg p-5 flex flex-col gap-5">
+        <div className="lg:sticky lg:top-6 bg-dark-bg-light border border-dark-border rounded-lg p-5 flex flex-col gap-5">
           <div className="flex flex-col items-center gap-3">
             <img
               className="w-56 rounded-lg object-cover"
@@ -64,7 +64,7 @@ export function GamePage() {
             <div className="flex flex-col gap-4 items-center">
               <GameForm game={game} />
 
-              <div className="w-full border-t border-[#2A2B36] pt-4 flex flex-col gap-1">
+              <div className="w-full border-t border-dark-border pt-4 flex flex-col gap-1">
                 <p className="text-xs text-gray-600 uppercase tracking-widest mb-1">
                   Sua avaliação
                 </p>
@@ -75,7 +75,7 @@ export function GamePage() {
             <p className="text-sm text-center text-gray-500">
               <Link
                 to="/auth?tab=login"
-                className="text-[#7A38CA] hover:underline"
+                className="text-primary hover:underline"
               >
                 Faça login
               </Link>{' '}
@@ -83,7 +83,7 @@ export function GamePage() {
             </p>
           )}
 
-          <div className="border-t border-[#2A2B36] pt-4 flex flex-col gap-1">
+          <div className="border-t border-dark-border pt-4 flex flex-col gap-1">
             <p className="text-xs text-gray-600 uppercase tracking-widest mb-1">
               Média geral
             </p>
@@ -128,8 +128,8 @@ export function GamePage() {
       </div>
 
       <div className="lg:col-span-2 flex flex-col gap-4">
-        <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide mb-4">
+        <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
+          <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide mb-4">
             Sobre o jogo
           </h2>
           <p className="text-gray-300 leading-relaxed text-sm">

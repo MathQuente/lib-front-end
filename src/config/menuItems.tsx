@@ -26,6 +26,6 @@ export const menuItems: MenuItem[] = [
 export const loginItem: MenuItem = {
   key: 'login',
   to: '/auth',
-  icon: <IoLogInSharp className="text-[#7A38CA]" size={20} />,
+  icon: <IoLogInSharp className="text-primary" size={20} />,
   text: 'Entrar'
 }

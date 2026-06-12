@@ -3,7 +3,7 @@ import { GameStatusEnum } from '../types/games'
 import type { SortControlsProps } from '../interfaces/games'
 
 const selectClass =
-  'bg-[#13141C] text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150 cursor-pointer'
+  'bg-dark-input text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150 cursor-pointer'
 
 export function SortControls({
   sortField,
@@ -43,7 +43,7 @@ export function SortControls({
           type="button"
           title={sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
           onClick={toggleOrder}
-          className="p-1.5 text-[#7A38CA] hover:text-[#9D52E8] border border-[#2A2B36] hover:border-[#7A38CA] rounded-lg transition-colors duration-150"
+          className="p-1.5 text-primary hover:text-primary-light border border-dark-border hover:border-primary rounded-lg transition-colors duration-150"
         >
           {sortOrder === 'asc' ? (
             <ArrowUp className="size-4" />

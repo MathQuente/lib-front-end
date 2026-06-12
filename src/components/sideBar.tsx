@@ -33,7 +33,7 @@ export function SideBar() {
 
   return (
     <>
-      <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-[#2A2B36] mb-4">
+      <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-dark-border mb-4">
         <Link to="/">
           <h1 className="text-white font-bold">Logo</h1>
         </Link>
@@ -56,12 +56,12 @@ export function SideBar() {
       )}
 
       <aside
-        className={`fixed right-0 top-0 h-full w-64 bg-[#1F2029] border-l border-[#2A2B36] transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
+        className={`fixed right-0 top-0 h-full w-64 bg-dark-bg-light border-l border-dark-border transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between px-4 py-4 border-b border-[#2A2B36]">
+          <div className="flex items-center justify-between px-4 py-4 border-b border-dark-border">
             <Link to="/" onClick={closeMobileMenu}>
               <h1 className="text-white font-bold">Logo</h1>
             </Link>
@@ -83,7 +83,7 @@ export function SideBar() {
                 <>
                   <button
                     type="button"
-                    className="flex items-center gap-1 py-2 text-sm text-[#7A38CA] hover:text-[#9D52E8] w-full text-left transition-colors"
+                    className="flex items-center gap-1 py-2 text-sm text-primary hover:text-primary-light w-full text-left transition-colors"
                     onClick={() =>
                       setOpenMobileProfileMenu(!openMobileProfileMenu)
                     }
@@ -95,7 +95,7 @@ export function SideBar() {
                   </button>
 
                   {openMobileProfileMenu && (
-                    <div className="flex flex-col gap-0.5 pl-3 border-l border-[#2A2B36] mb-1">
+                    <div className="flex flex-col gap-0.5 pl-3 border-l border-dark-border mb-1">
                       <Link
                         to="/userLibrary"
                         onClick={closeMobileMenu}
@@ -116,7 +116,7 @@ export function SideBar() {
                   <Link
                     to="/games"
                     onClick={closeMobileMenu}
-                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
+                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
                   >
                     Games
                   </Link>
@@ -126,21 +126,21 @@ export function SideBar() {
                   <Link
                     to="/auth?tab=login"
                     onClick={closeMobileMenu}
-                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
+                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
                   >
                     Entrar
                   </Link>
                   <Link
                     to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
-                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
+                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
                   >
                     Criar conta
                   </Link>
                   <Link
                     to="/games"
                     onClick={closeMobileMenu}
-                    className="text-sm text-[#7A38CA] hover:text-[#9D52E8] py-2 transition-colors"
+                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
                   >
                     Games
                   </Link>
@@ -151,7 +151,7 @@ export function SideBar() {
         </div>
       </aside>
 
-      <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-[#2A2B36] mb-6">
+      <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-dark-border mb-6">
         <Link to="/">
           <h1 className="text-white font-bold">Logo</h1>
         </Link>
@@ -160,13 +160,13 @@ export function SideBar() {
           <div className="flex items-center gap-5">
             <Link
               to="/userLibrary"
-              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+              className="text-sm text-primary hover:text-primary-light transition-colors"
             >
               Minha Biblioteca
             </Link>
             <Link
               to="/games"
-              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+              className="text-sm text-primary hover:text-primary-light transition-colors"
             >
               Games
             </Link>
@@ -183,19 +183,19 @@ export function SideBar() {
           <div className="flex items-center gap-5">
             <Link
               to="/auth?tab=login"
-              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+              className="text-sm text-primary hover:text-primary-light transition-colors"
             >
               Entrar
             </Link>
             <Link
               to="/auth?tab=signUp"
-              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+              className="text-sm text-primary hover:text-primary-light transition-colors"
             >
               Criar conta
             </Link>
             <Link
               to="/games"
-              className="text-sm text-[#7A38CA] hover:text-[#9D52E8] transition-colors"
+              className="text-sm text-primary hover:text-primary-light transition-colors"
             >
               Games
             </Link>

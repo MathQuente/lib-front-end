@@ -22,11 +22,11 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
         return (
           <div
             key={statusKey}
-            className="bg-[#1F2029] border border-[#2A2B36] rounded-lg px-6 py-4"
+            className="bg-dark-bg-light border border-dark-border rounded-lg px-6 py-4"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide">
+                <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide">
                   {statusLabels[statusKey]}
                 </h2>
                 <span className="text-xs text-gray-600">{total}</span>
@@ -35,7 +35,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
               {gamesForStatus.length > 0 && (
                 <Link
                   to={`/userLibrary/${statusKey.toLowerCase()}Games`}
-                  className="text-xs text-gray-600 hover:text-[#7A38CA] transition-colors"
+                  className="text-xs text-gray-600 hover:text-primary transition-colors"
                 >
                   Ver todos
                 </Link>
@@ -56,7 +56,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
             ) : (
               <p className="text-gray-600 text-sm py-1">
                 Nenhum jogo adicionado.{' '}
-                <Link to="/games" className="text-[#7A38CA] hover:underline">
+                <Link to="/games" className="text-primary hover:underline">
                   Explorar jogos
                 </Link>
               </p>

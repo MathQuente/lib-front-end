@@ -16,10 +16,10 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             id={id}
             ref={ref}
             {...inputProps}
-            className={`bg-[#13141C] text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 pl-10 pr-3 border ${
+            className={`bg-dark-input text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 pl-10 pr-3 border ${
               error
                 ? 'border-red-500 focus:border-red-500'
-                : 'border-[#2A2B36] focus:border-[#7A38CA]'
+                : 'border-dark-border focus:border-primary'
             } focus:outline-none transition-colors duration-150`}
           />
         </div>

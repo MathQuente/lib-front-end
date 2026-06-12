@@ -27,12 +27,12 @@ export function GameCard({
           className={twMerge(
             'group relative rounded-lg overflow-hidden transition-transform duration-200',
             size !== 'small' &&
-              'hover:scale-105 hover:ring-2 ring-[#7A38CA] block w-full',
-            size === 'small' && 'hover:ring-2 ring-[#7A38CA]'
+              'hover:scale-105 hover:ring-2 ring-primary block w-full',
+            size === 'small' && 'hover:ring-2 ring-primary'
           )}
         >
           {game?.isDlc && (
-            <span className="absolute top-2 left-2 z-10 bg-[#1F2029]/90 px-1.5 py-0.5 rounded text-white text-xs font-medium">
+            <span className="absolute top-2 left-2 z-10 bg-dark-bg-light/90 px-1.5 py-0.5 rounded text-white text-xs font-medium">
               DLC
             </span>
           )}

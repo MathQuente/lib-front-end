@@ -69,11 +69,11 @@ export function FormLogin() {
       </Button>
 
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-[#2A2B36]" />
+        <div className="h-px flex-1 bg-dark-border" />
         <span className="text-[11px] text-gray-600 uppercase tracking-wider">
           ou
         </span>
-        <div className="h-px flex-1 bg-[#2A2B36]" />
+        <div className="h-px flex-1 bg-dark-border" />
       </div>
 
       <div className="flex flex-col gap-2">

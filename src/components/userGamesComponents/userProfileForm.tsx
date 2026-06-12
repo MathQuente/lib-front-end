@@ -156,7 +156,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-[#2A2B36]" />
+            <div className="w-full h-full bg-dark-border" />
           )}
 
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -169,7 +169,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                   onChange: handleBannerChange
                 })}
               />
-              <div className="p-2 rounded-lg bg-[#1F2029]/80 border border-[#2A2B36] text-gray-300 hover:text-white transition-colors">
+              <div className="p-2 rounded-lg bg-dark-bg-light/80 border border-dark-border text-gray-300 hover:text-white transition-colors">
                 <Camera size={18} />
               </div>
             </label>
@@ -187,7 +187,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         </div>
 
         <div className="absolute left-6 bottom-0 translate-y-1/2">
-          <label className="group relative block size-14 rounded-full border-2 border-[#7A38CA] bg-[#1A1C26] overflow-hidden cursor-pointer">
+          <label className="group relative block size-14 rounded-full border-2 border-primary bg-dark-bg overflow-hidden cursor-pointer">
             <img
               src={profilePicSrc}
               alt="Foto de perfil"
@@ -225,7 +225,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             id="userName"
             type="text"
             placeholder={UserProfileResponse?.user?.userName}
-            className="bg-[#13141C] text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 px-3 border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150"
+            className="bg-dark-input text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150"
             {...registerField('userName')}
           />
           {errors.userName && (

@@ -14,13 +14,13 @@ export function GameListSection({
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-[#7A38CA] pl-3 uppercase tracking-wide">
+        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide">
           {title}
         </h2>
         {type === 'coming' && (
           <Link
             to="/games/comingSoon"
-            className="text-xs text-gray-600 hover:text-[#7A38CA] transition-colors"
+            className="text-xs text-gray-600 hover:text-primary transition-colors"
           >
             Ver mais
           </Link>
@@ -38,7 +38,7 @@ export function GameListSection({
               </Link>
               <div className="min-w-0">
                 <Link to={`/games/${game.id}`}>
-                  <p className="text-sm text-white hover:text-[#7A38CA] transition-colors truncate">
+                  <p className="text-sm text-white hover:text-primary transition-colors truncate">
                     {game.gameName}
                   </p>
                 </Link>
