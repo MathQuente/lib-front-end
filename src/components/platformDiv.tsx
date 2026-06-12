@@ -1,8 +1,5 @@
 import { Gamepad2, Monitor } from 'lucide-react'
-
-interface PlatformDivProps {
-  platformName: string
-}
+import type { PlatformDivProps } from '../interfaces/games'
 
 function getPlatformIcon(name: string) {
   const n = name.toLowerCase()

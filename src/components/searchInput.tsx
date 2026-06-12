@@ -1,12 +1,5 @@
-import type { ChangeEvent } from 'react'
 import { CiSearch } from 'react-icons/ci'
-
-interface SearchInputProps {
-  value: string
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  placeholder?: string
-  className?: string
-}
+import type { SearchInputProps } from '../interfaces/ui'
 
 export function SearchInput({
   value,

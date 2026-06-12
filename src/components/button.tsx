@@ -1,13 +1,5 @@
-import type { ComponentProps, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-interface ButtonProps extends ComponentProps<'button'> {
-  variant?: 'primary' | 'secondary' | 'cancel' | 'outline' | 'ghost'
-  size?: 'sm' | 'md' | 'lg'
-  children: ReactNode
-  loading?: boolean
-  fullWidth?: boolean
-}
+import type { ButtonProps } from '../interfaces/ui'
 
 export function Button({
   variant = 'primary',

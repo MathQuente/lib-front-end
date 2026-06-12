@@ -10,11 +10,7 @@ import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { useUserProfile } from '../../hooks/useUserProfile'
 import { Button } from '../button'
-
-type UserGamesFormProps = {
-  afterSave: () => void
-  onCancel?: () => void
-}
+import type { UserGamesFormProps } from '../../interfaces/user.interfaces'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 

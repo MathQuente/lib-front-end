@@ -2,13 +2,7 @@ import { Rating, Skeleton } from '@mui/material'
 import { useRating } from '../hooks/useRating'
 import { useState, type SyntheticEvent } from 'react'
 import { X } from 'lucide-react'
-import type { GameBase } from '../types/games'
-
-interface RatingAverageProps {
-  game: GameBase | undefined
-  isForGamePage?: boolean
-  justAverage?: boolean
-}
+import type { RatingAverageProps } from '../interfaces/games'
 
 export function RatingAverage({
   game,

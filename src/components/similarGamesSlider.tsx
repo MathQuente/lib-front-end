@@ -1,12 +1,8 @@
-import type { SimilarGamesResponse } from '../types/games'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper/modules'
 import { Link } from 'react-router-dom'
 import { GameCard } from './gamesComponents/gameCard'
-
-interface SimilarGamesSliderProps {
-  SimilarGames: SimilarGamesResponse
-}
+import type { SimilarGamesSliderProps } from '../interfaces/games'
 
 export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
   if (!SimilarGames.similarGames.length) return null

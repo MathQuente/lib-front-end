@@ -1,13 +1,5 @@
 import { forwardRef } from 'react'
-import type { InputHTMLAttributes, ReactNode } from 'react'
-import type { FieldError } from 'react-hook-form'
-
-interface AuthInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  id: string
-  label: string
-  icon: ReactNode
-  error?: FieldError
-}
+import type { AuthInputProps } from '../interfaces/ui'
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
   function AuthInput({ id, label, icon, error, ...inputProps }, ref) {

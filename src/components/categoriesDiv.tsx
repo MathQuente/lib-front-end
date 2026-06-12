@@ -1,6 +1,4 @@
-interface CategoriesDivProps {
-  categoryName: string
-}
+import type { CategoriesDivProps } from '../interfaces/games'
 
 export function CategoriesDiv({ categoryName }: CategoriesDivProps) {
   return (

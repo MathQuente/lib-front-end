@@ -1,31 +1,9 @@
 import type { ChangeEvent } from 'react'
 import { GamesGrid } from './gamesComponents/gamesGrid'
 import { Pagination } from './pagination'
-import type { UseGamesProps } from '../hooks/useGames'
 import { SortControls } from './sorting'
-import type {
-  GameBase,
-  GameStatusEnum,
-  UserGamesResponse
-} from '../types/games'
-
-type SortField = 'gameName' | 'dateRelease'
-type SortOrder = 'asc' | 'desc'
-
-interface GameListProps {
-  games: UseGamesProps | UserGamesResponse
-  page: number
-  setPage: (page: number) => void
-  sortOrder: SortOrder
-  setSortOrder: (order: SortOrder) => void
-  sortField: SortField
-  setSortField: (field: SortField) => void
-  filterField?: GameStatusEnum
-  setFilterField?: (filterField: GameStatusEnum) => void
-  currentStatus?: string
-  onFilterChange?: (filter: GameStatusEnum | '') => void
-  isUserLibrary?: boolean
-}
+import type { GameBase, GameStatusEnum } from '../types/games'
+import type { GameListProps, SortField, SortOrder } from '../interfaces/games'
 
 export function GameListPage({
   games,
@@ -39,7 +17,8 @@ export function GameListPage({
   setFilterField,
   currentStatus,
   onFilterChange,
-  isUserLibrary
+  isUserLibrary,
+  emptyState
 }: GameListProps) {
   const isGamesArray = Array.isArray(games.games)
   const gamesArray: GameBase[] = isGamesArray
@@ -102,7 +81,7 @@ export function GameListPage({
       />
 
       <div className="bg-[#1F2029] border border-[#2A2B36] rounded-lg py-4 px-4 xl:px-6">
-        <GamesGrid games={gamesArray} />
+        <GamesGrid games={gamesArray} emptyState={emptyState} />
       </div>
 
       <Pagination
@@ -113,5 +92,6 @@ export function GameListPage({
         onPageChange={setCurrentPage}
       />
     </div>
-  )
+
+)
 }

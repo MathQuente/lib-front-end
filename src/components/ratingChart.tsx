@@ -1,12 +1,8 @@
 import { Star } from 'lucide-react'
 import { useState } from 'react'
 import { Bar, Cell, ResponsiveContainer, Tooltip, BarChart } from 'recharts'
-import type { GameResponse } from '../types/games'
 import { useRating } from '../hooks/useRating'
-
-interface RatingChartProps {
-  GameResponse: GameResponse
-}
+import type { RatingChartProps } from '../interfaces/games'
 
 export function RatingChart({ GameResponse }: RatingChartProps) {
   const { allRatingsResponse } = useRating(GameResponse.game.id)

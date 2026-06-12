@@ -1,15 +1,11 @@
 import { IoGameController, IoLibrary } from 'react-icons/io5'
-import type { GameResponse } from '../types/games'
 import { FaGift, FaPlay, FaStar } from 'react-icons/fa'
-
-interface PlayerInfosProps {
-  GameResponse: GameResponse
-}
+import type { PlayerInfosProps } from '../interfaces/games'
 
 const rows = [
   { icon: IoGameController, label: 'Played', key: 'PLAYED' },
   { icon: FaPlay, label: 'Playing', key: 'PLAYING' },
-  { icon: IoLibrary, label: 'Backlog', key: 'BACKLOCK' },
+  { icon: IoLibrary, label: 'Backlog', key: 'BACKLOG' },
   { icon: FaGift, label: 'Wishlist', key: 'WISHLIST' }
 ] as const
 

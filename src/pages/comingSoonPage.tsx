@@ -1,5 +1,6 @@
 import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
+import { EmptyState } from '../components/emptyState'
 import { useState } from 'react'
 import { useGames } from '../hooks/useGames'
 
@@ -61,6 +62,12 @@ export function ComingSoonPage() {
         setSortOrder={setSortOrder}
         sortField={sortField}
         setSortField={setSortField}
+        emptyState={
+          <EmptyState
+            title="Nenhum jogo em breve"
+            description="Nenhum jogo programado para lançamento no momento."
+          />
+        }
       />
       <ToastContainer />
     </>

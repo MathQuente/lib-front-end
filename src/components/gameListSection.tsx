@@ -1,18 +1,9 @@
 import dayjs from 'dayjs'
-import type { Game } from '../types/games'
 import { GameCard } from './gamesComponents/gameCard'
 import { Link } from 'react-router-dom'
-import type { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { Star } from 'lucide-react'
-
-type SectionType = 'coming' | 'trending' | 'rateds'
-
-interface GameListSectionProps extends ComponentProps<'div'> {
-  games: Game[]
-  title: string
-  type: SectionType
-}
+import type { GameListSectionProps } from '../interfaces/games'
 
 export function GameListSection({
   games,

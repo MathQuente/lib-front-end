@@ -3,6 +3,7 @@ import { useGames } from '../hooks/useGames'
 import dayjs from 'dayjs'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
+import { EmptyState } from '../components/emptyState'
 
 export function SearchResults() {
   const { query } = useParams()
@@ -140,24 +141,20 @@ export function SearchResults() {
       </InfiniteScroll>
 
       {resultForSeachGames.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 px-4">
-          <div className="space-y-2 text-center">
-            <h3 className="text-xl font-semibold text-white">
-              Nenhum jogo encontrado
-            </h3>
-            {query ? (
-              <p className="text-[#8F8F8F] max-w-md">
-                Não encontramos jogos que correspondam à sua busca por{' '}
-                <span className="text-[#6930CD] font-medium">"{query}"</span>.
-                Tente usar termos diferentes ou verifique a ortografia.
-              </p>
+        <EmptyState
+          title="Nenhum jogo encontrado"
+          description={
+            query ? (
+              <span>
+                Não encontramos resultados para{' '}
+                <span className="text-primary font-medium">"{query}"</span>.
+                Tente termos diferentes ou verifique a ortografia.
+              </span>
             ) : (
-              <p className="text-[#8F8F8F] max-w-md">
-                Não há jogos disponíveis no momento. Tente novamente mais tarde.
-              </p>
-            )}
-          </div>
-        </div>
+              'Não há jogos disponíveis no momento.'
+            )
+          }
+        />
       )}
     </>
   )

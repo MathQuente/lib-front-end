@@ -2,14 +2,7 @@ import { useState } from 'react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 import { twMerge } from 'tailwind-merge'
-import type { GameBase } from '../../types/games'
-
-interface GameCardProps {
-  game: GameBase
-  className?: string
-  size?: 'small' | 'medium' | 'larger'
-  enableModal?: boolean
-}
+import type { GameCardProps } from '../../interfaces/games.interfaces'
 
 const sizes = {
   small: 'w-14 h-16',

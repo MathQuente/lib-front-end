@@ -1,20 +1,6 @@
-import type { ChangeEvent } from 'react'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { GameStatusEnum } from '../types/games'
-
-type SortField = 'gameName' | 'dateRelease' | 'rating'
-type SortOrder = 'asc' | 'desc'
-
-interface SortControlsProps {
-  sortField: SortField
-  sortOrder: SortOrder
-  filterField: GameStatusEnum | undefined
-  onSortFieldChange: (event: ChangeEvent<HTMLSelectElement>) => void
-  onSortOrderChange: (order: SortOrder) => void
-  onSortFilterField: (event: ChangeEvent<HTMLSelectElement>) => void
-  totalGames: number
-  isUserLibrary?: boolean
-}
+import type { SortControlsProps } from '../interfaces/games'
 
 const selectClass =
   'bg-[#13141C] text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-[#2A2B36] focus:border-[#7A38CA] focus:outline-none transition-colors duration-150 cursor-pointer'

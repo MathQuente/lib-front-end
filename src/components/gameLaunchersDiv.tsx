@@ -1,10 +1,6 @@
-import type { GameLauncher } from '../types/games'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
-
-interface GameLaunchersDivProps {
-  gameLaucher: GameLauncher
-}
+import type { GameLaunchersDivProps } from '../interfaces/games'
 
 export function GameLaunchersDiv({ gameLaucher }: GameLaunchersDivProps) {
   return (

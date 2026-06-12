@@ -2,13 +2,8 @@ import { GameForm } from './gameForm'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { RatingAverage } from '../ratingAverage'
-import type { GameBase } from '../../types/games'
 import { Button } from '../button'
-
-interface GameInfoProps {
-  game: GameBase | undefined
-  onClose: () => void
-}
+import type { GameInfoProps } from '../../interfaces/games.interfaces'
 
 export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()

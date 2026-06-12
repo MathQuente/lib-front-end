@@ -1,9 +1,5 @@
-import type { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-interface IconButtonProps extends ComponentProps<'button'> {
-  transparent?: boolean
-}
+import type { IconButtonProps } from '../interfaces/ui'
 
 export function IconButton({ transparent, ...props }: IconButtonProps) {
   return (

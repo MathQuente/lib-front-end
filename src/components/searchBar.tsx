@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import type { FormEvent, RefObject } from 'react'
+import type { FormEvent } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMobileMenu } from '../contexts/useMobileMenu'
-
-interface SearchBarProps {
-  isMobile: boolean
-  inputRef?: RefObject<HTMLInputElement>
-  autoFocus?: boolean
-}
+import type { SearchBarProps } from '../interfaces/ui'
 
 export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
   const { query } = useParams()

@@ -1,10 +1,5 @@
 import { Link } from 'react-router-dom'
-import type { MenuItem } from '../types/sidebar'
-
-interface SideBarItemProps extends MenuItem {
-  active: boolean
-  // expanded: boolean
-}
+import type { SideBarItemProps } from '../interfaces/ui'
 
 export function SideBarItem({
   to,

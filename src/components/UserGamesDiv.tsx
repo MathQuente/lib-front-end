@@ -1,23 +1,15 @@
 import { Link } from 'react-router-dom'
-import type { TotalPerStatus } from '../types/user'
-import type { GameBase } from '../types/games'
 import { GameCard } from './gamesComponents/gameCard'
+import type { UserGameDivProps, UserStatus } from '../interfaces/user'
 
-type Status = 'BACKLOG' | 'PLAYED' | 'PLAYING' | 'WISHLIST'
-
-interface UserGameDivProps {
-  Games: Record<Status, GameBase[]>
-  totalPerStatus: TotalPerStatus[]
-}
-
-const statusLabels: Record<Status, string> = {
+const statusLabels: Record<UserStatus, string> = {
   PLAYED: 'Jogado',
   PLAYING: 'Jogando',
   BACKLOG: 'Backlog',
   WISHLIST: 'Lista de Desejos'
 }
 
-const statusOrder: Status[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
+const statusOrder: UserStatus[] = ['PLAYED', 'PLAYING', 'BACKLOG', 'WISHLIST']
 
 export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
   return (

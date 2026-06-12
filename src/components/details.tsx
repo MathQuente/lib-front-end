@@ -1,10 +1,6 @@
 import { Building, Star, Tag } from 'lucide-react'
-import type { GameResponse } from '../types/games'
 import { CategoriesDiv } from './categoriesDiv'
-
-interface DetailsProps {
-  GameResponse: GameResponse
-}
+import type { DetailsProps } from '../interfaces/games'
 
 export function Details({ GameResponse }: DetailsProps) {
   const { game } = GameResponse

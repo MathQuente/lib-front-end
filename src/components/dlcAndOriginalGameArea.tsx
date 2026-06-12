@@ -1,10 +1,6 @@
 import { Crown, Plus } from 'lucide-react'
-import type { GameResponse } from '../types/games'
 import { Link } from 'react-router-dom'
-
-interface DlcAndOriginalGameAreaProps {
-  gameResponse: GameResponse
-}
+import type { DlcAndOriginalGameAreaProps } from '../interfaces/games'
 
 export function DlcAndOriginalGameArea({
   gameResponse

@@ -5,14 +5,7 @@ import {
   ChevronsRight
 } from 'lucide-react'
 import { IconButton } from './iconButton'
-
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  itemsPerPage: number
-  onPageChange: (page: number) => void
-}
+import type { PaginationProps } from '../interfaces/ui'
 
 export function Pagination({
   currentPage,
