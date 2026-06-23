@@ -11,6 +11,8 @@ const rows = [
 export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
   const { userGames, amountOfRatings } = GameResponse.game
 
+  if (!userGames) return null
+
   return (
     <div className="flex flex-col gap-1 py-2 border-t border-dark-border">
       {rows.map(({ icon: Icon, label, key }) => (
@@ -30,7 +32,7 @@ export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
           Avaliações
         </span>
         <span className="text-gray-300 text-sm font-medium">
-          {amountOfRatings}
+          {amountOfRatings ?? '—'}
         </span>
       </div>
     </div>

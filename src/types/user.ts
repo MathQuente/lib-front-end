@@ -1,55 +1,36 @@
-import type {
-  Category,
-  Game,
-  GameLauncher,
-  GameStudio,
-  Platform,
-  Publisher,
-} from "./games";
-
-export interface UserGamesStatus {
-  status: string;
-}
-
 export interface UserGame {
-  id: string;
-  gameName: string;
-  gameBanner: string;
-  gameStudios: GameStudio[];
-  categories: Category[];
-  publishers: Publisher[];
-  platforms: Platform[];
-  summary: string;
-  gameLaunchers: GameLauncher[];
-  isDlc: boolean;
-  dlcs: Game[];
-  parentGame: Game | null;
-  statuses?: string;
+  igdbId: number
+  name: string
+  coverUrl: string | null
+  platforms: string[]
+  releaseDate: number | null
+  rating: number
+  status?: string
 }
 
 export interface TotalPerStatus {
-  status: string;
-  totalGames: number;
+  status: string
+  totalGames: number
 }
 
 export interface UserProfileResponse {
-  user: User;
+  user: User
 }
 
 export interface User {
-  id: string;
-  email: string;
-  userName: string;
-  profilePicture: string;
-  userBanner: string;
-  gamesAmount: number;
+  id: string
+  email: string
+  userName: string
+  profilePicture: string
+  userBanner: string
+  gamesAmount: number
 }
 
 export interface GameStatus {
-  id: number;
-  status: string;
+  id: number
+  status: string
 }
 
 export interface GameStatsResponse {
-  playedCount: number;
+  playedCount: number
 }

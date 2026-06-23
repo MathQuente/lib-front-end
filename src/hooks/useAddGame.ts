@@ -1,20 +1,20 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from './useApi'
 import { toast } from 'react-toastify'
-import type { Game } from '../types/games'
+import type { GameBase } from '../types/games'
 import { useAuth } from './useAuth'
 
-export const useAddGame = (gameId?: string) => {
+export const useAddGame = (igdbId?: string) => {
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
 
   const addGame = useMutation({
     mutationFn: (data: { statusIds: number }) =>
-      api.addGame(gameId, data.statusIds),
+      api.addGame(igdbId, data.statusIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
       toast.success('Jogo adicionado com sucesso 👌')
     },
@@ -28,61 +28,56 @@ export const useAddGame = (gameId?: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
-      queryClient.invalidateQueries({ queryKey: ['gamesStatus', userId, gameId] })
       queryClient.invalidateQueries({
-        queryKey: ['rating', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
+      queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
     }
   })
 
   const removeGame = useMutation({
-    mutationFn: () => api.removeGame(gameId),
+    mutationFn: () => api.removeGame(igdbId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['games'] })
       await queryClient.cancelQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
 
       const previousGames = queryClient.getQueryData(['games'])
       const previousGameStatus = queryClient.getQueryData([
         'gamesStatus',
         userId,
-        gameId
+        igdbId
       ])
       const previousRating = queryClient.getQueryData([
         'rating',
         userId,
-        gameId
+        igdbId
       ])
 
-      queryClient.setQueryData(['games'], (old: Game[] | undefined) =>
-        old ? old.filter(g => g.id !== gameId) : []
+      queryClient.setQueryData(['games'], (old: GameBase[] | undefined) =>
+        old ? old.filter(g => g.igdbId !== Number(igdbId)) : []
       )
-      queryClient.setQueryData(['gamesStatus', userId, gameId], null)
-      queryClient.setQueryData(['rating', userId, gameId], null)
+      queryClient.setQueryData(['gamesStatus', userId, igdbId], null)
+      queryClient.setQueryData(['rating', userId, igdbId], null)
 
       return { previousGames, previousGameStatus, previousRating }
     },
     onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ['gamesStatus', userId, gameId]
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['gameStats', userId, gameId]
-      })
-      toast.success('Game removed successfully 👌')
+      queryClient.removeQueries({ queryKey: ['gamesStatus', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['gameStats', userId, igdbId] })
+      toast.success('Jogo removido com sucesso 👌')
     },
     onError: (err, _variables, context) => {
       queryClient.setQueryData(['games'], context?.previousGames)
       queryClient.setQueryData(
-        ['gamesStatus', userId, gameId],
+        ['gamesStatus', userId, igdbId],
         context?.previousGameStatus
       )
       queryClient.setQueryData(
-        ['rating', userId, gameId],
+        ['rating', userId, igdbId],
         context?.previousRating
       )
-
       toast.error(
         `Erro ao remover jogo: ${
           err instanceof Error ? err.message : 'Erro desconhecido'
@@ -92,43 +87,37 @@ export const useAddGame = (gameId?: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
       queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
-      queryClient.invalidateQueries({
-        queryKey: ['rating', userId, gameId]
-      })
+      queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
     }
   })
 
   const removeUserGame = useMutation({
-    mutationFn: () => api.removeGame(gameId),
+    mutationFn: () => api.removeGame(igdbId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['userGames', userId] })
       await queryClient.cancelQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
 
       const previousGames = queryClient.getQueryData(['userGames', userId])
       const previousGameStatus = queryClient.getQueryData([
         'gamesStatus',
         userId,
-        gameId
+        igdbId
       ])
 
       return { previousGames, previousGameStatus }
     },
     onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ['gamesStatus', userId, gameId]
-      })
-
+      queryClient.removeQueries({ queryKey: ['gamesStatus', userId, igdbId] })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
-
-      toast.success('Game removed successfully 👌')
+      toast.success('Jogo removido com sucesso 👌')
     },
     onError: (err, _variables, context) => {
       queryClient.setQueryData(['userGames', userId], context?.previousGames)
       queryClient.setQueryData(
-        ['gamesStatus', userId, gameId],
+        ['gamesStatus', userId, igdbId],
         context?.previousGameStatus
       )
       toast.error(
@@ -140,9 +129,7 @@ export const useAddGame = (gameId?: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
-      queryClient.invalidateQueries({
-        queryKey: ['rating', userId, gameId]
-      })
+      queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
     }
   })
 

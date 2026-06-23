@@ -34,8 +34,8 @@ export function SortControls({
           onChange={onSortFieldChange}
           className={selectClass}
         >
-          <option value="gameName">Nome</option>
-          <option value="dateRelease">Lançamento</option>
+          <option value="name">Nome</option>
+          <option value="releaseDate">Lançamento</option>
           <option value="rating">Avaliação</option>
         </select>
 

@@ -4,9 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useUserGames } from '../hooks/useUserGames'
-
-type SortField = 'gameName' | 'dateRelease'
-type SortOrder = 'asc' | 'desc'
+import type { SortField, SortOrder } from '../interfaces/games'
+import type { UseGamesProps } from '../hooks/useGames'
 
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: GameStatusEnum }>()
@@ -45,7 +44,7 @@ export function UserGamesPageByStatus() {
   const [sortField, setSortField] = useState<SortField>(() => {
     const url = new URL(window.location.toString())
     const v = url.searchParams.get('sortField')
-    return v === 'dateRelease' ? 'dateRelease' : 'gameName'
+    return v === 'releaseDate' ? 'releaseDate' : v === 'rating' ? 'rating' : 'name'
   })
 
   const [filterField, setFilterField] = useState<GameStatusEnum>(() => {
@@ -77,11 +76,16 @@ export function UserGamesPageByStatus() {
     sortField
   )
 
+  const gamesForList: UseGamesProps = {
+    games: UserGamesResponse?.userGames ?? [],
+    total: UserGamesResponse?.total ?? 0
+  }
+
   return (
     <>
       {UserGamesResponse && (
         <GameListPage
-          games={UserGamesResponse}
+          games={gamesForList}
           page={page}
           setPage={setPage}
           sortOrder={sortOrder}

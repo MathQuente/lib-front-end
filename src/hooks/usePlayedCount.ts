@@ -5,35 +5,35 @@ import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
 import { useGameStatus } from './useGameStatus'
 
-export const getGameStatsQueryKey = (userId: string, gameId: string) => [
+export const getGameStatsQueryKey = (userId: string, igdbId: string) => [
   'gameStats',
   userId,
-  gameId
+  igdbId
 ]
 
-export const usePlayedCount = (gameId: string) => {
+export const usePlayedCount = (igdbId: string) => {
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
-  
-    const { gameStatus } = useGameStatus(gameId)
-    const isPlayed = gameStatus?.userGameStatus?.id === 1
 
-  const queryKey = getGameStatsQueryKey(userId, gameId)
+  const { gameStatus } = useGameStatus(igdbId)
+  const isPlayed = gameStatus?.userGameStatus?.id === 1
+
+  const queryKey = getGameStatsQueryKey(userId, igdbId)
 
   const { data: completionsData } = useQuery<GameStatsResponse>({
     queryKey: queryKey,
-    queryFn: () => api.getGameStats(gameId),
-    enabled: Boolean(gameId && userId && isPlayed),
+    queryFn: () => api.getGameStats(igdbId),
+    enabled: Boolean(igdbId && userId && isPlayed),
     staleTime: 1000 * 60 * 5
   })
 
   const updatePlayedCount = useMutation({
     mutationFn: (incrementValue: number) => {
-      return api.updateCompletionCount(gameId, incrementValue)
+      return api.updateCompletionCount(igdbId, incrementValue)
     },
     onMutate: async incrementValue => {
-      await queryClient.cancelQueries({ queryKey: queryKey })
+      await queryClient.cancelQueries({ queryKey })
 
       const previousData = queryClient.getQueryData<GameStatsResponse>(queryKey)
 
@@ -51,11 +51,9 @@ export const usePlayedCount = (gameId: string) => {
       return { previousData }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: queryKey
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
       toast.success('Contagem de finalizações atualizada com sucesso 👌')
     },
@@ -63,7 +61,6 @@ export const usePlayedCount = (gameId: string) => {
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData)
       }
-
       toast.error(
         `Erro ao atualizar contagem: ${
           error instanceof Error ? error.message : 'Erro desconhecido'

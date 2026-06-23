@@ -12,8 +12,9 @@ const STATUS = {
 } as const
 
 export function GameForm({ game }: GameFormProps) {
-  const { gameStatus, updateGameStatus } = useGameStatus(game?.id)
-  const { addGame, removeGame } = useAddGame(game?.id)
+  const igdbId = game?.igdbId?.toString()
+  const { gameStatus, updateGameStatus } = useGameStatus(igdbId)
+  const { addGame, removeGame } = useAddGame(igdbId)
 
   if (!game) return null
 
@@ -33,8 +34,9 @@ export function GameForm({ game }: GameFormProps) {
     }
   }
 
-  const dateRelease = game.gameLaunchers?.[0]?.dateRelease
-  const gameIsReleased = dateRelease ? new Date() > new Date(dateRelease) : true
+  const gameIsReleased = game.releaseDate
+    ? new Date() > new Date(game.releaseDate * 1000)
+    : true
 
   const buttons = [
     ...(gameIsReleased
@@ -65,12 +67,16 @@ export function GameForm({ game }: GameFormProps) {
             >
               <Icon
                 className={`size-6 transition-colors ${
-                  active ? 'text-primary' : 'text-gray-600 group-hover:text-gray-400'
+                  active
+                    ? 'text-primary'
+                    : 'text-gray-600 group-hover:text-gray-400'
                 }`}
               />
               <span
                 className={`text-xs transition-colors ${
-                  active ? 'text-primary font-medium' : 'text-gray-500 group-hover:text-gray-300'
+                  active
+                    ? 'text-primary font-medium'
+                    : 'text-gray-500 group-hover:text-gray-300'
                 }`}
               >
                 {label}

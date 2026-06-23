@@ -4,7 +4,7 @@ import { UserGamesDiv } from '../components/UserGamesDiv'
 import { useUserGames } from '../hooks/useUserGames'
 
 export function UserLibrary() {
-  const { UserGamesResponse } = useUserGames()
+  const { UserGamesResponse, gamesByStatus, totalPerStatus } = useUserGames()
 
   if (!UserGamesResponse) {
     return null
@@ -15,8 +15,8 @@ export function UserLibrary() {
       <UserProfileDisplay />
 
       <UserGamesDiv
-        Games={UserGamesResponse.games}
-        totalPerStatus={UserGamesResponse.totalPerStatus}
+        Games={gamesByStatus}
+        totalPerStatus={totalPerStatus}
       />
 
       <ToastContainer />

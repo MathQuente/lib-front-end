@@ -9,19 +9,25 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()
 
   return (
-    <div key={game?.id} className="flex flex-col p-4">
+    <div key={game?.igdbId} className="flex flex-col p-4">
       <div className="flex flex-col items-center md:flex-row md:justify-around py-4">
         <div className="flex items-center">
-          <img
-            className="rounded-md w-[285px] h-[380px]"
-            src={game?.gameBanner}
-            alt={`Capa do jogo ${game?.gameName}`}
-          />
+          {game?.coverUrl ? (
+            <img
+              className="rounded-md w-[285px] h-[380px] object-cover"
+              src={game.coverUrl}
+              alt={`Capa do jogo ${game?.name}`}
+            />
+          ) : (
+            <div className="rounded-md w-[285px] h-[380px] bg-dark-bg-lighter flex items-center justify-center">
+              <span className="text-gray-600 text-sm">Sem capa</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col justify-around items-center mt-2 gap-4">
           <div className="flex flex-wrap flex-col items-center">
-            <h1 className="text-base md:text-xl font-bold">{game?.gameName}</h1>
+            <h1 className="text-base md:text-xl font-bold">{game?.name}</h1>
           </div>
 
           {user && <GameForm game={game} />}
@@ -40,7 +46,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
       </div>
 
       <div className="flex justify-end gap-4 pt-4 border-t border-gray-700">
-        <Link to={`/games/${game?.id}`}>
+        <Link to={`/games/${game?.igdbId}`}>
           <Button type="button" variant="primary" size="md">
             Ver Detalhes
           </Button>

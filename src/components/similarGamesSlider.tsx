@@ -24,14 +24,14 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
           1024: { slidesPerView: 4, spaceBetween: 20 }
         }}
         modules={[Autoplay]}
-        className="h-52"
+        className="h-60"
       >
         {SimilarGames.similarGames.map(game => (
           <SwiperSlide
-            key={game.id}
+            key={game.igdbId}
             className="!flex !items-center !justify-center"
           >
-            <Link to={`/games/${game.id}`}>
+            <Link to={`/games/${game.igdbId}`}>
               <GameCard game={game} size="larger" />
             </Link>
           </SwiperSlide>

@@ -5,43 +5,37 @@ export enum GameStatusEnum {
   Wishlist = 'WISHLIST'
 }
 
-export interface GameToDisplayResponse {
-  game: Game
-  message: string
+export interface GameBase {
+  igdbId: number
+  name: string
+  coverUrl: string | null
+  platforms: string[]
+  releaseDate: number | null
+  rating: number
+  genres: string[]
+  summary: string
 }
 
-export interface GamesFromHomePageResponse {
-  mostRatedGames: Game[]
-  trendingGames: Game[]
-  recentGames: Game[]
-  futureGames: Game[]
+export interface Game extends GameBase {
+  developers?: string[]
+  publishers?: string[]
+  userGames?: {
+    PLAYED: number
+    PLAYING: number
+    PAUSED: number
+    BACKLOG: number
+    WISHLIST: number
+  }
+  amountOfRatings?: number
 }
 
-export interface SimilarGamesResponse {
-  similarGames: Game[]
+export interface UserGameEntry extends GameBase {
+  status: { id: number; name: string }
 }
-
-export type GameBase = Pick<
-  Game,
-  | 'id'
-  | 'gameBanner'
-  | 'gameName'
-  | 'isDlc'
-  | 'gameLaunchers'
-  | 'ratingAvg'
-  | 'platforms'
-  | 'summary'
->
 
 export interface UserGamesResponse {
-  games: {
-    PLAYED: GameBase[]
-    PLAYING: GameBase[]
-    BACKLOG: GameBase[]
-    WISHLIST: GameBase[]
-  }
-  totalPerStatus: TotalPerStatus[]
-  totalGames: number
+  userGames: UserGameEntry[]
+  total: number
 }
 
 export interface TotalPerStatus {
@@ -49,39 +43,20 @@ export interface TotalPerStatus {
   totalGames: number
 }
 
-export interface Game {
-  id: string
-  gameName: string
-  gameBanner: string
-  gameStudios: GameStudio[]
-  categories: Category[]
-  publishers: Publisher[]
-  platforms: Platform[]
-  summary: string
-  gameLaunchers: GameLauncher[]
-  isDlc: boolean
-  dlcs: Game[]
-  parentGame: Game | null
-  ratings: {
-    rating: number
-    count: number
-  }[]
-  ratingAvg: number
-  amountOfRatings: number
-  userGames: {
-    PLAYED: number
-    PLAYING: number
-    PAUSED: number
-    BACKLOG: number
-    WISHLIST: number
-  }
-  userWhoOwnThisGame: { userId: string }[]
+export interface GameToDisplayResponse {
+  game: { igdbId: number; name: string; coverUrl: string | null } | null
+  message: string
 }
 
-export interface SimilarGame {
-  id: string
-  gameBanner?: string
-  dlcBanner?: string
+export interface GamesFromHomePageResponse {
+  mostRatedGames: GameBase[]
+  trendingGames: GameBase[]
+  recentGames: GameBase[]
+  futureGames: GameBase[]
+}
+
+export interface SimilarGamesResponse {
+  similarGames: GameBase[]
 }
 
 export type GameStatus = {
@@ -95,29 +70,4 @@ export type GameStatusResponse = {
 
 export interface GameResponse {
   game: Game
-}
-
-export interface Category {
-  id: number
-  categoryName: string
-}
-
-export interface Platform {
-  id: string
-  platformName: string
-}
-
-export interface GameLauncher {
-  dateRelease: string
-  platform: Platform
-}
-
-export interface GameStudio {
-  id: string
-  studioName: string
-}
-
-export interface Publisher {
-  id: string
-  publisherName: string
 }

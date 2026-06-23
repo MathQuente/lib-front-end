@@ -3,7 +3,9 @@ import { usePlayedCount } from '../hooks/usePlayedCount'
 import type { GameBase } from '../types/games'
 
 export function PlayedCount({ game }: { game: GameBase }) {
-  const { completions, updatePlayedCount } = usePlayedCount(game.id)
+  const { completions, updatePlayedCount } = usePlayedCount(
+    game.igdbId.toString()
+  )
 
   const count = Math.max(completions ?? 0, 1)
 
@@ -19,7 +21,9 @@ export function PlayedCount({ game }: { game: GameBase }) {
         >
           <Minus className="size-3.5" />
         </button>
-        <span className="w-5 text-center text-sm font-medium text-white">{count}</span>
+        <span className="w-5 text-center text-sm font-medium text-white">
+          {count}
+        </span>
         <button
           type="button"
           onClick={() => updatePlayedCount(1)}

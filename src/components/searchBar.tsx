@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Search, X } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useMobileMenu } from '../contexts/useMobileMenu'
 import type { SearchBarProps } from '../interfaces/ui'
 
-export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
+export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarProps) {
   const { query } = useParams()
   const navigate = useNavigate()
-  const { setMobileMenuOpen } = useMobileMenu()
   const internalInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>('')
 
@@ -41,7 +39,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
       navigate(`/search/${search}`)
       setSearch('')
       if (isMobile) {
-        setMobileMenuOpen(false)
+        onClose?.()
       }
     }
   }
@@ -49,9 +47,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus }: SearchBarProps) {
   return (
     <form onSubmit={handleSearch}>
       <div className="relative flex items-center">
-        <Search
-          className="absolute left-2.5 text-gray-600 pointer-events-none size-4"
-        />
+        <Search className="absolute left-2.5 text-gray-600 pointer-events-none size-4" />
         <input
           ref={actualInputRef}
           className={`${

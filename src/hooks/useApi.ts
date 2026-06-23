@@ -67,7 +67,7 @@ export const api = {
     page?: number,
     search?: string | undefined,
     filter?: GameStatusEnum,
-    sortBy?: 'gameName' | 'dateRelease',
+    sortBy?: 'name' | 'releaseDate',
     sortOrder?: 'asc' | 'desc'
   ) => {
     const response = await http.get('/users/userGames', {
@@ -88,7 +88,7 @@ export const api = {
   getGames: async (
     page: number,
     search: string | undefined,
-    sortBy: 'gameName' | 'dateRelease',
+    sortBy: 'name' | 'releaseDate' | 'rating',
     sortOrder: 'asc' | 'desc',
     limit?: number
   ) => {
@@ -96,45 +96,39 @@ export const api = {
       params: {
         pageIndex: page - 1,
         query: search,
-        sortBy: sortBy,
-        sortOrder: sortOrder,
+        sortBy,
+        sortOrder,
         limit: limit ? limit : null
       }
     })
     return response.data
   },
-  getGame: async (gameId: string | undefined) => {
-    const response = await http.get(`/games/${gameId}`)
+  getGame: async (igdbId: string | undefined) => {
+    const response = await http.get(`/games/${igdbId}`)
     return response.data
   },
-  getGameStatus: async (gameId: string | undefined) => {
-    const response = await http.get(`/users/gameStatus/${gameId}`, {})
+  getGameStatus: async (igdbId: string | undefined) => {
+    const response = await http.get(`/users/gameStatus/${igdbId}`, {})
     return response.data
   },
-  getSimilarGames: async (gameId: string | undefined) => {
-    const response = await http.get(`/games/similarGames/${gameId}`)
+  getSimilarGames: async (igdbId: string | undefined) => {
+    const response = await http.get(`/games/similarGames/${igdbId}`)
     return response.data
   },
-  addGame: async (gameId: string | undefined, statusId: number) => {
-    const response = await http.post(
-      `/users/games/${gameId}`,
-      { statusId },
-      {}
-    )
+  addGame: async (igdbId: string | undefined, statusId: number) => {
+    const response = await http.post(`/users/games/${igdbId}`, { statusId }, {})
     return response
   },
-  updateGameStatus: async (gameId: string | undefined, statusId: number) => {
+  updateGameStatus: async (igdbId: string | undefined, statusId: number) => {
     const response = await http.patch(
-      `/users/gameStatus/${gameId}`,
+      `/users/gameStatus/${igdbId}`,
       { statusId },
       {}
     )
     return response
   },
-  removeGame: async (gameId: string | undefined) => {
-    const response = await http.delete(`/users/games/${gameId}`, {
-      headers: {}
-    })
+  removeGame: async (igdbId: string | undefined) => {
+    const response = await http.delete(`/users/games/${igdbId}`, {})
     return response
   },
   uploadFile: async (file: File) => {
@@ -157,38 +151,34 @@ export const api = {
     const response = await http.patch('/users', body, {})
     return response.data
   },
-  getGameStats: async (gameId: string | undefined) => {
-    const response = await http.get(`/users/playedCount/${gameId}`, {})
+  getGameStats: async (igdbId: string | undefined) => {
+    const response = await http.get(`/users/playedCount/${igdbId}`, {})
     return response.data
   },
   updateCompletionCount: async (
-    gameId: string | undefined,
+    igdbId: string | undefined,
     incrementValue: number
   ) => {
     const response = await http.patch(
-      `/users/playedCount/${gameId}`,
+      `/users/playedCount/${igdbId}`,
       { incrementValue },
       {}
     )
     return response
   },
   addRatingForUserGame: async (
-    gameId: string | undefined,
+    igdbId: string | undefined,
     value: number | null
   ) => {
-    const response = await http.post(
-      `/rating/${gameId}`,
-      { value },
-      {}
-    )
+    const response = await http.post(`/rating/${igdbId}`, { value }, {})
     return response
   },
-  getUserGameRating: async (gameId: string | undefined) => {
-    const response = await http.get(`/rating/${gameId}`, {})
+  getUserGameRating: async (igdbId: string | undefined) => {
+    const response = await http.get(`/rating/${igdbId}`, {})
     return response.data
   },
-  removeRating: async (gameId: string | undefined) => {
-    const response = await http.delete(`/rating/${gameId}`, {})
+  removeRating: async (igdbId: string | undefined) => {
+    const response = await http.delete(`/rating/${igdbId}`, {})
     return response
   },
   me: async () => {
@@ -199,12 +189,12 @@ export const api = {
     const response = await http.get('/games/featured', {})
     return response.data
   },
-  getAverageRating: async (gameId: string | undefined) => {
-    const response = await http.get(`/rating/${gameId}/average`, {})
+  getAverageRating: async (igdbId: string | undefined) => {
+    const response = await http.get(`/rating/${igdbId}/average`, {})
     return response.data
   },
-  getRatingDistribution: async (gameId: string | undefined) => {
-    const response = await http.get(`/rating/ratingDistribution/${gameId}`, {})
+  getRatingDistribution: async (igdbId: string | undefined) => {
+    const response = await http.get(`/rating/ratingDistribution/${igdbId}`, {})
     return response.data
   },
   getGamesToDisplay: async () => {
@@ -215,14 +205,14 @@ export const api = {
     page: number,
     search: string | undefined,
     sortOrder: 'asc' | 'desc',
-    sortBy: 'gameName' | 'dateRelease'
+    sortBy: 'name' | 'releaseDate' | 'rating'
   ) => {
     const response = await http.get('/games/comingSoon', {
       params: {
         pageIndex: page - 1,
         query: search,
-        sortBy: sortBy,
-        sortOrder: sortOrder
+        sortBy,
+        sortOrder
       }
     })
     return response.data

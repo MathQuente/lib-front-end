@@ -9,6 +9,8 @@ export function RatingAverage({
   isForGamePage,
   justAverage
 }: RatingAverageProps) {
+  const igdbId = game?.igdbId?.toString()
+
   const {
     userRating,
     average,
@@ -19,12 +21,14 @@ export function RatingAverage({
     addRating,
     removeRating,
     isMutating
-  } = useRating(game?.id)
+  } = useRating(igdbId)
 
   const [hoverValue, setHoverValue] = useState<number | null>(null)
 
   if (isLoading)
-    return <div className="h-8 w-40 rounded-lg bg-dark-bg-lighter animate-pulse" />
+    return (
+      <div className="h-8 w-40 rounded-lg bg-dark-bg-lighter animate-pulse" />
+    )
   if (isError) return null
 
   const averageDisplay = (() => {
@@ -43,8 +47,9 @@ export function RatingAverage({
     )
   }
 
-  const dateRelease = game?.gameLaunchers?.[0]?.dateRelease
-  const gameIsReleased = dateRelease ? new Date() > new Date(dateRelease) : false
+  const gameIsReleased = game?.releaseDate
+    ? new Date() > new Date(game.releaseDate * 1000)
+    : false
 
   if (!gameIsReleased) {
     return (

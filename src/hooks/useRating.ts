@@ -9,15 +9,15 @@ import type {
 
 export const getRatingQueryKey = (
   userId: string,
-  gameId: string | undefined
-) => ['rating', userId, gameId]
+  igdbId: string | undefined
+) => ['rating', userId, igdbId]
 
-export const useRating = (gameId: string | undefined) => {
+export const useRating = (igdbId: string | undefined) => {
   const { user } = useAuth()
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
 
-  const queryKey = getRatingQueryKey(userId, gameId)
+  const queryKey = getRatingQueryKey(userId, igdbId)
 
   const {
     data: userRatingResponse,
@@ -25,14 +25,14 @@ export const useRating = (gameId: string | undefined) => {
     isError: ratingIsError
   } = useQuery<RatingResponse>({
     queryKey,
-    queryFn: () => api.getUserGameRating(gameId),
-    enabled: Boolean(userId && gameId),
+    queryFn: () => api.getUserGameRating(igdbId),
+    enabled: Boolean(userId && igdbId),
     staleTime: 1000 * 60 * 5
   })
 
   const addRating = useMutation({
     mutationFn: (value: number | null) =>
-      api.addRatingForUserGame(gameId, value),
+      api.addRatingForUserGame(igdbId, value),
     onMutate: async newValue => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<RatingResponse>(queryKey)
@@ -41,16 +41,14 @@ export const useRating = (gameId: string | undefined) => {
         queryClient.setQueryData<RatingResponse>(queryKey, { rating: newValue })
       }
 
-      queryClient.cancelQueries({ queryKey: ['gamesStatus', userId, gameId] })
+      queryClient.cancelQueries({ queryKey: ['gamesStatus', userId, igdbId] })
 
       return { previous }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
       queryClient.invalidateQueries({
-        queryKey: ['ratings', gameId]
-      })
-      queryClient.invalidateQueries({
-        queryKey: [gameId, userRatingResponse?.rating, 'averageRating']
+        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
       })
       toast.success('Avaliação atualizada com sucesso 👌')
     },
@@ -61,16 +59,14 @@ export const useRating = (gameId: string | undefined) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
-      queryClient.invalidateQueries({
-        queryKey: ['userGames', userId]
-      })
+      queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
     }
   })
 
   const removeRating = useMutation({
-    mutationFn: () => api.removeRating(gameId),
+    mutationFn: () => api.removeRating(igdbId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<RatingResponse>(queryKey)
@@ -78,14 +74,10 @@ export const useRating = (gameId: string | undefined) => {
       return { previous }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
       queryClient.invalidateQueries({
-        queryKey: ['rating', userId, gameId]
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['ratings', gameId]
-      })
-      queryClient.invalidateQueries({
-        queryKey: [gameId, userRatingResponse?.rating, 'averageRating']
+        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
       })
       toast.success('Avaliação removida com sucesso 👌')
     },
@@ -98,7 +90,7 @@ export const useRating = (gameId: string | undefined) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, gameId]
+        queryKey: ['gamesStatus', userId, igdbId]
       })
     }
   })
@@ -108,9 +100,9 @@ export const useRating = (gameId: string | undefined) => {
     isLoading: isAverageLoading,
     isError: isAverageError
   } = useQuery({
-    queryFn: () => api.getAverageRating(gameId),
-    queryKey: [gameId, userRatingResponse?.rating, 'averageRating'],
-    enabled: Boolean(gameId),
+    queryFn: () => api.getAverageRating(igdbId),
+    queryKey: [igdbId, userRatingResponse?.rating, 'averageRating'],
+    enabled: Boolean(igdbId),
     staleTime: 1000 * 60 * 5
   })
 
@@ -119,9 +111,9 @@ export const useRating = (gameId: string | undefined) => {
     isLoading: isLoadingRating,
     isError: isErrorRatings
   } = useQuery<RatingsDistributionResponse>({
-    queryFn: () => api.getRatingDistribution(gameId),
-    queryKey: ['ratings', gameId],
-    enabled: Boolean(gameId),
+    queryFn: () => api.getRatingDistribution(igdbId),
+    queryKey: ['ratings', igdbId],
+    enabled: Boolean(igdbId),
     staleTime: 1000 * 60 * 5
   })
 

@@ -14,11 +14,10 @@ export interface UseGamesProps {
 export const useGames = (
   page: number,
   search: string | undefined,
-  sortBy: 'gameName' | 'dateRelease',
+  sortBy: 'name' | 'releaseDate' | 'rating',
   sortOrder: 'asc' | 'desc',
   limit?: number
 ) => {
-
   const queryKey = ['games', page, search, sortBy, sortOrder]
 
   const {
@@ -27,7 +26,7 @@ export const useGames = (
     isError
   } = useQuery<UseGamesProps>({
     queryKey: queryKey,
-    queryFn: async () => api.getGames(page, search, sortBy, sortOrder),
+    queryFn: async () => api.getGames(page, search, sortBy, sortOrder, limit),
     placeholderData: keepPreviousData
   })
 

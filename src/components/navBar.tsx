@@ -2,24 +2,10 @@ import { CiSearch } from 'react-icons/ci'
 
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
-import { z } from 'zod'
-// import { useForm } from 'react-hook-form'
-// import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '../hooks/useApi'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { UserProfileResponse } from '../types/user'
-import { Link } from 'react-router-dom'
-import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import { useAuth } from '../hooks/useAuth'
-
-const searchSchema = z.object({
-  gameName: z
-    .string()
-    .min(1, { message: 'a pesquisa não pode ser vazia' })
-    .refine(value => !/^\s*$/.test(value), {
-      message: 'pesquisa não pode ter apenas espaços',
-    }),
-})
 
 export function Navbar() {
   const { user } = useAuth()
@@ -34,21 +20,10 @@ export function Navbar() {
     return ''
   })
 
-  type searchForm = z.infer<typeof searchSchema>
-
-  // const {
-  //   register,
-  //   handleSubmit,
-
-  //   // formState: { errors }
-  // } = useForm<searchForm>({
-  //   resolver: zodResolver(searchSchema),
-  // })
-
   const { data: UserProfileResponse } = useQuery<UserProfileResponse>({
     queryKey: ['userProfile', userId],
     queryFn: async () => api.getUserProfile(userId),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData
   })
 
   if (!UserProfileResponse) {
@@ -67,10 +42,6 @@ export function Navbar() {
 
   function onSearchInputChange(event: ChangeEvent<HTMLInputElement>) {
     setCurrentSearch(event.target.value)
-  }
-
-  function onSearch(data: searchForm) {
-    console.log(data)
   }
 
   return (

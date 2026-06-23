@@ -2,15 +2,13 @@ import type { ChangeEvent, ComponentProps, ReactNode } from 'react'
 import type {
   Game,
   GameBase,
-  GameLauncher,
   GameResponse,
   GameStatusEnum,
-  SimilarGamesResponse,
-  UserGamesResponse
+  SimilarGamesResponse
 } from '../types/games'
 import type { UseGamesProps } from '../hooks/useGames'
 
-export type SortField = 'gameName' | 'dateRelease' | 'rating'
+export type SortField = 'name' | 'releaseDate' | 'rating'
 export type SortOrder = 'asc' | 'desc'
 export type SectionType = 'coming' | 'trending' | 'rateds'
 
@@ -37,8 +35,9 @@ export interface GamesGridProps {
 }
 
 export interface GameListProps {
-  games: UseGamesProps | UserGamesResponse
+  games: UseGamesProps
   page: number
+  pageSize?: number
   setPage: (page: number) => void
   sortOrder: SortOrder
   setSortOrder: (order: SortOrder) => void
@@ -53,7 +52,7 @@ export interface GameListProps {
 }
 
 export interface GameListSectionProps extends ComponentProps<'div'> {
-  games: Game[]
+  games: GameBase[]
   title: string
   type: SectionType
 }
@@ -76,20 +75,8 @@ export interface DetailsProps {
   GameResponse: GameResponse
 }
 
-export interface DlcAndOriginalGameAreaProps {
-  gameResponse: GameResponse
-}
-
 export interface PlatformDivProps {
   platformName: string
-}
-
-export interface CategoriesDivProps {
-  categoryName: string
-}
-
-export interface GameLaunchersDivProps {
-  gameLaucher: GameLauncher
 }
 
 export interface PlayerInfosProps {
@@ -106,3 +93,4 @@ export interface SortControlsProps {
   totalGames: number
   isUserLibrary?: boolean
 }
+

@@ -75,7 +75,7 @@ export function SideBar() {
           </div>
 
           <div className="flex flex-col px-4 py-4 gap-3 flex-1">
-            <SearchBar isMobile={true} />
+            <SearchBar isMobile={true} onClose={closeMobileMenu} />
 
             <div className="flex flex-col gap-0.5 mt-1">
               {isLoggedIn ? (

@@ -47,7 +47,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
                 {gamesForStatus.slice(0, 6).map(game => (
                   <GameCard
                     game={game}
-                    key={game.id}
+                    key={game.igdbId}
                     size="medium"
                     enableModal
                   />

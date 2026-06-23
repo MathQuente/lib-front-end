@@ -24,7 +24,7 @@ export function Home() {
   const isLogged = !!user?.id
 
   const { UserGamesResponse, GamesToDisplay } = useUserGames()
-  const { gamesFeatured } = useGames(1, '', 'gameName', 'asc')
+  const { gamesFeatured } = useGames(1, '', 'name', 'asc')
 
   const stableGame = useRef(GamesToDisplay)
   if (GamesToDisplay && !stableGame.current) {
@@ -64,20 +64,22 @@ export function Home() {
 
               {stableGame.current?.game && (
                 <Link
-                  to={`/games/${stableGame.current.game.id}`}
+                  to={`/games/${stableGame.current.game.igdbId}`}
                   className="inline-flex items-center gap-3 group w-fit"
                 >
-                  <img
-                    src={stableGame.current.game.gameBanner}
-                    alt={stableGame.current.game.gameName}
-                    className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity duration-150"
-                  />
+                  {stableGame.current.game.coverUrl && (
+                    <img
+                      src={stableGame.current.game.coverUrl}
+                      alt={stableGame.current.game.name}
+                      className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity duration-150"
+                    />
+                  )}
                   <div className="min-w-0">
                     <p className="text-gray-600 text-xs mb-0.5">
                       {stableGame.current.message}
                     </p>
                     <p className="text-white text-sm font-medium group-hover:text-primary-light transition-colors duration-150 truncate">
-                      {stableGame.current.game.gameName}
+                      {stableGame.current.game.name}
                     </p>
                   </div>
                 </Link>
@@ -138,10 +140,10 @@ export function Home() {
           >
             {gamesFeatured.recentGames.map(game => (
               <SwiperSlide
-                key={game.id}
+                key={game.igdbId}
                 className="!flex !items-center !justify-center"
               >
-                <Link to={`/games/${game.id}`} className="block">
+                <Link to={`/games/${game.igdbId}`} className="block">
                   <GameCard game={game} size="larger" />
                 </Link>
               </SwiperSlide>

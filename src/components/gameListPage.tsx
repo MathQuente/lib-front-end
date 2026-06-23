@@ -2,42 +2,33 @@ import type { ChangeEvent } from 'react'
 import { GamesGrid } from './gamesComponents/gamesGrid'
 import { Pagination } from './pagination'
 import { SortControls } from './sorting'
-import type { GameBase, GameStatusEnum } from '../types/games'
+import type { GameStatusEnum } from '../types/games'
 import type { GameListProps, SortField, SortOrder } from '../interfaces/games'
 
 export function GameListPage({
   games,
   setPage,
   page,
+  pageSize = 20,
   sortOrder,
   setSortOrder,
   sortField,
   setSortField,
   filterField,
   setFilterField,
-  currentStatus,
   onFilterChange,
   isUserLibrary,
   emptyState
 }: GameListProps) {
-  const isGamesArray = Array.isArray(games.games)
-  const gamesArray: GameBase[] = isGamesArray
-    ? (games.games as GameBase[])
-    : Object.values(games.games as Record<string, GameBase[]>).flat()
-
-  const totalGames =
-    'total' in games
-      ? games.total
-      : currentStatus
-        ? (games.totalPerStatus?.find(s => s.status === currentStatus)
-            ?.totalGames ?? 0)
-        : (games.totalPerStatus?.reduce((sum, s) => sum + s.totalGames, 0) ?? 0)
+  const gamesArray = games.games
 
   const safeTotal =
-    typeof totalGames === 'number' && !Number.isNaN(totalGames) ? totalGames : 0
+    typeof games.total === 'number' && !Number.isNaN(games.total)
+      ? games.total
+      : 0
   const safePage =
     typeof page === 'number' && !Number.isNaN(page) && page > 0 ? page : 1
-  const totalPages = Math.ceil(safeTotal / 36) || 1
+  const totalPages = Math.ceil(safeTotal / pageSize) || 1
 
   function setCurrentPage(p: number) {
     const url = new URL(window.location.toString())
@@ -92,6 +83,5 @@ export function GameListPage({
         onPageChange={setCurrentPage}
       />
     </div>
-
-)
+  )
 }

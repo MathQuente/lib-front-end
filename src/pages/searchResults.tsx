@@ -14,7 +14,7 @@ export function SearchResults() {
     hasNextPage,
     isLoadingInfinite,
     isErrorInfinite
-  } = useGames(1, query, 'gameName', 'asc', 10)
+  } = useGames(1, query, 'name', 'asc', 10)
 
   if (isLoadingInfinite) {
     return (
@@ -48,9 +48,8 @@ export function SearchResults() {
     )
   }
 
-  const resultForSearchGames = GamesResponseInfinity?.pages.flatMap(
-    page => page.games
-  ) ?? []
+  const resultForSearchGames =
+    GamesResponseInfinity?.pages.flatMap(page => page.games) ?? []
   const total = GamesResponseInfinity?.pages[0].total ?? 0
 
   if (resultForSearchGames.length === 0) {
@@ -61,8 +60,8 @@ export function SearchResults() {
           query ? (
             <span>
               Não encontramos resultados para{' '}
-              <span className="text-primary font-medium">"{query}"</span>.
-              Tente termos diferentes ou verifique a ortografia.
+              <span className="text-primary font-medium">"{query}"</span>. Tente
+              termos diferentes ou verifique a ortografia.
             </span>
           ) : (
             'Não há jogos disponíveis no momento.'
@@ -99,29 +98,37 @@ export function SearchResults() {
         }
       >
         {resultForSearchGames.map(game => (
-          <div key={game.id} className="group">
+          <div key={game.igdbId} className="group">
             <div className="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-dark-bg-lighter transition-colors duration-200">
               <Link
-                to={`/games/${game.id}`}
+                to={`/games/${game.igdbId}`}
                 className="w-full sm:w-auto flex-shrink-0"
               >
-                <img
-                  className="w-full h-48 sm:w-32 sm:h-40 md:w-36 md:h-48 lg:w-40 lg:h-52 xl:w-44 xl:h-56 rounded-lg object-cover"
-                  src={game.gameBanner}
-                  alt={`${game.gameName} banner`}
-                />
+                {game.coverUrl ? (
+                  <img
+                    className="w-full h-48 sm:w-32 sm:h-40 md:w-36 md:h-48 lg:w-40 lg:h-52 xl:w-44 xl:h-56 rounded-lg object-cover"
+                    src={game.coverUrl}
+                    alt={`${game.name} banner`}
+                  />
+                ) : (
+                  <div className="w-full h-48 sm:w-32 sm:h-40 rounded-lg bg-dark-bg-lighter flex items-center justify-center">
+                    <span className="text-gray-600 text-xs">Sem capa</span>
+                  </div>
+                )}
               </Link>
 
               <div className="flex-1 w-full sm:w-auto min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <Link to={`/games/${game.id}`}>
+                  <Link to={`/games/${game.igdbId}`}>
                     <h3 className="text-white font-semibold text-lg sm:text-xl group-hover:text-primary transition-colors duration-200 truncate">
-                      {game.gameName}
+                      {game.name}
                     </h3>
                   </Link>
-                  <span className="text-sm text-gray-400 bg-gray-800 rounded-md px-2 py-1 self-start sm:self-center flex-shrink-0">
-                    {dayjs(game.gameLaunchers[0].dateRelease).format('YYYY')}
-                  </span>
+                  {game.releaseDate && (
+                    <span className="text-sm text-gray-400 bg-gray-800 rounded-md px-2 py-1 self-start sm:self-center flex-shrink-0">
+                      {dayjs.unix(game.releaseDate).format('YYYY')}
+                    </span>
+                  )}
                 </div>
 
                 {game.platforms && game.platforms.length > 0 && (
@@ -129,9 +136,7 @@ export function SearchResults() {
                     <span className="flex items-center gap-1">
                       <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
                       <span className="break-words">
-                        {game.platforms
-                          .map(platform => platform.platformName)
-                          .join(', ')}
+                        {game.platforms.join(', ')}
                       </span>
                     </span>
                   </div>

@@ -21,7 +21,7 @@ export function GameModal({
         <Dialog.Description>
           <VisuallyHidden.Root />
         </Dialog.Description>
-        <Dialog.Content className="w-[380px] lg:w-[700px] lg:h-[500px] fixed bg-[#272932] text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
+        <Dialog.Content className="w-[380px] lg:w-[700px] lg:h-[500px] fixed bg-[#272932] text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg z-20">
           {children}
         </Dialog.Content>
       </Dialog.Portal>

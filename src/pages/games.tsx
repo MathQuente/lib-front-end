@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useGames } from '../hooks/useGames'
-
-type SortField = 'gameName' | 'dateRelease'
-type SortOrder = 'asc' | 'desc'
+import type { SortField, SortOrder } from '../interfaces/games'
 
 export function Games() {
   const [page, setPage] = useState(() => {
@@ -24,10 +22,15 @@ export function Games() {
   const [sortField, setSortField] = useState<SortField>(() => {
     const url = new URL(window.location.toString())
     const v = url.searchParams.get('sortField')
-    return v === 'dateRelease' ? 'dateRelease' : 'gameName'
+    return v === 'releaseDate'
+      ? 'releaseDate'
+      : v === 'rating'
+        ? 'rating'
+        : 'name'
   })
 
-  const { GamesResponse } = useGames(page, '', sortField, sortOrder)
+  const LIMIT = 36
+  const { GamesResponse } = useGames(page, '', sortField, sortOrder, LIMIT)
 
   if (!GamesResponse) {
     return (
@@ -36,7 +39,10 @@ export function Games() {
         <div className="bg-dark-bg-light border border-dark-border rounded-lg py-4 px-4">
           <div className="grid grid-cols-5 md:grid-cols-6 p-2 gap-x-2 gap-y-4">
             {Array.from({ length: 18 }, (_, i) => `sk${i}`).map(k => (
-              <div key={k} className="aspect-[7/10] w-full rounded-lg bg-dark-bg-lighter" />
+              <div
+                key={k}
+                className="aspect-[7/10] w-full rounded-lg bg-dark-bg-lighter"
+              />
             ))}
           </div>
         </div>
@@ -49,6 +55,7 @@ export function Games() {
       <GameListPage
         games={GamesResponse}
         page={page}
+        pageSize={LIMIT}
         setPage={setPage}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}

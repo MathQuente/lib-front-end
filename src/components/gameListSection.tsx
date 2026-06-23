@@ -32,28 +32,26 @@ export function GameListSection({
       ) : (
         <div className="flex flex-col gap-3">
           {games.map(game => (
-            <div key={game.id} className="flex gap-3 items-center">
-              <Link to={`/games/${game.id}`} className="flex-shrink-0">
+            <div key={game.igdbId} className="flex gap-3 items-center">
+              <Link to={`/games/${game.igdbId}`} className="flex-shrink-0">
                 <GameCard game={game} size="small" />
               </Link>
               <div className="min-w-0">
-                <Link to={`/games/${game.id}`}>
+                <Link to={`/games/${game.igdbId}`}>
                   <p className="text-sm text-white hover:text-primary transition-colors truncate">
-                    {game.gameName}
+                    {game.name}
                   </p>
                 </Link>
                 {type === 'rateds' ? (
                   <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-xs text-gray-500">
-                      {game.ratingAvg}
-                    </span>
+                    <span className="text-xs text-gray-500">{game.rating}</span>
                     <Star className="size-2.5 text-gray-500" />
                   </div>
                 ) : (
                   <p className="text-xs text-gray-500 mt-0.5">
-                    {dayjs(game.gameLaunchers[0].dateRelease).format(
-                      'DD MMM YYYY'
-                    )}
+                    {game.releaseDate
+                      ? dayjs.unix(game.releaseDate).format('DD MMM YYYY')
+                      : '—'}
                   </p>
                 )}
               </div>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 import { twMerge } from 'tailwind-merge'
-import type { GameCardProps } from '../../interfaces/games.interfaces'
+import type { GameCardProps } from '../../interfaces/games'
 
 const sizes = {
   small: 'w-14 h-16',
@@ -31,27 +31,34 @@ export function GameCard({
             size === 'small' && 'hover:ring-2 ring-primary'
           )}
         >
-          {game?.isDlc && (
-            <span className="absolute top-2 left-2 z-10 bg-dark-bg-light/90 px-1.5 py-0.5 rounded text-white text-xs font-medium">
-              DLC
-            </span>
+          {game?.coverUrl ? (
+            <img
+              className={twMerge(
+                sizes[size],
+                'rounded-lg object-cover',
+                size !== 'small' &&
+                  'transition-opacity duration-200 group-hover:opacity-20'
+              )}
+              src={game.coverUrl}
+              alt={`${game?.name} banner`}
+            />
+          ) : (
+            <div
+              className={twMerge(
+                sizes[size],
+                'rounded-lg bg-dark-bg-lighter flex items-center justify-center'
+              )}
+            >
+              <span className="text-gray-600 text-xs text-center px-1">
+                Sem capa
+              </span>
+            </div>
           )}
-
-          <img
-            className={twMerge(
-              sizes[size],
-              'rounded-lg object-cover',
-              size !== 'small' &&
-                'transition-opacity duration-200 group-hover:opacity-20'
-            )}
-            src={game?.gameBanner}
-            alt={`${game?.gameName} banner`}
-          />
 
           {size !== 'small' && (
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <span className="text-white font-semibold text-center px-3 text-sm md:text-base translate-y-2 group-hover:translate-y-0 transition-transform duration-200 drop-shadow-lg">
-                {game?.gameName}
+                {game?.name}
               </span>
             </div>
           )}

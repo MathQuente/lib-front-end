@@ -50,6 +50,7 @@ export interface SearchBarProps {
   isMobile: boolean
   inputRef?: RefObject<HTMLInputElement>
   autoFocus?: boolean
+  onClose?: () => void
 }
 
 export interface EmptyStateProps {

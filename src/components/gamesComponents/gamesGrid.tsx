@@ -1,6 +1,6 @@
 import { GameCard } from '../gamesComponents/gameCard'
 import { EmptyState } from '../emptyState'
-import type { GamesGridProps } from '../../interfaces/games.interfaces'
+import type { GamesGridProps } from '../../interfaces/games'
 
 export function GamesGrid({
   games,
@@ -18,9 +18,9 @@ export function GamesGrid({
   }
 
   return (
-    <div className={`${className} p-2 gap-x-2 gap-y-4`}>
+    <div className={`${className} p-2 gap-x-4 gap-y-4`}>
       {games.map(game => (
-        <GameCard key={game.id} game={game} size="medium" enableModal />
+        <GameCard key={game.igdbId} game={game} size="medium" enableModal />
       ))}
     </div>
   )

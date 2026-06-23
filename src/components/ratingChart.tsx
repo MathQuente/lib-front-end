@@ -5,7 +5,7 @@ import { useRating } from '../hooks/useRating'
 import type { RatingChartProps } from '../interfaces/games'
 
 export function RatingChart({ GameResponse }: RatingChartProps) {
-  const { allRatingsResponse } = useRating(GameResponse.game.id)
+  const { allRatingsResponse } = useRating(GameResponse.game.igdbId.toString())
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   if (!allRatingsResponse) {

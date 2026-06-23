@@ -1,9 +1,14 @@
-import { Building, Star, Tag } from 'lucide-react'
-import { CategoriesDiv } from './categoriesDiv'
+import { Tag, Code, Building2 } from 'lucide-react'
 import type { DetailsProps } from '../interfaces/games'
 
 export function Details({ GameResponse }: DetailsProps) {
   const { game } = GameResponse
+
+  const hasGenres = !!game.genres?.length
+  const hasDevelopers = !!game.developers?.length
+  const hasPublishers = !!game.publishers?.length
+
+  if (!hasGenres && !hasDevelopers && !hasPublishers) return null
 
   return (
     <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
@@ -11,49 +16,63 @@ export function Details({ GameResponse }: DetailsProps) {
         Detalhes
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-            <Building className="size-3.5" />
-            Desenvolvedor
-          </h3>
-          <div className="flex flex-col gap-1">
-            {game.gameStudios.map(studio => (
-              <span key={studio.id} className="text-gray-300 text-sm">
-                {studio.studioName}
-              </span>
-            ))}
+      <div className="flex flex-col gap-4">
+        {hasGenres && (
+          <div>
+            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+              <Tag className="size-3.5" />
+              Gêneros
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {game.genres.map(genre => (
+                <span
+                  key={genre}
+                  className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300"
+                >
+                  {genre}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div>
-          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-            <Star className="size-3.5" />
-            Publicadora
-          </h3>
-          <div className="flex flex-col gap-1">
-            {game.publishers.map(publisher => (
-              <span key={publisher.id} className="text-gray-300 text-sm">
-                {publisher.publisherName}
-              </span>
-            ))}
+        {hasDevelopers && (
+          <div>
+            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+              <Code className="size-3.5" />
+              Desenvolvedora
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {game.developers!.map(dev => (
+                <span
+                  key={dev}
+                  className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300"
+                >
+                  {dev}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="md:col-span-2">
-          <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-            <Tag className="size-3.5" />
-            Categorias
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {game.categories.map(category => (
-              <CategoriesDiv
-                key={category.id}
-                categoryName={category.categoryName}
-              />
-            ))}
+        {hasPublishers && (
+          <div>
+            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+              <Building2 className="size-3.5" />
+              Publicadora
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {game.publishers!.map(pub => (
+                <span
+                  key={pub}
+                  className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300"
+                >
+                  {pub}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
