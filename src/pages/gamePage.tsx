@@ -7,6 +7,7 @@ import { Details } from '../components/details'
 import { PlayersInfo } from '../components/playersInfo'
 import { useGame } from '../hooks/useGame'
 import { SimilarGamesSlider } from '../components/similarGamesSlider'
+import { RelatedGamesSlider } from '../components/relatedGamesSlider'
 import { RatingAverage } from '../components/ratingAverage'
 import dayjs from 'dayjs'
 
@@ -42,7 +43,7 @@ export function GamePage() {
     )
   }
 
-  const { game } = GameResponse
+  const { game, relatedGames } = GameResponse
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4 w-full">
@@ -137,6 +138,8 @@ export function GamePage() {
         )}
 
         <Details GameResponse={GameResponse} />
+
+        <RelatedGamesSlider relatedGames={relatedGames} />
 
         <SimilarGamesSlider SimilarGames={SimilarGames} />
       </div>

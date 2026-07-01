@@ -62,8 +62,9 @@ export const useGames = (
   })
 
   const { data: ComingSoon } = useQuery<UseGamesProps>({
-    queryKey: ['comingSoon', page, search, sortBy, sortOrder],
-    queryFn: async () => api.getComingSoon(page, search, sortOrder, sortBy),
+    queryKey: ['comingSoon', page, search, sortBy, sortOrder, limit],
+    queryFn: async () =>
+      api.getComingSoon(page, search, sortOrder, sortBy, limit),
     placeholderData: keepPreviousData
   })
 

@@ -27,9 +27,9 @@ http.interceptors.response.use(
         Cookies.remove('accessToken')
         Cookies.remove('refreshToken')
       }
-
-      return Promise.reject(error)
     }
+
+    return Promise.reject(error)
   }
 )
 
@@ -205,14 +205,16 @@ export const api = {
     page: number,
     search: string | undefined,
     sortOrder: 'asc' | 'desc',
-    sortBy: 'name' | 'releaseDate' | 'rating'
+    sortBy: 'name' | 'releaseDate' | 'rating',
+    limit?: number
   ) => {
     const response = await http.get('/games/comingSoon', {
       params: {
         pageIndex: page - 1,
         query: search,
         sortBy,
-        sortOrder
+        sortOrder,
+        limit: limit ? limit : null
       }
     })
     return response.data

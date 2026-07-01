@@ -10,6 +10,48 @@ const sizes = {
   larger: 'w-44 h-56'
 }
 
+const CATEGORY_TAGS: Record<number, string> = {
+  1: 'DLC',
+  2: 'Expansão',
+  4: 'Expansão Standalone',
+  6: 'Episódio',
+  7: 'Temporada',
+  8: 'Remake',
+  9: 'Remaster',
+  10: 'Edição Expandida',
+  11: 'Port'
+}
+
+// Título muitas vezes não distingue (ex: remakes/ports reaproveitam o nome
+// original sem sufixo), mas a sinopse da IGDB quase sempre descreve o que
+// aquela versão é ("this port of...", "is a remake of...", "HD remaster").
+const TEXT_HINTS: Array<{ pattern: RegExp; tag: string }> = [
+  { pattern: /\bremake\b|reimagin/i, tag: 'Remake' },
+  { pattern: /\bremaster/i, tag: 'Remaster' },
+  { pattern: /\bport\b/i, tag: 'Port' },
+  {
+    pattern:
+      /definitive edition|enhanced edition|goty|game of the year edition|anniversary edition/i,
+    tag: 'Edição Especial'
+  }
+]
+
+function getGameTag(
+  name: string,
+  summary: string,
+  category: number,
+  parentGameId: number | null
+) {
+  if (parentGameId == null) return null
+  if (CATEGORY_TAGS[category]) return CATEGORY_TAGS[category]
+
+  for (const { pattern, tag } of TEXT_HINTS) {
+    if (pattern.test(name) || pattern.test(summary)) return tag
+  }
+
+  return 'DLC/Edição'
+}
+
 export function GameCard({
   game,
   className,
@@ -17,6 +59,10 @@ export function GameCard({
   enableModal
 }: GameCardProps) {
   const [open, setOpen] = useState(false)
+  const tag =
+    game && size !== 'small'
+      ? getGameTag(game.name, game.summary, game.category, game.parentGameId)
+      : null
 
   return (
     <>
@@ -31,6 +77,11 @@ export function GameCard({
             size === 'small' && 'hover:ring-2 ring-primary'
           )}
         >
+          {tag && (
+            <span className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
+              {tag}
+            </span>
+          )}
           {game?.coverUrl ? (
             <img
               className={twMerge(

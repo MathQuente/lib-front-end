@@ -5,7 +5,7 @@ export type AuthContextType = {
   user: Partial<User> | null
   loading: boolean
   login: (email: string, password: string) => Promise<boolean>
-  signup: (email: string, password: string) => Promise<boolean>
+  signup: (email: string, password: string) => Promise<string | null>
   logout: () => void
 }
 

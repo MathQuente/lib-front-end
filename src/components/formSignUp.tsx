@@ -21,18 +21,22 @@ export function FormSignUp() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema)
   })
 
   async function onSubmit(data: SignUpForm) {
-    const success = await auth.signup(data.email, data.password)
-    if (success) {
+    const errorMessage = await auth.signup(data.email, data.password)
+    if (!errorMessage) {
       const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
       navigate(redirectTo, { replace: true })
       localStorage.removeItem('redirectAfterLogin')
+      return
     }
+
+    setError('email', { message: errorMessage })
   }
 
   return (

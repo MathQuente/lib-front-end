@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
 import { api } from '../../hooks/useApi'
@@ -27,9 +28,16 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     try {
       const { user: newUser } = await api.signup(email, password)
       setUser(newUser)
-      return true
-    } catch {
-      return false
+      return null
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message
+        if (message === 'This email is already used') {
+          return 'Este e-mail já está em uso.'
+        }
+        if (message) return message
+      }
+      return 'Não foi possível criar a conta. Tente novamente.'
     }
   }
 

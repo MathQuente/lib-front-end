@@ -11,8 +11,13 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
   const [search, setSearch] = useState<string>('')
 
   const actualInputRef = inputRef || internalInputRef
+  const justSubmittedRef = useRef(false)
 
   useEffect(() => {
+    if (justSubmittedRef.current) {
+      justSubmittedRef.current = false
+      return
+    }
     if (query) {
       setSearch(query)
     }
@@ -36,6 +41,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
     if (search.trim()) {
+      justSubmittedRef.current = true
       navigate(`/search/${search}`)
       setSearch('')
       if (isMobile) {

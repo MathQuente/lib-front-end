@@ -37,7 +37,8 @@ export function ComingSoonPage() {
         : 'name'
   })
 
-  const { ComingSoon } = useGames(page, search, sortField, sortOrder)
+  const LIMIT = 36
+  const { ComingSoon } = useGames(page, search, sortField, sortOrder, LIMIT)
 
   if (!ComingSoon) {
     return (
@@ -62,6 +63,7 @@ export function ComingSoonPage() {
       <GameListPage
         games={ComingSoon}
         page={page}
+        pageSize={LIMIT}
         setPage={setPage}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}

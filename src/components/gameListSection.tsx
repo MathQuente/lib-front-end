@@ -3,7 +3,32 @@ import { GameCard } from './gamesComponents/gameCard'
 import { Link } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
 import { Star } from 'lucide-react'
+import { useRating } from '../hooks/useRating'
 import type { GameListSectionProps } from '../interfaces/games'
+
+function RatedScore({ igdbId }: { igdbId: number }) {
+  const { average, isAverageLoading, isAverageError } = useRating(
+    igdbId.toString()
+  )
+
+  const score = (() => {
+    if (isAverageLoading) return null
+    if (isAverageError || !average || average.average == null) return null
+    return Math.round(average.average * 10) / 10
+  })()
+
+  if (score === null) {
+    return <p className="text-xs text-gray-600 mt-0.5">Sem avaliações</p>
+  }
+
+  return (
+    <div className="flex items-center gap-1 mt-0.5">
+      <Star className="size-3 text-primary fill-primary" />
+      <span className="text-xs text-gray-300 font-medium">{score}</span>
+      <span className="text-xs text-gray-600">/5</span>
+    </div>
+  )
+}
 
 export function GameListSection({
   games,
@@ -43,10 +68,7 @@ export function GameListSection({
                   </p>
                 </Link>
                 {type === 'rateds' ? (
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-xs text-gray-500">{game.rating}</span>
-                    <Star className="size-2.5 text-gray-500" />
-                  </div>
+                  <RatedScore igdbId={game.igdbId} />
                 ) : (
                   <p className="text-xs text-gray-500 mt-0.5">
                     {game.releaseDate

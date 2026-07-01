@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
 import { EmptyState } from '../components/emptyState'
+import { GameCard } from '../components/gamesComponents/gameCard'
 
 export function SearchResults() {
   const { query } = useParams()
@@ -104,17 +105,7 @@ export function SearchResults() {
                 to={`/games/${game.igdbId}`}
                 className="w-full sm:w-auto flex-shrink-0"
               >
-                {game.coverUrl ? (
-                  <img
-                    className="w-full h-48 sm:w-32 sm:h-40 md:w-36 md:h-48 lg:w-40 lg:h-52 xl:w-44 xl:h-56 rounded-lg object-cover"
-                    src={game.coverUrl}
-                    alt={`${game.name} banner`}
-                  />
-                ) : (
-                  <div className="w-full h-48 sm:w-32 sm:h-40 rounded-lg bg-dark-bg-lighter flex items-center justify-center">
-                    <span className="text-gray-600 text-xs">Sem capa</span>
-                  </div>
-                )}
+                <GameCard game={game} size="larger" />
               </Link>
 
               <div className="flex-1 w-full sm:w-auto min-w-0">

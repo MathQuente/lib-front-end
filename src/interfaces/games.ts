@@ -61,6 +61,10 @@ export interface SimilarGamesSliderProps {
   SimilarGames: SimilarGamesResponse
 }
 
+export interface RelatedGamesSliderProps {
+  relatedGames: GameBase[]
+}
+
 export interface RatingAverageProps {
   game: GameBase | undefined
   isForGamePage?: boolean

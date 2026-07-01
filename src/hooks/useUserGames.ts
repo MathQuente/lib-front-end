@@ -3,18 +3,19 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
 import type {
-  GameBase,
   GameStatusEnum,
   GameToDisplayResponse,
+  UserGameEntry,
   UserGamesResponse
 } from '../types/games'
 import type { TotalPerStatus } from '../types/user'
 
-type GamesByStatus = Record<string, GameBase[]>
+type GamesByStatus = Record<string, UserGameEntry[]>
 
 const EMPTY_GROUPS: GamesByStatus = {
   PLAYED: [],
   PLAYING: [],
+  PAUSED: [],
   BACKLOG: [],
   WISHLIST: []
 }
@@ -47,27 +48,13 @@ export const useUserGames = (
     })
 
   const gamesByStatus = useMemo((): GamesByStatus => {
-    if (!UserGamesResponse?.userGames.length) return EMPTY_GROUPS
-    const groups: GamesByStatus = {
-      PLAYED: [],
-      PLAYING: [],
-      BACKLOG: [],
-      WISHLIST: []
-    }
-    for (const entry of UserGamesResponse.userGames) {
-      const key = entry.status.name.toUpperCase()
-      if (key in groups) groups[key].push(entry)
-    }
-    return groups
+    if (!UserGamesResponse?.games) return EMPTY_GROUPS
+    return UserGamesResponse.games
   }, [UserGamesResponse])
 
   const totalPerStatus = useMemo(
-    (): TotalPerStatus[] =>
-      Object.entries(gamesByStatus).map(([status, games]) => ({
-        status,
-        totalGames: games.length
-      })),
-    [gamesByStatus]
+    (): TotalPerStatus[] => UserGamesResponse?.totalPerStatus ?? [],
+    [UserGamesResponse]
   )
 
   return {

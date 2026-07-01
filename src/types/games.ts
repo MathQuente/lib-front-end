@@ -1,6 +1,7 @@
 export enum GameStatusEnum {
   Played = 'PLAYED',
   Playing = 'PLAYING',
+  Paused = 'PAUSED',
   Backlog = 'BACKLOG',
   Wishlist = 'WISHLIST'
 }
@@ -14,6 +15,8 @@ export interface GameBase {
   rating: number
   genres: string[]
   summary: string
+  category: number
+  parentGameId: number | null
 }
 
 export interface Game extends GameBase {
@@ -29,12 +32,25 @@ export interface Game extends GameBase {
   amountOfRatings?: number
 }
 
-export interface UserGameEntry extends GameBase {
-  status: { id: number; name: string }
+export interface UserGameEntry {
+  igdbId: number
+  name: string
+  coverUrl: string | null
+  platforms?: string[]
+  releaseDate?: number
+  siteRating: number | null
+  status: string
 }
 
 export interface UserGamesResponse {
-  userGames: UserGameEntry[]
+  games: {
+    PLAYED: UserGameEntry[]
+    PLAYING: UserGameEntry[]
+    PAUSED: UserGameEntry[]
+    BACKLOG: UserGameEntry[]
+    WISHLIST: UserGameEntry[]
+  }
+  totalPerStatus: TotalPerStatus[]
   total: number
 }
 
@@ -70,4 +86,5 @@ export type GameStatusResponse = {
 
 export interface GameResponse {
   game: Game
+  relatedGames: GameBase[]
 }
