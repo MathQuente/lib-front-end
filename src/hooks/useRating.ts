@@ -7,7 +7,7 @@ import type {
   RatingsDistributionResponse
 } from '../types/rating'
 
-export const getRatingQueryKey = (
+const getRatingQueryKey = (
   userId: string,
   igdbId: string | undefined
 ) => ['rating', userId, igdbId]

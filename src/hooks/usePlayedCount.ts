@@ -5,7 +5,7 @@ import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
 import { useGameStatus } from './useGameStatus'
 
-export const getGameStatsQueryKey = (userId: string, igdbId: string) => [
+const getGameStatsQueryKey = (userId: string, igdbId: string) => [
   'gameStats',
   userId,
   igdbId

@@ -4,7 +4,7 @@ import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
 import type { GameStatusResponse } from '../types/games'
 
-export const getGameStatusQueryKey = (
+const getGameStatusQueryKey = (
   userId: string,
   igdbId: string | undefined
 ) => ['gamesStatus', userId, igdbId]
