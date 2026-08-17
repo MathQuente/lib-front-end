@@ -5,14 +5,13 @@ import { useAuth } from './useAuth'
 import type {
   GameStatusEnum,
   GameToDisplayResponse,
-  UserGameEntry,
+  TotalPerStatus,
+  UserGamesByStatus,
   UserGamesResponse
 } from '../types/games'
-import type { TotalPerStatus } from '../types/user'
+import type { SortField, SortOrder } from '../interfaces/games'
 
-type GamesByStatus = Record<string, UserGameEntry[]>
-
-const EMPTY_GROUPS: GamesByStatus = {
+const EMPTY_GROUPS: UserGamesByStatus = {
   PLAYED: [],
   PLAYING: [],
   PAUSED: [],
@@ -24,8 +23,8 @@ export const useUserGames = (
   page?: number,
   search?: string | undefined,
   filter?: GameStatusEnum | undefined,
-  sortOrder?: 'asc' | 'desc',
-  sortBy?: 'name' | 'releaseDate'
+  sortOrder?: SortOrder,
+  sortBy?: SortField
 ) => {
   const { user } = useAuth()
   const userId = user?.id ?? ''
@@ -47,7 +46,7 @@ export const useUserGames = (
       enabled: Boolean(userId)
     })
 
-  const gamesByStatus = useMemo((): GamesByStatus => {
+  const gamesByStatus = useMemo((): UserGamesByStatus => {
     if (!UserGamesResponse?.games) return EMPTY_GROUPS
     return UserGamesResponse.games
   }, [UserGamesResponse])

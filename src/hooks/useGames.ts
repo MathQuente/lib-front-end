@@ -4,12 +4,7 @@ import {
   useQuery
 } from '@tanstack/react-query'
 import { api } from './useApi'
-import type { GameBase, GamesFromHomePageResponse } from '../types/games'
-
-export interface UseGamesProps {
-  games: GameBase[]
-  total: number
-}
+import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
 
 export const useGames = (
   page: number,

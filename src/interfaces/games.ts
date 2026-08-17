@@ -2,40 +2,41 @@ import type { ChangeEvent, ComponentProps, ReactNode } from 'react'
 import type {
   Game,
   GameBase,
+  GameCardData,
+  GameListData,
   GameResponse,
   GameStatusEnum,
   SimilarGamesResponse
 } from '../types/games'
-import type { UseGamesProps } from '../hooks/useGames'
 
 export type SortField = 'name' | 'releaseDate' | 'rating'
 export type SortOrder = 'asc' | 'desc'
 export type SectionType = 'coming' | 'trending' | 'rateds'
 
 export interface GameCardProps {
-  game: GameBase
+  game: GameCardData
   className?: string
   size?: 'small' | 'medium' | 'larger'
   enableModal?: boolean
 }
 
 export interface GameFormProps {
-  game: GameBase | undefined
+  game: GameCardData | undefined
 }
 
 export interface GameInfoProps {
-  game: GameBase | undefined
+  game: GameCardData | undefined
   onClose: () => void
 }
 
 export interface GamesGridProps {
-  games: GameBase[]
+  games: GameCardData[]
   emptyState?: ReactNode
   className?: string
 }
 
 export interface GameListProps {
-  games: UseGamesProps
+  games: GameListData
   page: number
   pageSize?: number
   setPage: (page: number) => void
@@ -65,8 +66,18 @@ export interface RelatedGamesSliderProps {
   relatedGames: GameBase[]
 }
 
+export interface DlcAndOriginalGameAreaProps {
+  game: Game
+  relatedGames: GameBase[]
+}
+
+export interface GameLaunchersDivProps {
+  platformName: string
+  date: number | null
+}
+
 export interface RatingAverageProps {
-  game: GameBase | undefined
+  game: GameCardData | undefined
   isForGamePage?: boolean
   justAverage?: boolean
 }
@@ -81,6 +92,10 @@ export interface DetailsProps {
 
 export interface PlatformDivProps {
   platformName: string
+}
+
+export interface CategoriesDivProps {
+  categoryName: string
 }
 
 export interface PlayerInfosProps {

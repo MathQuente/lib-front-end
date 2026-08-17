@@ -1,8 +1,8 @@
 import { Minus, Plus } from 'lucide-react'
 import { usePlayedCount } from '../hooks/usePlayedCount'
-import type { GameBase } from '../types/games'
+import type { GameCardData } from '../types/games'
 
-export function PlayedCount({ game }: { game: GameBase }) {
+export function PlayedCount({ game }: { game: GameCardData }) {
   const { completions, updatePlayedCount } = usePlayedCount(
     game.igdbId.toString()
   )

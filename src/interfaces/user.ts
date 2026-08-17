@@ -1,10 +1,7 @@
-import type { GameBase } from '../types/games'
-import type { TotalPerStatus } from '../types/user'
-
-export type UserStatus = 'BACKLOG' | 'PLAYED' | 'PLAYING' | 'WISHLIST'
+import type { TotalPerStatus, UserGamesByStatus } from '../types/games'
 
 export interface UserGameDivProps {
-  Games: Record<UserStatus, GameBase[]>
+  Games: UserGamesByStatus
   totalPerStatus: TotalPerStatus[]
 }
 

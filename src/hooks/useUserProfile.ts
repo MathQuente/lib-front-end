@@ -6,14 +6,8 @@ import {
 } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
-import type { UserProfileResponse } from '../types/user'
+import type { UpdateUserProfileData, UserProfileResponse } from '../types/user'
 import { toast } from 'react-toastify'
-
-interface UpdateUserProfileData {
-  userName?: string
-  profilePicture?: string | File
-  userBanner?: string | File | null
-}
 
 interface UseUserProfileOptions {
   onUpdateSuccess?: () => void

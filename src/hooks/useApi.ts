@@ -2,12 +2,8 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Cookies from 'js-cookie'
 import type { GameStatusEnum } from '../types/games'
-
-type UpdateUserPayload = {
-  userName?: string
-  profilePicture?: string
-  userBanner?: string | null
-}
+import type { SortField, SortOrder } from '../interfaces/games'
+import type { UpdateUserPayload } from '../types/user'
 
 const http = axios.create({
   baseURL: '/api',
@@ -67,8 +63,8 @@ export const api = {
     page?: number,
     search?: string | undefined,
     filter?: GameStatusEnum,
-    sortBy?: 'name' | 'releaseDate',
-    sortOrder?: 'asc' | 'desc'
+    sortBy?: SortField,
+    sortOrder?: SortOrder
   ) => {
     const response = await http.get('/users/userGames', {
       params: {
@@ -88,8 +84,8 @@ export const api = {
   getGames: async (
     page: number,
     search: string | undefined,
-    sortBy: 'name' | 'releaseDate' | 'rating',
-    sortOrder: 'asc' | 'desc',
+    sortBy: SortField,
+    sortOrder: SortOrder,
     limit?: number
   ) => {
     const response = await http.get('/games', {
@@ -204,8 +200,8 @@ export const api = {
   getComingSoon: async (
     page: number,
     search: string | undefined,
-    sortOrder: 'asc' | 'desc',
-    sortBy: 'name' | 'releaseDate' | 'rating',
+    sortOrder: SortOrder,
+    sortBy: SortField,
     limit?: number
   ) => {
     const response = await http.get('/games/comingSoon', {

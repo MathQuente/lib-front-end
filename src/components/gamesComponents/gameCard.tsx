@@ -38,15 +38,17 @@ const TEXT_HINTS: Array<{ pattern: RegExp; tag: string }> = [
 
 function getGameTag(
   name: string,
-  summary: string,
-  category: number,
-  parentGameId: number | null
+  summary: string | undefined,
+  category: number | undefined,
+  parentGameId: number | null | undefined
 ) {
   if (parentGameId == null) return null
-  if (CATEGORY_TAGS[category]) return CATEGORY_TAGS[category]
+  if (category !== undefined && CATEGORY_TAGS[category]) {
+    return CATEGORY_TAGS[category]
+  }
 
   for (const { pattern, tag } of TEXT_HINTS) {
-    if (pattern.test(name) || pattern.test(summary)) return tag
+    if (pattern.test(name) || (summary && pattern.test(summary))) return tag
   }
 
   return 'DLC/Edição'

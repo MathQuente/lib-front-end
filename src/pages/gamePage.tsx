@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { GameForm } from '../components/gamesComponents/gameForm'
 import { PlatformDiv } from '../components/platformDiv'
+import { CategoriesDiv } from '../components/categoriesDiv'
 import { useAuth } from '../hooks/useAuth'
 import { RatingChart } from '../components/ratingChart'
 import { Details } from '../components/details'
@@ -9,6 +10,8 @@ import { useGame } from '../hooks/useGame'
 import { SimilarGamesSlider } from '../components/similarGamesSlider'
 import { RelatedGamesSlider } from '../components/relatedGamesSlider'
 import { RatingAverage } from '../components/ratingAverage'
+import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
+import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import dayjs from 'dayjs'
 
 export function GamePage() {
@@ -112,6 +115,19 @@ export function GamePage() {
             </div>
           )}
 
+          {game.genres.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+                Gêneros
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {game.genres.map(genre => (
+                  <CategoriesDiv key={genre} categoryName={genre} />
+                ))}
+              </div>
+            </div>
+          )}
+
           {game.releaseDate && (
             <div>
               <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
@@ -120,6 +136,23 @@ export function GamePage() {
               <span className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300">
                 {dayjs.unix(game.releaseDate).format('DD/MM/YYYY')}
               </span>
+            </div>
+          )}
+
+          {game.releaseDates && game.releaseDates.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+                Lançamentos por Plataforma
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {game.releaseDates.map(releaseDate => (
+                  <GameLaunchersDiv
+                    key={releaseDate.platformName}
+                    platformName={releaseDate.platformName}
+                    date={releaseDate.date}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -138,6 +171,8 @@ export function GamePage() {
         )}
 
         <Details GameResponse={GameResponse} />
+
+        <DlcAndOriginalGameArea game={game} relatedGames={relatedGames} />
 
         <RelatedGamesSlider relatedGames={relatedGames} />
 

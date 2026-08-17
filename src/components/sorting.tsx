@@ -61,6 +61,7 @@ export function SortControls({
             <option value="">Todos</option>
             <option value={GameStatusEnum.Played}>Jogado</option>
             <option value={GameStatusEnum.Playing}>Jogando</option>
+            <option value={GameStatusEnum.Paused}>Pausado</option>
             <option value={GameStatusEnum.Backlog}>Backlog</option>
             <option value={GameStatusEnum.Wishlist}>Lista de Desejos</option>
           </select>

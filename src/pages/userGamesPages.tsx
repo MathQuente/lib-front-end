@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
-import type { UseGamesProps } from '../hooks/useGames'
+import type { GameListData } from '../types/games'
 
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: GameStatusEnum }>()
@@ -14,6 +14,7 @@ export function UserGamesPageByStatus() {
   const enumToRouteMap: Record<GameStatusEnum, string> = {
     [GameStatusEnum.Played]: 'playedGames',
     [GameStatusEnum.Playing]: 'playingGames',
+    [GameStatusEnum.Paused]: 'pausedGames',
     [GameStatusEnum.Backlog]: 'backlogGames',
     [GameStatusEnum.Wishlist]: 'wishlistGames'
   }
@@ -21,6 +22,7 @@ export function UserGamesPageByStatus() {
   const routeToEnumMap: Record<string, GameStatusEnum> = {
     playedGames: GameStatusEnum.Played,
     playingGames: GameStatusEnum.Playing,
+    pausedGames: GameStatusEnum.Paused,
     backlogGames: GameStatusEnum.Backlog,
     wishlistGames: GameStatusEnum.Wishlist
   }
@@ -76,8 +78,8 @@ export function UserGamesPageByStatus() {
     sortField
   )
 
-  const gamesForList: UseGamesProps = {
-    games: UserGamesResponse?.userGames ?? [],
+  const gamesForList: GameListData = {
+    games: UserGamesResponse?.games[currentEnumStatus] ?? [],
     total: UserGamesResponse?.total ?? 0
   }
 

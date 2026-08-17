@@ -6,17 +6,29 @@ export enum GameStatusEnum {
   Wishlist = 'WISHLIST'
 }
 
-export interface GameBase {
+export interface GameCardData {
   igdbId: number
   name: string
   coverUrl: string | null
+  releaseDate?: number | null
+  summary?: string
+  category?: number
+  parentGameId?: number | null
+}
+
+export interface GameBase extends GameCardData {
   platforms: string[]
   releaseDate: number | null
-  rating: number
+  rating: number | null
   genres: string[]
   summary: string
   category: number
   parentGameId: number | null
+}
+
+export interface GameReleaseDate {
+  platformName: string
+  date: number | null
 }
 
 export interface Game extends GameBase {
@@ -30,27 +42,32 @@ export interface Game extends GameBase {
     WISHLIST: number
   }
   amountOfRatings?: number
+  parentGame?: GameCardData
+  releaseDates?: GameReleaseDate[]
 }
 
-export interface UserGameEntry {
-  igdbId: number
-  name: string
-  coverUrl: string | null
+export interface UserGameEntry extends GameCardData {
   platforms?: string[]
   releaseDate?: number
-  siteRating: number | null
+  rating: number | null
   status: string
 }
 
+export type UserGamesByStatus = Record<GameStatusEnum, UserGameEntry[]>
+
 export interface UserGamesResponse {
-  games: {
-    PLAYED: UserGameEntry[]
-    PLAYING: UserGameEntry[]
-    PAUSED: UserGameEntry[]
-    BACKLOG: UserGameEntry[]
-    WISHLIST: UserGameEntry[]
-  }
+  games: UserGamesByStatus
   totalPerStatus: TotalPerStatus[]
+  total: number
+}
+
+export interface UseGamesProps {
+  games: GameBase[]
+  total: number
+}
+
+export interface GameListData {
+  games: GameCardData[]
   total: number
 }
 
