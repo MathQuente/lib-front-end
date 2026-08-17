@@ -3,7 +3,6 @@ import axios from 'axios'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
 import { api } from '../../hooks/useApi'
-import Cookies from 'js-cookie'
 
 // const redirectToAuth = () => {
 //   window.location.href = '/auth'
@@ -45,8 +44,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     try {
       await api.logout()
     } catch (error) {
-      Cookies.remove('accessToken')
-      Cookies.remove('refreshToken')
+      console.error('Logout failed:', error)
     }
     setUser(null)
   }
@@ -55,19 +53,10 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     setLoading(true)
 
     try {
-      const hasAccessToken = Cookies.get('accessToken')
-      const hasRefreshToken = Cookies.get('refreshToken')
-
-      if (!hasAccessToken && !hasRefreshToken) {
-        setUser(null)
-        return
-      }
       const { user: currentUser } = await api.me()
       setUser(currentUser)
     } catch {
       setUser(null)
-      Cookies.remove('accessToken')
-      Cookies.remove('refreshToken')
     } finally {
       setLoading(false)
     }
