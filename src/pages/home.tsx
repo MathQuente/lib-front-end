@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Autoplay } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { useRef } from 'react'
-import 'swiper/css'
+import { Gamepad2 } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
+import { useEffect, useRef } from 'react'
 
 import { useAuth } from '../hooks/useAuth'
 import userLibrary from '../assets/Screenshot From 2025-07-03 18-09-08.png'
@@ -11,6 +11,7 @@ import { GameListSection } from '../components/gameListSection'
 import { GameCard } from '../components/gamesComponents/gameCard'
 import { useUserGames } from '../hooks/useUserGames'
 import { useGames } from '../hooks/useGames'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const STAT_KEYS = [
   { label: 'Jogado', status: 'PLAYED' },
@@ -31,71 +32,81 @@ export function Home() {
     stableGame.current = GamesToDisplay
   }
 
+  const prefersReducedMotion = usePrefersReducedMotion()
+
+  const recentGames = gamesFeatured?.recentGames ?? []
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: recentGames.length > 5, align: 'start', dragFree: true },
+    prefersReducedMotion
+      ? []
+      : [Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true })]
+  )
+
+  useEffect(() => {
+    emblaApi?.reInit()
+  }, [emblaApi, recentGames.length])
+
   if (!gamesFeatured) return null
 
   return (
     <>
       {isLogged ? (
-        <div className="flex flex-col gap-6 mt-8 w-full">
-          <div className="">
-            <h1 className="text-xl font-semibold text-white">
-              Olá, <span className="text-primary">{user.userName}</span>
-            </h1>
+        <div className="w-full mt-8">
+          <h1 className="text-xl font-semibold text-white">
+            Olá, <span className="text-primary">{user.userName}</span>
+          </h1>
 
-            <div className="flex gap-x-4">
-              <div className="flex gap-5 mt-3 flex-wrap">
-                {STAT_KEYS.map(({ label, status }) => {
-                  const count =
-                    UserGamesResponse?.totalPerStatus.find(
-                      t => t.status === status
-                    )?.totalGames ?? 0
-                  return (
-                    <div key={label} className="flex flex-col">
-                      <span className="text-lg font-bold text-white leading-tight">
-                        {count}
-                      </span>
-                      <span className="text-[11px] text-gray-600 uppercase tracking-widest">
-                        {label}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {stableGame.current?.game && (
-                <Link
-                  to={`/games/${stableGame.current.game.igdbId}`}
-                  className="inline-flex items-center gap-3 group w-fit"
-                >
-                  {stableGame.current.game.coverUrl && (
-                    <img
-                      src={stableGame.current.game.coverUrl}
-                      alt={stableGame.current.game.name}
-                      className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity duration-150"
-                    />
-                  )}
-                  <div className="min-w-0">
-                    <p className="text-gray-600 text-xs mb-0.5">
-                      {stableGame.current.message}
-                    </p>
-                    <p className="text-white text-sm font-medium group-hover:text-primary-light transition-colors duration-150 truncate">
-                      {stableGame.current.game.name}
-                    </p>
+          <div className="flex items-center flex-wrap gap-6 mt-4">
+            <div className="flex gap-5 flex-wrap">
+              {STAT_KEYS.map(({ label, status }) => {
+                const count =
+                  UserGamesResponse?.totalPerStatus.find(
+                    t => t.status === status
+                  )?.totalGames ?? 0
+                return (
+                  <div key={label} className="flex flex-col">
+                    <span className="text-lg font-bold text-white leading-tight">
+                      {count}
+                    </span>
+                    <span className="text-[11px] text-gray-400 uppercase tracking-widest">
+                      {label}
+                    </span>
                   </div>
-                </Link>
-              )}
+                )
+              })}
             </div>
+
+            {stableGame.current?.game && (
+              <Link
+                to={`/games/${stableGame.current.game.igdbId}`}
+                className="inline-flex items-center gap-3 group w-fit pl-6 border-l border-dark-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+              >
+                {stableGame.current.game.coverUrl && (
+                  <img
+                    src={stableGame.current.game.coverUrl}
+                    alt={stableGame.current.game.name}
+                    className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity duration-150"
+                  />
+                )}
+                <div className="min-w-0">
+                  <p className="text-gray-400 text-xs mb-0.5">
+                    {stableGame.current.message}
+                  </p>
+                  <p className="text-white text-sm font-medium group-hover:text-primary-light transition-colors duration-150 truncate">
+                    {stableGame.current.game.name}
+                  </p>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center py-10">
-          <div className="flex flex-col gap-5">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-              Organize seus jogos
-              <br />
-              com <span className="text-primary">Lib</span>
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 pt-8 pb-12 lg:pt-14 lg:pb-20">
+          <div className="lg:col-span-5 flex flex-col justify-start gap-5 lg:pt-2">
+            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-[1.1] max-w-md">
+              Organize seus jogos com <span className="text-primary">Lib</span>
             </h1>
-            <p className="text-gray-400 leading-relaxed max-w-md">
+            <p className="text-gray-400 leading-relaxed max-w-sm">
               Marque o que jogou, está jogando ou quer jogar. Um projeto pessoal
               em desenvolvimento contínuo.
             </p>
@@ -108,51 +119,43 @@ export function Home() {
             </div>
           </div>
 
-          <div className="order-first lg:order-last">
+          <div className="lg:col-span-7">
             <img
               src={userLibrary}
               alt="Screenshot da biblioteca"
-              className="w-full rounded-lg border border-dark-border"
+              className="w-full h-full object-cover border-t border-l border-dark-border lg:rounded-tl-xl"
             />
           </div>
-        </div>
+        </section>
       )}
 
       <section className="mt-10 mb-6">
-        <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 mb-5 uppercase tracking-wide">
-          Lançamentos Recentes
-        </h2>
+        <div className="flex items-baseline justify-between border-t border-dark-border pt-4 mb-5">
+          <h2 className="text-lg font-semibold text-white">
+            Lançamentos Recentes
+          </h2>
+        </div>
 
-        {gamesFeatured.recentGames.length > 0 ? (
-          <Swiper
-            slidesPerView={2}
-            breakpoints={{
-              640: { slidesPerView: 2, spaceBetween: 16 },
-              768: { slidesPerView: 3, spaceBetween: 20 },
-              1024: { slidesPerView: 4, spaceBetween: 24 },
-              1280: { slidesPerView: 5, spaceBetween: 24 }
-            }}
-            autoplay={{ delay: 2500, disableOnInteraction: false }}
-            spaceBetween={12}
-            loop={true}
-            modules={[Autoplay]}
-            className="h-64"
-          >
-            {gamesFeatured.recentGames.map(game => (
-              <SwiperSlide
-                key={game.igdbId}
-                className="!flex !items-center !justify-center"
-              >
-                <Link to={`/games/${game.igdbId}`} className="block">
-                  <GameCard game={game} size="larger" />
-                </Link>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        {recentGames.length > 0 ? (
+          <div className="overflow-hidden p-2" ref={emblaRef}>
+            <div className="flex gap-3">
+              {recentGames.map(game => (
+                <div key={game.igdbId} className="flex-none w-44">
+                  <Link
+                    to={`/games/${game.igdbId}`}
+                    className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                  >
+                    <GameCard game={game} size="larger" interactive={false} />
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
-          <p className="text-gray-600 text-sm">
-            Nenhum jogo disponível no momento.
-          </p>
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <Gamepad2 className="size-4 shrink-0" />
+            <span>Nenhum jogo disponível no momento.</span>
+          </div>
         )}
       </section>
 
