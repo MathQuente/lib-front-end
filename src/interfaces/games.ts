@@ -16,8 +16,11 @@ export type SectionType = 'coming' | 'trending' | 'rateds'
 export interface GameCardProps {
   game: GameCardData
   className?: string
-  size?: 'small' | 'medium' | 'larger'
+  size?: 'small' | 'medium' | 'compact' | 'larger'
   enableModal?: boolean
+  // false quando o card já é embrulhado por um <Link> (ou outro elemento
+  // clicável) do chamador — evita renderizar um <button> dentro de <a>.
+  interactive?: boolean
 }
 
 export interface GameFormProps {

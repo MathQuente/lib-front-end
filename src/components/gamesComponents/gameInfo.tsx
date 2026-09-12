@@ -20,7 +20,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
             />
           ) : (
             <div className="rounded-md w-[285px] h-[380px] bg-dark-bg-lighter flex items-center justify-center">
-              <span className="text-gray-600 text-sm">Sem capa</span>
+              <span className="text-gray-400 text-sm">Sem capa</span>
             </div>
           )}
         </div>
@@ -36,7 +36,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
 
           {!user && (
             <div className="flex gap-1">
-              <Link to="/auth" className="text-[#8C67F6]">
+              <Link to="/auth" className="text-primary-light hover:underline">
                 Entrar
               </Link>
               <p>para acessar as avaliações.</p>
@@ -45,7 +45,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 pt-4 border-t border-gray-700">
+      <div className="flex justify-end gap-4 pt-4 border-t border-dark-border">
         <Link to={`/games/${game?.igdbId}`}>
           <Button type="button" variant="primary" size="md">
             Ver Detalhes

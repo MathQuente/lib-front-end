@@ -45,7 +45,7 @@ export function GameForm({ game }: GameFormProps) {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center items-start gap-4">
         {buttons.map(({ statusId, icon: Icon, label }) => {
           const active = hasStatus(statusId)
           return (
@@ -53,7 +53,7 @@ export function GameForm({ game }: GameFormProps) {
               key={statusId}
               type="button"
               onClick={() => handleStatusClick(statusId)}
-              className={`flex flex-col items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all group ${
+              className={`flex flex-col items-center gap-1.5 px-2 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light group ${
                 active
                   ? 'bg-primary/10 ring-1 ring-primary/30'
                   : 'hover:bg-dark-bg-lighter'
@@ -63,14 +63,14 @@ export function GameForm({ game }: GameFormProps) {
                 className={`size-6 transition-colors ${
                   active
                     ? 'text-primary'
-                    : 'text-gray-600 group-hover:text-gray-400'
+                    : 'text-gray-400 group-hover:text-gray-300'
                 }`}
               />
               <span
                 className={`text-xs transition-colors ${
                   active
                     ? 'text-primary font-medium'
-                    : 'text-gray-500 group-hover:text-gray-300'
+                    : 'text-gray-400 group-hover:text-gray-300'
                 }`}
               >
                 {label}

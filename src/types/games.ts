@@ -14,6 +14,9 @@ export interface GameCardData {
   summary?: string
   category?: number
   parentGameId?: number | null
+  rating?: number | null
+  completions?: number
+  status?: string
 }
 
 export interface GameBase extends GameCardData {
@@ -50,6 +53,7 @@ export interface UserGameEntry extends GameCardData {
   platforms?: string[]
   releaseDate?: number
   rating: number | null
+  completions: number
   status: string
 }
 
