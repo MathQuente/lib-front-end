@@ -14,16 +14,14 @@ export function Button({
   const baseStyles =
     'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 disabled:cursor-not-allowed'
   const variants = {
-    primary:
-      'bg-gradient-to-t from-[#4D23A5] to-[#783FCF] text-[#FFFFFF] font-bold brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF]',
+    primary: 'bg-primary hover:bg-primary-hover text-white font-bold',
     secondary:
-      'bg-primary hover:bg-[#6a2eb8] text-[#FFFFFF] border border-[#4D23A5] focus:ring-[#4D23A5]',
+      'bg-primary hover:bg-primary-hover text-white border border-primary',
     cancel:
-      'bg-[#272932] hover:bg-[#2a2d3a] text-[#d0cac7] border border-[#3a3d4a] hover:border-[#4a4d5a] focus:ring-[#3a3d4a] transition-all duration-200 hover:text-[#ffffff] disabled:hover:bg-[#272932] disabled:hover:text-[#d0cac7] disabled:hover:border-[#3a3d4a]',
+      'bg-dark-bg-lighter hover:bg-dark-bg-light text-gray-300 hover:text-white border border-dark-border disabled:hover:bg-dark-bg-lighter disabled:hover:text-gray-300',
     outline:
-      'bg-transparent hover:bg-gray-50 text-gray-700 border border-gray-300 focus:ring-gray-500',
-    ghost:
-      'bg-transparent hover:bg-gray-100 text-gray-700 border border-transparent focus:ring-gray-500'
+      'bg-transparent hover:bg-dark-bg-lighter text-gray-300 border border-dark-border',
+    ghost: 'bg-transparent hover:bg-dark-bg-lighter text-gray-300 border border-transparent'
   }
 
   const sizes = {
