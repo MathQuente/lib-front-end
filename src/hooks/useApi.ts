@@ -4,6 +4,8 @@ import Cookies from 'js-cookie'
 import type { GameStatusEnum } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { UpdateUserPayload } from '../types/user'
+import type { CreateRatingResponse } from '../types/rating'
+import type { GetReviewResponse, UpsertReviewResponse } from '../types/review'
 
 const http = axios.create({
   baseURL: '/api',
@@ -171,11 +173,27 @@ export const api = {
     )
     return response
   },
+  getGameHours: async (igdbId: string | undefined) => {
+    const response = await http.get(`/users/hoursPlayed/${igdbId}`, {})
+    return response.data
+  },
+  updateHoursPlayed: async (igdbId: string | undefined, hoursPlayed: number) => {
+    const response = await http.patch(
+      `/users/hoursPlayed/${igdbId}`,
+      { hoursPlayed },
+      {}
+    )
+    return response
+  },
   addRatingForUserGame: async (
     igdbId: string | undefined,
     value: number | null
   ) => {
-    const response = await http.post(`/rating/${igdbId}`, { value }, {})
+    const response = await http.post<CreateRatingResponse>(
+      `/rating/${igdbId}`,
+      { value },
+      {}
+    )
     return response
   },
   getUserGameRating: async (igdbId: string | undefined) => {
@@ -205,6 +223,25 @@ export const api = {
   getGamesToDisplay: async () => {
     const response = await http.get('/users/featuredGames')
     return response.data
+  },
+  getOwnReview: async (igdbId: string | undefined) => {
+    const response = await http.get<GetReviewResponse>(
+      `/reviews/${igdbId}`,
+      {}
+    )
+    return response.data
+  },
+  upsertReview: async (igdbId: string | undefined, text: string) => {
+    const response = await http.post<UpsertReviewResponse>(
+      `/reviews/${igdbId}`,
+      { text },
+      {}
+    )
+    return response.data
+  },
+  deleteReview: async (igdbId: string | undefined) => {
+    const response = await http.delete(`/reviews/${igdbId}`, {})
+    return response
   },
   getComingSoon: async (
     page: number,

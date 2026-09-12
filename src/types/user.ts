@@ -9,10 +9,15 @@ export interface User {
   profilePicture: string
   userBanner: string
   gamesAmount: number
+  totalHoursPlayed: number
 }
 
 export interface GameStatsResponse {
   playedCount: number
+}
+
+export interface GameHoursResponse {
+  hoursPlayed: number
 }
 
 export interface UpdateUserProfileData {

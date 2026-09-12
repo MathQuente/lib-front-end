@@ -42,6 +42,7 @@ export function UserProfileDisplay() {
           <UserInfo
             userName={profileUser.userName}
             gamesAmount={profileUser.gamesAmount}
+            totalHoursPlayed={profileUser.totalHoursPlayed}
           />
           <Button
             type="button"

@@ -34,6 +34,7 @@ export const useGameStatus = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({ queryKey: ['gameStats', userId, igdbId] })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
+      queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
       toast.success('Status do jogo atualizado com sucesso 👌')
     },
     onError: error => {
@@ -45,6 +46,11 @@ export const useGameStatus = (igdbId: string | undefined) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesInfinite'] })
+      queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
+      queryClient.invalidateQueries({ queryKey: ['similarGames'] })
+      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
     }
   })
 

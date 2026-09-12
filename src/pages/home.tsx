@@ -138,9 +138,9 @@ export function Home() {
 
         {recentGames.length > 0 ? (
           <div className="overflow-hidden p-2" ref={emblaRef}>
-            <div className="flex gap-3">
+            <div className="flex -ml-3">
               {recentGames.map(game => (
-                <div key={game.igdbId} className="flex-none w-44">
+                <div key={game.igdbId} className="flex-none w-44 pl-3">
                   <Link
                     to={`/games/${game.igdbId}`}
                     className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"

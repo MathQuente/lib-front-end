@@ -45,12 +45,19 @@ export const useRating = (igdbId: string | undefined) => {
 
       return { previous }
     },
-    onSuccess: () => {
+    onSuccess: response => {
       queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
       queryClient.invalidateQueries({
         queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
       })
-      toast.success('Avaliação atualizada com sucesso 👌')
+
+      if (response?.data?.promotedToPlayed) {
+        toast.success(
+          'Avaliação salva — jogo marcado como Jogado automaticamente 🎮'
+        )
+      } else {
+        toast.success('Avaliação atualizada com sucesso 👌')
+      }
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(queryKey, context?.previous)
@@ -62,6 +69,12 @@ export const useRating = (igdbId: string | undefined) => {
         queryKey: ['gamesStatus', userId, igdbId]
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
+      queryClient.invalidateQueries({ queryKey: ['games'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesInfinite'] })
+      queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
+      queryClient.invalidateQueries({ queryKey: ['similarGames'] })
+      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
     }
   })
 

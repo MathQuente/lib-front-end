@@ -1,9 +1,39 @@
 import { useState } from 'react'
-import { Star, RotateCcw } from 'lucide-react'
+import { Star, RotateCcw, Clock, Gift, Play, Library, Gamepad2 } from 'lucide-react'
 import { GameModal } from './gameModal'
 import { GameInfo } from './gameInfo'
 import { twMerge } from 'tailwind-merge'
 import type { GameCardProps } from '../../interfaces/games'
+
+const LIBRARY_STATUS_BADGES: Record<
+  string,
+  { icon: typeof Gift; barColor: string; iconColor: string; label: string }
+> = {
+  WISHLIST: {
+    icon: Gift,
+    barColor: 'bg-pink-400',
+    iconColor: 'text-pink-400',
+    label: 'Lista de desejos'
+  },
+  PLAYING: {
+    icon: Play,
+    barColor: 'bg-emerald-400',
+    iconColor: 'text-emerald-400',
+    label: 'Jogando'
+  },
+  BACKLOG: {
+    icon: Library,
+    barColor: 'bg-slate-400',
+    iconColor: 'text-slate-400',
+    label: 'Backlog'
+  },
+  PLAYED: {
+    icon: Gamepad2,
+    barColor: 'bg-amber-400',
+    iconColor: 'text-amber-400',
+    label: 'Jogado'
+  }
+}
 
 const sizes = {
   small: 'w-14 h-16',
@@ -75,9 +105,14 @@ export function GameCard({
     game?.status === 'PLAYED' &&
     !!game?.completions &&
     game.completions > 0
+  const showHoursPlayed =
+    size !== 'small' && !!game?.hoursPlayed && game.hoursPlayed > 0
+  const statusBadge =
+    size !== 'small' && game?.status ? LIBRARY_STATUS_BADGES[game.status] : undefined
+  const accentColor = statusBadge?.iconColor ?? 'text-primary'
 
   const cardClassName = twMerge(
-    'group relative rounded-lg overflow-hidden hover:ring-2 ring-primary',
+    'group relative rounded-lg overflow-hidden hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
     interactive &&
       'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light',
     size === 'medium' ? 'block w-full' : sizes[size]
@@ -85,10 +120,49 @@ export function GameCard({
 
   const cardContent = (
     <>
-      {tag && (
-        <span className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
-          {tag}
-        </span>
+      {statusBadge && (
+        <span
+          className={`absolute top-0 inset-x-0 h-0.5 z-10 ${statusBadge.barColor}`}
+          aria-hidden="true"
+        />
+      )}
+
+      {tag && statusBadge ? (
+        <div className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1.5">
+          <span className="px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
+            {tag}
+          </span>
+          <span
+            className="inline-flex items-center justify-center size-5 rounded-full bg-dark-bg/90 border border-dark-border shrink-0"
+            title={statusBadge.label}
+            aria-label={statusBadge.label}
+          >
+            <statusBadge.icon
+              className={`size-2.5 ${statusBadge.iconColor}`}
+              aria-hidden="true"
+            />
+          </span>
+        </div>
+      ) : (
+        <>
+          {tag && (
+            <span className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
+              {tag}
+            </span>
+          )}
+          {statusBadge && (
+            <span
+              className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 inline-flex items-center justify-center size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+              title={statusBadge.label}
+              aria-label={statusBadge.label}
+            >
+              <statusBadge.icon
+                className={`size-2.5 ${statusBadge.iconColor}`}
+                aria-hidden="true"
+              />
+            </span>
+          )}
+        </>
       )}
 
       {showRating && (
@@ -98,7 +172,7 @@ export function GameCard({
           aria-label={`Sua nota: ${game?.rating}`}
         >
           <Star
-            className="size-2.5 text-primary fill-primary"
+            className={`size-2.5 fill-current ${accentColor}`}
             aria-hidden="true"
           />
           <span aria-hidden="true">{game?.rating}</span>
@@ -111,8 +185,21 @@ export function GameCard({
           title="Vezes finalizado"
           aria-label={`Finalizado ${game?.completions}x`}
         >
-          <RotateCcw className="size-2.5 text-primary" aria-hidden="true" />
+          <RotateCcw className={`size-2.5 ${accentColor}`} aria-hidden="true" />
           <span aria-hidden="true">{game?.completions}</span>
+        </span>
+      )}
+
+      {showHoursPlayed && (
+        <span
+          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-200"
+          title="Horas jogadas"
+          aria-label={`${game?.hoursPlayed} horas jogadas`}
+        >
+          <Clock className={`size-2.5 ${accentColor}`} aria-hidden="true" />
+          <span aria-hidden="true">
+            {Number(game?.hoursPlayed?.toFixed(1))}h
+          </span>
         </span>
       )}
 

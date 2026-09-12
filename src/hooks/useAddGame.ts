@@ -88,6 +88,12 @@ export const useAddGame = (igdbId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
       queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
+      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
+      queryClient.invalidateQueries({ queryKey: ['gamesInfinite'] })
+      queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
+      queryClient.invalidateQueries({ queryKey: ['similarGames'] })
     }
   })
 
@@ -130,6 +136,12 @@ export const useAddGame = (igdbId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['gamesStatus'] })
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
+      queryClient.invalidateQueries({ queryKey: ['games'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesInfinite'] })
+      queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
+      queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
+      queryClient.invalidateQueries({ queryKey: ['similarGames'] })
     }
   })
 

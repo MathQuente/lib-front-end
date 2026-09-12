@@ -29,9 +29,9 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
       <SectionHeading>Jogos Similares</SectionHeading>
 
       <div className="overflow-hidden p-2" ref={emblaRef}>
-        <div className="flex gap-3">
+        <div className="flex -ml-3">
           {games.map(game => (
-            <div key={game.igdbId} className="flex-none w-32">
+            <div key={game.igdbId} className="flex-none w-32 pl-3">
               <Link
                 to={`/games/${game.igdbId}`}
                 className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"

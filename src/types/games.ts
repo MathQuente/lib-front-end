@@ -16,6 +16,7 @@ export interface GameCardData {
   parentGameId?: number | null
   rating?: number | null
   completions?: number
+  hoursPlayed?: number
   status?: string
 }
 
@@ -54,6 +55,7 @@ export interface UserGameEntry extends GameCardData {
   releaseDate?: number
   rating: number | null
   completions: number
+  hoursPlayed: number
   status: string
 }
 

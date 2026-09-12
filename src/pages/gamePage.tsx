@@ -12,6 +12,7 @@ import { RatingAverage } from '../components/ratingAverage'
 import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { SectionHeading } from '../components/sectionHeading'
+import { ReviewSection } from '../components/reviewSection'
 import dayjs from 'dayjs'
 
 export function GamePage() {
@@ -167,6 +168,8 @@ export function GamePage() {
             </p>
           </div>
         )}
+
+        {user && <ReviewSection game={game} />}
 
         <Details GameResponse={GameResponse} />
 
