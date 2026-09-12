@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import { useNavigate } from 'react-router-dom'
-import { Mail, LockOpen } from 'lucide-react'
+import { Mail, Lock } from 'lucide-react'
 import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
 import { DiscordAuthButton } from './discordAuthButton'
@@ -20,7 +20,7 @@ export function FormLogin() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema)
   })
@@ -52,25 +52,25 @@ export function FormLogin() {
           label="Senha"
           type="password"
           placeholder="••••••••"
-          icon={<LockOpen size={18} />}
+          icon={<Lock size={18} />}
           error={errors.password}
           {...register('password')}
         />
         <a
           href="/forgotPasswordPage"
-          className="text-xs text-[#8C67F6] hover:underline self-end mt-1"
+          className="text-xs text-primary-light hover:underline self-end mt-1"
         >
           Esqueceu a senha?
         </a>
       </div>
 
-      <Button variant="primary" fullWidth>
+      <Button variant="primary" size="md" fullWidth loading={isSubmitting}>
         Entrar
       </Button>
 
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-dark-border" />
-        <span className="text-[11px] text-gray-600 uppercase tracking-wider">
+        <span className="text-[11px] text-gray-400 uppercase tracking-wider">
           ou
         </span>
         <div className="h-px flex-1 bg-dark-border" />

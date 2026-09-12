@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Mail, LockOpen } from 'lucide-react'
+import { Mail, Lock } from 'lucide-react'
 import { signUpSchema } from '../schemas/signUpSchema'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -22,7 +22,7 @@ export function FormSignUp() {
     register,
     handleSubmit,
     setError,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema)
   })
@@ -56,18 +56,18 @@ export function FormSignUp() {
         label="Senha"
         type="password"
         placeholder="••••••••"
-        icon={<LockOpen size={18} />}
+        icon={<Lock size={18} />}
         error={errors.password}
         {...register('password')}
       />
 
-      <Button variant="primary" fullWidth>
+      <Button variant="primary" size="md" fullWidth loading={isSubmitting}>
         Criar conta
       </Button>
 
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-dark-border" />
-        <span className="text-[11px] text-gray-600 uppercase tracking-wider">
+        <span className="text-[11px] text-gray-400 uppercase tracking-wider">
           ou
         </span>
         <div className="h-px flex-1 bg-dark-border" />

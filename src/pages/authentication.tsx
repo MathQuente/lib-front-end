@@ -4,9 +4,10 @@ import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
 
 const tabTrigger =
-  'flex-1 py-3 text-sm font-semibold text-gray-600 border-b-2 border-transparent ' +
+  'flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent ' +
   'data-[state=active]:text-white data-[state=active]:border-primary ' +
-  'transition-colors duration-150 uppercase tracking-wide'
+  'transition-colors duration-150 uppercase tracking-wide ' +
+  'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-light'
 
 export function Authentication() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -19,7 +20,7 @@ export function Authentication() {
   }
 
   return (
-    <div className="flex justify-center py-8 md:py-12">
+    <div className="flex justify-center pt-2 pb-8 md:pt-4 md:pb-12">
       <div className="w-full max-w-md">
         <Tabs.Root value={tab} onValueChange={handleTabChange}>
           <Tabs.List className="flex border-b border-dark-border mb-6">
