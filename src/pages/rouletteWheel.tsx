@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
+import { USER_GAME_STATUS_ID } from '../constants/gameStatus'
 
 export function RouletteWheel() {
   const [options, setOptions] = useState<UserGameEntry[]>([])
@@ -35,7 +36,10 @@ export function RouletteWheel() {
 
   async function addGametoPlaying() {
     if (!gameWinner) return
-    await api.updateGameStatus(gameWinner.igdbId.toString(), 2)
+    await api.updateGameStatus(
+      gameWinner.igdbId.toString(),
+      USER_GAME_STATUS_ID.PLAYING
+    )
     setOptions(old => old.filter(g => g.igdbId !== gameWinner.igdbId))
     toast.success('game add to playing', {
       position: 'top-right',

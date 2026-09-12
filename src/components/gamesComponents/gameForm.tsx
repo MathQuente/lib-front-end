@@ -2,14 +2,8 @@ import { Gamepad2, Library, Gift, Play } from 'lucide-react'
 import { PlayedCount } from '../playedCount'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
+import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
 import type { GameFormProps } from '../../interfaces/games'
-
-const STATUS = {
-  PLAYED: 1,
-  PLAYING: 2,
-  BACKLOG: 4,
-  WISHLIST: 5
-} as const
 
 export function GameForm({ game }: GameFormProps) {
   const igdbId = game?.igdbId?.toString()
