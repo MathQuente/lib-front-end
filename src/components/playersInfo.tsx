@@ -17,7 +17,7 @@ export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
     <div className="flex flex-col gap-1 py-2 border-t border-dark-border">
       {rows.map(({ icon: Icon, label, key }) => (
         <div key={key} className="flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-gray-500 text-sm">
+          <span className="flex items-center gap-1.5 text-gray-400 text-sm">
             <Icon className="size-4" />
             {label}
           </span>
@@ -27,7 +27,7 @@ export function PlayersInfo({ GameResponse }: PlayerInfosProps) {
         </div>
       ))}
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1.5 text-gray-500 text-sm">
+        <span className="flex items-center gap-1.5 text-gray-400 text-sm">
           <Star className="size-4" />
           Avaliações
         </span>

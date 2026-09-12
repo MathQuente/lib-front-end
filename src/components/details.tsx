@@ -1,4 +1,5 @@
 import { Tag, Code, Building2 } from 'lucide-react'
+import { SectionHeading } from './sectionHeading'
 import type { DetailsProps } from '../interfaces/games'
 
 export function Details({ GameResponse }: DetailsProps) {
@@ -12,14 +13,12 @@ export function Details({ GameResponse }: DetailsProps) {
 
   return (
     <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
-      <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide mb-5">
-        Detalhes
-      </h2>
+      <SectionHeading className="mb-5">Detalhes</SectionHeading>
 
       <div className="flex flex-col gap-4">
         {hasGenres && (
           <div>
-            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
               <Tag className="size-3.5" />
               Gêneros
             </h3>
@@ -38,7 +37,7 @@ export function Details({ GameResponse }: DetailsProps) {
 
         {hasDevelopers && (
           <div>
-            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
               <Code className="size-3.5" />
               Desenvolvedora
             </h3>
@@ -57,7 +56,7 @@ export function Details({ GameResponse }: DetailsProps) {
 
         {hasPublishers && (
           <div>
-            <h3 className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
               <Building2 className="size-3.5" />
               Publicadora
             </h3>

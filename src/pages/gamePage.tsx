@@ -8,10 +8,10 @@ import { Details } from '../components/details'
 import { PlayersInfo } from '../components/playersInfo'
 import { useGame } from '../hooks/useGame'
 import { SimilarGamesSlider } from '../components/similarGamesSlider'
-import { RelatedGamesSlider } from '../components/relatedGamesSlider'
 import { RatingAverage } from '../components/ratingAverage'
 import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
+import { SectionHeading } from '../components/sectionHeading'
 import dayjs from 'dayjs'
 
 export function GamePage() {
@@ -61,7 +61,7 @@ export function GamePage() {
               />
             ) : (
               <div className="w-56 h-80 rounded-lg bg-dark-bg-lighter flex items-center justify-center">
-                <span className="text-gray-600 text-sm">Sem capa</span>
+                <span className="text-gray-400 text-sm">Sem capa</span>
               </div>
             )}
             <h1 className="text-white font-semibold text-center">
@@ -74,17 +74,17 @@ export function GamePage() {
               <GameForm game={game} />
 
               <div className="w-full border-t border-dark-border pt-4 flex flex-col gap-1">
-                <p className="text-xs text-gray-600 uppercase tracking-widest mb-1">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
                   Sua avaliação
                 </p>
                 <RatingAverage game={game} isForGamePage />
               </div>
             </div>
           ) : (
-            <p className="text-sm text-center text-gray-500">
+            <p className="text-sm text-center text-gray-400">
               <Link
                 to="/auth?tab=login"
-                className="text-primary hover:underline"
+                className="text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
               >
                 Faça login
               </Link>{' '}
@@ -93,7 +93,7 @@ export function GamePage() {
           )}
 
           <div className="border-t border-dark-border pt-4 flex flex-col gap-1">
-            <p className="text-xs text-gray-600 uppercase tracking-widest mb-1">
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
               Média geral
             </p>
             <RatingAverage game={game} justAverage />
@@ -104,7 +104,7 @@ export function GamePage() {
 
           {game.platforms.length > 0 && (
             <div>
-              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
                 Plataformas
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -117,7 +117,7 @@ export function GamePage() {
 
           {game.genres.length > 0 && (
             <div>
-              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
                 Gêneros
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -130,7 +130,7 @@ export function GamePage() {
 
           {game.releaseDate && (
             <div>
-              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
                 Lançamento
               </p>
               <span className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300">
@@ -141,7 +141,7 @@ export function GamePage() {
 
           {game.releaseDates && game.releaseDates.length > 0 && (
             <div>
-              <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">
+              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
                 Lançamentos por Plataforma
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -161,9 +161,7 @@ export function GamePage() {
       <div className="lg:col-span-2 flex flex-col gap-4">
         {game.summary && (
           <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
-            <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide mb-4">
-              Sobre o jogo
-            </h2>
+            <SectionHeading>Sobre o jogo</SectionHeading>
             <p className="text-gray-300 leading-relaxed text-sm">
               {game.summary}
             </p>
@@ -173,8 +171,6 @@ export function GamePage() {
         <Details GameResponse={GameResponse} />
 
         <DlcAndOriginalGameArea game={game} relatedGames={relatedGames} />
-
-        <RelatedGamesSlider relatedGames={relatedGames} />
 
         <SimilarGamesSlider SimilarGames={SimilarGames} />
       </div>

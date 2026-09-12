@@ -44,7 +44,7 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
 
               const data = payload[0].payload
               return (
-                <div className="bg-[#272932] flex items-center gap-1 p-2 rounded ">
+                <div className="bg-dark-bg-lighter flex items-center gap-1 p-2 rounded">
                   <p className="text-gray-300">
                     {data.count === 0.01 ? '0' : data.count}
                   </p>

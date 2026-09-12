@@ -103,7 +103,7 @@ export function RatingAverage({
             aria-label="Remover avaliação"
             onClick={removeRating}
             disabled={isMutating}
-            className="text-gray-600 hover:text-gray-300 transition-colors disabled:opacity-50"
+            className="text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
           >
             <X size={15} />
           </button>
@@ -113,7 +113,7 @@ export function RatingAverage({
         <p className="text-xs">
           <span className="text-gray-500">Sua nota: </span>
           <span className="text-gray-300 font-medium">{userRating ?? '—'}</span>
-          <span className="mx-1.5 text-gray-600">·</span>
+          <span className="mx-1.5 text-gray-500">·</span>
           <span className="text-gray-500">Média: </span>
           <span className="text-gray-300 font-medium">{averageDisplay}</span>
         </p>
