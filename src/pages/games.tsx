@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
@@ -62,8 +61,6 @@ export function Games() {
         sortField={sortField}
         setSortField={setSortField}
       />
-
-      <ToastContainer />
     </>
   )
 }

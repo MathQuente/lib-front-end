@@ -1,4 +1,3 @@
-import { ToastContainer } from 'react-toastify'
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
 import { UserGamesDiv } from '../components/UserGamesDiv'
 import { useUserGames } from '../hooks/useUserGames'
@@ -18,8 +17,6 @@ export function UserLibrary() {
         Games={gamesByStatus}
         totalPerStatus={totalPerStatus}
       />
-
-      <ToastContainer />
     </>
   )
 }

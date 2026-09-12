@@ -1,4 +1,3 @@
-import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { EmptyState } from '../components/emptyState'
 import { useState } from 'react'
@@ -76,7 +75,6 @@ export function ComingSoonPage() {
           />
         }
       />
-      <ToastContainer />
     </>
   )
 }

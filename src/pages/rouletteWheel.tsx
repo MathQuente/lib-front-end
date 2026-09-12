@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { GameStatusEnum } from '../types/games'
 import type { UserGameEntry } from '../types/games'
 
-import { Flip, ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { Flip, toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
@@ -63,8 +62,6 @@ export function RouletteWheel() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       <div className="flex flex-col items-center mt-4">
-        <ToastContainer />
-
         {gameWinner && (
           <div className="flex flex-col items-center justify-center gap-2 pb-2">
             <img

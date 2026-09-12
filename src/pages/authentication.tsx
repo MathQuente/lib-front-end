@@ -1,5 +1,4 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { ToastContainer } from 'react-toastify'
 import { useSearchParams } from 'react-router-dom'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
@@ -40,8 +39,6 @@ export function Authentication() {
           </Tabs.Content>
         </Tabs.Root>
       </div>
-
-      <ToastContainer />
     </div>
   )
 }

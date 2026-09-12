@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { GameStatusEnum } from '../types/games'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import { GameListPage } from '../components/gameListPage'
 import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
@@ -101,7 +100,6 @@ export function UserGamesPageByStatus() {
           isUserLibrary
         />
       )}
-      <ToastContainer />
     </>
   )
 }
