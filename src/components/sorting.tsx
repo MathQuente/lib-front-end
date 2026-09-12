@@ -3,7 +3,7 @@ import { GameStatusEnum } from '../types/games'
 import type { SortControlsProps } from '../interfaces/games'
 
 const selectClass =
-  'bg-[#13141C] text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150 cursor-pointer'
+  'bg-dark-bg-darker text-sm text-gray-300 rounded-lg px-3 py-1.5 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150 cursor-pointer'
 
 export function SortControls({
   sortField,
@@ -20,12 +20,12 @@ export function SortControls({
 
   return (
     <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
-      <p className="text-gray-500 text-sm">
+      <p className="text-gray-400 text-sm">
         {totalGames} {totalGames === 1 ? 'jogo' : 'jogos'}
       </p>
 
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-gray-600 text-xs whitespace-nowrap">
+        <span className="text-gray-400 text-xs whitespace-nowrap">
           Ordenar por
         </span>
 
@@ -42,8 +42,13 @@ export function SortControls({
         <button
           type="button"
           title={sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
+          aria-label={
+            sortOrder === 'asc'
+              ? 'Ordem crescente, clique para inverter'
+              : 'Ordem decrescente, clique para inverter'
+          }
           onClick={toggleOrder}
-          className="p-1.5 text-primary hover:text-primary-light border border-dark-border hover:border-primary rounded-lg transition-colors duration-150"
+          className="p-1.5 text-primary hover:text-primary-light border border-dark-border hover:border-primary rounded-lg transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
         >
           {sortOrder === 'asc' ? (
             <ArrowUp className="size-4" />
@@ -61,7 +66,6 @@ export function SortControls({
             <option value="">Todos</option>
             <option value={GameStatusEnum.Played}>Jogado</option>
             <option value={GameStatusEnum.Playing}>Jogando</option>
-            <option value={GameStatusEnum.Paused}>Pausado</option>
             <option value={GameStatusEnum.Backlog}>Backlog</option>
             <option value={GameStatusEnum.Wishlist}>Lista de Desejos</option>
           </select>
