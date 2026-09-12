@@ -53,12 +53,12 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
   return (
     <form onSubmit={handleSearch}>
       <div className="relative flex items-center">
-        <Search className="absolute left-2.5 text-gray-600 pointer-events-none size-4" />
+        <Search className="absolute left-2.5 text-gray-400 pointer-events-none size-4" />
         <input
           ref={actualInputRef}
           className={`${
             isMobile ? 'w-full' : 'w-48'
-          } pl-8 pr-7 py-1.5 bg-[#13141C] text-sm text-white placeholder-gray-600 rounded-lg border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150`}
+          } pl-8 pr-7 py-1.5 bg-dark-bg-darker text-sm text-white placeholder-gray-500 rounded-lg border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150`}
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -67,7 +67,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
         {search && (
           <button
             type="button"
-            className="absolute right-2 text-gray-600 hover:text-gray-300 transition-colors"
+            className="absolute right-2 text-gray-400 hover:text-gray-300 transition-colors rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
             onClick={() => {
               setSearch('')
               actualInputRef.current?.focus()

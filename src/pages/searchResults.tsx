@@ -14,7 +14,8 @@ export function SearchResults() {
     fetchNextPage,
     hasNextPage,
     isLoadingInfinite,
-    isErrorInfinite
+    isErrorInfinite,
+    refetchInfinite
   } = useGames(1, query, 'name', 'asc', 10)
 
   if (isLoadingInfinite) {
@@ -41,7 +42,11 @@ export function SearchResults() {
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <p className="text-red-400 mb-4">Erro ao carregar jogos</p>
-          <Button variant="secondary" size="md">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => refetchInfinite()}
+          >
             Tentar novamente
           </Button>
         </div>
@@ -75,14 +80,14 @@ export function SearchResults() {
   return (
     <>
       <div className="w-full mb-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-1 text-center sm:text-left">
-          <p className="text-primary text-base sm:text-lg">
+        <h1 className="flex flex-col sm:flex-row sm:items-center justify-center gap-1 text-center sm:text-left">
+          <span className="text-primary text-base sm:text-lg font-normal">
             {total} {total === 1 ? 'resultado' : 'resultados'} para
-          </p>
-          <p className="text-white text-lg sm:text-xl font-bold break-words">
+          </span>
+          <span className="text-white text-lg sm:text-xl font-bold break-words">
             {query}
-          </p>
-        </div>
+          </span>
+        </h1>
       </div>
 
       <InfiniteScroll
@@ -99,24 +104,22 @@ export function SearchResults() {
         }
       >
         {resultForSearchGames.map(game => (
-          <div key={game.igdbId} className="group">
-            <div className="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-dark-bg-lighter transition-colors duration-200">
-              <Link
-                to={`/games/${game.igdbId}`}
-                className="w-full sm:w-auto flex-shrink-0"
-              >
-                <GameCard game={game} size="larger" />
-              </Link>
+          <div key={game.igdbId}>
+            <Link
+              to={`/games/${game.igdbId}`}
+              className="group flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-dark-bg-lighter transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            >
+              <div className="w-full sm:w-auto flex-shrink-0">
+                <GameCard game={game} size="larger" interactive={false} />
+              </div>
 
               <div className="flex-1 w-full sm:w-auto min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <Link to={`/games/${game.igdbId}`}>
-                    <h3 className="text-white font-semibold text-lg sm:text-xl group-hover:text-primary transition-colors duration-200 truncate">
-                      {game.name}
-                    </h3>
-                  </Link>
+                  <h2 className="text-white font-semibold text-lg sm:text-xl group-hover:text-primary transition-colors duration-200 truncate">
+                    {game.name}
+                  </h2>
                   {game.releaseDate && (
-                    <span className="text-sm text-gray-400 bg-gray-800 rounded-md px-2 py-1 self-start sm:self-center flex-shrink-0">
+                    <span className="text-sm text-gray-300 bg-dark-bg-lighter border border-dark-border rounded-full px-2.5 py-1 self-start sm:self-center flex-shrink-0">
                       {dayjs.unix(game.releaseDate).format('YYYY')}
                     </span>
                   )}
@@ -139,7 +142,7 @@ export function SearchResults() {
                   </p>
                 )}
               </div>
-            </div>
+            </Link>
 
             <div className="border-b border-dark-border mt-4 mb-4" />
           </div>

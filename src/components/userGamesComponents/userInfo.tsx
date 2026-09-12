@@ -8,7 +8,7 @@ export function UserInfo({
   return (
     <div>
       <p className="text-white font-semibold">{userName}</p>
-      <p className="text-gray-500 text-sm">
+      <p className="text-gray-400 text-sm">
         {gamesAmount.toLocaleString()} {gamesAmount === 1 ? 'jogo' : 'jogos'}
       </p>
     </div>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Gamepad2, Play, PauseCircle, Library, Gift } from 'lucide-react'
 import { GameCard } from './gamesComponents/gameCard'
 import { GameStatusEnum } from '../types/games'
 import type { UserGameDivProps } from '../interfaces/user'
@@ -11,10 +12,20 @@ const statusLabels: Record<GameStatusEnum, string> = {
   [GameStatusEnum.Wishlist]: 'Lista de Desejos'
 }
 
+// mesmo vocabulário de ícones do gameForm, pra manter a associação status→ícone consistente
+const statusIcons: Record<GameStatusEnum, typeof Gamepad2> = {
+  [GameStatusEnum.Played]: Gamepad2,
+  [GameStatusEnum.Playing]: Play,
+  [GameStatusEnum.Paused]: PauseCircle,
+  [GameStatusEnum.Backlog]: Library,
+  [GameStatusEnum.Wishlist]: Gift
+}
+
+// Pausado fica fora: não existe botão pra marcar um jogo como pausado na UI,
+// então essa seção nunca teria conteúdo real.
 const statusOrder: GameStatusEnum[] = [
   GameStatusEnum.Played,
   GameStatusEnum.Playing,
-  GameStatusEnum.Paused,
   GameStatusEnum.Backlog,
   GameStatusEnum.Wishlist
 ]
@@ -26,6 +37,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
         const gamesForStatus = Games[statusKey] || []
         const total =
           totalPerStatus.find(t => t.status === statusKey)?.totalGames ?? 0
+        const StatusIcon = statusIcons[statusKey]
 
         return (
           <div
@@ -34,16 +46,17 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <h2 className="text-sm font-semibold text-gray-400 border-l-2 border-primary pl-3 uppercase tracking-wide">
+                <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                  <span className="size-1.5 bg-primary" aria-hidden="true" />
                   {statusLabels[statusKey]}
                 </h2>
-                <span className="text-xs text-gray-600">{total}</span>
+                <span className="text-xs text-gray-400">{total}</span>
               </div>
 
               {gamesForStatus.length > 0 && (
                 <Link
                   to={`/userLibrary/${statusKey.toLowerCase()}Games`}
-                  className="text-xs text-gray-600 hover:text-primary transition-colors"
+                  className="text-xs text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
                 >
                   Ver todos
                 </Link>
@@ -62,12 +75,18 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-sm py-1">
-                Nenhum jogo adicionado.{' '}
-                <Link to="/games" className="text-primary hover:underline">
-                  Explorar jogos
-                </Link>
-              </p>
+              <div className="flex items-center gap-2 text-gray-400 text-sm py-1">
+                <StatusIcon className="size-4 shrink-0" />
+                <p>
+                  Nenhum jogo adicionado.{' '}
+                  <Link
+                    to="/games"
+                    className="text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+                  >
+                    Explorar jogos
+                  </Link>
+                </p>
+              </div>
             )}
           </div>
         )

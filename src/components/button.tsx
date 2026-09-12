@@ -12,7 +12,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    'inline-flex items-center justify-center front-medium transistion-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+    'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 disabled:cursor-not-allowed'
   const variants = {
     primary:
       'bg-gradient-to-t from-[#4D23A5] to-[#783FCF] text-[#FFFFFF] font-bold brightness-105 hover:from-[#5D23A5] hover:to-[#813FCF]',

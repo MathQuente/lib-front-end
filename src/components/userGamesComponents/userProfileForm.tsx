@@ -159,8 +159,8 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             <div className="w-full h-full bg-dark-border" />
           )}
 
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            <label className="cursor-pointer">
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <label className="cursor-pointer rounded-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light">
               <input
                 type="file"
                 accept="image/*"
@@ -178,7 +178,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
               <button
                 type="button"
                 onClick={handleRemoveBanner}
-                className="p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors"
+                className="p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
               >
                 <X size={18} />
               </button>
@@ -187,13 +187,13 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         </div>
 
         <div className="absolute left-6 bottom-0 translate-y-1/2">
-          <label className="group relative block size-14 rounded-full border-2 border-primary bg-dark-bg overflow-hidden cursor-pointer">
+          <label className="group relative block size-14 rounded-full border-2 border-primary bg-dark-bg overflow-hidden cursor-pointer has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light">
             <img
               src={profilePicSrc}
               alt="Foto de perfil"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
               <Camera size={16} className="text-white" />
             </div>
             <input
@@ -225,14 +225,12 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             id="userName"
             type="text"
             placeholder={UserProfileResponse?.user?.userName}
-            className="bg-[#13141C] text-white placeholder-gray-600 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary focus:outline-none transition-colors duration-150"
+            className="bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150"
             {...registerField('userName')}
           />
-          {errors.userName && (
-            <span className="text-red-500 text-xs">
-              {errors.userName.message}
-            </span>
-          )}
+          <span className="text-red-500 text-xs min-h-[1rem]">
+            {errors.userName?.message ?? ' '}
+          </span>
         </div>
 
         <div className="flex justify-end gap-3">

@@ -66,12 +66,21 @@ export const api = {
     sortBy?: SortField,
     sortOrder?: SortOrder
   ) => {
+    // O endpoint /users/userGames usa nomes diferentes do resto do app
+    // (gameName/dateRelease em vez de name/releaseDate) — mapeado aqui pra
+    // não vazar essa inconsistência pro resto do front.
+    const USER_GAMES_SORT_BY_MAP = {
+      name: 'gameName',
+      releaseDate: 'dateRelease',
+      rating: 'rating'
+    } as const
+
     const response = await http.get('/users/userGames', {
       params: {
         pageIndex: page ? page - 1 : undefined,
         query: search || undefined,
         filter: filter,
-        sortBy,
+        sortBy: sortBy ? USER_GAMES_SORT_BY_MAP[sortBy] : undefined,
         sortOrder
       }
     })

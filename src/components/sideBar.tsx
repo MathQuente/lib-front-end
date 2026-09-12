@@ -5,6 +5,9 @@ import { ChevronDown, Menu, X } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 
+const focusRing =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm'
+
 export function SideBar() {
   const { user } = useAuth()
 
@@ -33,11 +36,13 @@ export function SideBar() {
   return (
     <>
       <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-dark-border mb-4">
-        <Link to="/">
-          <h1 className="text-white font-bold">Logo</h1>
+        <Link to="/" className={focusRing}>
+          <h1 className="font-bold text-white">
+            <span className="text-primary">Lib</span>
+          </h1>
         </Link>
         <button
-          className="p-2 text-gray-400 hover:text-white transition-colors"
+          className={`p-2 text-gray-400 hover:text-white transition-colors ${focusRing}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
           aria-label="Abrir menu"
@@ -61,11 +66,13 @@ export function SideBar() {
       >
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between px-4 py-4 border-b border-dark-border">
-            <Link to="/" onClick={closeMobileMenu}>
-              <h1 className="text-white font-bold">Logo</h1>
+            <Link to="/" onClick={closeMobileMenu} className={focusRing}>
+              <h1 className="font-bold text-white">
+                <span className="text-primary">Lib</span>
+              </h1>
             </Link>
             <button
-              className="p-1.5 text-gray-400 hover:text-white transition-colors"
+              className={`p-1.5 text-gray-400 hover:text-white transition-colors ${focusRing}`}
               type="button"
               onClick={closeMobileMenu}
               aria-label="Fechar menu"
@@ -82,7 +89,7 @@ export function SideBar() {
                 <>
                   <button
                     type="button"
-                    className="flex items-center gap-1 py-2 text-sm text-primary hover:text-primary-light w-full text-left transition-colors"
+                    className={`flex items-center gap-1 py-2 text-sm text-primary hover:text-primary-light w-full text-left transition-colors ${focusRing}`}
                     onClick={() =>
                       setOpenMobileProfileMenu(!openMobileProfileMenu)
                     }
@@ -98,24 +105,24 @@ export function SideBar() {
                       <Link
                         to="/userLibrary"
                         onClick={closeMobileMenu}
-                        className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
+                        className={`text-sm text-gray-400 hover:text-white transition-colors py-1.5 ${focusRing}`}
                       >
                         Minha Biblioteca
                       </Link>
-                      <Link
-                        to="/"
+                      <button
+                        type="button"
                         onClick={handleLogout}
-                        className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
+                        className={`text-sm text-gray-400 hover:text-white transition-colors py-1.5 text-left ${focusRing}`}
                       >
                         Sair
-                      </Link>
+                      </button>
                     </div>
                   )}
 
                   <Link
                     to="/games"
                     onClick={closeMobileMenu}
-                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
+                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Games
                   </Link>
@@ -125,21 +132,21 @@ export function SideBar() {
                   <Link
                     to="/auth?tab=login"
                     onClick={closeMobileMenu}
-                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
+                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Entrar
                   </Link>
                   <Link
                     to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
-                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
+                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Criar conta
                   </Link>
                   <Link
                     to="/games"
                     onClick={closeMobileMenu}
-                    className="text-sm text-primary hover:text-primary-light py-2 transition-colors"
+                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Games
                   </Link>
@@ -151,28 +158,30 @@ export function SideBar() {
       </aside>
 
       <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-dark-border mb-6">
-        <Link to="/">
-          <h1 className="text-white font-bold">Logo</h1>
+        <Link to="/" className={focusRing}>
+          <h1 className="font-bold text-white">
+            <span className="text-primary">Lib</span>
+          </h1>
         </Link>
 
         {isLoggedIn ? (
           <div className="flex items-center gap-5">
             <Link
               to="/userLibrary"
-              className="text-sm text-primary hover:text-primary-light transition-colors"
+              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
             >
               Minha Biblioteca
             </Link>
             <Link
               to="/games"
-              className="text-sm text-primary hover:text-primary-light transition-colors"
+              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
             >
               Games
             </Link>
             <button
               type="button"
               onClick={handleLogout}
-              className="text-sm text-gray-500 hover:text-white transition-colors"
+              className={`text-sm text-gray-400 hover:text-white transition-colors ${focusRing}`}
             >
               Sair
             </button>
@@ -182,19 +191,19 @@ export function SideBar() {
           <div className="flex items-center gap-5">
             <Link
               to="/auth?tab=login"
-              className="text-sm text-primary hover:text-primary-light transition-colors"
+              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
             >
               Entrar
             </Link>
             <Link
               to="/auth?tab=signUp"
-              className="text-sm text-primary hover:text-primary-light transition-colors"
+              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
             >
               Criar conta
             </Link>
             <Link
               to="/games"
-              className="text-sm text-primary hover:text-primary-light transition-colors"
+              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
             >
               Games
             </Link>

@@ -31,7 +31,8 @@ export const useGames = (
     isFetchingNextPage,
     hasNextPage,
     isLoading: isLoadingInfinite,
-    isError: isErrorInfinite
+    isError: isErrorInfinite,
+    refetch: refetchInfinite
   } = useInfiniteQuery<UseGamesProps>({
     queryKey: ['gamesInfinite', search, sortBy, sortOrder],
     queryFn: async ({ pageParam }) =>
@@ -79,6 +80,7 @@ export const useGames = (
     isFetchingNextPage,
     isLoadingInfinite,
     isErrorInfinite,
+    refetchInfinite,
     isLoading,
     isError
   }
