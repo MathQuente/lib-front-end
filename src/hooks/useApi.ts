@@ -6,6 +6,11 @@ import type { SortField, SortOrder } from '../interfaces/games'
 import type { UpdateUserPayload } from '../types/user'
 import type { CreateRatingResponse } from '../types/rating'
 import type { GetReviewResponse, UpsertReviewResponse } from '../types/review'
+import type {
+  ConnectSteamResponse,
+  StartImportResponse,
+  ImportStatusResponse
+} from '../types/steam'
 
 const http = axios.create({
   baseURL: '/api',
@@ -242,6 +247,29 @@ export const api = {
   deleteReview: async (igdbId: string | undefined) => {
     const response = await http.delete(`/reviews/${igdbId}`, {})
     return response
+  },
+  connectSteam: async (profileInput: string) => {
+    const response = await http.patch<ConnectSteamResponse>(
+      '/users/steam',
+      { profileInput },
+      {}
+    )
+    return response.data
+  },
+  startSteamImport: async () => {
+    const response = await http.post<StartImportResponse>(
+      '/users/steam/import',
+      {},
+      {}
+    )
+    return response.data
+  },
+  getSteamImportStatus: async () => {
+    const response = await http.get<ImportStatusResponse>(
+      '/users/steam/import',
+      {}
+    )
+    return response.data
   },
   getComingSoon: async (
     page: number,

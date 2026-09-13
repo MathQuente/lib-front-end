@@ -10,6 +10,7 @@ export interface User {
   userBanner: string
   gamesAmount: number
   totalHoursPlayed: number
+  steamId: string | null
 }
 
 export interface GameStatsResponse {

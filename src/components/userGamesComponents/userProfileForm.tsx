@@ -10,6 +10,7 @@ import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { useUserProfile } from '../../hooks/useUserProfile'
 import { Button } from '../button'
+import { SteamImportSection } from './steamImportSection'
 import type { UserGamesFormProps } from '../../interfaces/user'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
@@ -232,6 +233,8 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             {errors.userName?.message ?? ' '}
           </span>
         </div>
+
+        <SteamImportSection steamId={UserProfileResponse?.user?.steamId ?? null} />
 
         <div className="flex justify-end gap-3">
           <Button
