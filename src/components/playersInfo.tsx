@@ -4,7 +4,7 @@ import type { PlayerInfosProps } from '../interfaces/games'
 const rows = [
   { icon: Gamepad2, label: 'Jogado', key: 'PLAYED' },
   { icon: Play, label: 'Jogando', key: 'PLAYING' },
-  { icon: Library, label: 'Backlog', key: 'BACKLOG' },
+  { icon: Library, label: 'Pendentes', key: 'BACKLOG' },
   { icon: Gift, label: 'Lista de Desejos', key: 'WISHLIST' }
 ] as const
 

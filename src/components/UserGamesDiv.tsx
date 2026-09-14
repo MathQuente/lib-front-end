@@ -8,11 +8,10 @@ const statusLabels: Record<GameStatusEnum, string> = {
   [GameStatusEnum.Played]: 'Jogado',
   [GameStatusEnum.Playing]: 'Jogando',
   [GameStatusEnum.Paused]: 'Pausado',
-  [GameStatusEnum.Backlog]: 'Backlog',
+  [GameStatusEnum.Backlog]: 'Pendentes',
   [GameStatusEnum.Wishlist]: 'Lista de Desejos'
 }
 
-// mesmo vocabulário de ícones do gameForm, pra manter a associação status→ícone consistente
 const statusIcons: Record<GameStatusEnum, typeof Gamepad2> = {
   [GameStatusEnum.Played]: Gamepad2,
   [GameStatusEnum.Playing]: Play,
@@ -21,8 +20,6 @@ const statusIcons: Record<GameStatusEnum, typeof Gamepad2> = {
   [GameStatusEnum.Wishlist]: Gift
 }
 
-// Pausado fica fora: não existe botão pra marcar um jogo como pausado na UI,
-// então essa seção nunca teria conteúdo real.
 const statusOrder: GameStatusEnum[] = [
   GameStatusEnum.Played,
   GameStatusEnum.Playing,
@@ -64,7 +61,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
             </div>
 
             {gamesForStatus.length > 0 ? (
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
                 {gamesForStatus.slice(0, 6).map(game => (
                   <GameCard
                     game={game}

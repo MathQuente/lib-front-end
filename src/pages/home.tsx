@@ -16,8 +16,8 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 const STAT_KEYS = [
   { label: 'Jogado', status: 'PLAYED' },
   { label: 'Jogando', status: 'PLAYING' },
-  { label: 'Backlog', status: 'BACKLOG' },
-  { label: 'Lista de Desejos', status: 'WISHLIST' }
+  { label: 'Pendentes', status: 'BACKLOG' },
+  { label: 'Desejos', status: 'WISHLIST' }
 ] as const
 
 export function Home() {
@@ -63,13 +63,15 @@ export function Home() {
                   UserGamesResponse?.totalPerStatus.find(
                     t => t.status === status
                   )?.totalGames ?? 0
+                const displayLabel =
+                  count > 1 && label === 'Jogado' ? 'Jogados' : label
                 return (
                   <div key={label} className="flex flex-col">
                     <span className="text-lg font-bold text-white leading-tight">
                       {count}
                     </span>
                     <span className="text-[11px] text-gray-400 uppercase tracking-widest">
-                      {label}
+                      {displayLabel}
                     </span>
                   </div>
                 )

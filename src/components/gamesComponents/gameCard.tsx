@@ -25,7 +25,7 @@ const LIBRARY_STATUS_BADGES: Record<
     icon: Library,
     barColor: 'bg-slate-400',
     iconColor: 'text-slate-400',
-    label: 'Backlog'
+    label: 'Pendentes'
   },
   PLAYED: {
     icon: Gamepad2,
