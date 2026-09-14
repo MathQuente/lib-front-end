@@ -71,9 +71,7 @@ export function GameListPage({
         totalGames={safeTotal}
       />
 
-      <div className="bg-dark-bg-light border border-dark-border rounded-lg py-4 px-4 xl:px-6">
-        <GamesGrid games={gamesArray} emptyState={emptyState} />
-      </div>
+      <GamesGrid games={gamesArray} emptyState={emptyState} />
 
       <Pagination
         currentPage={safePage}

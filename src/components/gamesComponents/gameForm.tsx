@@ -46,7 +46,7 @@ export function GameForm({ game }: GameFormProps) {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-center items-start gap-4">
+      <div className="flex flex-wrap justify-center items-start gap-4">
         {buttons.map(({ statusId, icon: Icon, label }) => {
           const active = hasStatus(statusId)
           return (

@@ -8,8 +8,8 @@ export function UserInfo({
   totalHoursPlayed: number
 }) {
   return (
-    <div>
-      <p className="text-white font-semibold">{userName}</p>
+    <div className="min-w-0">
+      <p className="text-white font-semibold truncate">{userName}</p>
       <p className="text-gray-400 text-sm">
         {gamesAmount.toLocaleString()} {gamesAmount === 1 ? 'jogo' : 'jogos'}
         {totalHoursPlayed > 0 &&

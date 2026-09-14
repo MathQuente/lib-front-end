@@ -68,7 +68,7 @@ export function RouletteWheel() {
           <div className="flex flex-col items-center justify-center gap-2 pb-2">
             <img
               src={gameWinner?.coverUrl ?? ''}
-              className="w-[285px] h-[340px] rounded-md"
+              className="w-full max-w-[285px] h-[340px] rounded-md"
               alt=""
             />
             <p className="text-white font-bold text-xl uppercase">
@@ -95,8 +95,8 @@ export function RouletteWheel() {
         )}
         {!gameWinner && options.length > 0 && (
           <div className="pb-5 flex flex-col items-center gap-6">
-            <div className="w-[285px] h-[340px] bg-[#272932] flex items-center justify-center rounded-md">
-              <p className="text-4xl">PLACEHOLDER</p>
+            <div className="w-full max-w-[285px] h-[340px] bg-[#272932] flex items-center justify-center rounded-md">
+              <p className="text-2xl sm:text-4xl text-center">PLACEHOLDER</p>
             </div>
             <button
               onClick={drawGame}
@@ -111,8 +111,8 @@ export function RouletteWheel() {
         )}
         {options.length === 0 && (
           <div className="pb-5 flex flex-col items-center justify-center gap-6">
-            <div className="w-[285px] h-[340px] bg-[#272932] flex items-center justify-center rounded-md">
-              <p className="text-4xl justify-center">game list is over</p>
+            <div className="w-full max-w-[285px] h-[340px] bg-[#272932] flex items-center justify-center rounded-md px-4">
+              <p className="text-2xl sm:text-4xl text-center">game list is over</p>
             </div>
             <Link to="/games">
               <button

@@ -128,17 +128,17 @@ export function GameCard({
       )}
 
       {tag && statusBadge ? (
-        <div className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1.5">
-          <span className="px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
+        <div className="absolute top-1.5 left-1.5 right-1.5 z-10 flex items-center gap-1.5">
+          <span className="min-w-0 truncate px-1 py-0.5 sm:px-1.5 rounded bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-300">
             {tag}
           </span>
           <span
-            className="inline-flex items-center justify-center size-5 rounded-full bg-dark-bg/90 border border-dark-border shrink-0"
+            className="inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border shrink-0"
             title={statusBadge.label}
             aria-label={statusBadge.label}
           >
             <statusBadge.icon
-              className={`size-2.5 ${statusBadge.iconColor}`}
+              className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
               aria-hidden="true"
             />
           </span>
@@ -146,18 +146,18 @@ export function GameCard({
       ) : (
         <>
           {tag && (
-            <span className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-300">
+            <span className="absolute top-1.5 left-1.5 max-w-[calc(100%-0.75rem)] truncate z-10 px-1 py-0.5 sm:px-1.5 rounded bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-300">
               {tag}
             </span>
           )}
           {statusBadge && (
             <span
-              className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 inline-flex items-center justify-center size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+              className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
               title={statusBadge.label}
               aria-label={statusBadge.label}
             >
               <statusBadge.icon
-                className={`size-2.5 ${statusBadge.iconColor}`}
+                className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
                 aria-hidden="true"
               />
             </span>
@@ -167,12 +167,12 @@ export function GameCard({
 
       {showRating && (
         <span
-          className="absolute bottom-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-200"
+          className="absolute bottom-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
           title="Sua nota"
           aria-label={`Sua nota: ${game?.rating}`}
         >
           <Star
-            className={`size-2.5 fill-current ${accentColor}`}
+            className={`size-2 sm:size-2.5 fill-current ${accentColor}`}
             aria-hidden="true"
           />
           <span aria-hidden="true">{game?.rating}</span>
@@ -181,22 +181,22 @@ export function GameCard({
 
       {showCompletions && (
         <span
-          className="absolute bottom-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-200"
+          className="absolute bottom-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
           title="Vezes finalizado"
           aria-label={`Finalizado ${game?.completions}x`}
         >
-          <RotateCcw className={`size-2.5 ${accentColor}`} aria-hidden="true" />
+          <RotateCcw className={`size-2 sm:size-2.5 ${accentColor}`} aria-hidden="true" />
           <span aria-hidden="true">{game?.completions}</span>
         </span>
       )}
 
       {showHoursPlayed && (
         <span
-          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-dark-bg/90 border border-dark-border text-[10px] font-medium text-gray-200"
+          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
           title="Horas jogadas"
           aria-label={`${game?.hoursPlayed} horas jogadas`}
         >
-          <Clock className={`size-2.5 ${accentColor}`} aria-hidden="true" />
+          <Clock className={`size-2 sm:size-2.5 ${accentColor}`} aria-hidden="true" />
           <span aria-hidden="true">
             {Number(game?.hoursPlayed?.toFixed(1))}h
           </span>

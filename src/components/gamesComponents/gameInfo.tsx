@@ -14,12 +14,12 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
         <div className="flex items-center">
           {game?.coverUrl ? (
             <img
-              className="rounded-md w-[285px] h-[380px] object-cover"
+              className="rounded-md w-full max-w-[285px] h-[380px] object-cover"
               src={game.coverUrl}
               alt={`Capa do jogo ${game?.name}`}
             />
           ) : (
-            <div className="rounded-md w-[285px] h-[380px] bg-dark-bg-lighter flex items-center justify-center">
+            <div className="rounded-md w-full max-w-[285px] h-[380px] bg-dark-bg-lighter flex items-center justify-center">
               <span className="text-gray-400 text-sm">Sem capa</span>
             </div>
           )}
