@@ -72,6 +72,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
               setSearch('')
               actualInputRef.current?.focus()
             }}
+            title="Limpar busca"
             aria-label="Limpar busca"
           >
             <X size={15} />

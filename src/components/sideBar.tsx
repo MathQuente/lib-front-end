@@ -57,6 +57,7 @@ export function SideBar() {
           className={`p-2 text-gray-400 hover:text-white transition-colors ${focusRing}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
+          title="Abrir menu"
           aria-label="Abrir menu"
         >
           <Menu size={22} />
@@ -82,6 +83,7 @@ export function SideBar() {
               className={`p-1.5 text-gray-400 hover:text-white transition-colors ${focusRing}`}
               type="button"
               onClick={closeMobileMenu}
+              title="Fechar menu"
               aria-label="Fechar menu"
             >
               <X size={20} />

@@ -10,7 +10,7 @@ export function BackButton({ className }: { className?: string }) {
       type="button"
       onClick={() => navigate(-1)}
       className={twMerge(
-        'inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm',
+        'inline-flex self-start items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm',
         className
       )}
     >

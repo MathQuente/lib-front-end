@@ -49,17 +49,29 @@ export function Pagination({
       </p>
 
       <div className="flex gap-1.5">
-        <IconButton onClick={goToFirstPage} disabled={currentPage === 1}>
+        <IconButton
+          onClick={goToFirstPage}
+          disabled={currentPage === 1}
+          title="Primeira página"
+          aria-label="Primeira página"
+        >
           <ChevronsLeft className="size-4 text-primary" />
         </IconButton>
 
-        <IconButton onClick={goToPreviousPage} disabled={currentPage === 1}>
+        <IconButton
+          onClick={goToPreviousPage}
+          disabled={currentPage === 1}
+          title="Página anterior"
+          aria-label="Página anterior"
+        >
           <ChevronLeft className="size-4 text-primary" />
         </IconButton>
 
         <IconButton
           onClick={goToNextPage}
           disabled={currentPage === totalPages}
+          title="Próxima página"
+          aria-label="Próxima página"
         >
           <ChevronRight className="size-4 text-primary" />
         </IconButton>
@@ -67,6 +79,8 @@ export function Pagination({
         <IconButton
           onClick={goToLastPage}
           disabled={currentPage === totalPages}
+          title="Última página"
+          aria-label="Última página"
         >
           <ChevronsRight className="size-4 text-primary" />
         </IconButton>

@@ -100,6 +100,7 @@ export function RatingAverage({
         {userRating && (
           <button
             type="button"
+            title="Remover avaliação"
             aria-label="Remover avaliação"
             onClick={removeRating}
             disabled={isMutating}

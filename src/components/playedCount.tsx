@@ -18,6 +18,8 @@ export function PlayedCount({ game }: { game: GameCardData }) {
           onClick={() => updatePlayedCount(-1)}
           disabled={count <= 1}
           className="flex items-center justify-center size-6 rounded-md transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Diminuir vezes zerado"
+          aria-label="Diminuir vezes zerado"
         >
           <Minus className="size-3.5" />
         </button>
@@ -28,6 +30,8 @@ export function PlayedCount({ game }: { game: GameCardData }) {
           type="button"
           onClick={() => updatePlayedCount(1)}
           className="flex items-center justify-center size-6 rounded-md transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          title="Aumentar vezes zerado"
+          aria-label="Aumentar vezes zerado"
         >
           <Plus className="size-3.5" />
         </button>
