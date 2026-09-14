@@ -14,9 +14,9 @@ export function Button({
   const baseStyles =
     'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 disabled:cursor-not-allowed'
   const variants = {
-    primary: 'bg-primary hover:bg-primary-hover text-white font-bold',
+    primary: 'bg-primary hover:bg-primary-light text-white font-bold',
     secondary:
-      'bg-primary hover:bg-primary-hover text-white border border-primary',
+      'bg-primary hover:bg-primary-light text-white border border-primary',
     cancel:
       'bg-dark-bg-lighter hover:bg-dark-bg-light text-gray-300 hover:text-white border border-dark-border disabled:hover:bg-dark-bg-lighter disabled:hover:text-gray-300',
     outline:

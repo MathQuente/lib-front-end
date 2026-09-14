@@ -10,6 +10,7 @@ import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { useUserProfile } from '../../hooks/useUserProfile'
 import { Button } from '../button'
+import { SectionHeading } from '../sectionHeading'
 import { SteamImportSection } from './steamImportSection'
 import type { UserGamesFormProps } from '../../interfaces/user'
 
@@ -173,11 +174,15 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           )}
 
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            <label className="cursor-pointer rounded-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light">
+            <label
+              className="cursor-pointer rounded-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light"
+              title="Trocar banner"
+            >
               <input
                 type="file"
                 accept="image/*"
                 className="sr-only"
+                aria-label="Trocar banner"
                 {...registerField('userBanner', {
                   onChange: handleBannerChange
                 })}
@@ -192,6 +197,8 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                 type="button"
                 onClick={handleRemoveBanner}
                 className="p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                title="Remover banner"
+                aria-label="Remover banner"
               >
                 <X size={18} />
               </button>
@@ -200,7 +207,10 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         </div>
 
         <div className="absolute left-6 bottom-0 translate-y-1/2">
-          <label className="group relative block size-14 rounded-full border-2 border-primary bg-dark-bg overflow-hidden cursor-pointer has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light">
+          <label
+            className="group relative block size-14 rounded-full border-2 border-primary bg-dark-bg overflow-hidden cursor-pointer has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-light"
+            title="Trocar foto de perfil"
+          >
             <img
               src={profilePicSrc}
               alt="Foto de perfil"
@@ -213,6 +223,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
               type="file"
               accept="image/*"
               className="sr-only"
+              aria-label="Trocar foto de perfil"
               {...registerField('profilePicture', {
                 onChange: e => {
                   const file = e.target.files?.[0]
@@ -229,7 +240,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         </div>
       </div>
 
-      <div className="px-6 pt-10 pb-6 flex flex-col gap-5">
+      <div className="px-6 pt-12 pb-6 flex flex-col gap-7">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="userName" className="text-sm text-gray-400">
             Username
@@ -246,46 +257,54 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3 py-2.5">
-          <div className="flex items-start gap-2.5">
-            {isPublic ? (
-              <Globe className="size-4 text-primary mt-0.5 shrink-0" aria-hidden="true" />
-            ) : (
-              <Lock className="size-4 text-gray-400 mt-0.5 shrink-0" aria-hidden="true" />
-            )}
-            <div className="flex flex-col">
-              <span className="text-sm text-white">
-                {isPublic ? 'Perfil público' : 'Perfil privado'}
-              </span>
-              <span className="text-xs text-gray-400">
-                {isPublic
-                  ? 'Qualquer pessoa com o link pode ver seu perfil.'
-                  : 'Seu perfil fica visível só pra você.'}
-              </span>
-            </div>
-          </div>
+        <div className="flex flex-col gap-3">
+          <SectionHeading className="mb-0">Privacidade</SectionHeading>
 
-          <button
-            type="button"
-            role="switch"
-            aria-checked={isPublic}
-            aria-label="Alternar visibilidade do perfil"
-            onClick={() => setIsPublic(v => !v)}
-            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
-              isPublic ? 'bg-primary' : 'bg-dark-border'
-            }`}
-          >
-            <span
-              className={`inline-block size-3.5 transform rounded-full bg-white transition-transform duration-150 ${
-                isPublic ? 'translate-x-[19px]' : 'translate-x-1'
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3.5 py-3">
+            <div className="flex items-start gap-2.5">
+              {isPublic ? (
+                <Globe className="size-4 text-primary mt-0.5 shrink-0" aria-hidden="true" />
+              ) : (
+                <Lock className="size-4 text-gray-400 mt-0.5 shrink-0" aria-hidden="true" />
+              )}
+              <div className="flex flex-col">
+                <span className="text-sm text-white">
+                  {isPublic ? 'Perfil público' : 'Perfil privado'}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {isPublic
+                    ? 'Qualquer pessoa com o link pode ver seu perfil.'
+                    : 'Seu perfil fica visível só pra você.'}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isPublic}
+              title={isPublic ? 'Tornar perfil privado' : 'Tornar perfil público'}
+              aria-label="Alternar visibilidade do perfil"
+              onClick={() => setIsPublic(v => !v)}
+              className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
+                isPublic ? 'bg-primary' : 'bg-dark-border'
               }`}
-            />
-          </button>
+            >
+              <span
+                className={`inline-block size-3.5 transform rounded-full bg-white transition-transform duration-150 ${
+                  isPublic ? 'translate-x-[19px]' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
-        <SteamImportSection steamId={UserProfileResponse?.user?.steamId ?? null} />
+        <div className="flex flex-col gap-3">
+          <SectionHeading className="mb-0">Integrações</SectionHeading>
+          <SteamImportSection steamId={UserProfileResponse?.user?.steamId ?? null} />
+        </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3 pt-4 border-t border-dark-border">
           <Button
             type="button"
             variant="cancel"

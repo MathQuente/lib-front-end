@@ -60,10 +60,17 @@ export function SteamImportSection({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm text-gray-400">Steam</p>
+    <div className="flex flex-col gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3.5 py-3">
+      <div>
+        <p className="text-sm text-white">Steam</p>
+        <p className="text-xs text-gray-400">
+          {steamId
+            ? 'Sua conta Steam está conectada.'
+            : 'Conecte sua conta pra importar sua biblioteca automaticamente.'}
+        </p>
+      </div>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         <div className="flex gap-2">
           <input
             type="text"
@@ -73,16 +80,17 @@ export function SteamImportSection({
             value={profileInput}
             onChange={e => setProfileInput(e.target.value)}
             disabled={isConnecting}
-            className="bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150"
+            className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150"
           />
           <Button
             type="button"
             variant="cancel"
+            size="md"
             onClick={handleConnect}
             disabled={!profileInput.trim() || isConnecting}
             loading={isConnecting}
           >
-            Salvar
+            Conectar
           </Button>
         </div>
 

@@ -20,7 +20,11 @@ export function UserProfileModal({
             <Dialog.Title className="text-white font-semibold">
               Editar perfil
             </Dialog.Title>
-            <Dialog.Close className="text-gray-500 hover:text-white transition-colors p-0.5 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light">
+            <Dialog.Close
+              className="text-gray-500 hover:text-white transition-colors p-0.5 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              title="Fechar"
+              aria-label="Fechar"
+            >
               <X size={18} />
             </Dialog.Close>
           </div>
