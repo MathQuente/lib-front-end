@@ -14,6 +14,7 @@ import { RouletteWheel } from './pages/rouletteWheel'
 import { UserGamesPageByStatus } from './pages/userGamesPages'
 import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
+import { UserProfilePage } from './pages/userProfilePage'
 import { Layout } from './layout'
 
 const queryClient = new QueryClient()
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: '/roulette',
         element: <RouletteWheel />
+      },
+      {
+        path: '/users/:userId',
+        element: <UserProfilePage />
       },
       {
         path: '/userLibrary',

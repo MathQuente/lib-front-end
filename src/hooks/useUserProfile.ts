@@ -27,7 +27,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
     isError
   } = useQuery<UserProfileResponse>({
     queryKey: ['userProfile', userId],
-    queryFn: async () => api.getUserProfile(userId),
+    queryFn: async () => api.me(),
     placeholderData: keepPreviousData
   })
 
@@ -71,6 +71,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         userName?: string
         profilePicture?: string
         userBanner?: string | null
+        isPublic?: boolean
       } = {}
 
       if (data.userName !== undefined) {
@@ -85,10 +86,15 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         updatePayload.userBanner = userBannerUrl
       }
 
+      if (data.isPublic !== undefined) {
+        updatePayload.isPublic = data.isPublic
+      }
+
       return api.updateUser({
         userName: data.userName,
         profilePicture: profilePictureUrl,
-        userBanner: userBannerUrl
+        userBanner: userBannerUrl,
+        isPublic: data.isPublic
       })
     },
     onMutate: async newData => {
@@ -98,14 +104,15 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         queryClient.getQueryData<UserProfileResponse>(queryKey)
 
       // Optimistic update
-      if (newData.userName && previousProfile) {
+      if ((newData.userName || newData.isPublic !== undefined) && previousProfile) {
         queryClient.setQueryData<UserProfileResponse>(queryKey, old => {
           if (!old) return old
           return {
             ...old,
             user: {
               ...old.user,
-              userName: newData.userName || old.user.userName
+              userName: newData.userName || old.user.userName,
+              isPublic: newData.isPublic ?? old.user.isPublic
             }
           }
         })

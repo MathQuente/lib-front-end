@@ -3,7 +3,11 @@ import { toast } from 'react-toastify'
 import Cookies from 'js-cookie'
 import type { GameStatusEnum } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
-import type { UpdateUserPayload } from '../types/user'
+import type {
+  UpdateUserPayload,
+  UserProfileResponse,
+  PublicUserProfileResponse
+} from '../types/user'
 import type { CreateRatingResponse } from '../types/rating'
 import type { GetReviewResponse, UpsertReviewResponse } from '../types/review'
 import type {
@@ -94,7 +98,10 @@ export const api = {
     return response.data
   },
   getUserProfile: async (userId: string | null) => {
-    const response = await http.get(`/users/${userId}`, {})
+    const response = await http.get<PublicUserProfileResponse>(
+      `/users/${userId}`,
+      {}
+    )
     return response.data
   },
   getGames: async (
@@ -155,11 +162,12 @@ export const api = {
     return response.data.secure_url
   },
   updateUser: async (payload: UpdateUserPayload) => {
-    const body: Record<string, string | null> = {}
+    const body: Record<string, string | boolean | null> = {}
     if (payload.userName !== undefined) body.userName = payload.userName
     if (payload.profilePicture !== undefined)
       body.profilePicture = payload.profilePicture
     if (payload.userBanner !== undefined) body.userBanner = payload.userBanner
+    if (payload.isPublic !== undefined) body.isPublic = payload.isPublic
     const response = await http.patch('/users', body, {})
     return response.data
   },
@@ -210,7 +218,7 @@ export const api = {
     return response
   },
   me: async () => {
-    const response = await http.get('/users/me', {})
+    const response = await http.get<UserProfileResponse>('/users/me', {})
     return response.data
   },
   getGamesFeatured: async () => {
