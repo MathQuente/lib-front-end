@@ -18,8 +18,8 @@ export interface PublicUserProfile {
   id: string
   userName: string | null
   isPublic: boolean
-  profilePicture?: string | null
-  userBanner?: string | null
+  profilePicture: string | null
+  userBanner: string | null
   gamesAmount?: number
   totalHoursPlayed?: number
 }

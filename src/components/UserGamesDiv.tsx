@@ -27,7 +27,11 @@ const statusOrder: GameStatusEnum[] = [
   GameStatusEnum.Wishlist
 ]
 
-export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
+export function UserGamesDiv({
+  Games,
+  totalPerStatus,
+  showAllLink = true
+}: UserGameDivProps) {
   return (
     <div className="w-full mt-6 flex flex-col gap-4">
       {statusOrder.map(statusKey => {
@@ -50,7 +54,7 @@ export function UserGamesDiv({ Games, totalPerStatus }: UserGameDivProps) {
                 <span className="text-xs text-gray-400">{total}</span>
               </div>
 
-              {gamesForStatus.length > 0 && (
+              {showAllLink && gamesForStatus.length > 0 && (
                 <Link
                   to={`/userLibrary/${statusKey.toLowerCase()}Games`}
                   className="text-xs text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"

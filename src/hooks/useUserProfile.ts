@@ -104,7 +104,10 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         queryClient.getQueryData<UserProfileResponse>(queryKey)
 
       // Optimistic update
-      if ((newData.userName || newData.isPublic !== undefined) && previousProfile) {
+      if (
+        (newData.userName || newData.isPublic !== undefined) &&
+        previousProfile
+      ) {
         queryClient.setQueryData<UserProfileResponse>(queryKey, old => {
           if (!old) return old
           return {
@@ -120,8 +123,19 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
 
       return { previousProfile }
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey })
+
+      if (variables.isPublic !== undefined) {
+        queryClient.invalidateQueries({
+          queryKey: ['publicUserProfile', userId]
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['publicUserGames', userId]
+        })
+        queryClient.invalidateQueries({ queryKey: ['communityReviews'] })
+      }
+
       toast.success('Perfil atualizado com sucesso 👌')
       options?.onUpdateSuccess?.()
     },
