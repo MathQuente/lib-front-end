@@ -13,6 +13,7 @@ import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { SectionHeading } from '../components/sectionHeading'
 import { ReviewSection } from '../components/reviewSection'
+import { BackButton } from '../components/backButton'
 import dayjs from 'dayjs'
 
 export function GamePage() {
@@ -50,7 +51,10 @@ export function GamePage() {
   const { game, relatedGames } = GameResponse
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4 w-full">
+    <>
+      <BackButton className="mt-4" />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 w-full">
       <div className="lg:col-span-1">
         <div className="lg:sticky lg:top-6 bg-dark-bg-light border border-dark-border rounded-lg p-5 flex flex-col gap-5">
           <div className="flex flex-col items-center gap-3">
@@ -177,6 +181,7 @@ export function GamePage() {
 
         <SimilarGamesSlider SimilarGames={SimilarGames} />
       </div>
-    </div>
+      </div>
+    </>
   )
 }

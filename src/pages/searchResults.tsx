@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
 import { EmptyState } from '../components/emptyState'
 import { GameCard } from '../components/gamesComponents/gameCard'
+import { BackButton } from '../components/backButton'
 
 export function SearchResults() {
   const { query } = useParams()
@@ -79,6 +80,7 @@ export function SearchResults() {
 
   return (
     <>
+      <BackButton className="mt-4 mb-2" />
       <div className="w-full mb-4">
         <h1 className="flex flex-col sm:flex-row sm:items-center justify-center gap-1 text-center sm:text-left">
           <span className="text-primary text-base sm:text-lg font-normal">

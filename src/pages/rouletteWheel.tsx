@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
 import { USER_GAME_STATUS_ID } from '../constants/gameStatus'
+import { BackButton } from '../components/backButton'
 
 export function RouletteWheel() {
   const [options, setOptions] = useState<UserGameEntry[]>([])
@@ -61,6 +62,7 @@ export function RouletteWheel() {
 
   return (
     <div className="flex flex-col w-full min-h-screen">
+      <BackButton className="mt-4" />
       <div className="flex flex-col items-center mt-4">
         {gameWinner && (
           <div className="flex flex-col items-center justify-center gap-2 pb-2">

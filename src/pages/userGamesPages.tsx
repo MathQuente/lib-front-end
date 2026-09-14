@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { GameStatusEnum } from '../types/games'
 import { useNavigate, useParams } from 'react-router-dom'
 import { GameListPage } from '../components/gameListPage'
+import { BackButton } from '../components/backButton'
 import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { GameListData } from '../types/games'
@@ -84,6 +85,7 @@ export function UserGamesPageByStatus() {
 
   return (
     <>
+      <BackButton className="mt-4" />
       {UserGamesResponse && (
         <GameListPage
           games={gamesForList}

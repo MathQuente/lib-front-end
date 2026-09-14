@@ -1,5 +1,6 @@
 import { GameListPage } from '../components/gameListPage'
 import { EmptyState } from '../components/emptyState'
+import { BackButton } from '../components/backButton'
 import { useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
@@ -59,6 +60,7 @@ export function ComingSoonPage() {
 
   return (
     <>
+      <BackButton className="mt-4" />
       <GameListPage
         games={ComingSoon}
         page={page}
