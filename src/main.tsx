@@ -15,6 +15,7 @@ import { UserGamesPageByStatus } from './pages/userGamesPages'
 import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
 import { UserProfilePage } from './pages/userProfilePage'
+import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
 
 const queryClient = new QueryClient()
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: '/games/:igdbId',
         element: <GamePage />
+      },
+      {
+        path: '/games/:igdbId/reviews',
+        element: <GameReviewsPage />
       },
       {
         path: '/roulette',

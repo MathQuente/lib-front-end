@@ -32,6 +32,7 @@ export const useReview = (igdbId: string | undefined) => {
     mutationFn: (text: string) => api.upsertReview(igdbId, text),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
+      queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
       toast.success('Review salva com sucesso 👌')
     },
     onError: err => {
@@ -45,6 +46,7 @@ export const useReview = (igdbId: string | undefined) => {
     mutationFn: () => api.deleteReview(igdbId),
     onSuccess: () => {
       queryClient.setQueryData<GetReviewResponse>(queryKey, { review: null })
+      queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
       toast.success('Review removida com sucesso 👌')
     },
     onError: err => {

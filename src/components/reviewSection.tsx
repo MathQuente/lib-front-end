@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useReview } from '../hooks/useReview'
 import { useGameStatus } from '../hooks/useGameStatus'
@@ -9,6 +7,7 @@ import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
 import { Button } from './button'
 import { ConfirmDialog } from './confirmDialog'
 import { SectionHeading } from './sectionHeading'
+import { ReviewMarkdown } from './reviewMarkdown'
 import type { GameCardData } from '../types/games'
 
 const MAX_LENGTH = 2000
@@ -86,6 +85,7 @@ export function ReviewSection({ game }: { game: GameCardData }) {
               type="button"
               onClick={startEditing}
               className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-primary hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              title="Editar review"
               aria-label="Editar review"
             >
               <Pencil className="size-3.5" />
@@ -94,6 +94,7 @@ export function ReviewSection({ game }: { game: GameCardData }) {
               type="button"
               onClick={() => setConfirmOpen(true)}
               className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-red-400 hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              title="Excluir review"
               aria-label="Excluir review"
             >
               <Trash2 className="size-3.5" />
@@ -134,46 +135,7 @@ export function ReviewSection({ game }: { game: GameCardData }) {
         </div>
       ) : (
         <div className="text-sm text-gray-300">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              p: ({ children }) => (
-                <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>
-              ),
-              a: ({ children, href }) => (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {children}
-                </a>
-              ),
-              strong: ({ children }) => (
-                <strong className="font-semibold text-white">
-                  {children}
-                </strong>
-              ),
-              ul: ({ children }) => (
-                <ul className="list-disc list-inside mb-2 space-y-1">
-                  {children}
-                </ul>
-              ),
-              ol: ({ children }) => (
-                <ol className="list-decimal list-inside mb-2 space-y-1">
-                  {children}
-                </ol>
-              ),
-              code: ({ children }) => (
-                <code className="px-1 py-0.5 rounded bg-dark-bg text-primary-light text-xs">
-                  {children}
-                </code>
-              )
-            }}
-          >
-            {review.text}
-          </ReactMarkdown>
+          <ReviewMarkdown text={review.text} />
         </div>
       )}
 

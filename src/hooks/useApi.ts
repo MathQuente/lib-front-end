@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Cookies from 'js-cookie'
-import type { GameStatusEnum } from '../types/games'
+import type { GameStatusEnum, UserGamesResponse } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type {
   UpdateUserPayload,
@@ -9,7 +9,11 @@ import type {
   PublicUserProfileResponse
 } from '../types/user'
 import type { CreateRatingResponse } from '../types/rating'
-import type { GetReviewResponse, UpsertReviewResponse } from '../types/review'
+import type {
+  GetReviewResponse,
+  UpsertReviewResponse,
+  GetCommunityReviewsResponse
+} from '../types/review'
 import type {
   ConnectSteamResponse,
   StartImportResponse,
@@ -100,6 +104,13 @@ export const api = {
   getUserProfile: async (userId: string | null) => {
     const response = await http.get<PublicUserProfileResponse>(
       `/users/${userId}`,
+      {}
+    )
+    return response.data
+  },
+  getPublicUserGames: async (userId: string | null) => {
+    const response = await http.get<UserGamesResponse>(
+      `/users/${userId}/games`,
       {}
     )
     return response.data
@@ -255,6 +266,17 @@ export const api = {
   deleteReview: async (igdbId: string | undefined) => {
     const response = await http.delete(`/reviews/${igdbId}`, {})
     return response
+  },
+  getCommunityReviews: async (
+    igdbId: string | undefined,
+    pageIndex: number,
+    limit?: number
+  ) => {
+    const response = await http.get<GetCommunityReviewsResponse>(
+      `/reviews/${igdbId}/community`,
+      { params: { pageIndex, limit } }
+    )
+    return response.data
   },
   connectSteam: async (profileInput: string) => {
     const response = await http.patch<ConnectSteamResponse>(

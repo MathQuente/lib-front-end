@@ -13,6 +13,7 @@ import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { SectionHeading } from '../components/sectionHeading'
 import { ReviewSection } from '../components/reviewSection'
+import { CommunityReviewsSection } from '../components/communityReviewsSection'
 import { BackButton } from '../components/backButton'
 import dayjs from 'dayjs'
 
@@ -174,6 +175,8 @@ export function GamePage() {
         )}
 
         {user && <ReviewSection game={game} />}
+
+        <CommunityReviewsSection igdbId={igdbId} />
 
         <Details GameResponse={GameResponse} />
 
