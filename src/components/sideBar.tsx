@@ -1,18 +1,31 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
-import { ChevronDown, Menu, X } from 'lucide-react'
+import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 
 const focusRing =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm'
 
+const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `flex items-center gap-2 text-base py-2 transition-colors ${focusRing} ${
+    isActive
+      ? 'text-white font-semibold'
+      : 'text-primary hover:text-primary-light'
+  }`
+
+const desktopNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `text-sm transition-colors ${focusRing} ${
+    isActive
+      ? 'text-white font-semibold'
+      : 'text-primary hover:text-primary-light'
+  }`
+
 export function SideBar() {
   const { user } = useAuth()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [openMobileProfileMenu, setOpenMobileProfileMenu] = useState(false)
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : 'unset'
@@ -30,7 +43,6 @@ export function SideBar() {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false)
-    setOpenMobileProfileMenu(false)
   }
 
   return (
@@ -65,12 +77,7 @@ export function SideBar() {
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between px-4 py-4 border-b border-dark-border">
-            <Link to="/" onClick={closeMobileMenu} className={focusRing}>
-              <h1 className="font-bold text-white">
-                <span className="text-primary">Lib</span>
-              </h1>
-            </Link>
+          <div className="flex items-center justify-end px-4 py-4 border-b border-dark-border">
             <button
               className={`p-1.5 text-gray-400 hover:text-white transition-colors ${focusRing}`}
               type="button"
@@ -87,69 +94,73 @@ export function SideBar() {
             <div className="flex flex-col gap-0.5 mt-1">
               {isLoggedIn ? (
                 <>
-                  <button
-                    type="button"
-                    className={`flex items-center gap-1 py-2 text-sm text-primary hover:text-primary-light w-full text-left transition-colors ${focusRing}`}
-                    onClick={() =>
-                      setOpenMobileProfileMenu(!openMobileProfileMenu)
-                    }
+                  <NavLink
+                    to="/"
+                    end
+                    onClick={closeMobileMenu}
+                    className={mobileNavLinkClass}
                   >
-                    {user?.userName}
-                    <ChevronDown
-                      className={`transition-transform duration-150 ${openMobileProfileMenu ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-
-                  {openMobileProfileMenu && (
-                    <div className="flex flex-col gap-0.5 pl-3 border-l border-dark-border mb-1">
-                      <Link
-                        to="/userLibrary"
-                        onClick={closeMobileMenu}
-                        className={`text-sm text-gray-400 hover:text-white transition-colors py-1.5 ${focusRing}`}
-                      >
-                        Minha Biblioteca
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className={`text-sm text-gray-400 hover:text-white transition-colors py-1.5 text-left ${focusRing}`}
-                      >
-                        Sair
-                      </button>
-                    </div>
-                  )}
-
-                  <Link
+                    <Home className="size-5" aria-hidden="true" />
+                    Home
+                  </NavLink>
+                  <NavLink
+                    to="/userLibrary"
+                    onClick={closeMobileMenu}
+                    className={mobileNavLinkClass}
+                  >
+                    <Library className="size-5" aria-hidden="true" />
+                    Minha Biblioteca
+                  </NavLink>
+                  <NavLink
                     to="/games"
                     onClick={closeMobileMenu}
-                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
+                    className={mobileNavLinkClass}
                   >
+                    <Gamepad2 className="size-5" aria-hidden="true" />
                     Games
-                  </Link>
+                  </NavLink>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={`flex items-center gap-2 text-base text-gray-400 hover:text-white py-2 text-left transition-colors ${focusRing}`}
+                  >
+                    <LogOut className="size-5" aria-hidden="true" />
+                    Sair
+                  </button>
                 </>
               ) : (
                 <>
+                  <NavLink
+                    to="/"
+                    end
+                    onClick={closeMobileMenu}
+                    className={mobileNavLinkClass}
+                  >
+                    <Home className="size-5" aria-hidden="true" />
+                    Home
+                  </NavLink>
                   <Link
                     to="/auth?tab=login"
                     onClick={closeMobileMenu}
-                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
+                    className={`text-base text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Entrar
                   </Link>
                   <Link
                     to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
-                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
+                    className={`text-base text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
                   >
                     Criar conta
                   </Link>
-                  <Link
+                  <NavLink
                     to="/games"
                     onClick={closeMobileMenu}
-                    className={`text-sm text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
+                    className={mobileNavLinkClass}
                   >
+                    <Gamepad2 className="size-5" aria-hidden="true" />
                     Games
-                  </Link>
+                  </NavLink>
                 </>
               )}
             </div>
@@ -166,18 +177,15 @@ export function SideBar() {
 
         {isLoggedIn ? (
           <div className="flex items-center gap-5">
-            <Link
-              to="/userLibrary"
-              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
-            >
+            <NavLink to="/" end className={desktopNavLinkClass}>
+              Home
+            </NavLink>
+            <NavLink to="/userLibrary" className={desktopNavLinkClass}>
               Minha Biblioteca
-            </Link>
-            <Link
-              to="/games"
-              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
-            >
+            </NavLink>
+            <NavLink to="/games" className={desktopNavLinkClass}>
               Games
-            </Link>
+            </NavLink>
             <button
               type="button"
               onClick={handleLogout}
@@ -189,6 +197,9 @@ export function SideBar() {
           </div>
         ) : (
           <div className="flex items-center gap-5">
+            <NavLink to="/" end className={desktopNavLinkClass}>
+              Home
+            </NavLink>
             <Link
               to="/auth?tab=login"
               className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
@@ -201,12 +212,9 @@ export function SideBar() {
             >
               Criar conta
             </Link>
-            <Link
-              to="/games"
-              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
-            >
+            <NavLink to="/games" className={desktopNavLinkClass}>
               Games
-            </Link>
+            </NavLink>
             <SearchBar isMobile={false} />
           </div>
         )}
