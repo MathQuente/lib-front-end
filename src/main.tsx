@@ -10,7 +10,6 @@ import { UserLibrary } from './pages/userLibrary'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
 import { GamePage } from './pages/gamePage'
-import { RouletteWheel } from './pages/rouletteWheel'
 import { UserGamesPageByStatus } from './pages/userGamesPages'
 import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
@@ -52,10 +51,6 @@ const router = createBrowserRouter([
       {
         path: '/games/:igdbId/reviews',
         element: <GameReviewsPage />
-      },
-      {
-        path: '/roulette',
-        element: <RouletteWheel />
       },
       {
         path: '/follows',
