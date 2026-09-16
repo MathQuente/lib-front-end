@@ -27,6 +27,8 @@ export type SteamImportStatus =
 
 export interface ImportStatusResponse {
   status: SteamImportStatus
+  progress?: number
   result?: SteamImportResult
   error?: string
+  cooldownUntil?: number
 }

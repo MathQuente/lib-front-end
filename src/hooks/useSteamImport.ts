@@ -34,6 +34,19 @@ export const useSteamImport = () => {
     }
   })
 
+  const disconnectSteam = useMutation({
+    mutationFn: () => api.disconnectSteam(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
+      toast.success('Steam desconectada')
+    },
+    onError: error => {
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao desconectar Steam'
+      )
+    }
+  })
+
   const startImport = useMutation({
     mutationFn: () => api.startSteamImport(),
     onSuccess: () => {
@@ -58,6 +71,8 @@ export const useSteamImport = () => {
     connectSteam: (profileInput: string) =>
       connectSteam.mutateAsync(profileInput),
     isConnecting: connectSteam.isPending,
+    disconnectSteam: () => disconnectSteam.mutateAsync(),
+    isDisconnecting: disconnectSteam.isPending,
     startImport: () => startImport.mutateAsync(),
     isStarting: startImport.isPending,
     refreshAfterImport

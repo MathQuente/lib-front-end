@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
+import { FaSteam } from 'react-icons/fa'
 import { Button } from '../button'
+import { ConfirmDialog } from '../confirmDialog'
 import { SteamImportResultModal } from '../steamImportResultModal'
 import { useSteamImport } from '../../hooks/useSteamImport'
 
 const POLLING_STATUSES = ['waiting', 'active', 'delayed']
 
-export function SteamImportSection({
-  steamId
-}: {
-  steamId: string | null
-}) {
+export function SteamImportSection({ steamId }: { steamId: string | null }) {
   const {
     status,
     connectSteam,
     isConnecting,
+    disconnectSteam,
+    isDisconnecting,
     startImport,
     isStarting,
     refreshAfterImport
@@ -21,16 +21,13 @@ export function SteamImportSection({
 
   const [profileInput, setProfileInput] = useState('')
   const [resultModalOpen, setResultModalOpen] = useState(false)
+  const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false)
   const previousStatus = useRef<string | undefined>(undefined)
   const isFirstStatusLoad = useRef(true)
 
   useEffect(() => {
     if (status?.status === undefined) return
 
-    // The first status this mount ever sees just sets the baseline —
-    // otherwise a leftover completed/failed job from a previous import
-    // would pop the result modal back open every time the profile modal
-    // is reopened, not only on a transition that happens while watching.
     if (isFirstStatusLoad.current) {
       isFirstStatusLoad.current = false
       previousStatus.current = status.status
@@ -52,17 +49,52 @@ export function SteamImportSection({
   }, [status?.status])
 
   const isImporting = POLLING_STATUSES.includes(status?.status ?? '')
+  const progress =
+    status?.status === 'active' ? (status.progress ?? 0) : undefined
+
+  const cooldownUntil =
+    status?.status === 'completed' ? status.cooldownUntil : undefined
+
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!cooldownUntil) return
+    const interval = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [cooldownUntil])
+
+  const cooldownRemainingMs = cooldownUntil ? cooldownUntil - now : 0
+  const isOnCooldown = cooldownRemainingMs > 0
+  const cooldownLabel = isOnCooldown
+    ? (() => {
+        const totalMinutes = Math.ceil(cooldownRemainingMs / 60000)
+        const hours = Math.floor(totalMinutes / 60)
+        const minutes = totalMinutes % 60
+        return hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`
+      })()
+    : null
 
   async function handleConnect() {
+    if (steamId) {
+      setDisconnectDialogOpen(true)
+      return
+    }
     if (!profileInput.trim()) return
     await connectSteam(profileInput.trim())
     setProfileInput('')
   }
 
+  async function handleDisconnect() {
+    await disconnectSteam()
+    setDisconnectDialogOpen(false)
+  }
+
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3.5 py-3">
       <div>
-        <p className="text-sm text-white">Steam</p>
+        <p className="text-sm text-white flex items-center gap-1.5">
+          <FaSteam className="size-4 text-gray-300" aria-hidden="true" />
+          Steam
+        </p>
         <p className="text-xs text-gray-400">
           {steamId
             ? 'Sua conta Steam está conectada.'
@@ -71,7 +103,7 @@ export function SteamImportSection({
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             placeholder={
@@ -79,43 +111,73 @@ export function SteamImportSection({
             }
             value={profileInput}
             onChange={e => setProfileInput(e.target.value)}
-            disabled={isConnecting}
-            className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150"
+            disabled={isConnecting || !!steamId}
+            className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
           />
           <Button
             type="button"
-            variant="cancel"
-            size="md"
+            variant={steamId ? 'cancel' : 'primary'}
+            size="sm"
+            className="px-3 py-1.5 font-medium shrink-0"
             onClick={handleConnect}
-            disabled={!profileInput.trim() || isConnecting}
+            disabled={(!steamId && !profileInput.trim()) || isConnecting}
             loading={isConnecting}
           >
-            Conectar
+            {steamId ? 'Desconectar' : 'Conectar'}
           </Button>
         </div>
 
         <div className="flex items-center gap-3">
           <Button
             type="button"
-            variant="outline"
+            variant="primary"
             onClick={() => startImport()}
-            disabled={!steamId || isImporting || isStarting}
+            disabled={!steamId || isImporting || isStarting || isOnCooldown}
             loading={isStarting}
           >
             {isImporting ? 'Importando...' : 'Importar da Steam'}
           </Button>
-          {isImporting && (
+          {isImporting && progress === undefined && (
             <span className="text-xs text-gray-400">
               Importando sua biblioteca... isso pode levar um tempo.
             </span>
           )}
+          {!isImporting && isOnCooldown && (
+            <span className="text-xs text-gray-400">
+              Você pode importar novamente em {cooldownLabel}.
+            </span>
+          )}
         </div>
+
+        {isImporting && progress !== undefined && (
+          <div className="flex flex-col gap-1">
+            <div className="h-1.5 w-full rounded-full bg-dark-bg overflow-hidden">
+              <div
+                className="h-full bg-primary transition-[width] duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-xs text-gray-400">
+              Importando sua biblioteca... {progress}%
+            </span>
+          </div>
+        )}
       </div>
 
       <SteamImportResultModal
         open={resultModalOpen}
         onOpenChange={setResultModalOpen}
         status={status}
+      />
+
+      <ConfirmDialog
+        open={disconnectDialogOpen}
+        onOpenChange={setDisconnectDialogOpen}
+        title="Desconectar Steam"
+        description="Sua conta Steam será desvinculada. Os jogos já importados continuam na sua biblioteca."
+        confirmLabel="Desconectar"
+        onConfirm={handleDisconnect}
+        isLoading={isDisconnecting}
       />
     </div>
   )
