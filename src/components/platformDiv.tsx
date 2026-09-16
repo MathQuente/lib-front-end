@@ -1,19 +1,5 @@
-import { Gamepad2, Monitor } from 'lucide-react'
 import type { PlatformDivProps } from '../interfaces/games'
-
-function getPlatformIcon(name: string) {
-  const n = name.toLowerCase()
-  if (
-    n.includes('xbox') ||
-    n.includes('playstation') ||
-    n.includes('ps') ||
-    n.includes('nintendo') ||
-    n.includes('switch')
-  ) {
-    return Gamepad2
-  }
-  return Monitor
-}
+import { getPlatformIcon } from '../utils/platformIcon'
 
 export function PlatformDiv({ platformName }: PlatformDivProps) {
   const Icon = getPlatformIcon(platformName)
