@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Bar, Cell, ResponsiveContainer, Tooltip, BarChart } from 'recharts'
 import { useRating } from '../hooks/useRating'
 import type { RatingChartProps } from '../interfaces/games'
+import { PRIMARY, PRIMARY_DARK } from '../constants/colors'
 
 export function RatingChart({ GameResponse }: RatingChartProps) {
   const { allRatingsResponse } = useRating(GameResponse.game.igdbId.toString())
@@ -54,7 +55,7 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
                     <Star className="w-4 h-4 text-gray-300" />
                   </span>
                   <p className="text-gray-300">
-                    Ratings ({`${data.percentage}%`})
+                    Avaliações ({`${data.percentage}%`})
                   </p>
                 </div>
               )
@@ -64,7 +65,7 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
             {chartData.map(entry => (
               <Cell
                 key={`cell-${entry.stars}`}
-                fill={hoveredIndex === entry.stars ? '#5D2A8A' : '#7A38CA'}
+                fill={hoveredIndex === entry.stars ? PRIMARY_DARK : PRIMARY}
                 onMouseEnter={() => setHoveredIndex(entry.stars)}
                 onMouseLeave={() => setHoveredIndex(null)}
               />

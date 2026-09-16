@@ -41,7 +41,7 @@ export function GameForm({ game }: GameFormProps) {
           { statusId: STATUS.BACKLOG, icon: Library, label: 'Pendentes' }
         ]
       : []),
-    { statusId: STATUS.WISHLIST, icon: Gift, label: 'Lista de Desejos' }
+    { statusId: STATUS.WISHLIST, icon: Gift, label: 'Lista de desejos' }
   ]
 
   return (

@@ -73,7 +73,7 @@ export function SortControls({
               <option value={GameStatusEnum.Played}>Jogado</option>
               <option value={GameStatusEnum.Playing}>Jogando</option>
               <option value={GameStatusEnum.Backlog}>Pendentes</option>
-              <option value={GameStatusEnum.Wishlist}>Lista de Desejos</option>
+              <option value={GameStatusEnum.Wishlist}>Lista de desejos</option>
             </select>
           </div>
         )}

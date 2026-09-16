@@ -3,6 +3,7 @@ import { useRating } from '../hooks/useRating'
 import { useState, type SyntheticEvent } from 'react'
 import { Star, X } from 'lucide-react'
 import type { RatingAverageProps } from '../interfaces/games'
+import { PRIMARY, PRIMARY_LIGHT } from '../constants/colors'
 
 export function RatingAverage({
   game,
@@ -78,7 +79,7 @@ export function RatingAverage({
             sx={{
               position: 'absolute',
               zIndex: 1,
-              '& .MuiRating-icon': { color: '#7A38CA' }
+              '& .MuiRating-icon': { color: PRIMARY }
             }}
           />
           <Rating
@@ -93,7 +94,7 @@ export function RatingAverage({
             sx={{
               position: 'relative',
               zIndex: 2,
-              '& .MuiRating-icon': { color: '#9D52E8', opacity: 0.7 }
+              '& .MuiRating-icon': { color: PRIMARY_LIGHT, opacity: 0.7 }
             }}
           />
         </div>

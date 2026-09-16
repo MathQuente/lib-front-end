@@ -5,7 +5,7 @@ const rows = [
   { icon: Gamepad2, label: 'Jogado', key: 'PLAYED' },
   { icon: Play, label: 'Jogando', key: 'PLAYING' },
   { icon: Library, label: 'Pendentes', key: 'BACKLOG' },
-  { icon: Gift, label: 'Lista de Desejos', key: 'WISHLIST' }
+  { icon: Gift, label: 'Lista de desejos', key: 'WISHLIST' }
 ] as const
 
 export function PlayersInfo({ GameResponse }: PlayerInfosProps) {

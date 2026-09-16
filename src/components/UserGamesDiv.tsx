@@ -9,7 +9,7 @@ const statusLabels: Record<GameStatusEnum, string> = {
   [GameStatusEnum.Playing]: 'Jogando',
   [GameStatusEnum.Paused]: 'Pausado',
   [GameStatusEnum.Backlog]: 'Pendentes',
-  [GameStatusEnum.Wishlist]: 'Lista de Desejos'
+  [GameStatusEnum.Wishlist]: 'Lista de desejos'
 }
 
 const statusIcons: Record<GameStatusEnum, typeof Gamepad2> = {

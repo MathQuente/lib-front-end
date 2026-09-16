@@ -152,7 +152,7 @@ export function GameCard({
           )}
           {statusBadge && (
             <span
-              className="absolute top-1.5 left-1/2 -translate-x-1/2 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+              className="absolute top-1.5 left-1.5 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
               title={statusBadge.label}
               aria-label={statusBadge.label}
             >

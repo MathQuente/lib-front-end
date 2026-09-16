@@ -35,7 +35,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
           {user && <RatingAverage game={game} />}
 
           {!user && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 text-sm text-gray-400">
               <Link to="/auth" className="text-primary-light hover:underline">
                 Entrar
               </Link>
