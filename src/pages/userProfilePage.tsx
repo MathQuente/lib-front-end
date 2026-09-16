@@ -1,16 +1,22 @@
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Lock } from 'lucide-react'
+import { useState } from 'react'
 import { api } from '../hooks/useApi'
 import { usePublicUserGames } from '../hooks/usePublicUserGames'
+import { useFollowers } from '../hooks/useFollowers'
+import { useFollowing } from '../hooks/useFollowing'
 import { UserBanner } from '../components/userGamesComponents/userBanner'
 import { UserProfilePicture } from '../components/userGamesComponents/userProfilePicture'
 import { UserInfo } from '../components/userGamesComponents/userInfo'
 import { UserGamesDiv } from '../components/UserGamesDiv'
+import { FollowActionButton } from '../components/followActionButton'
+import { UserListModal } from '../components/userListModal'
 import { BackButton } from '../components/backButton'
 
 export function UserProfilePage() {
   const { userId } = useParams()
+  const [followersModalOpen, setFollowersModalOpen] = useState(false)
+  const [followingModalOpen, setFollowingModalOpen] = useState(false)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['publicUserProfile', userId],
@@ -18,10 +24,9 @@ export function UserProfilePage() {
     enabled: !!userId
   })
 
-  const { games, totalPerStatus } = usePublicUserGames(
-    userId,
-    !!data?.user.isPublic
-  )
+  const { games, totalPerStatus } = usePublicUserGames(userId, true)
+  const { followers } = useFollowers(userId)
+  const { following } = useFollowing(userId)
 
   if (isLoading) {
     return (
@@ -58,38 +63,39 @@ export function UserProfilePage() {
           />
         </div>
 
-        {user.isPublic ? (
-          <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4">
-            <UserInfo
-              userName={user.userName ?? 'Usuário'}
-              gamesAmount={user.gamesAmount ?? 0}
-              totalHoursPlayed={user.totalHoursPlayed ?? 0}
-            />
-          </div>
-        ) : (
-          <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4">
-            <p className="text-white font-semibold truncate">
-              {user.userName ?? 'Usuário'}
-            </p>
-          </div>
-        )}
+        <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4 flex flex-wrap items-center justify-between gap-3">
+          <UserInfo
+            userName={user.userName ?? 'Usuário'}
+            gamesAmount={user.gamesAmount ?? 0}
+            totalHoursPlayed={user.totalHoursPlayed ?? 0}
+            followersCount={user.followersCount}
+            followingCount={user.followingCount}
+            onFollowersClick={() => setFollowersModalOpen(true)}
+            onFollowingClick={() => setFollowingModalOpen(true)}
+          />
+          {userId && <FollowActionButton userId={userId} />}
+        </div>
       </div>
 
-      {user.isPublic ? (
-        <UserGamesDiv
-          Games={games}
-          totalPerStatus={totalPerStatus}
-          showAllLink={false}
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center w-full py-16 text-center">
-          <Lock className="size-12 text-gray-500 mb-4" aria-hidden="true" />
-          <p className="text-white font-medium mb-1">Perfil privado</p>
-          <p className="text-gray-500 text-sm max-w-xs">
-            Os jogos deste usuário não são visíveis.
-          </p>
-        </div>
-      )}
+      <UserGamesDiv
+        Games={games}
+        totalPerStatus={totalPerStatus}
+        showAllLink={false}
+      />
+
+      <UserListModal
+        open={followersModalOpen}
+        onOpenChange={setFollowersModalOpen}
+        title="Seguidores"
+        users={followers}
+      />
+
+      <UserListModal
+        open={followingModalOpen}
+        onOpenChange={setFollowingModalOpen}
+        title="Seguindo"
+        users={following}
+      />
     </>
   )
 }

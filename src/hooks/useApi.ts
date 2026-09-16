@@ -19,6 +19,12 @@ import type {
   StartImportResponse,
   ImportStatusResponse
 } from '../types/steam'
+import type {
+  IsFollowingResponse,
+  GetFollowersResponse,
+  GetFollowingResponse,
+  SearchUsersResponse
+} from '../types/follow'
 
 const http = axios.create({
   baseURL: '/api',
@@ -115,6 +121,41 @@ export const api = {
     )
     return response.data
   },
+  getUserFollowers: async (userId: string | null) => {
+    const response = await http.get<GetFollowersResponse>(
+      `/users/${userId}/followers`,
+      {}
+    )
+    return response.data
+  },
+  getUserFollowing: async (userId: string | null) => {
+    const response = await http.get<GetFollowingResponse>(
+      `/users/${userId}/following`,
+      {}
+    )
+    return response.data
+  },
+  searchUsers: async (query: string) => {
+    const response = await http.get<SearchUsersResponse>('/users', {
+      params: { query }
+    })
+    return response.data
+  },
+  followUser: async (userId: string) => {
+    const response = await http.post(`/follows/${userId}`, {}, {})
+    return response.data
+  },
+  unfollowUser: async (userId: string) => {
+    const response = await http.delete(`/follows/${userId}`, {})
+    return response
+  },
+  getFollowStatus: async (userId: string) => {
+    const response = await http.get<IsFollowingResponse>(
+      `/follows/status/${userId}`,
+      {}
+    )
+    return response.data
+  },
   getGames: async (
     page: number,
     search: string | undefined,
@@ -173,12 +214,11 @@ export const api = {
     return response.data.secure_url
   },
   updateUser: async (payload: UpdateUserPayload) => {
-    const body: Record<string, string | boolean | null> = {}
+    const body: Record<string, string | null> = {}
     if (payload.userName !== undefined) body.userName = payload.userName
     if (payload.profilePicture !== undefined)
       body.profilePicture = payload.profilePicture
     if (payload.userBanner !== undefined) body.userBanner = payload.userBanner
-    if (payload.isPublic !== undefined) body.isPublic = payload.isPublic
     const response = await http.patch('/users', body, {})
     return response.data
   },
@@ -285,6 +325,9 @@ export const api = {
       {}
     )
     return response.data
+  },
+  disconnectSteam: async () => {
+    await http.delete('/users/steam', {})
   },
   startSteamImport: async () => {
     const response = await http.post<StartImportResponse>(

@@ -11,17 +11,19 @@ export interface User {
   gamesAmount: number
   totalHoursPlayed: number
   steamId: string | null
-  isPublic: boolean
+  followersCount: number
+  followingCount: number
 }
 
 export interface PublicUserProfile {
   id: string
   userName: string | null
-  isPublic: boolean
   profilePicture: string | null
   userBanner: string | null
-  gamesAmount?: number
-  totalHoursPlayed?: number
+  gamesAmount: number
+  totalHoursPlayed: number
+  followersCount: number
+  followingCount: number
 }
 
 export interface PublicUserProfileResponse {
@@ -40,7 +42,6 @@ export interface UpdateUserProfileData {
   userName?: string
   profilePicture?: string | File
   userBanner?: string | File | null
-  isPublic?: boolean
 }
 
 type ReplaceFileWithString<T> = T extends File ? string : T

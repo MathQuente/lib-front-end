@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
-import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
+import { Menu, X, Home, Library, Gamepad2, Users, LogOut } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 
@@ -121,6 +121,14 @@ export function SideBar() {
                     <Gamepad2 className="size-5" aria-hidden="true" />
                     Games
                   </NavLink>
+                  <NavLink
+                    to="/follows"
+                    onClick={closeMobileMenu}
+                    className={mobileNavLinkClass}
+                  >
+                    <Users className="size-5" aria-hidden="true" />
+                    Seguindo
+                  </NavLink>
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -187,6 +195,9 @@ export function SideBar() {
             </NavLink>
             <NavLink to="/games" className={desktopNavLinkClass}>
               Games
+            </NavLink>
+            <NavLink to="/follows" className={desktopNavLinkClass}>
+              Seguindo
             </NavLink>
             <button
               type="button"

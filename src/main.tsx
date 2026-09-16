@@ -16,6 +16,7 @@ import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
 import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
+import { FollowsPage } from './pages/followsPage'
 import { Layout } from './layout'
 
 const queryClient = new QueryClient()
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
       {
         path: '/roulette',
         element: <RouletteWheel />
+      },
+      {
+        path: '/follows',
+        element: (
+          <RequireAuth>
+            <FollowsPage />
+          </RequireAuth>
+        )
       },
       {
         path: '/users/:userId',

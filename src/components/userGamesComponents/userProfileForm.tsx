@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import type { FieldValues } from 'react-hook-form'
 import type { z } from 'zod'
 
-import { X, Camera, Globe, Lock } from 'lucide-react'
+import { X, Camera } from 'lucide-react'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 
 import { updateProfileSchema } from '../../schemas/profileSchema'
@@ -22,13 +22,11 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
   const [hasExistingBanner, setHasExistingBanner] = useState(false)
   const [shouldRemoveBanner, setShouldRemoveBanner] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
-  const [isPublic, setIsPublic] = useState(true)
 
   const [originalValues, setOriginalValues] = useState({
     userName: '',
     profilePicture: '',
-    userBanner: '',
-    isPublic: true
+    userBanner: ''
   })
 
   const { UserProfileResponse, updateUserProfile, isUpdatingProfile } =
@@ -58,12 +56,10 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
     }
     if (UserProfileResponse?.user) {
       setValue('userName', UserProfileResponse.user.userName || '')
-      setIsPublic(UserProfileResponse.user.isPublic)
       setOriginalValues({
         userName: UserProfileResponse.user.userName || '',
         profilePicture: UserProfileResponse.user.profilePicture || '',
-        userBanner: UserProfileResponse.user.userBanner || '',
-        isPublic: UserProfileResponse.user.isPublic
+        userBanner: UserProfileResponse.user.userBanner || ''
       })
     }
   }, [UserProfileResponse?.user])
@@ -76,15 +72,13 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
       hasUserNameChanged ||
       !!profilePicturePreview ||
       !!userBannerPreview ||
-      shouldRemoveBanner ||
-      isPublic !== originalValues.isPublic
+      shouldRemoveBanner
     setHasChanges(hasAnyChanges)
   }, [
     watchedValues,
     profilePicturePreview,
     userBannerPreview,
     shouldRemoveBanner,
-    isPublic,
     originalValues,
     UserProfileResponse?.user
   ])
@@ -96,7 +90,6 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
       userName?: string
       profilePicture?: File
       userBanner?: File | null
-      isPublic?: boolean
     } = {}
 
     if (data.userName && data.userName !== originalValues.userName) {
@@ -109,9 +102,6 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
       updateData.userBanner = data.userBanner
     } else if (shouldRemoveBanner) {
       updateData.userBanner = null
-    }
-    if (isPublic !== originalValues.isPublic) {
-      updateData.isPublic = isPublic
     }
 
     if (Object.keys(updateData).length > 0) {
@@ -143,7 +133,6 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
     setShouldRemoveBanner(false)
     setHasExistingBanner(!!UserProfileResponse?.user.userBanner)
     setHasChanges(false)
-    setIsPublic(originalValues.isPublic)
     setValue('userName', UserProfileResponse?.user?.userName || '')
     setValue('profilePicture', null)
     setValue('userBanner', null)
@@ -240,7 +229,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         </div>
       </div>
 
-      <div className="px-6 pt-12 pb-6 flex flex-col gap-7">
+      <div className="px-6 pt-12 pb-6 flex flex-col gap-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="userName" className="text-sm text-gray-400">
             Username
@@ -255,48 +244,6 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           <span className="text-red-500 text-xs min-h-[1rem]">
             {errors.userName?.message ?? ' '}
           </span>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <SectionHeading className="mb-0">Privacidade</SectionHeading>
-
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3.5 py-3">
-            <div className="flex items-start gap-2.5">
-              {isPublic ? (
-                <Globe className="size-4 text-primary mt-0.5 shrink-0" aria-hidden="true" />
-              ) : (
-                <Lock className="size-4 text-gray-400 mt-0.5 shrink-0" aria-hidden="true" />
-              )}
-              <div className="flex flex-col">
-                <span className="text-sm text-white">
-                  {isPublic ? 'Perfil público' : 'Perfil privado'}
-                </span>
-                <span className="text-xs text-gray-400">
-                  {isPublic
-                    ? 'Qualquer pessoa com o link pode ver seu perfil.'
-                    : 'Seu perfil fica visível só pra você.'}
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={isPublic}
-              title={isPublic ? 'Tornar perfil privado' : 'Tornar perfil público'}
-              aria-label="Alternar visibilidade do perfil"
-              onClick={() => setIsPublic(v => !v)}
-              className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
-                isPublic ? 'bg-primary' : 'bg-dark-border'
-              }`}
-            >
-              <span
-                className={`inline-block size-3.5 transform rounded-full bg-white transition-transform duration-150 ${
-                  isPublic ? 'translate-x-[19px]' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
         </div>
 
         <div className="flex flex-col gap-3">

@@ -71,7 +71,6 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         userName?: string
         profilePicture?: string
         userBanner?: string | null
-        isPublic?: boolean
       } = {}
 
       if (data.userName !== undefined) {
@@ -86,15 +85,10 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         updatePayload.userBanner = userBannerUrl
       }
 
-      if (data.isPublic !== undefined) {
-        updatePayload.isPublic = data.isPublic
-      }
-
       return api.updateUser({
         userName: data.userName,
         profilePicture: profilePictureUrl,
-        userBanner: userBannerUrl,
-        isPublic: data.isPublic
+        userBanner: userBannerUrl
       })
     },
     onMutate: async newData => {
@@ -104,18 +98,14 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
         queryClient.getQueryData<UserProfileResponse>(queryKey)
 
       // Optimistic update
-      if (
-        (newData.userName || newData.isPublic !== undefined) &&
-        previousProfile
-      ) {
+      if (newData.userName && previousProfile) {
         queryClient.setQueryData<UserProfileResponse>(queryKey, old => {
           if (!old) return old
           return {
             ...old,
             user: {
               ...old.user,
-              userName: newData.userName || old.user.userName,
-              isPublic: newData.isPublic ?? old.user.isPublic
+              userName: newData.userName || old.user.userName
             }
           }
         })
@@ -123,19 +113,8 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
 
       return { previousProfile }
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
-
-      if (variables.isPublic !== undefined) {
-        queryClient.invalidateQueries({
-          queryKey: ['publicUserProfile', userId]
-        })
-        queryClient.invalidateQueries({
-          queryKey: ['publicUserGames', userId]
-        })
-        queryClient.invalidateQueries({ queryKey: ['communityReviews'] })
-      }
-
       toast.success('Perfil atualizado com sucesso 👌')
       options?.onUpdateSuccess?.()
     },
