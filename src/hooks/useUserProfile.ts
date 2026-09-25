@@ -8,6 +8,7 @@ import { api } from './useApi'
 import { useAuth } from './useAuth'
 import type { UpdateUserProfileData, UserProfileResponse } from '../types/user'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface UseUserProfileOptions {
   onUpdateSuccess?: () => void
@@ -123,11 +124,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       if (context?.previousProfile) {
         queryClient.setQueryData(queryKey, context.previousProfile)
       }
-      toast.error(
-        `Erro ao atualizar perfil: ${
-          error instanceof Error ? error.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(error, 'Erro ao atualizar perfil.'))
     },
     onSettled: () => {
       // Invalidate related queries

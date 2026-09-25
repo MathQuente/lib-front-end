@@ -38,6 +38,10 @@ export interface GameHoursResponse {
   hoursPlayed: number
 }
 
+export interface GameCompletedAtResponse {
+  completedAt: string | null
+}
+
 export interface UpdateUserProfileData {
   userName?: string
   profilePicture?: string | File

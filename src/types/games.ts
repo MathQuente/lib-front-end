@@ -35,6 +35,16 @@ export interface GameReleaseDate {
   date: number | null
 }
 
+export interface GameScreenshot {
+  thumbUrl: string
+  fullUrl: string
+}
+
+export interface GameVideo {
+  videoId: string
+  name: string
+}
+
 export interface Game extends GameBase {
   developers?: string[]
   publishers?: string[]
@@ -48,6 +58,8 @@ export interface Game extends GameBase {
   amountOfRatings?: number
   parentGame?: GameCardData
   releaseDates?: GameReleaseDate[]
+  screenshots?: GameScreenshot[]
+  videos?: GameVideo[]
 }
 
 export interface UserGameEntry extends GameCardData {

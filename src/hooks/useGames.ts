@@ -5,12 +5,13 @@ import {
 } from '@tanstack/react-query'
 import { api } from './useApi'
 import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
+import type { SortField, SortOrder } from '../interfaces/games'
 
 export const useGames = (
   page: number,
   search: string | undefined,
-  sortBy: 'name' | 'releaseDate' | 'rating',
-  sortOrder: 'asc' | 'desc',
+  sortBy: SortField,
+  sortOrder: SortOrder,
   limit?: number
 ) => {
   const queryKey = ['games', page, search, sortBy, sortOrder]

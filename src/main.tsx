@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Authentication } from './pages/authentication'
+import { ForgotPasswordPage } from './pages/forgotPasswordPage'
+import { ResetPasswordPage } from './pages/resetPasswordPage'
 import { Home } from './pages/home'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -15,7 +17,6 @@ import { SearchResults } from './pages/searchResults'
 import { ComingSoonPage } from './pages/comingSoonPage'
 import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
-import { FollowsPage } from './pages/followsPage'
 import { Layout } from './layout'
 
 const queryClient = new QueryClient()
@@ -27,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: '/auth',
         element: <Authentication />
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />
       },
       {
         path: '/',
@@ -51,14 +60,6 @@ const router = createBrowserRouter([
       {
         path: '/games/:igdbId/reviews',
         element: <GameReviewsPage />
-      },
-      {
-        path: '/follows',
-        element: (
-          <RequireAuth>
-            <FollowsPage />
-          </RequireAuth>
-        )
       },
       {
         path: '/users/:userId',

@@ -58,7 +58,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
           ref={actualInputRef}
           className={`${
             isMobile ? 'w-full' : 'w-48'
-          } pl-8 pr-7 py-1.5 bg-dark-bg-darker text-sm text-white placeholder-gray-500 rounded-lg border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150`}
+          } pl-8 pr-7 py-1.5 bg-dark-bg-darker text-sm text-white placeholder-gray-500 rounded-lg border border-dark-border focus:border-primary outline-none ring-2 ring-offset-1 ring-offset-dark-bg-darker ring-transparent focus-visible:ring-primary-light transition-colors duration-150`}
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}

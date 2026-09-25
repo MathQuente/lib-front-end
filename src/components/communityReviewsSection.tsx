@@ -27,7 +27,7 @@ export function CommunityReviewsSection({
   return (
     <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
       <div className="flex items-center justify-between mb-4">
-        <SectionHeading className="mb-0">Reviews da comunidade</SectionHeading>
+        <SectionHeading className="mb-0">Resenhas da comunidade</SectionHeading>
         <Link
           to={`/games/${igdbId}/reviews`}
           className="text-xs text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"

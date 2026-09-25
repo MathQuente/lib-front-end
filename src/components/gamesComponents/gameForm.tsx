@@ -1,6 +1,7 @@
 import { Gamepad2, Library, Gift, Play } from 'lucide-react'
 import { PlayedCount } from '../playedCount'
 import { HoursPlayed } from '../hoursPlayed'
+import { CompletedAtInput } from '../completedAtInput'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
@@ -82,6 +83,7 @@ export function GameForm({ game }: GameFormProps) {
       </div>
 
       {hasStatus(STATUS.PLAYED) && <PlayedCount game={game} />}
+      {hasStatus(STATUS.PLAYED) && <CompletedAtInput game={game} />}
       {activeStatus && activeStatus.id !== STATUS.WISHLIST && (
         <HoursPlayed game={game} />
       )}

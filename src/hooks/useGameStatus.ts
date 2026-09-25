@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import type { GameStatusResponse } from '../types/games'
 
 const getGameStatusQueryKey = (
@@ -38,11 +39,7 @@ export const useGameStatus = (igdbId: string | undefined) => {
       toast.success('Status do jogo atualizado com sucesso 👌')
     },
     onError: error => {
-      toast.error(
-        `Erro ao atualizar status: ${
-          error instanceof Error ? error.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(error, 'Erro ao atualizar status.'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })

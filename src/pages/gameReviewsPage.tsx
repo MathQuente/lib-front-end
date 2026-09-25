@@ -26,7 +26,7 @@ export function GameReviewsPage() {
 
       <div className="w-full mt-2">
         <h1 className="text-lg font-semibold text-white mb-4">
-          Reviews da comunidade
+          Resenhas da comunidade
         </h1>
 
         {isLoading ? (
@@ -40,8 +40,8 @@ export function GameReviewsPage() {
           </div>
         ) : reviews.length === 0 ? (
           <EmptyState
-            title="Nenhuma review ainda"
-            description="Ninguém escreveu uma review pública pra esse jogo."
+            title="Nenhuma resenha ainda"
+            description="Ninguém escreveu uma resenha pública pra esse jogo."
           />
         ) : (
           <div className="flex flex-col gap-3">

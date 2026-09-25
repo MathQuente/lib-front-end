@@ -22,18 +22,18 @@ export const updateProfileSchema = z.object({
     .transform(list => list?.item(0))
     .refine(file => {
       return !file || file.size <= MAX_UPLOAD_SIZE
-    }, 'File size must be less than 3MB')
+    }, 'O arquivo precisa ter menos de 3MB')
     .refine(file => {
       return !file || ACCEPTED_FILE_TYPES.includes(file.type)
-    }, 'File must be a PNG or a GIF'),
+    }, 'O arquivo precisa ser um PNG ou GIF'),
   userBanner: z
     .instanceof(FileList)
     .optional()
     .transform(list => list?.item(0))
     .refine(file => {
       return !file || file.size <= MAX_UPLOAD_SIZE
-    }, 'File size must be less than 3MB')
+    }, 'O arquivo precisa ter menos de 3MB')
     .refine(file => {
       return !file || ACCEPTED_FILE_TYPES.includes(file.type)
-    }, 'File must be a PNG or a GIF')
+    }, 'O arquivo precisa ser um PNG ou GIF')
 })

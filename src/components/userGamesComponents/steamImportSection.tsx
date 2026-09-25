@@ -7,6 +7,8 @@ import { useSteamImport } from '../../hooks/useSteamImport'
 
 const POLLING_STATUSES = ['waiting', 'active', 'delayed']
 
+const MIN_IMPORTING_VISIBLE_MS = 1500
+
 export function SteamImportSection({ steamId }: { steamId: string | null }) {
   const {
     status,
@@ -25,6 +27,18 @@ export function SteamImportSection({ steamId }: { steamId: string | null }) {
   const previousStatus = useRef<string | undefined>(undefined)
   const isFirstStatusLoad = useRef(true)
 
+  const [visuallyImporting, setVisuallyImporting] = useState(false)
+  const importStartedAtRef = useRef<number | null>(null)
+
+  const rawIsImporting = POLLING_STATUSES.includes(status?.status ?? '')
+
+  useEffect(() => {
+    if (rawIsImporting && !visuallyImporting) {
+      setVisuallyImporting(true)
+      importStartedAtRef.current = Date.now()
+    }
+  }, [rawIsImporting, visuallyImporting])
+
   useEffect(() => {
     if (status?.status === undefined) return
 
@@ -39,18 +53,36 @@ export function SteamImportSection({ steamId }: { steamId: string | null }) {
       previousStatus.current === 'failed'
     const isDone = status.status === 'completed' || status.status === 'failed'
 
-    if (!wasTerminal && isDone) {
+    previousStatus.current = status.status
+
+    if (wasTerminal || !isDone) return
+
+    const startedAt = importStartedAtRef.current ?? Date.now()
+    const remaining = Math.max(
+      MIN_IMPORTING_VISIBLE_MS - (Date.now() - startedAt),
+      0
+    )
+
+    const timer = setTimeout(() => {
+      setVisuallyImporting(false)
+      importStartedAtRef.current = null
       setResultModalOpen(true)
       refreshAfterImport()
-    }
+    }, remaining)
 
-    previousStatus.current = status.status
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status?.status])
 
-  const isImporting = POLLING_STATUSES.includes(status?.status ?? '')
+  const isImporting = visuallyImporting
   const progress =
     status?.status === 'active' ? (status.progress ?? 0) : undefined
+
+  async function handleStartImport() {
+    setVisuallyImporting(true)
+    importStartedAtRef.current = Date.now()
+    await startImport()
+  }
 
   const cooldownUntil =
     status?.status === 'completed' ? status.cooldownUntil : undefined
@@ -112,7 +144,7 @@ export function SteamImportSection({ steamId }: { steamId: string | null }) {
             value={profileInput}
             onChange={e => setProfileInput(e.target.value)}
             disabled={isConnecting || !!steamId}
-            className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-none ring-2 ring-offset-1 ring-offset-dark-bg ring-transparent focus-visible:ring-primary-light transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
           />
           <Button
             type="button"
@@ -131,7 +163,7 @@ export function SteamImportSection({ steamId }: { steamId: string | null }) {
           <Button
             type="button"
             variant="primary"
-            onClick={() => startImport()}
+            onClick={handleStartImport}
             disabled={!steamId || isImporting || isStarting || isOnCooldown}
             loading={isStarting}
           >

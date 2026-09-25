@@ -7,6 +7,8 @@ import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { GameListData } from '../types/games'
 
+const ITEMS_PER_PAGE = 30
+
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: GameStatusEnum }>()
   const navigate = useNavigate()
@@ -37,16 +39,21 @@ export function UserGamesPageByStatus() {
     return 1
   })
 
+  const startsOnPlayed =
+    (status && routeToEnumMap[status]) === GameStatusEnum.Played
+
   const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
     const url = new URL(window.location.toString())
     const v = url.searchParams.get('sortOrder')
-    return v === 'desc' ? 'desc' : 'asc'
+    if (v === 'asc' || v === 'desc') return v
+    return startsOnPlayed ? 'desc' : 'asc'
   })
 
   const [sortField, setSortField] = useState<SortField>(() => {
     const url = new URL(window.location.toString())
     const v = url.searchParams.get('sortField')
-    return v === 'releaseDate' ? 'releaseDate' : v === 'rating' ? 'rating' : 'name'
+    if (v === 'releaseDate' || v === 'rating' || v === 'name') return v
+    return startsOnPlayed ? 'completedAt' : 'name'
   })
 
   const [filterField, setFilterField] = useState<GameStatusEnum>(() => {
@@ -58,11 +65,22 @@ export function UserGamesPageByStatus() {
   function handleFilterChange(newFilter: GameStatusEnum | '') {
     if (!newFilter) {
       navigate('/userLibrary')
+      if (sortField === 'completedAt') {
+        setSortField('name')
+        setSortOrder('asc')
+      }
       return
     }
     const newRoute = enumToRouteMap[newFilter]
     navigate(`/userLibrary/${newRoute}`)
     setFilterField(newFilter)
+    if (newFilter === GameStatusEnum.Played) {
+      setSortField('completedAt')
+      setSortOrder('desc')
+    } else if (sortField === 'completedAt') {
+      setSortField('name')
+      setSortOrder('asc')
+    }
   }
 
   const currentEnumStatus =
@@ -90,6 +108,7 @@ export function UserGamesPageByStatus() {
         <GameListPage
           games={gamesForList}
           page={page}
+          pageSize={ITEMS_PER_PAGE}
           setPage={setPage}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}

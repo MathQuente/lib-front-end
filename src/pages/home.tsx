@@ -106,7 +106,7 @@ export function Home() {
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 pt-8 pb-12 lg:pt-14 lg:pb-20">
           <div className="lg:col-span-5 flex flex-col justify-start gap-5 lg:pt-2">
             <h1 className="text-4xl lg:text-5xl font-bold text-white leading-[1.1] max-w-md">
-              Organize seus jogos com <span className="text-primary">Lib</span>
+              Organize seus jogos com <span className="text-primary">Zerei</span>
             </h1>
             <p className="text-gray-400 leading-relaxed max-w-sm">
               Marque o que jogou, está jogando ou quer jogar. Um projeto pessoal

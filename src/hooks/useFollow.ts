@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { api } from './useApi'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import type { IsFollowingResponse } from '../types/follow'
 
 export const useFollow = (userId: string | undefined) => {
@@ -18,10 +19,11 @@ export const useFollow = (userId: string | undefined) => {
     queryClient.invalidateQueries({ queryKey: ['followers'] })
     queryClient.invalidateQueries({ queryKey: ['following'] })
     queryClient.invalidateQueries({ queryKey: ['publicUserProfile'] })
+    queryClient.invalidateQueries({ queryKey: ['userProfile'] })
   }
 
   const onError = (err: unknown) => {
-    toast.error(err instanceof Error ? err.message : 'Erro inesperado')
+    toast.error(getErrorMessage(err, 'Erro inesperado'))
   }
 
   const follow = useMutation({

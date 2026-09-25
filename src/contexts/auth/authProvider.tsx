@@ -31,9 +31,6 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message = error.response?.data?.message
-        if (message === 'This email is already used') {
-          return 'Este e-mail já está em uso.'
-        }
         if (message) return message
       }
       return 'Não foi possível criar a conta. Tente novamente.'

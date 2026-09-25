@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import type {
   RatingResponse,
   RatingsDistributionResponse
@@ -61,7 +62,7 @@ export const useRating = (igdbId: string | undefined) => {
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(queryKey, context?.previous)
-      toast.error(err instanceof Error ? err.message : 'Error ao atualizar')
+      toast.error(getErrorMessage(err, 'Erro ao atualizar avaliação'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
@@ -96,9 +97,7 @@ export const useRating = (igdbId: string | undefined) => {
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(queryKey, context?.previous)
-      toast.error(
-        err instanceof Error ? err.message : 'Erro ao remover avaliação'
-      )
+      toast.error(getErrorMessage(err, 'Erro ao remover avaliação'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })

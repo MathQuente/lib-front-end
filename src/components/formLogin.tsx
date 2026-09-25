@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock } from 'lucide-react'
 import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
@@ -56,12 +56,12 @@ export function FormLogin() {
           error={errors.password}
           {...register('password')}
         />
-        <a
-          href="/forgotPasswordPage"
+        <Link
+          to="/forgot-password"
           className="text-xs text-primary-light hover:underline self-end mt-1"
         >
           Esqueceu a senha?
-        </a>
+        </Link>
       </div>
 
       <Button variant="primary" size="md" fullWidth loading={isSubmitting}>

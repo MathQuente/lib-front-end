@@ -48,7 +48,7 @@ export function HoursPlayed({ game }: { game: GameCardData }) {
           disabled={isLoading}
           aria-label="Horas jogadas"
           aria-invalid={!isValid}
-          className="w-16 rounded-md bg-dark-bg px-2 py-1 text-sm text-white text-right focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className="w-16 rounded-md bg-dark-bg px-2 py-1 text-sm text-white text-right outline-none ring-2 ring-offset-1 ring-offset-dark-bg ring-transparent focus-visible:ring-primary-light disabled:opacity-50 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
         <button
           type="button"

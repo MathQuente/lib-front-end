@@ -4,6 +4,7 @@ import { api } from './useApi'
 import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
 import { useGameStatus } from './useGameStatus'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const getGameStatsQueryKey = (userId: string, igdbId: string) => [
   'gameStats',
@@ -67,11 +68,7 @@ export const usePlayedCount = (igdbId: string) => {
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData)
       }
-      toast.error(
-        `Erro ao atualizar contagem: ${
-          error instanceof Error ? error.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(error, 'Erro ao atualizar contagem.'))
     }
   })
 

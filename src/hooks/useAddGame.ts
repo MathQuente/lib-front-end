@@ -3,6 +3,7 @@ import { api } from './useApi'
 import { toast } from 'react-toastify'
 import type { GameBase } from '../types/games'
 import { useAuth } from './useAuth'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 export const useAddGame = (igdbId?: string) => {
   const { user } = useAuth()
@@ -19,11 +20,7 @@ export const useAddGame = (igdbId?: string) => {
       toast.success('Jogo adicionado com sucesso 👌')
     },
     onError: error => {
-      toast.error(
-        `Erro ao adicionar jogo: ${
-          error instanceof Error ? error.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(error, 'Erro ao adicionar jogo.'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
@@ -78,11 +75,7 @@ export const useAddGame = (igdbId?: string) => {
         ['rating', userId, igdbId],
         context?.previousRating
       )
-      toast.error(
-        `Erro ao remover jogo: ${
-          err instanceof Error ? err.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(err, 'Erro ao remover jogo.'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
@@ -126,11 +119,7 @@ export const useAddGame = (igdbId?: string) => {
         ['gamesStatus', userId, igdbId],
         context?.previousGameStatus
       )
-      toast.error(
-        `Erro ao remover jogo: ${
-          err instanceof Error ? err.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(err, 'Erro ao remover jogo.'))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import type { GetReviewResponse } from '../types/review'
 
 const getReviewQueryKey = (userId: string, igdbId: string | undefined) => [
@@ -33,12 +34,10 @@ export const useReview = (igdbId: string | undefined) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
-      toast.success('Review salva com sucesso 👌')
+      toast.success('Resenha salva com sucesso 👌')
     },
     onError: err => {
-      toast.error(
-        err instanceof Error ? err.message : 'Erro ao salvar review'
-      )
+      toast.error(getErrorMessage(err, 'Erro ao salvar resenha'))
     }
   })
 
@@ -47,12 +46,10 @@ export const useReview = (igdbId: string | undefined) => {
     onSuccess: () => {
       queryClient.setQueryData<GetReviewResponse>(queryKey, { review: null })
       queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
-      toast.success('Review removida com sucesso 👌')
+      toast.success('Resenha removida com sucesso 👌')
     },
     onError: err => {
-      toast.error(
-        err instanceof Error ? err.message : 'Erro ao remover review'
-      )
+      toast.error(getErrorMessage(err, 'Erro ao remover resenha'))
     }
   })
 

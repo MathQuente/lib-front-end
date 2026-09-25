@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
-import { Menu, X, Home, Library, Gamepad2, Users, LogOut } from 'lucide-react'
+import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 
@@ -50,7 +50,7 @@ export function SideBar() {
       <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-dark-border mb-4">
         <Link to="/" className={focusRing}>
           <h1 className="font-bold text-white">
-            <span className="text-primary">Lib</span>
+            <span className="text-primary">Zerei</span>
           </h1>
         </Link>
         <button
@@ -103,7 +103,7 @@ export function SideBar() {
                     className={mobileNavLinkClass}
                   >
                     <Home className="size-5" aria-hidden="true" />
-                    Home
+                    Início
                   </NavLink>
                   <NavLink
                     to="/userLibrary"
@@ -119,15 +119,7 @@ export function SideBar() {
                     className={mobileNavLinkClass}
                   >
                     <Gamepad2 className="size-5" aria-hidden="true" />
-                    Games
-                  </NavLink>
-                  <NavLink
-                    to="/follows"
-                    onClick={closeMobileMenu}
-                    className={mobileNavLinkClass}
-                  >
-                    <Users className="size-5" aria-hidden="true" />
-                    Seguindo
+                    Jogos
                   </NavLink>
                   <button
                     type="button"
@@ -147,7 +139,7 @@ export function SideBar() {
                     className={mobileNavLinkClass}
                   >
                     <Home className="size-5" aria-hidden="true" />
-                    Home
+                    Início
                   </NavLink>
                   <Link
                     to="/auth?tab=login"
@@ -169,7 +161,7 @@ export function SideBar() {
                     className={mobileNavLinkClass}
                   >
                     <Gamepad2 className="size-5" aria-hidden="true" />
-                    Games
+                    Jogos
                   </NavLink>
                 </>
               )}
@@ -181,23 +173,20 @@ export function SideBar() {
       <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-dark-border mb-6">
         <Link to="/" className={focusRing}>
           <h1 className="font-bold text-white">
-            <span className="text-primary">Lib</span>
+            <span className="text-primary">Zerei</span>
           </h1>
         </Link>
 
         {isLoggedIn ? (
           <div className="flex items-center gap-5">
             <NavLink to="/" end className={desktopNavLinkClass}>
-              Home
+              Início
             </NavLink>
             <NavLink to="/userLibrary" className={desktopNavLinkClass}>
               Minha Biblioteca
             </NavLink>
             <NavLink to="/games" className={desktopNavLinkClass}>
-              Games
-            </NavLink>
-            <NavLink to="/follows" className={desktopNavLinkClass}>
-              Seguindo
+              Jogos
             </NavLink>
             <button
               type="button"
@@ -211,7 +200,7 @@ export function SideBar() {
         ) : (
           <div className="flex items-center gap-5">
             <NavLink to="/" end className={desktopNavLinkClass}>
-              Home
+              Início
             </NavLink>
             <Link
               to="/auth?tab=login"
@@ -226,7 +215,7 @@ export function SideBar() {
               Criar conta
             </Link>
             <NavLink to="/games" className={desktopNavLinkClass}>
-              Games
+              Jogos
             </NavLink>
             <SearchBar isMobile={false} />
           </div>

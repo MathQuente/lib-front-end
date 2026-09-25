@@ -29,10 +29,10 @@ export function ReviewSection({ game }: { game: GameCardData }) {
   if (!isPlayed) {
     return (
       <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
-        <SectionHeading>Sua review</SectionHeading>
+        <SectionHeading>Sua resenha</SectionHeading>
         <p className="text-sm text-gray-400">
           Marque o jogo como <span className="text-gray-300">Jogado</span>{' '}
-          pra poder escrever uma review.
+          pra poder escrever uma resenha.
         </p>
       </div>
     )
@@ -41,9 +41,9 @@ export function ReviewSection({ game }: { game: GameCardData }) {
   if (!hasRating && !review) {
     return (
       <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
-        <SectionHeading>Sua review</SectionHeading>
+        <SectionHeading>Sua resenha</SectionHeading>
         <p className="text-sm text-gray-400">
-          Dê uma nota pro jogo antes de escrever sua review.
+          Dê uma nota pro jogo antes de escrever sua resenha.
         </p>
       </div>
     )
@@ -78,15 +78,15 @@ export function ReviewSection({ game }: { game: GameCardData }) {
   return (
     <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
       <div className="flex items-center justify-between">
-        <SectionHeading>Sua review</SectionHeading>
+        <SectionHeading>Sua resenha</SectionHeading>
         {!showEditor && (
           <div className="flex items-center gap-1 -mt-4">
             <button
               type="button"
               onClick={startEditing}
               className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-primary hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-              title="Editar review"
-              aria-label="Editar review"
+              title="Editar resenha"
+              aria-label="Editar resenha"
             >
               <Pencil className="size-3.5" />
             </button>
@@ -94,8 +94,8 @@ export function ReviewSection({ game }: { game: GameCardData }) {
               type="button"
               onClick={() => setConfirmOpen(true)}
               className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-red-400 hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-              title="Excluir review"
-              aria-label="Excluir review"
+              title="Excluir resenha"
+              aria-label="Excluir resenha"
             >
               <Trash2 className="size-3.5" />
             </button>
@@ -109,7 +109,7 @@ export function ReviewSection({ game }: { game: GameCardData }) {
             value={text}
             onChange={e => setText(e.target.value.slice(0, MAX_LENGTH))}
             rows={6}
-            placeholder="Escreva sua review... (suporta markdown básico)"
+            placeholder="Escreva sua resenha... (suporta markdown básico)"
             className="w-full resize-y rounded-md bg-dark-bg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
           />
           <div className="flex items-center justify-between">
@@ -142,8 +142,8 @@ export function ReviewSection({ game }: { game: GameCardData }) {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Excluir review?"
-        description="Essa ação não pode ser desfeita. Sua review será removida permanentemente."
+        title="Excluir resenha?"
+        description="Essa ação não pode ser desfeita. Sua resenha será removida permanentemente."
         confirmLabel="Excluir"
         onConfirm={handleDelete}
         isLoading={isDeleting}

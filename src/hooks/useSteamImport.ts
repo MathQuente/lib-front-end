@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import type { ImportStatusResponse } from '../types/steam'
 
 const POLLING_STATUSES = ['waiting', 'active', 'delayed']
@@ -18,7 +19,8 @@ export const useSteamImport = () => {
     queryFn: () => api.getSteamImportStatus(),
     enabled: Boolean(userId),
     refetchInterval: query =>
-      POLLING_STATUSES.includes(query.state.data?.status ?? '') ? 4000 : false
+      POLLING_STATUSES.includes(query.state.data?.status ?? '') ? 1000 : false,
+    refetchIntervalInBackground: true
   })
 
   const connectSteam = useMutation({
@@ -28,9 +30,7 @@ export const useSteamImport = () => {
       toast.success('Steam conectada com sucesso 👌')
     },
     onError: error => {
-      toast.error(
-        error instanceof Error ? error.message : 'Erro ao conectar Steam'
-      )
+      toast.error(getErrorMessage(error, 'Erro ao conectar Steam'))
     }
   })
 
@@ -41,9 +41,7 @@ export const useSteamImport = () => {
       toast.success('Steam desconectada')
     },
     onError: error => {
-      toast.error(
-        error instanceof Error ? error.message : 'Erro ao desconectar Steam'
-      )
+      toast.error(getErrorMessage(error, 'Erro ao desconectar Steam'))
     }
   })
 
@@ -53,9 +51,7 @@ export const useSteamImport = () => {
       queryClient.invalidateQueries({ queryKey })
     },
     onError: error => {
-      toast.error(
-        error instanceof Error ? error.message : 'Erro ao iniciar a importação'
-      )
+      toast.error(getErrorMessage(error, 'Erro ao iniciar a importação'))
     }
   })
 

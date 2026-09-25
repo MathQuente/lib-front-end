@@ -10,7 +10,8 @@ import { UserBanner } from './userBanner'
 import { UserProfilePicture } from './userProfilePicture'
 import { UserInfo } from './userInfo'
 import { Button } from '../button'
-import { UserMinus } from 'lucide-react'
+import { UserMinus, UserPlus } from 'lucide-react'
+import type { FollowSummary } from '../../types/follow'
 
 export function UserProfileDisplay() {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +21,7 @@ export function UserProfileDisplay() {
   const userId = UserProfileResponse?.user.id
   const { followers } = useFollowers(userId)
   const { following } = useFollowing(userId)
+  const followingIds = new Set(following.map(u => u.id))
 
   if (isLoading) {
     return (
@@ -80,6 +82,11 @@ export function UserProfileDisplay() {
         onOpenChange={setFollowersModalOpen}
         title="Seguidores"
         users={followers}
+        renderAction={user =>
+          !followingIds.has(user.id) ? (
+            <FollowBackButton user={user} />
+          ) : null
+        }
       />
 
       <UserListModal
@@ -90,6 +97,23 @@ export function UserProfileDisplay() {
         renderAction={user => <UnfollowButton userId={user.id} />}
       />
     </>
+  )
+}
+
+function FollowBackButton({ user }: { user: FollowSummary }) {
+  const { follow, isMutating } = useFollow(user.id)
+
+  return (
+    <button
+      type="button"
+      onClick={() => follow()}
+      disabled={isMutating}
+      title="Seguir de volta"
+      aria-label={`Seguir ${user.userName ?? 'usuário'} de volta`}
+      className="flex items-center justify-center size-6 rounded-full text-primary hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+    >
+      <UserPlus className="size-3.5" aria-hidden="true" />
+    </button>
   )
 }
 

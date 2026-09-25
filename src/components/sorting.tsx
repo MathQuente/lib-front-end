@@ -38,6 +38,12 @@ export function SortControls({
             <option value="name">Nome</option>
             <option value="releaseDate">Lançamento</option>
             <option value="rating">Avaliação</option>
+            {isUserLibrary && (
+              <option value="hoursPlayed">Tempo de jogo</option>
+            )}
+            {isUserLibrary && filterField === GameStatusEnum.Played && (
+              <option value="completedAt">Data de finalização</option>
+            )}
           </select>
 
           <button

@@ -12,6 +12,7 @@ import { RatingAverage } from '../components/ratingAverage'
 import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { SectionHeading } from '../components/sectionHeading'
+import { GameMediaGallery } from '../components/gameMediaGallery'
 import { ReviewSection } from '../components/reviewSection'
 import { CommunityReviewsSection } from '../components/communityReviewsSection'
 import { BackButton } from '../components/backButton'
@@ -165,6 +166,8 @@ export function GamePage() {
       </div>
 
       <div className="lg:col-span-2 flex flex-col gap-4">
+        <GameMediaGallery screenshots={game.screenshots} videos={game.videos} />
+
         {game.summary && (
           <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
             <SectionHeading>Sobre o jogo</SectionHeading>

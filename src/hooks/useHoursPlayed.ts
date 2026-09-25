@@ -4,6 +4,7 @@ import { api } from './useApi'
 import type { GameHoursResponse } from '../types/user'
 import { toast } from 'react-toastify'
 import { useGameStatus } from './useGameStatus'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
 
 const getGameHoursQueryKey = (userId: string, igdbId: string) => [
@@ -54,11 +55,7 @@ export const useHoursPlayed = (igdbId: string) => {
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData)
       }
-      toast.error(
-        `Erro ao atualizar horas jogadas: ${
-          error instanceof Error ? error.message : 'Erro desconhecido'
-        } 🤯`
-      )
+      toast.error(getErrorMessage(error, 'Erro ao atualizar horas jogadas.'))
     }
   })
 

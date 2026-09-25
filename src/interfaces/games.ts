@@ -9,7 +9,12 @@ import type {
   SimilarGamesResponse
 } from '../types/games'
 
-export type SortField = 'name' | 'releaseDate' | 'rating'
+export type SortField =
+  | 'name'
+  | 'releaseDate'
+  | 'rating'
+  | 'hoursPlayed'
+  | 'completedAt'
 export type SortOrder = 'asc' | 'desc'
 export type SectionType = 'coming' | 'trending' | 'rateds'
 

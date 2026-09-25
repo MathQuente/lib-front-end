@@ -62,12 +62,44 @@ export const api = {
         return
       }
 
-      toast.error('An unexpected error occurred. 🤯')
+      toast.error('Ocorreu um erro inesperado. 🤯')
     }
   },
   signup: async (email: string, password: string) => {
     const response = await http.post('/auth/register', { email, password })
     return response.data
+  },
+  forgotPassword: async (email: string) => {
+    try {
+      const response = await http.post('/auth/forgot-password', { email })
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ??
+            'Erro ao solicitar redefinição de senha.'
+        )
+        return
+      }
+      toast.error('Ocorreu um erro inesperado. 🤯')
+    }
+  },
+  resetPassword: async (token: string, password: string) => {
+    try {
+      const response = await http.post('/auth/reset-password', {
+        token,
+        password
+      })
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ?? 'Erro ao redefinir a senha.'
+        )
+        return
+      }
+      toast.error('Ocorreu um erro inesperado. 🤯')
+    }
   },
   logout: async () => {
     try {
@@ -93,7 +125,9 @@ export const api = {
     const USER_GAMES_SORT_BY_MAP = {
       name: 'gameName',
       releaseDate: 'dateRelease',
-      rating: 'rating'
+      rating: 'rating',
+      hoursPlayed: 'hoursPlayed',
+      completedAt: 'completedAt'
     } as const
 
     const response = await http.get('/users/userGames', {
@@ -245,6 +279,18 @@ export const api = {
     const response = await http.patch(
       `/users/hoursPlayed/${igdbId}`,
       { hoursPlayed },
+      {}
+    )
+    return response
+  },
+  getGameCompletedAt: async (igdbId: string | undefined) => {
+    const response = await http.get(`/users/completedAt/${igdbId}`, {})
+    return response.data
+  },
+  updateCompletedAt: async (igdbId: string | undefined, completedAt: string) => {
+    const response = await http.patch(
+      `/users/completedAt/${igdbId}`,
+      { completedAt },
       {}
     )
     return response

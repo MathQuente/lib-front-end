@@ -22,12 +22,12 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             ref={ref}
             type={resolvedType}
             {...inputProps}
-            className={`bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 pl-10 border outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light ${
+            className={`bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 pl-10 border outline-none ring-2 ring-offset-1 ring-offset-dark-bg-darker ring-transparent ${
               isPassword ? 'pr-10' : 'pr-3'
             } ${
               error
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-dark-border focus:border-primary'
+                ? 'border-red-500 focus-visible:ring-red-500'
+                : 'border-dark-border focus:border-primary focus-visible:ring-primary-light'
             } transition-colors duration-150`}
           />
           {isPassword && (
