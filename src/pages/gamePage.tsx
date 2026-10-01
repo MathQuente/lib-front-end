@@ -1,27 +1,39 @@
-import { Link, useParams } from 'react-router-dom'
-import { GameForm } from '../components/gamesComponents/gameForm'
-import { PlatformDiv } from '../components/platformDiv'
+import dayjs from 'dayjs'
+import { useEffect } from 'react'
+import { Link, useLocation, useParams } from 'react-router-dom'
+import { BackButton } from '../components/backButton'
 import { CategoriesDiv } from '../components/categoriesDiv'
-import { useAuth } from '../hooks/useAuth'
-import { RatingChart } from '../components/ratingChart'
+import { CommunityReviewsSection } from '../components/communityReviewsSection'
 import { Details } from '../components/details'
-import { PlayersInfo } from '../components/playersInfo'
-import { useGame } from '../hooks/useGame'
-import { SimilarGamesSlider } from '../components/similarGamesSlider'
-import { RatingAverage } from '../components/ratingAverage'
 import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
-import { SectionHeading } from '../components/sectionHeading'
 import { GameMediaGallery } from '../components/gameMediaGallery'
+import { GameForm } from '../components/gamesComponents/gameForm'
+import { PlatformDiv } from '../components/platformDiv'
+import { PlayersInfo } from '../components/playersInfo'
+import { RatingAverage } from '../components/ratingAverage'
+import { RatingChart } from '../components/ratingChart'
 import { ReviewSection } from '../components/reviewSection'
-import { CommunityReviewsSection } from '../components/communityReviewsSection'
-import { BackButton } from '../components/backButton'
-import dayjs from 'dayjs'
+import { SectionHeading } from '../components/sectionHeading'
+import { SimilarGamesSlider } from '../components/similarGamesSlider'
+import { useAuth } from '../hooks/useAuth'
+import { useGame } from '../hooks/useGame'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { hiResCover } from '../utils/hiResCover'
 
 export function GamePage() {
   const { user } = useAuth()
   const { igdbId } = useParams<{ igdbId: string }>()
+  const { hash } = useLocation()
   const { GameResponse, SimilarGames } = useGame(igdbId)
+  const isLoaded = Boolean(GameResponse && SimilarGames)
+
+  useEffect(() => {
+    if (hash !== '#biblioteca' || !isLoaded) return
+    document.getElementById('biblioteca')?.scrollIntoView({
+      behavior: usePrefersReducedMotion() ? 'auto' : 'smooth',
+    })
+  }, [hash, isLoaded])
 
   if (!GameResponse || !SimilarGames) {
     return (
@@ -52,141 +64,156 @@ export function GamePage() {
 
   const { game, relatedGames } = GameResponse
 
+  const librarySection = user && (
+    <section
+      id="biblioteca"
+      className="scroll-mt-6 border-t border-dark-border pt-4 flex flex-col gap-3"
+    >
+      <p className="text-xs text-gray-400 uppercase tracking-widest">
+        Minha biblioteca
+      </p>
+      <GameForm game={game} />
+    </section>
+  )
+
   return (
     <>
       <BackButton className="mt-4" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 w-full">
-      <div className="lg:col-span-1">
-        <div className="lg:sticky lg:top-6 bg-dark-bg-light border border-dark-border rounded-lg p-5 flex flex-col gap-5">
-          <div className="flex flex-col items-center gap-3">
-            {game.coverUrl ? (
-              <img
-                className="w-56 rounded-lg object-cover"
-                src={game.coverUrl}
-                alt={`${game.name} banner`}
-              />
+        <div className="lg:col-span-1">
+          <div className="lg:sticky lg:top-6 bg-dark-bg-light border border-dark-border rounded-lg p-5 flex flex-col gap-5">
+            <div className="flex flex-col items-center gap-3">
+              {game.coverUrl ? (
+                <img
+                  className="w-56 rounded-lg object-cover"
+                  src={hiResCover(game.coverUrl)}
+                  alt={`${game.name} banner`}
+                />
+              ) : (
+                <div className="w-56 h-80 rounded-lg bg-dark-bg-lighter flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">Sem capa</span>
+                </div>
+              )}
+              <h1 className="text-white font-semibold text-center">
+                {game.name}
+              </h1>
+            </div>
+
+            {librarySection}
+
+            {user ? (
+              <div className="flex flex-col gap-4 items-center">
+                <div className="w-full border-t border-dark-border pt-4 flex flex-col gap-1">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
+                    Sua avaliação
+                  </p>
+                  <RatingAverage game={game} isForGamePage />
+                </div>
+              </div>
             ) : (
-              <div className="w-56 h-80 rounded-lg bg-dark-bg-lighter flex items-center justify-center">
-                <span className="text-gray-400 text-sm">Sem capa</span>
+              <p className="text-sm text-center text-gray-400">
+                <Link
+                  to="/auth?tab=login"
+                  className="text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+                >
+                  Faça login
+                </Link>{' '}
+                para avaliar e adicionar à sua biblioteca.
+              </p>
+            )}
+
+            <div className="border-t border-dark-border pt-4 flex flex-col gap-1">
+              <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
+                Média geral
+              </p>
+              <RatingAverage game={game} justAverage />
+              <RatingChart GameResponse={GameResponse} />
+            </div>
+
+            <PlayersInfo GameResponse={GameResponse} />
+
+            {game.platforms.length > 0 && (
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
+                  Plataformas
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {game.platforms.map(platform => (
+                    <PlatformDiv key={platform} platformName={platform} />
+                  ))}
+                </div>
               </div>
             )}
-            <h1 className="text-white font-semibold text-center">
-              {game.name}
-            </h1>
-          </div>
 
-          {user ? (
-            <div className="flex flex-col gap-4 items-center">
-              <GameForm game={game} />
-
-              <div className="w-full border-t border-dark-border pt-4 flex flex-col gap-1">
-                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
-                  Sua avaliação
+            {game.genres.length > 0 && (
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
+                  Gêneros
                 </p>
-                <RatingAverage game={game} isForGamePage />
+                <div className="flex flex-wrap gap-1.5">
+                  {game.genres.map(genre => (
+                    <CategoriesDiv key={genre} categoryName={genre} />
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <p className="text-sm text-center text-gray-400">
-              <Link
-                to="/auth?tab=login"
-                className="text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
-              >
-                Faça login
-              </Link>{' '}
-              para avaliar e adicionar à sua biblioteca.
-            </p>
-          )}
+            )}
 
-          <div className="border-t border-dark-border pt-4 flex flex-col gap-1">
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
-              Média geral
-            </p>
-            <RatingAverage game={game} justAverage />
-            <RatingChart GameResponse={GameResponse} />
+            {game.releaseDate && (
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
+                  Lançamento
+                </p>
+                <span className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300">
+                  {dayjs.unix(game.releaseDate).format('DD/MM/YYYY')}
+                </span>
+              </div>
+            )}
+
+            {game.releaseDates && game.releaseDates.length > 0 && (
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
+                  Lançamentos por Plataforma
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {game.releaseDates.map(releaseDate => (
+                    <GameLaunchersDiv
+                      key={releaseDate.platformName}
+                      platformName={releaseDate.platformName}
+                      date={releaseDate.date}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-
-          <PlayersInfo GameResponse={GameResponse} />
-
-          {game.platforms.length > 0 && (
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-                Plataformas
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {game.platforms.map(platform => (
-                  <PlatformDiv key={platform} platformName={platform} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {game.genres.length > 0 && (
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-                Gêneros
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {game.genres.map(genre => (
-                  <CategoriesDiv key={genre} categoryName={genre} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {game.releaseDate && (
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-                Lançamento
-              </p>
-              <span className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300">
-                {dayjs.unix(game.releaseDate).format('DD/MM/YYYY')}
-              </span>
-            </div>
-          )}
-
-          {game.releaseDates && game.releaseDates.length > 0 && (
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-                Lançamentos por Plataforma
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {game.releaseDates.map(releaseDate => (
-                  <GameLaunchersDiv
-                    key={releaseDate.platformName}
-                    platformName={releaseDate.platformName}
-                    date={releaseDate.date}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
 
-      <div className="lg:col-span-2 flex flex-col gap-4">
-        <GameMediaGallery screenshots={game.screenshots} videos={game.videos} />
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          <GameMediaGallery
+            screenshots={game.screenshots}
+            videos={game.videos}
+          />
 
-        {game.summary && (
-          <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
-            <SectionHeading>Sobre o jogo</SectionHeading>
-            <p className="text-gray-300 leading-relaxed text-sm">
-              {game.summary}
-            </p>
-          </div>
-        )}
+          {game.summary && (
+            <div className="bg-dark-bg-light border border-dark-border rounded-lg p-5">
+              <SectionHeading>Sobre o jogo</SectionHeading>
+              <p className="text-gray-300 leading-relaxed text-sm">
+                {game.summary}
+              </p>
+            </div>
+          )}
 
-        {user && <ReviewSection game={game} />}
+          {user && <ReviewSection game={game} />}
 
-        <CommunityReviewsSection igdbId={igdbId} />
+          <CommunityReviewsSection igdbId={igdbId} />
 
-        <Details GameResponse={GameResponse} />
+          <Details GameResponse={GameResponse} />
 
-        <DlcAndOriginalGameArea game={game} relatedGames={relatedGames} />
+          <DlcAndOriginalGameArea game={game} relatedGames={relatedGames} />
 
-        <SimilarGamesSlider SimilarGames={SimilarGames} />
-      </div>
+          <SimilarGamesSlider SimilarGames={SimilarGames} />
+        </div>
       </div>
     </>
   )

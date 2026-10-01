@@ -3,7 +3,7 @@ export enum GameStatusEnum {
   Playing = 'PLAYING',
   Paused = 'PAUSED',
   Backlog = 'BACKLOG',
-  Wishlist = 'WISHLIST'
+  Wishlist = 'WISHLIST',
 }
 
 export interface GameCardData {
@@ -17,6 +17,8 @@ export interface GameCardData {
   rating?: number | null
   completions?: number
   hoursPlayed?: number
+  playedOn?: string[]
+  platforms?: string[]
   status?: string
 }
 

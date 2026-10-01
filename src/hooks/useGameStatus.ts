@@ -1,14 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import type { GameStatusResponse } from '../types/games'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
-import { toast } from 'react-toastify'
-import { getErrorMessage } from '../utils/getErrorMessage'
-import type { GameStatusResponse } from '../types/games'
 
-const getGameStatusQueryKey = (
-  userId: string,
-  igdbId: string | undefined
-) => ['gamesStatus', userId, igdbId]
+const getGameStatusQueryKey = (userId: string, igdbId: string | undefined) => [
+  'gamesStatus',
+  userId,
+  igdbId,
+]
 
 export const useGameStatus = (igdbId: string | undefined) => {
   const { user } = useAuth()
@@ -21,7 +22,7 @@ export const useGameStatus = (igdbId: string | undefined) => {
     queryKey,
     queryFn: () => api.getGameStatus(igdbId),
     enabled: Boolean(userId && igdbId),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
   const updateGameStatus = useMutation({
@@ -34,6 +35,9 @@ export const useGameStatus = (igdbId: string | undefined) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({ queryKey: ['gameStats', userId, igdbId] })
+      queryClient.invalidateQueries({
+        queryKey: ['gamePlatforms', userId, igdbId],
+      })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
       toast.success('Status do jogo atualizado com sucesso 👌')
@@ -48,12 +52,12 @@ export const useGameStatus = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })
       queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
-    }
+    },
   })
 
   return {
     gameStatus: gameStatusResponse,
     updateGameStatus: (data: { statusIds: number }) =>
-      updateGameStatus.mutateAsync(data)
+      updateGameStatus.mutateAsync(data),
   }
 }

@@ -1,9 +1,11 @@
+import { Gamepad2, Gift, Library, Play, Star, Trophy } from 'lucide-react'
 import { useState } from 'react'
-import { Star, RotateCcw, Clock, Gift, Play, Library, Gamepad2 } from 'lucide-react'
-import { GameModal } from './gameModal'
-import { GameInfo } from './gameInfo'
 import { twMerge } from 'tailwind-merge'
 import type { GameCardProps } from '../../interfaces/games'
+import { hiResCover } from '../../utils/hiResCover'
+import { getLibraryPlatform } from '../../utils/libraryPlatforms'
+import { GameInfo } from './gameInfo'
+import { GameModal } from './gameModal'
 
 const LIBRARY_STATUS_BADGES: Record<
   string,
@@ -13,33 +15,38 @@ const LIBRARY_STATUS_BADGES: Record<
     icon: Gift,
     barColor: 'bg-pink-400',
     iconColor: 'text-pink-400',
-    label: 'Lista de desejos'
+    label: 'Lista de desejos',
   },
   PLAYING: {
     icon: Play,
     barColor: 'bg-emerald-400',
     iconColor: 'text-emerald-400',
-    label: 'Jogando'
+    label: 'Jogando',
   },
   BACKLOG: {
     icon: Library,
     barColor: 'bg-slate-400',
     iconColor: 'text-slate-400',
-    label: 'Pendentes'
+    label: 'Pendentes',
   },
   PLAYED: {
     icon: Gamepad2,
     barColor: 'bg-amber-400',
     iconColor: 'text-amber-400',
-    label: 'Jogado'
-  }
+    label: 'Jogado',
+  },
 }
+
+const MAX_CARD_PLATFORMS = 3
+
+const badgeClass =
+  'inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200'
 
 const sizes = {
   small: 'w-14 h-16',
   medium: 'aspect-[7/10] w-full',
   compact: 'w-32 h-44',
-  larger: 'w-44 h-56'
+  larger: 'w-44 h-56',
 }
 
 const CATEGORY_TAGS: Record<number, string> = {
@@ -54,7 +61,7 @@ const CATEGORY_TAGS: Record<number, string> = {
   10: 'Edição Expandida',
   11: 'Port',
   13: 'Pacote',
-  14: 'Atualização'
+  14: 'Atualização',
 }
 
 const TEXT_HINTS: Array<{ pattern: RegExp; tag: string }> = [
@@ -64,8 +71,8 @@ const TEXT_HINTS: Array<{ pattern: RegExp; tag: string }> = [
   {
     pattern:
       /definitive edition|enhanced edition|goty|game of the year edition|anniversary edition/i,
-    tag: 'Edição Especial'
-  }
+    tag: 'Edição Especial',
+  },
 ]
 
 export function getGameTag(
@@ -91,7 +98,7 @@ export function GameCard({
   className,
   size = 'medium',
   enableModal,
-  interactive = true
+  interactive = true,
 }: GameCardProps) {
   const [open, setOpen] = useState(false)
   const tag =
@@ -100,16 +107,24 @@ export function GameCard({
       : null
 
   const showRating = size !== 'small' && game?.rating != null
-  const showCompletions =
+  const completions = game?.completions ?? 0
+  const showReplayBadge =
     size !== 'small' &&
-    game?.status === 'PLAYED' &&
-    !!game?.completions &&
-    game.completions > 0
-  const showHoursPlayed =
-    size !== 'small' && !!game?.hoursPlayed && game.hoursPlayed > 0
+    completions > 0 &&
+    (game?.status === 'PLAYING' || game?.status === 'BACKLOG')
   const statusBadge =
-    size !== 'small' && game?.status ? LIBRARY_STATUS_BADGES[game.status] : undefined
+    size !== 'small' && game?.status
+      ? LIBRARY_STATUS_BADGES[game.status]
+      : undefined
   const accentColor = statusBadge?.iconColor ?? 'text-primary'
+  const playedOn =
+    size !== 'small'
+      ? (game?.playedOn ?? [])
+          .map(getLibraryPlatform)
+          .filter(p => p !== undefined)
+      : []
+  const visiblePlatforms = playedOn.slice(0, MAX_CARD_PLATFORMS)
+  const hiddenPlatformCount = playedOn.length - visiblePlatforms.length
 
   const cardClassName = twMerge(
     'group relative rounded-lg overflow-hidden hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
@@ -127,47 +142,43 @@ export function GameCard({
         />
       )}
 
-      {tag && statusBadge ? (
-        <div className="absolute top-1.5 left-1.5 right-1.5 z-10 flex items-center gap-1.5">
-          <span className="min-w-0 truncate px-1 py-0.5 sm:px-1.5 rounded bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-300">
-            {tag}
-          </span>
-          <span
-            className="inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border shrink-0"
-            title={statusBadge.label}
-            aria-label={statusBadge.label}
-          >
-            <statusBadge.icon
-              className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
-              aria-hidden="true"
-            />
-          </span>
-        </div>
-      ) : (
-        <>
-          {tag && (
-            <span className="absolute top-1.5 left-1.5 max-w-[calc(100%-0.75rem)] truncate z-10 px-1 py-0.5 sm:px-1.5 rounded bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-300">
-              {tag}
-            </span>
-          )}
-          {statusBadge && (
-            <span
-              className="absolute top-1.5 left-1.5 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
-              title={statusBadge.label}
-              aria-label={statusBadge.label}
-            >
-              <statusBadge.icon
-                className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
-                aria-hidden="true"
-              />
-            </span>
-          )}
-        </>
+      {tag && (
+        <span
+          className={`absolute top-1.5 left-1.5 truncate z-10 ${showReplayBadge ? 'max-w-[calc(100%-4.5rem)]' : 'max-w-[calc(100%-2.5rem)]'} px-1 py-0.5 sm:px-1.5 rounded bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-300`}
+        >
+          {tag}
+        </span>
+      )}
+
+      {showReplayBadge && (
+        <span
+          className="absolute top-1.5 right-[26px] sm:right-[30px] z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+          title={`Zerado ${completions}×`}
+          aria-label={`Já zerado ${completions} ${completions === 1 ? 'vez' : 'vezes'}`}
+        >
+          <Trophy
+            className="size-2 sm:size-2.5 text-primary-light"
+            aria-hidden="true"
+          />
+        </span>
+      )}
+
+      {statusBadge && (
+        <span
+          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+          title={statusBadge.label}
+          aria-label={statusBadge.label}
+        >
+          <statusBadge.icon
+            className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
+            aria-hidden="true"
+          />
+        </span>
       )}
 
       {showRating && (
         <span
-          className="absolute bottom-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
+          className={`absolute bottom-1.5 left-1.5 z-10 ${badgeClass}`}
           title="Sua nota"
           aria-label={`Sua nota: ${game?.rating}`}
         >
@@ -179,27 +190,22 @@ export function GameCard({
         </span>
       )}
 
-      {showCompletions && (
+      {visiblePlatforms.length > 0 && (
         <span
-          className="absolute bottom-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
-          title="Vezes finalizado"
-          aria-label={`Finalizado ${game?.completions}x`}
+          className={`absolute bottom-1.5 right-1.5 z-10 ${badgeClass}`}
+          title={playedOn.map(p => p.label).join(', ')}
+          aria-label={`Jogado em: ${playedOn.map(p => p.label).join(', ')}`}
         >
-          <RotateCcw className={`size-2 sm:size-2.5 ${accentColor}`} aria-hidden="true" />
-          <span aria-hidden="true">{game?.completions}</span>
-        </span>
-      )}
-
-      {showHoursPlayed && (
-        <span
-          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200"
-          title="Horas jogadas"
-          aria-label={`${game?.hoursPlayed} horas jogadas`}
-        >
-          <Clock className={`size-2 sm:size-2.5 ${accentColor}`} aria-hidden="true" />
-          <span aria-hidden="true">
-            {Number(game?.hoursPlayed?.toFixed(1))}h
-          </span>
+          {visiblePlatforms.map(({ value, icon: Icon }) => (
+            <Icon
+              key={value}
+              className="size-2 sm:size-2.5 text-gray-200"
+              aria-hidden
+            />
+          ))}
+          {hiddenPlatformCount > 0 && (
+            <span aria-hidden="true">+{hiddenPlatformCount}</span>
+          )}
         </span>
       )}
 
@@ -211,7 +217,8 @@ export function GameCard({
             size !== 'small' &&
               'transition-opacity duration-200 group-hover:opacity-20'
           )}
-          src={game.coverUrl}
+          src={hiResCover(game.coverUrl)}
+          loading="lazy"
           alt={`${game?.name} banner`}
         />
       ) : (
@@ -254,11 +261,7 @@ export function GameCard({
       </div>
 
       {enableModal && (
-        <GameModal
-          open={open}
-          onOpenChange={setOpen}
-          title={game?.name ?? 'Detalhes do jogo'}
-        >
+        <GameModal open={open} onOpenChange={setOpen}>
           <GameInfo game={game} onClose={() => setOpen(false)} />
         </GameModal>
       )}

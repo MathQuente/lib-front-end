@@ -1,91 +1,54 @@
-import { Gamepad2, Library, Gift, Play } from 'lucide-react'
-import { PlayedCount } from '../playedCount'
-import { HoursPlayed } from '../hoursPlayed'
-import { CompletedAtInput } from '../completedAtInput'
-import { useGameStatus } from '../../hooks/useGameStatus'
-import { useAddGame } from '../../hooks/useAddGame'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
+import { useGamePlatforms } from '../../hooks/useGamePlatforms'
+import { useGameStatus } from '../../hooks/useGameStatus'
 import type { GameFormProps } from '../../interfaces/games'
+import { GamePlatformsSection } from '../gamePlatformsSection'
+import { LibraryRecordFields } from '../libraryRecordFields'
+import { GameStatusButtons } from './gameStatusButtons'
 
 export function GameForm({ game }: GameFormProps) {
   const igdbId = game?.igdbId?.toString()
-  const { gameStatus, updateGameStatus } = useGameStatus(igdbId)
-  const { addGame, removeGame } = useAddGame(igdbId)
-
-  if (!game) return null
+  const { gameStatus } = useGameStatus(igdbId)
 
   const activeStatus = gameStatus?.userGameStatus
   const hasStatus = (statusId: number) => activeStatus?.id === statusId
+  const canHavePlatforms = !!activeStatus && activeStatus.id !== STATUS.WISHLIST
 
-  async function handleStatusClick(statusId: number) {
-    const isAlreadyActive = hasStatus(statusId)
-    const hasExistingStatus = activeStatus != null
+  const {
+    platforms,
+    totals,
+    addPlatform,
+    updatePlatform,
+    removePlatform,
+    isMutating,
+  } = useGamePlatforms(igdbId ?? '', canHavePlatforms)
 
-    if (isAlreadyActive) {
-      await removeGame()
-    } else if (hasExistingStatus) {
-      await updateGameStatus({ statusIds: statusId })
-    } else {
-      await addGame({ statusIds: statusId })
-    }
-  }
+  if (!game) return null
 
-  const gameIsReleased = game.releaseDate
-    ? new Date() > new Date(game.releaseDate * 1000)
-    : true
-
-  const buttons = [
-    ...(gameIsReleased
-      ? [
-          { statusId: STATUS.PLAYED, icon: Gamepad2, label: 'Jogado' },
-          { statusId: STATUS.PLAYING, icon: Play, label: 'Jogando' },
-          { statusId: STATUS.BACKLOG, icon: Library, label: 'Pendentes' }
-        ]
-      : []),
-    { statusId: STATUS.WISHLIST, icon: Gift, label: 'Lista de desejos' }
-  ]
+  const usesPlatforms = canHavePlatforms && platforms.length > 0
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex flex-wrap justify-center items-start gap-4">
-        {buttons.map(({ statusId, icon: Icon, label }) => {
-          const active = hasStatus(statusId)
-          return (
-            <button
-              key={statusId}
-              type="button"
-              onClick={() => handleStatusClick(statusId)}
-              className={`flex flex-col items-center gap-1.5 px-2 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light group ${
-                active
-                  ? 'bg-primary/10 ring-1 ring-primary/30'
-                  : 'hover:bg-dark-bg-lighter'
-              }`}
-            >
-              <Icon
-                className={`size-6 transition-colors ${
-                  active
-                    ? 'text-primary'
-                    : 'text-gray-400 group-hover:text-gray-300'
-                }`}
-              />
-              <span
-                className={`text-xs transition-colors ${
-                  active
-                    ? 'text-primary font-medium'
-                    : 'text-gray-400 group-hover:text-gray-300'
-                }`}
-              >
-                {label}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+      <GameStatusButtons game={game} />
 
-      {hasStatus(STATUS.PLAYED) && <PlayedCount game={game} />}
-      {hasStatus(STATUS.PLAYED) && <CompletedAtInput game={game} />}
-      {activeStatus && activeStatus.id !== STATUS.WISHLIST && (
-        <HoursPlayed game={game} />
+      {canHavePlatforms && (
+        <GamePlatformsSection
+          gamePlatforms={game.platforms}
+          platforms={platforms}
+          totalHours={totals?.hoursPlayed ?? 0}
+          totalCompletions={totals?.completions ?? 0}
+          totalCompletedAt={totals?.completedAt}
+          isPlayed={hasStatus(STATUS.PLAYED)}
+          statusId={activeStatus?.id}
+          disabled={isMutating}
+          onAdd={addPlatform}
+          onUpdate={updatePlatform}
+          onRemove={removePlatform}
+        />
+      )}
+
+      {!usesPlatforms && canHavePlatforms && (
+        <LibraryRecordFields game={game} isPlayed={hasStatus(STATUS.PLAYED)} />
       )}
     </div>
   )

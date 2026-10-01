@@ -1,76 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { SteamImportResult } from '../types/steam'
 import { api } from './useApi'
-import { useAuth } from './useAuth'
-import { toast } from 'react-toastify'
-import { getErrorMessage } from '../utils/getErrorMessage'
-import type { ImportStatusResponse } from '../types/steam'
+import { usePlatformImport } from './usePlatformImport'
 
-const POLLING_STATUSES = ['waiting', 'active', 'delayed']
-
-export const useSteamImport = () => {
-  const { user } = useAuth()
-  const userId = user?.id ?? ''
-  const queryClient = useQueryClient()
-
-  const queryKey = ['steamImportStatus', userId]
-
-  const { data: status, isLoading } = useQuery<ImportStatusResponse>({
-    queryKey,
-    queryFn: () => api.getSteamImportStatus(),
-    enabled: Boolean(userId),
-    refetchInterval: query =>
-      POLLING_STATUSES.includes(query.state.data?.status ?? '') ? 1000 : false,
-    refetchIntervalInBackground: true
+export const useSteamImport = () =>
+  usePlatformImport<SteamImportResult>({
+    key: 'steam',
+    label: 'Steam',
+    getStatus: () => api.getSteamImportStatus(),
+    connect: profileInput => api.connectSteam(profileInput),
+    disconnect: () => api.disconnectSteam(),
+    startImport: () => api.startSteamImport(),
   })
-
-  const connectSteam = useMutation({
-    mutationFn: (profileInput: string) => api.connectSteam(profileInput),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
-      toast.success('Steam conectada com sucesso 👌')
-    },
-    onError: error => {
-      toast.error(getErrorMessage(error, 'Erro ao conectar Steam'))
-    }
-  })
-
-  const disconnectSteam = useMutation({
-    mutationFn: () => api.disconnectSteam(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
-      toast.success('Steam desconectada')
-    },
-    onError: error => {
-      toast.error(getErrorMessage(error, 'Erro ao desconectar Steam'))
-    }
-  })
-
-  const startImport = useMutation({
-    mutationFn: () => api.startSteamImport(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
-    },
-    onError: error => {
-      toast.error(getErrorMessage(error, 'Erro ao iniciar a importação'))
-    }
-  })
-
-  const refreshAfterImport = () => {
-    queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
-    queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
-    queryClient.invalidateQueries({ queryKey: ['games'] })
-  }
-
-  return {
-    status,
-    isLoadingStatus: isLoading,
-    connectSteam: (profileInput: string) =>
-      connectSteam.mutateAsync(profileInput),
-    isConnecting: connectSteam.isPending,
-    disconnectSteam: () => disconnectSteam.mutateAsync(),
-    isDisconnecting: disconnectSteam.isPending,
-    startImport: () => startImport.mutateAsync(),
-    isStarting: startImport.isPending,
-    refreshAfterImport
-  }
-}

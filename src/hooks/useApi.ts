@@ -1,34 +1,40 @@
 import axios from 'axios'
-import { toast } from 'react-toastify'
 import Cookies from 'js-cookie'
-import type { GameStatusEnum, UserGamesResponse } from '../types/games'
+import { toast } from 'react-toastify'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type {
-  UpdateUserPayload,
-  UserProfileResponse,
-  PublicUserProfileResponse
-} from '../types/user'
+  GetFollowersResponse,
+  GetFollowingResponse,
+  IsFollowingResponse,
+  SearchUsersResponse,
+} from '../types/follow'
+import type { GameStatusEnum, UserGamesResponse } from '../types/games'
+import type { StartImportResponse } from '../types/import'
+import type {
+  LibraryPlatform,
+  UserGamePlatformPatch,
+  UserGamePlatformsResponse,
+} from '../types/platform'
+import type { ConnectPsnResponse, PsnImportStatusResponse } from '../types/psn'
 import type { CreateRatingResponse } from '../types/rating'
 import type {
+  GetCommunityReviewsResponse,
   GetReviewResponse,
   UpsertReviewResponse,
-  GetCommunityReviewsResponse
 } from '../types/review'
 import type {
   ConnectSteamResponse,
-  StartImportResponse,
-  ImportStatusResponse
+  SteamImportStatusResponse,
 } from '../types/steam'
 import type {
-  IsFollowingResponse,
-  GetFollowersResponse,
-  GetFollowingResponse,
-  SearchUsersResponse
-} from '../types/follow'
+  PublicUserProfileResponse,
+  UpdateUserPayload,
+  UserProfileResponse,
+} from '../types/user'
 
 const http = axios.create({
   baseURL: '/api',
-  withCredentials: true
+  withCredentials: true,
 })
 
 http.interceptors.response.use(
@@ -88,7 +94,7 @@ export const api = {
     try {
       const response = await http.post('/auth/reset-password', {
         token,
-        password
+        password,
       })
       return response.data
     } catch (error) {
@@ -127,7 +133,7 @@ export const api = {
       releaseDate: 'dateRelease',
       rating: 'rating',
       hoursPlayed: 'hoursPlayed',
-      completedAt: 'completedAt'
+      completedAt: 'completedAt',
     } as const
 
     const response = await http.get('/users/userGames', {
@@ -136,8 +142,8 @@ export const api = {
         query: search || undefined,
         filter: filter,
         sortBy: sortBy ? USER_GAMES_SORT_BY_MAP[sortBy] : undefined,
-        sortOrder
-      }
+        sortOrder,
+      },
     })
     return response.data
   },
@@ -171,7 +177,7 @@ export const api = {
   },
   searchUsers: async (query: string) => {
     const response = await http.get<SearchUsersResponse>('/users', {
-      params: { query }
+      params: { query },
     })
     return response.data
   },
@@ -203,8 +209,8 @@ export const api = {
         query: search,
         sortBy,
         sortOrder,
-        limit: limit ? limit : null
-      }
+        limit: limit ? limit : null,
+      },
     })
     return response.data
   },
@@ -271,11 +277,48 @@ export const api = {
     )
     return response
   },
+  getGamePlatforms: async (igdbId: string) => {
+    const response = await http.get<UserGamePlatformsResponse>(
+      `/users/platforms/${igdbId}`,
+      {}
+    )
+    return response.data
+  },
+  addGamePlatform: async (igdbId: string, platform: LibraryPlatform) => {
+    const response = await http.put<UserGamePlatformsResponse>(
+      `/users/platforms/${igdbId}/${platform}`,
+      {},
+      {}
+    )
+    return response.data
+  },
+  updateGamePlatform: async (
+    igdbId: string,
+    platform: LibraryPlatform,
+    patch: UserGamePlatformPatch
+  ) => {
+    const response = await http.patch<UserGamePlatformsResponse>(
+      `/users/platforms/${igdbId}/${platform}`,
+      patch,
+      {}
+    )
+    return response.data
+  },
+  removeGamePlatform: async (igdbId: string, platform: LibraryPlatform) => {
+    const response = await http.delete<UserGamePlatformsResponse>(
+      `/users/platforms/${igdbId}/${platform}`,
+      {}
+    )
+    return response.data
+  },
   getGameHours: async (igdbId: string | undefined) => {
     const response = await http.get(`/users/hoursPlayed/${igdbId}`, {})
     return response.data
   },
-  updateHoursPlayed: async (igdbId: string | undefined, hoursPlayed: number) => {
+  updateHoursPlayed: async (
+    igdbId: string | undefined,
+    hoursPlayed: number
+  ) => {
     const response = await http.patch(
       `/users/hoursPlayed/${igdbId}`,
       { hoursPlayed },
@@ -287,7 +330,10 @@ export const api = {
     const response = await http.get(`/users/completedAt/${igdbId}`, {})
     return response.data
   },
-  updateCompletedAt: async (igdbId: string | undefined, completedAt: string) => {
+  updateCompletedAt: async (
+    igdbId: string | undefined,
+    completedAt: string
+  ) => {
     const response = await http.patch(
       `/users/completedAt/${igdbId}`,
       { completedAt },
@@ -335,10 +381,7 @@ export const api = {
     return response.data
   },
   getOwnReview: async (igdbId: string | undefined) => {
-    const response = await http.get<GetReviewResponse>(
-      `/reviews/${igdbId}`,
-      {}
-    )
+    const response = await http.get<GetReviewResponse>(`/reviews/${igdbId}`, {})
     return response.data
   },
   upsertReview: async (igdbId: string | undefined, text: string) => {
@@ -384,8 +427,34 @@ export const api = {
     return response.data
   },
   getSteamImportStatus: async () => {
-    const response = await http.get<ImportStatusResponse>(
+    const response = await http.get<SteamImportStatusResponse>(
       '/users/steam/import',
+      {}
+    )
+    return response.data
+  },
+  connectPsn: async (onlineId: string) => {
+    const response = await http.patch<ConnectPsnResponse>(
+      '/users/psn',
+      { onlineId },
+      {}
+    )
+    return response.data
+  },
+  disconnectPsn: async () => {
+    await http.delete('/users/psn', {})
+  },
+  startPsnImport: async () => {
+    const response = await http.post<StartImportResponse>(
+      '/users/psn/import',
+      {},
+      {}
+    )
+    return response.data
+  },
+  getPsnImportStatus: async () => {
+    const response = await http.get<PsnImportStatusResponse>(
+      '/users/psn/import',
       {}
     )
     return response.data
@@ -403,9 +472,9 @@ export const api = {
         query: search,
         sortBy,
         sortOrder,
-        limit: limit ? limit : null
-      }
+        limit: limit ? limit : null,
+      },
     })
     return response.data
-  }
+  },
 }

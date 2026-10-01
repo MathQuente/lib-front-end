@@ -53,11 +53,7 @@ export const useRating = (igdbId: string | undefined) => {
       })
 
       if (response?.data?.promotedToPlayed) {
-        toast.success(
-          'Avaliação salva — jogo marcado como Jogado automaticamente 🎮'
-        )
-      } else {
-        toast.success('Avaliação atualizada com sucesso 👌')
+        toast.success('Avaliação salva. Jogo marcado como Jogado.')
       }
     },
     onError: (err, _, context) => {
@@ -93,7 +89,6 @@ export const useRating = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({
         queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
       })
-      toast.success('Avaliação removida com sucesso 👌')
     },
     onError: (err, _, context) => {
       queryClient.setQueryData(queryKey, context?.previous)

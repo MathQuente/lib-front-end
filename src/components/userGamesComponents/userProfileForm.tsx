@@ -4,15 +4,16 @@ import { useForm } from 'react-hook-form'
 import type { FieldValues } from 'react-hook-form'
 import type { z } from 'zod'
 
-import { X, Camera } from 'lucide-react'
+import { Camera, X } from 'lucide-react'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 
-import { updateProfileSchema } from '../../schemas/profileSchema'
 import { useUserProfile } from '../../hooks/useUserProfile'
+import type { UserGamesFormProps } from '../../interfaces/user'
+import { updateProfileSchema } from '../../schemas/profileSchema'
 import { Button } from '../button'
 import { SectionHeading } from '../sectionHeading'
+import { PsnImportSection } from './psnImportSection'
 import { SteamImportSection } from './steamImportSection'
-import type { UserGamesFormProps } from '../../interfaces/user'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 
@@ -26,26 +27,26 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
   const [originalValues, setOriginalValues] = useState({
     userName: '',
     profilePicture: '',
-    userBanner: ''
+    userBanner: '',
   })
 
   const { UserProfileResponse, updateUserProfile, isUpdatingProfile } =
     useUserProfile({
-    onUpdateSuccess: () => {
-      setHasChanges(false)
-      afterSave()
-    },
-    removeUserBanner: shouldRemoveBanner
-  })
+      onUpdateSuccess: () => {
+        setHasChanges(false)
+        afterSave()
+      },
+      removeUserBanner: shouldRemoveBanner,
+    })
 
   const {
     register: registerField,
     setValue,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm<ProfileForm>({
-    resolver: zodResolver(updateProfileSchema)
+    resolver: zodResolver(updateProfileSchema),
   })
 
   const watchedValues = watch()
@@ -59,7 +60,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
       setOriginalValues({
         userName: UserProfileResponse.user.userName || '',
         profilePicture: UserProfileResponse.user.profilePicture || '',
-        userBanner: UserProfileResponse.user.userBanner || ''
+        userBanner: UserProfileResponse.user.userBanner || '',
       })
     }
   }, [UserProfileResponse?.user])
@@ -80,7 +81,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
     userBannerPreview,
     shouldRemoveBanner,
     originalValues,
-    UserProfileResponse?.user
+    UserProfileResponse?.user,
   ])
 
   async function onSubmit(data: FieldValues) {
@@ -173,7 +174,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                 className="sr-only"
                 aria-label="Trocar banner"
                 {...registerField('userBanner', {
-                  onChange: handleBannerChange
+                  onChange: handleBannerChange,
                 })}
               />
               <div className="p-2 rounded-lg bg-dark-bg-light/80 border border-dark-border text-gray-300 hover:text-white transition-colors">
@@ -217,7 +218,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
                 onChange: e => {
                   const file = e.target.files?.[0]
                   if (file) setProfilePicturePreview(URL.createObjectURL(file))
-                }
+                },
               })}
             />
           </label>
@@ -248,7 +249,12 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
 
         <div className="flex flex-col gap-3">
           <SectionHeading className="mb-0">Integrações</SectionHeading>
-          <SteamImportSection steamId={UserProfileResponse?.user?.steamId ?? null} />
+          <SteamImportSection
+            steamId={UserProfileResponse?.user?.steamId ?? null}
+          />
+          <PsnImportSection
+            psnOnlineId={UserProfileResponse?.user?.psnOnlineId ?? null}
+          />
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-dark-border">

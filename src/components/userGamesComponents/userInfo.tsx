@@ -28,7 +28,7 @@ export function UserInfo({
             <button
               type="button"
               onClick={onFollowersClick}
-              className="text-gray-400 hover:text-primary hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+              className="text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
             >
               {followersCount.toLocaleString()}{' '}
               {followersCount === 1 ? 'seguidor' : 'seguidores'}
@@ -41,7 +41,7 @@ export function UserInfo({
             <button
               type="button"
               onClick={onFollowingClick}
-              className="text-gray-400 hover:text-primary hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+              className="text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
             >
               {followingCount.toLocaleString()} seguindo
             </button>

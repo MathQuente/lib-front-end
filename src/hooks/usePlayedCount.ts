@@ -62,7 +62,6 @@ export const usePlayedCount = (igdbId: string) => {
       queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })
-      toast.success('Contagem de finalizações atualizada com sucesso 👌')
     },
     onError: (error, _variables, context) => {
       if (context?.previousData) {
