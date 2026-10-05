@@ -1,5 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs'
+import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
 
@@ -9,9 +11,27 @@ const tabTrigger =
   'transition-colors duration-150 uppercase tracking-wide ' +
   'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-light'
 
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  access_denied: 'Login cancelado.',
+  email_not_verified:
+    'O email dessa conta ainda não foi verificado no provedor. Verifique o email lá e tente de novo.'
+}
+const OAUTH_ERROR_FALLBACK = 'Não foi possível entrar. Tente novamente.'
+
 export function Authentication() {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') === 'signUp' ? 'signUp' : 'login'
+  const oauthError = searchParams.get('error')
+
+  useEffect(() => {
+    if (!oauthError) return
+
+    toast.error(OAUTH_ERROR_MESSAGES[oauthError] ?? OAUTH_ERROR_FALLBACK)
+
+    const next = new URLSearchParams(searchParams)
+    next.delete('error')
+    setSearchParams(next, { replace: true })
+  }, [oauthError, searchParams, setSearchParams])
 
   function handleTabChange(value: string) {
     setSearchParams(value === 'signUp' ? { tab: 'signUp' } : {}, {

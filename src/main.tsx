@@ -8,6 +8,7 @@ import { ResetPasswordPage } from './pages/resetPasswordPage'
 import { Home } from './pages/home'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { UserLibrary } from './pages/userLibrary'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
@@ -19,7 +20,17 @@ import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        const status = isAxiosError(error) ? error.response?.status : undefined
+        if (status && status >= 400 && status < 500) return false
+        return failureCount < 3
+      }
+    }
+  }
+})
 
 const router = createBrowserRouter([
   {

@@ -1,8 +1,28 @@
 import axios from 'axios'
 
+const GENERIC_API_MESSAGES = new Set([
+  'Invalid input',
+  'Bad request',
+  'Unauthorized',
+  'Forbidden',
+  'Not found',
+  'Method not allowed',
+  'Payload too large',
+  'Unsupported media type',
+  'Too many requests',
+])
+
 export function getErrorMessage(error: unknown, fallback: string): string {
-  if (axios.isAxiosError(error)) {
-    return error.response?.data?.message ?? fallback
+  if (!axios.isAxiosError(error)) return fallback
+
+  const status = error.response?.status
+  if (status === 429)
+    return 'Muitas tentativas. Aguarde um pouco e tente novamente.'
+  if (!status || status >= 500) return fallback
+
+  const message = error.response?.data?.message
+  if (typeof message !== 'string' || GENERIC_API_MESSAGES.has(message)) {
+    return fallback
   }
-  return fallback
+  return message
 }
