@@ -31,6 +31,10 @@ import type {
   UpdateUserPayload,
   UserProfileResponse,
 } from '../types/user'
+import type {
+  ConnectXboxResponse,
+  XboxImportStatusResponse,
+} from '../types/xbox'
 
 const http = axios.create({
   baseURL: '/api',
@@ -455,6 +459,32 @@ export const api = {
   getPsnImportStatus: async () => {
     const response = await http.get<PsnImportStatusResponse>(
       '/users/psn/import',
+      {}
+    )
+    return response.data
+  },
+  connectXbox: async (gamertag: string) => {
+    const response = await http.patch<ConnectXboxResponse>(
+      '/users/xbox',
+      { gamertag },
+      {}
+    )
+    return response.data
+  },
+  disconnectXbox: async () => {
+    await http.delete('/users/xbox', {})
+  },
+  startXboxImport: async () => {
+    const response = await http.post<StartImportResponse>(
+      '/users/xbox/import',
+      {},
+      {}
+    )
+    return response.data
+  },
+  getXboxImportStatus: async () => {
+    const response = await http.get<XboxImportStatusResponse>(
+      '/users/xbox/import',
       {}
     )
     return response.data

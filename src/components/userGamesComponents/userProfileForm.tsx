@@ -14,6 +14,7 @@ import { Button } from '../button'
 import { SectionHeading } from '../sectionHeading'
 import { PsnImportSection } from './psnImportSection'
 import { SteamImportSection } from './steamImportSection'
+import { XboxImportSection } from './xboxImportSection'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 
@@ -254,6 +255,9 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           />
           <PsnImportSection
             psnOnlineId={UserProfileResponse?.user?.psnOnlineId ?? null}
+          />
+          <XboxImportSection
+            xboxGamertag={UserProfileResponse?.user?.xboxGamertag ?? null}
           />
         </div>
 
