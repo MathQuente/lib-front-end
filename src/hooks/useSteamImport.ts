@@ -7,7 +7,8 @@ export const useSteamImport = () =>
     key: 'steam',
     label: 'Steam',
     getStatus: () => api.getSteamImportStatus(),
-    connect: profileInput => api.connectSteam(profileInput),
+    connect: () => api.startSteamLink(),
+    redirectsAway: true,
     disconnect: () => api.disconnectSteam(),
     startImport: () => api.startSteamImport(),
   })

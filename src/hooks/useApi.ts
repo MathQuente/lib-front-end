@@ -15,7 +15,11 @@ import type {
   UserGamePlatformPatch,
   UserGamePlatformsResponse,
 } from '../types/platform'
-import type { ConnectPsnResponse, PsnImportStatusResponse } from '../types/psn'
+import type {
+  ConnectPsnResponse,
+  PsnImportStatusResponse,
+  PsnVerificationResponse,
+} from '../types/psn'
 import type { CreateRatingResponse } from '../types/rating'
 import type {
   GetCommunityReviewsResponse,
@@ -23,7 +27,6 @@ import type {
   UpsertReviewResponse,
 } from '../types/review'
 import type {
-  ConnectSteamResponse,
   SteamImportStatusResponse,
 } from '../types/steam'
 import type {
@@ -32,9 +35,11 @@ import type {
   UserProfileResponse,
 } from '../types/user'
 import type {
-  ConnectXboxResponse,
   XboxImportStatusResponse,
 } from '../types/xbox'
+import { getErrorMessage } from '../utils/getErrorMessage'
+
+export const SESSION_ENDED_EVENT = 'auth:session-ended'
 
 const http = axios.create({
   baseURL: '/api',
@@ -45,20 +50,37 @@ http.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      const errorData = error.response.data
+      const status = error.response.data?.status
 
-      if (
-        errorData.status === 'session_expired' ||
-        errorData.status === 'unauthorized'
-      ) {
+      if (status === 'session_expired' || status === 'unauthorized') {
         Cookies.remove('accessToken')
         Cookies.remove('refreshToken')
+        window.dispatchEvent(new Event(SESSION_ENDED_EVENT))
       }
     }
 
     return Promise.reject(error)
   }
 )
+
+async function openPlatformSignIn(path: string, expectedOrigin: string) {
+  const signInTab = window.open('', '_blank')
+  if (signInTab) signInTab.opener = null
+
+  try {
+    const response = await http.post<{ url: string }>(path)
+    const url = new URL(response.data.url)
+    if (url.origin !== expectedOrigin) {
+      throw new Error('Unexpected sign-in URL')
+    }
+
+    if (signInTab) signInTab.location.href = url.toString()
+    else window.location.assign(url.toString())
+  } catch (error) {
+    signInTab?.close()
+    throw error
+  }
+}
 
 export const api = {
   login: async (email: string, password: string) => {
@@ -67,8 +89,7 @@ export const api = {
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message
-        toast.error(errorMessage)
+        toast.error(getErrorMessage(error, 'Não foi possível entrar.'))
         return
       }
 
@@ -86,8 +107,7 @@ export const api = {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
-          error.response?.data?.message ??
-            'Erro ao solicitar redefinição de senha.'
+          getErrorMessage(error, 'Erro ao solicitar redefinição de senha.')
         )
         return
       }
@@ -103,9 +123,7 @@ export const api = {
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(
-          error.response?.data?.message ?? 'Erro ao redefinir a senha.'
-        )
+        toast.error(getErrorMessage(error, 'Erro ao redefinir a senha.'))
         return
       }
       toast.error('Ocorreu um erro inesperado. 🤯')
@@ -114,9 +132,7 @@ export const api = {
   logout: async () => {
     try {
       await http.post('/auth/logout')
-    } catch (error) {
-      console.error('Logout failed:', error)
-    } finally {
+    } catch {} finally {
       Cookies.remove('accessToken')
       Cookies.remove('refreshToken')
       window.location.reload()
@@ -411,14 +427,8 @@ export const api = {
     )
     return response.data
   },
-  connectSteam: async (profileInput: string) => {
-    const response = await http.patch<ConnectSteamResponse>(
-      '/users/steam',
-      { profileInput },
-      {}
-    )
-    return response.data
-  },
+  startSteamLink: () =>
+    openPlatformSignIn('/users/steam/openid', 'https://steamcommunity.com'),
   disconnectSteam: async () => {
     await http.delete('/users/steam', {})
   },
@@ -437,12 +447,15 @@ export const api = {
     )
     return response.data
   },
-  connectPsn: async (onlineId: string) => {
-    const response = await http.patch<ConnectPsnResponse>(
-      '/users/psn',
-      { onlineId },
-      {}
+  requestPsnVerification: async (onlineId: string) => {
+    const response = await http.post<PsnVerificationResponse>(
+      '/users/psn/verification',
+      { onlineId }
     )
+    return response.data
+  },
+  connectPsn: async () => {
+    const response = await http.patch<ConnectPsnResponse>('/users/psn', {})
     return response.data
   },
   disconnectPsn: async () => {
@@ -463,14 +476,11 @@ export const api = {
     )
     return response.data
   },
-  connectXbox: async (gamertag: string) => {
-    const response = await http.patch<ConnectXboxResponse>(
-      '/users/xbox',
-      { gamertag },
-      {}
-    )
-    return response.data
-  },
+  startXboxLink: () =>
+    openPlatformSignIn(
+      '/users/xbox/oauth',
+      'https://login.microsoftonline.com'
+    ),
   disconnectXbox: async () => {
     await http.delete('/users/xbox', {})
   },

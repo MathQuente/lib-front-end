@@ -10,8 +10,7 @@ export function SteamImportSection({ steamId }: { steamId: string | null }) {
       icon={<FaSteam className="size-4 text-gray-300" aria-hidden="true" />}
       label="Steam"
       connectedId={steamId}
-      inputPlaceholder="Link do perfil ou SteamID"
-      disconnectedDescription="Conecte sua conta pra importar sua biblioteca automaticamente."
+      disconnectedDescription="Entre com a sua conta Steam pra confirmar que ela é sua e importar sua biblioteca automaticamente."
       importState={importState}
       getResultSections={result => [
         { title: 'Biblioteca', result: result.library },

@@ -7,7 +7,8 @@ export const useXboxImport = () =>
     key: 'xbox',
     label: 'Xbox',
     getStatus: () => api.getXboxImportStatus(),
-    connect: gamertag => api.connectXbox(gamertag),
+    connect: () => api.startXboxLink(),
+    redirectsAway: true,
     disconnect: () => api.disconnectXbox(),
     startImport: () => api.startXboxImport(),
   })

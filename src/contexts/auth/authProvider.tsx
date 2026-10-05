@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
-import { api } from '../../hooks/useApi'
+import { api, SESSION_ENDED_EVENT } from '../../hooks/useApi'
+import { getErrorMessage } from '../../utils/getErrorMessage'
 
 // const redirectToAuth = () => {
 //   window.location.href = '/auth'
@@ -29,20 +30,17 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
       setUser(newUser)
       return null
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message
-        if (message) return message
-      }
-      return 'Não foi possível criar a conta. Tente novamente.'
+      return getErrorMessage(
+        error,
+        'Não foi possível criar a conta. Tente novamente.'
+      )
     }
   }
 
   const logout = async () => {
     try {
       await api.logout()
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
+    } catch {}
     setUser(null)
   }
 
@@ -58,6 +56,21 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
       setLoading(false)
     }
   }
+
+  const userRef = useRef(user)
+  userRef.current = user
+
+  useEffect(() => {
+    const handleSessionEnded = () => {
+      if (!userRef.current) return
+      setUser(null)
+      toast.info('Sua sessão terminou. Entre novamente.')
+    }
+
+    window.addEventListener(SESSION_ENDED_EVENT, handleSessionEnded)
+    return () =>
+      window.removeEventListener(SESSION_ENDED_EVENT, handleSessionEnded)
+  }, [])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

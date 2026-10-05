@@ -7,7 +7,8 @@ export const usePsnImport = () =>
     key: 'psn',
     label: 'PlayStation',
     getStatus: () => api.getPsnImportStatus(),
-    connect: onlineId => api.connectPsn(onlineId),
+    connect: () => api.connectPsn(),
+    requestVerification: onlineId => api.requestPsnVerification(onlineId),
     disconnect: () => api.disconnectPsn(),
     startImport: () => api.startPsnImport(),
   })

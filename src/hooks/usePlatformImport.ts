@@ -11,6 +11,8 @@ export interface PlatformImportConfig<TResult> {
   label: string
   getStatus: () => Promise<ImportStatusResponse<TResult>>
   connect: (input: string) => Promise<unknown>
+  redirectsAway?: boolean
+  requestVerification?: (input: string) => Promise<{ code: string }>
   disconnect: () => Promise<unknown>
   startImport: () => Promise<unknown>
 }
@@ -24,7 +26,11 @@ export const usePlatformImport = <TResult>(
 
   const queryKey = [`${config.key}ImportStatus`, userId]
 
-  const { data: status, isLoading } = useQuery<ImportStatusResponse<TResult>>({
+  const {
+    data: status,
+    isLoading,
+    refetch,
+  } = useQuery<ImportStatusResponse<TResult>>({
     queryKey,
     queryFn: () => config.getStatus(),
     enabled: Boolean(userId),
@@ -36,8 +42,21 @@ export const usePlatformImport = <TResult>(
   const connect = useMutation({
     mutationFn: (input: string) => config.connect(input),
     onSuccess: () => {
+      if (config.redirectsAway) return
       queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
       toast.success(`${config.label} conectada com sucesso 👌`)
+    },
+    onError: error => {
+      toast.error(getErrorMessage(error, `Erro ao conectar ${config.label}`))
+    },
+  })
+
+  const requestVerification = useMutation({
+    mutationFn: (input: string) => {
+      if (!config.requestVerification) {
+        throw new Error('This platform has no verification step')
+      }
+      return config.requestVerification(input)
     },
     onError: error => {
       toast.error(getErrorMessage(error, `Erro ao conectar ${config.label}`))
@@ -75,8 +94,14 @@ export const usePlatformImport = <TResult>(
   return {
     status,
     isLoadingStatus: isLoading,
-    connect: (input: string) => connect.mutateAsync(input),
+    refetchStatus: () => refetch().then(result => result.data),
+    connect: (input = '') => connect.mutateAsync(input),
     isConnecting: connect.isPending,
+    redirectsAway: Boolean(config.redirectsAway),
+    requestVerification: config.requestVerification
+      ? (input: string) => requestVerification.mutateAsync(input)
+      : undefined,
+    isRequestingVerification: requestVerification.isPending,
     disconnect: () => disconnect.mutateAsync(),
     isDisconnecting: disconnect.isPending,
     startImport: () => startImport.mutateAsync(),
