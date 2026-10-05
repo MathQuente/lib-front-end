@@ -1,6 +1,7 @@
 import { z } from 'zod'
+import { passwordSchema } from './passwordSchema'
 
 export const signUpSchema = z.object({
   email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres')
+  password: passwordSchema
 })

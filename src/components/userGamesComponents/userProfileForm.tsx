@@ -225,7 +225,12 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           </label>
           {errors.profilePicture && (
             <span className="text-red-500 text-xs mt-1 block">
-              {errors.profilePicture.message}
+              Foto de perfil: {errors.profilePicture.message}
+            </span>
+          )}
+          {errors.userBanner && (
+            <span className="text-red-500 text-xs mt-1 block">
+              Banner: {errors.userBanner.message}
             </span>
           )}
         </div>

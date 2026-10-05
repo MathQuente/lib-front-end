@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import { safeRedirectPath } from '../utils/safeRedirectPath'
 import { loginSchema } from '../schemas/loginSchema'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,7 +29,9 @@ export function FormLogin() {
   async function onSubmit(data: LoginForm) {
     const success = await auth.login(data.email, data.password)
     if (success) {
-      const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
+      const redirectTo = safeRedirectPath(
+        localStorage.getItem('redirectAfterLogin')
+      )
       navigate(redirectTo, { replace: true })
       localStorage.removeItem('redirectAfterLogin')
     }

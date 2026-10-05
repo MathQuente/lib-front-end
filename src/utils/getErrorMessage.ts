@@ -20,6 +20,9 @@ export function getErrorMessage(error: unknown, fallback: string): string {
     return 'Muitas tentativas. Aguarde um pouco e tente novamente.'
   if (!status || status >= 500) return fallback
 
+  const passwordError = error.response?.data?.error?.password?.[0]
+  if (typeof passwordError === 'string') return passwordError
+
   const message = error.response?.data?.message
   if (typeof message !== 'string' || GENERIC_API_MESSAGES.has(message)) {
     return fallback

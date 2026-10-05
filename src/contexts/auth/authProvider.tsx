@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
+import { isAxiosError } from 'axios'
 import { AuthContext } from './authContext'
 import type { User } from '../../types/user'
 import { api, SESSION_ENDED_EVENT } from '../../hooks/useApi'
@@ -30,10 +31,16 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
       setUser(newUser)
       return null
     } catch (error) {
-      return getErrorMessage(
-        error,
-        'Não foi possível criar a conta. Tente novamente.'
-      )
+      const isPasswordError =
+        isAxiosError(error) &&
+        typeof error.response?.data?.error?.password?.[0] === 'string'
+      return {
+        field: isPasswordError ? ('password' as const) : ('email' as const),
+        message: getErrorMessage(
+          error,
+          'Não foi possível criar a conta. Tente novamente.'
+        )
+      }
     }
   }
 

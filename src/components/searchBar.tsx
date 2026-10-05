@@ -42,7 +42,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
     e.preventDefault()
     if (search.trim()) {
       justSubmittedRef.current = true
-      navigate(`/search/${search}`)
+      navigate(`/search/${encodeURIComponent(search.trim())}`)
       setSearch('')
       if (isMobile) {
         onClose?.()

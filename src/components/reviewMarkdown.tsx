@@ -5,6 +5,7 @@ export function ReviewMarkdown({ text }: { text: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      disallowedElements={['img']}
       components={{
         p: ({ children }) => (
           <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>

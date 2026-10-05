@@ -6,11 +6,12 @@ const ACCEPTED_FILE_TYPES = ['image/png', 'image/gif', 'image/jpeg']
 export const updateProfileSchema = z.object({
   userName: z
     .string()
+    .trim()
     .min(1, { message: 'Campo vazio' })
+    .max(30, { message: 'O nome pode ter no máximo 30 caracteres' })
     .transform(name => {
       return name
-        .trim()
-        .split(' ')
+        .split(/\s+/)
         .map(word => {
           return word[0].toLocaleUpperCase().concat(word.substring(1))
         })
@@ -25,7 +26,7 @@ export const updateProfileSchema = z.object({
     }, 'O arquivo precisa ter menos de 3MB')
     .refine(file => {
       return !file || ACCEPTED_FILE_TYPES.includes(file.type)
-    }, 'O arquivo precisa ser um PNG ou GIF'),
+    }, 'O arquivo precisa ser PNG, JPEG ou GIF'),
   userBanner: z
     .instanceof(FileList)
     .optional()
@@ -35,5 +36,5 @@ export const updateProfileSchema = z.object({
     }, 'O arquivo precisa ter menos de 3MB')
     .refine(file => {
       return !file || ACCEPTED_FILE_TYPES.includes(file.type)
-    }, 'O arquivo precisa ser um PNG ou GIF')
+    }, 'O arquivo precisa ser PNG, JPEG ou GIF')
 })

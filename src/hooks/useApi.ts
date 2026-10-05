@@ -114,6 +114,13 @@ export const api = {
       toast.error('Ocorreu um erro inesperado. 🤯')
     }
   },
+  isResetTokenValid: async (token: string) => {
+    const response = await http.post<{ valid: boolean }>(
+      '/auth/reset-password/validate',
+      { token }
+    )
+    return response.data.valid
+  },
   resetPassword: async (token: string, password: string) => {
     try {
       const response = await http.post('/auth/reset-password', {
@@ -169,28 +176,28 @@ export const api = {
   },
   getUserProfile: async (userId: string | null) => {
     const response = await http.get<PublicUserProfileResponse>(
-      `/users/${userId}`,
+      `/users/${encodeURIComponent(String(userId))}`,
       {}
     )
     return response.data
   },
   getPublicUserGames: async (userId: string | null) => {
     const response = await http.get<UserGamesResponse>(
-      `/users/${userId}/games`,
+      `/users/${encodeURIComponent(String(userId))}/games`,
       {}
     )
     return response.data
   },
   getUserFollowers: async (userId: string | null) => {
     const response = await http.get<GetFollowersResponse>(
-      `/users/${userId}/followers`,
+      `/users/${encodeURIComponent(String(userId))}/followers`,
       {}
     )
     return response.data
   },
   getUserFollowing: async (userId: string | null) => {
     const response = await http.get<GetFollowingResponse>(
-      `/users/${userId}/following`,
+      `/users/${encodeURIComponent(String(userId))}/following`,
       {}
     )
     return response.data
@@ -202,16 +209,16 @@ export const api = {
     return response.data
   },
   followUser: async (userId: string) => {
-    const response = await http.post(`/follows/${userId}`, {}, {})
+    const response = await http.post(`/follows/${encodeURIComponent(userId)}`, {}, {})
     return response.data
   },
   unfollowUser: async (userId: string) => {
-    const response = await http.delete(`/follows/${userId}`, {})
+    const response = await http.delete(`/follows/${encodeURIComponent(userId)}`, {})
     return response
   },
   getFollowStatus: async (userId: string) => {
     const response = await http.get<IsFollowingResponse>(
-      `/follows/status/${userId}`,
+      `/follows/status/${encodeURIComponent(userId)}`,
       {}
     )
     return response.data
@@ -293,7 +300,7 @@ export const api = {
     const response = await http.patch(
       `/users/playedCount/${igdbId}`,
       { incrementValue },
-      {}
+      { headers: { 'Idempotency-Key': crypto.randomUUID() } }
     )
     return response
   },

@@ -163,7 +163,7 @@ export function GameMediaGallery({
                 <iframe
                   key={videos[activeVideoIndex].videoId}
                   className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${videos[activeVideoIndex].videoId}?autoplay=1`}
+                  src={`https://www.youtube-nocookie.com/embed/${videos[activeVideoIndex].videoId}?autoplay=1`}
                   title="Trailer"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

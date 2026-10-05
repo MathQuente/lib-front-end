@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Lock } from 'lucide-react'
+import { safeRedirectPath } from '../utils/safeRedirectPath'
 import { signUpSchema } from '../schemas/signUpSchema'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -28,15 +29,17 @@ export function FormSignUp() {
   })
 
   async function onSubmit(data: SignUpForm) {
-    const errorMessage = await auth.signup(data.email, data.password)
-    if (!errorMessage) {
-      const redirectTo = localStorage.getItem('redirectAfterLogin') || '/'
+    const signupError = await auth.signup(data.email, data.password)
+    if (!signupError) {
+      const redirectTo = safeRedirectPath(
+        localStorage.getItem('redirectAfterLogin')
+      )
       navigate(redirectTo, { replace: true })
       localStorage.removeItem('redirectAfterLogin')
       return
     }
 
-    setError('email', { message: errorMessage })
+    setError(signupError.field, { message: signupError.message })
   }
 
   return (
