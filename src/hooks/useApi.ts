@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type {
@@ -53,8 +52,6 @@ http.interceptors.response.use(
       const status = error.response.data?.status
 
       if (status === 'session_expired' || status === 'unauthorized') {
-        Cookies.remove('accessToken')
-        Cookies.remove('refreshToken')
         window.dispatchEvent(new Event(SESSION_ENDED_EVENT))
       }
     }
@@ -140,8 +137,6 @@ export const api = {
     try {
       await http.post('/auth/logout')
     } catch {} finally {
-      Cookies.remove('accessToken')
-      Cookies.remove('refreshToken')
       window.location.reload()
     }
   },

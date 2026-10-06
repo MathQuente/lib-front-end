@@ -16,8 +16,12 @@ export function getErrorMessage(error: unknown, fallback: string): string {
   if (!axios.isAxiosError(error)) return fallback
 
   const status = error.response?.status
-  if (status === 429)
-    return 'Muitas tentativas. Aguarde um pouco e tente novamente.'
+  if (status === 429) {
+    const retryAfter = Number(error.response?.headers?.['retry-after'])
+    return Number.isFinite(retryAfter) && retryAfter > 0
+      ? `Muitas tentativas. Tente novamente em ${Math.ceil(retryAfter)} segundos.`
+      : 'Muitas tentativas. Aguarde um pouco e tente novamente.'
+  }
   if (!status || status >= 500) return fallback
 
   const passwordError = error.response?.data?.error?.password?.[0]

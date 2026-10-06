@@ -30,10 +30,10 @@ export function FormLogin() {
     const success = await auth.login(data.email, data.password)
     if (success) {
       const redirectTo = safeRedirectPath(
-        localStorage.getItem('redirectAfterLogin')
+        sessionStorage.getItem('redirectAfterLogin')
       )
       navigate(redirectTo, { replace: true })
-      localStorage.removeItem('redirectAfterLogin')
+      sessionStorage.removeItem('redirectAfterLogin')
     }
   }
 

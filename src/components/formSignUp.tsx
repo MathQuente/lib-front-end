@@ -32,10 +32,10 @@ export function FormSignUp() {
     const signupError = await auth.signup(data.email, data.password)
     if (!signupError) {
       const redirectTo = safeRedirectPath(
-        localStorage.getItem('redirectAfterLogin')
+        sessionStorage.getItem('redirectAfterLogin')
       )
       navigate(redirectTo, { replace: true })
-      localStorage.removeItem('redirectAfterLogin')
+      sessionStorage.removeItem('redirectAfterLogin')
       return
     }
 

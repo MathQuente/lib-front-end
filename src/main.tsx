@@ -19,6 +19,7 @@ import { ComingSoonPage } from './pages/comingSoonPage'
 import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
+import { PostLoginRedirect } from './components/postLoginRedirect'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,7 +35,12 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element: (
+      <>
+        <PostLoginRedirect />
+        <Layout />
+      </>
+    ),
     children: [
       {
         path: '/auth',

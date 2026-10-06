@@ -9,7 +9,7 @@ export function RequireAuth({ children }: { children: JSX.Element }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      localStorage.setItem('redirectAfterLogin', location.pathname)
+      sessionStorage.setItem('redirectAfterLogin', location.pathname)
     }
   }, [loading, user, location])
 

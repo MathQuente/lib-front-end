@@ -111,6 +111,22 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
     }
   }
 
+  useEffect(() => {
+    return () => {
+      if (userBannerPreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(userBannerPreview)
+      }
+    }
+  }, [userBannerPreview])
+
+  useEffect(() => {
+    return () => {
+      if (profilePicturePreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(profilePicturePreview)
+      }
+    }
+  }, [profilePicturePreview])
+
   const handleBannerChange = (e: FieldValues) => {
     const file = e.target.files?.[0]
     if (file) {
