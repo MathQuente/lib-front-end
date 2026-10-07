@@ -68,6 +68,7 @@ export function ComingSoonPage() {
         setSortOrder={setSortOrder}
         sortField={sortField}
         setSortField={setSortField}
+        defaultSort={{ field: 'name', order: 'asc' }}
         emptyState={
           <EmptyState
             title="Nenhum jogo em breve"

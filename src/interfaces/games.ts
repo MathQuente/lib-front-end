@@ -52,6 +52,7 @@ export interface GameListProps {
   setSortOrder: (order: SortOrder) => void
   sortField: SortField
   setSortField: (field: SortField) => void
+  defaultSort?: { field: SortField; order: SortOrder }
   filterField?: GameStatusEnum
   setFilterField?: (filterField: GameStatusEnum) => void
   currentStatus?: string

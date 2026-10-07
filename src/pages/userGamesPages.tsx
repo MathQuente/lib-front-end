@@ -7,7 +7,7 @@ import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { GameListData } from '../types/games'
 
-const ITEMS_PER_PAGE = 30
+const ITEMS_PER_PAGE = 40
 
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: GameStatusEnum }>()
@@ -52,7 +52,15 @@ export function UserGamesPageByStatus() {
   const [sortField, setSortField] = useState<SortField>(() => {
     const url = new URL(window.location.toString())
     const v = url.searchParams.get('sortField')
-    if (v === 'releaseDate' || v === 'rating' || v === 'name') return v
+    if (
+      v === 'releaseDate' ||
+      v === 'rating' ||
+      v === 'name' ||
+      v === 'hoursPlayed' ||
+      v === 'completedAt'
+    ) {
+      return v
+    }
     return startsOnPlayed ? 'completedAt' : 'name'
   })
 
@@ -114,6 +122,11 @@ export function UserGamesPageByStatus() {
           setSortOrder={setSortOrder}
           sortField={sortField}
           setSortField={setSortField}
+          defaultSort={
+            currentEnumStatus === GameStatusEnum.Played
+              ? { field: 'completedAt', order: 'desc' }
+              : { field: 'name', order: 'asc' }
+          }
           currentStatus={currentEnumStatus}
           filterField={filterField}
           setFilterField={setFilterField}

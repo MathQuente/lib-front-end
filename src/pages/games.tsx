@@ -28,7 +28,7 @@ export function Games() {
         : 'name'
   })
 
-  const LIMIT = 36
+  const LIMIT = 40
   const { GamesResponse } = useGames(page, '', sortField, sortOrder, LIMIT)
 
   if (!GamesResponse) {
@@ -58,6 +58,7 @@ export function Games() {
         setSortOrder={setSortOrder}
         sortField={sortField}
         setSortField={setSortField}
+        defaultSort={{ field: 'name', order: 'asc' }}
       />
     </>
   )
