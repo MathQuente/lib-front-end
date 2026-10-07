@@ -15,7 +15,13 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
     { loop: games.length > 5, align: 'start', dragFree: true },
     prefersReducedMotion
       ? []
-      : [Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true })]
+      : [
+          Autoplay({
+            delay: 2500,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true
+          })
+        ]
   )
 
   useEffect(() => {

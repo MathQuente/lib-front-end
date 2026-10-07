@@ -16,7 +16,7 @@ React 18 + Vite + TypeScript + TailwindCSS SPA for "Lib" — personal game-libra
 graph TD
   subgraph Entry
     main[main.tsx: createBrowserRouter + QueryClientProvider + AuthProvider]
-    layout[layout.tsx: SideBar + Outlet + ToastContainer]
+    layout[layout.tsx: SideBar + Outlet + Footer + ToastContainer]
   end
 
   subgraph Pages
@@ -85,7 +85,9 @@ src/
   assets/                    static images
   components/                shared UI components (flat)
     gamesComponents/          GameCard/GameModal/GameForm/GameInfo/GamesGrid family
-    userGamesComponents/      profile display/edit family
+    userGamesComponents/      profile edit + platform import family
+    libraryComponents/        library/profile page: header, status shelves, empty state
+    homeComponents/           home page: cover wall, logged-out hero, playing now, next up, summary
   constants/                 USER_GAME_STATUS_ID
   contexts/auth/             AuthContext, AuthProvider, RequireAuth
   hooks/                     TanStack Query hooks + useApi (axios client)
@@ -179,7 +181,9 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | `emptyState.tsx` | Generic empty-state message. |
 | `gameLaunchersDiv.tsx` | Per-platform release-date pill. |
 | `gameListPage.tsx` | Composes `SortControls`+`GamesGrid`+`Pagination`; manages URL query params via manual `URL`/`history.pushState` (not `useSearchParams`, unlike `authentication.tsx`). |
-| `gameListSection.tsx` | Home page's 3 list sections; local `RatedScore` calls `useRating` per game (N+1 pattern). |
+| `gameListSection.tsx` | Home page's 3 list sections: list from `lg`, horizontal `CoverRow` below; local `RatedScore` calls `useRating` per game (N+1 pattern). |
+| `footer.tsx` | Site footer rendered by `layout.tsx` on every page; account links depend on login state. |
+| `homeComponents/` | Home blocks: `coverWall` (CSS-animated cover rows, logged out), `loggedOutHero`, `playingNow`, `nextUp` (backlog suggestion + queue), `librarySummary`, `coverRow` (horizontal cover strip), `styles` (shared title/link classes). |
 | `iconButton.tsx` | Icon-only button base for pagination. |
 | `pagination.tsx` | First/prev/next/last + "showing X of Y". |
 | `platformDiv.tsx` | Platform pill, heuristic console-vs-PC icon by name substring. |
@@ -192,11 +196,14 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | `sideBar.tsx` | Desktop nav + mobile drawer; calls `api.logout()` directly rather than via `useAuth()`. |
 | `similarGamesSlider.tsx` | Embla carousel of similar games. |
 | `sorting.tsx` | Sort field/order + optional status filter (user-library only). |
-| `UserGamesDiv.tsx` | Library grouped-by-status sections. |
-| `userBanner.tsx`, `userInfo.tsx`, `userProfilePicture.tsx` | Small presentational profile pieces. |
-| `userProfileDisplay.tsx` | Profile card + edit trigger. |
+| `libraryComponents/profileHeader.tsx` | Shared profile header for `/userLibrary` and the public profile: optional low banner, picture, name, facts line (followers/following open modals), `actions` slot. No banner strip when `bannerUrl` is empty. |
+| `libraryComponents/libraryShelves.tsx` | The four status shelves in fixed order (Zerados, Jogando, Pendentes, Lista de desejos; PAUSED has none). Owns copy, 3/8 caps (8 shown only from `2xl`), "Ver todos" links and empty-state links. `readOnly` for other users' profiles. |
+| `libraryComponents/statusShelf.tsx` | One shelf: header + covers. Covers only, no text under them; `featured` (Jogando) = larger covers. Empty shelf collapses to one line with the link inline after the text. Mobile is a snap row, `lg` a 6-column grid. |
+| `libraryComponents/emptyLibrary.tsx` | Whole-library empty state: import vs. add one by one. |
+| `libraryComponents/importGamesModal.tsx` | "Importar jogos" dialog reusing the Steam/PSN/Xbox import sections — the only place imports live now (removed from the edit-profile form). |
+| `userProfileDisplay.tsx` | Fetches own profile/followers, renders `ProfileHeader` + edit/followers/following modals. Optional `onImport` adds the "Importar jogos" action. |
 | `userProfileForm.tsx` | Profile-edit form, banner/avatar upload w/ preview, dirty-tracking. |
-| `userProfileModal.tsx` | Radix Dialog w/ **visible** title (contrast with `gameModal.tsx`'s hidden title). |
+| `userProfileModal.tsx` | Radix Dialog w/ **visible** title (contrast with `gameModal.tsx`'s hidden title). `title`/`description` props let `importGamesModal` reuse it. |
 
 ## Data Flow — Viewing a Game and Marking Status
 
@@ -273,7 +280,7 @@ sequenceDiagram
 
 - **Add a new API endpoint**: add method to `hooks/useApi.ts` (`api` object) → wrap in a TanStack Query hook under `hooks/` → consume from a page/component.
 - **Add a new page**: create under `src/pages/`, register route in `src/main.tsx`, wrap in `RequireAuth` if it needs a logged-in user.
-- **Add a new component**: create under `src/components/` (or a `gamesComponents`/`userGamesComponents` subfolder if it belongs to those families); use existing Tailwind color tokens (`primary`, `dark.*`), never hardcode hex; add `focus-visible` state if interactive.
+- **Add a new component**: create under `src/components/` (or a `gamesComponents`/`userGamesComponents`/`libraryComponents` subfolder if it belongs to those families); use existing Tailwind color tokens (`primary`, `dark.*`), never hardcode hex; add `focus-visible` state if interactive.
 - **Modify auth**: `contexts/auth/authContext.tsx` (shape) → `authProvider.tsx` (logic) → `requireAuth.tsx` (gating) → `hooks/useAuth.ts` (accessor).
 - **Modify game status logic**: `constants/gameStatus.ts` (numeric ids) + `types/games.ts` (`GameStatusEnum`, string) — remember these are two separate vocabularies kept in sync by convention only (see Gotcha 4).
 - **Add a new design token**: `tailwind.config.js` `theme.extend.colors` — reference the token elsewhere via `bg-<name>`/`text-<name>`/`border-<name>`, never inline the hex again.
