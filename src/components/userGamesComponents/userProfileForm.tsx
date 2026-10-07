@@ -11,10 +11,6 @@ import { useUserProfile } from '../../hooks/useUserProfile'
 import type { UserGamesFormProps } from '../../interfaces/user'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { Button } from '../button'
-import { SectionHeading } from '../sectionHeading'
-import { PsnImportSection } from './psnImportSection'
-import { SteamImportSection } from './steamImportSection'
-import { XboxImportSection } from './xboxImportSection'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 
@@ -267,19 +263,6 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
           <span className="text-red-500 text-xs min-h-[1rem]">
             {errors.userName?.message ?? ' '}
           </span>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <SectionHeading className="mb-0">Integrações</SectionHeading>
-          <SteamImportSection
-            steamId={UserProfileResponse?.user?.steamId ?? null}
-          />
-          <PsnImportSection
-            psnOnlineId={UserProfileResponse?.user?.psnOnlineId ?? null}
-          />
-          <XboxImportSection
-            xboxGamertag={UserProfileResponse?.user?.xboxGamertag ?? null}
-          />
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-dark-border">

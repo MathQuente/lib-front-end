@@ -5,10 +5,14 @@ import type { ReactNode } from 'react'
 export function UserProfileModal({
   open,
   onOpenChange,
-  children
+  title = 'Editar perfil',
+  description = 'Formulário para editar informações do perfil',
+  children,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  title?: string
+  description?: string
   children?: ReactNode
 }) {
   return (
@@ -18,7 +22,7 @@ export function UserProfileModal({
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[90vh] flex flex-col bg-dark-bg-light border border-dark-border rounded-lg overflow-hidden z-50">
           <div className="flex items-center justify-between px-6 py-4 border-b border-dark-border flex-shrink-0">
             <Dialog.Title className="text-white font-semibold">
-              Editar perfil
+              {title}
             </Dialog.Title>
             <Dialog.Close
               className="text-gray-500 hover:text-white transition-colors p-0.5 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
@@ -29,7 +33,7 @@ export function UserProfileModal({
             </Dialog.Close>
           </div>
           <Dialog.Description className="sr-only">
-            Formulário para editar informações do perfil
+            {description}
           </Dialog.Description>
           <div className="overflow-y-auto flex-1">{children}</div>
         </Dialog.Content>

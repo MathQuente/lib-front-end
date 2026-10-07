@@ -6,14 +6,12 @@ import { useUserProfile } from '../../hooks/useUserProfile'
 import { useFollowers } from '../../hooks/useFollowers'
 import { useFollowing } from '../../hooks/useFollowing'
 import { useFollow } from '../../hooks/useFollow'
-import { UserBanner } from './userBanner'
-import { UserProfilePicture } from './userProfilePicture'
-import { UserInfo } from './userInfo'
+import { ProfileHeader } from '../libraryComponents/profileHeader'
 import { Button } from '../button'
 import { UserMinus, UserPlus } from 'lucide-react'
 import type { FollowSummary } from '../../types/follow'
 
-export function UserProfileDisplay() {
+export function UserProfileDisplay({ onImport }: { onImport?: () => void }) {
   const [isOpen, setIsOpen] = useState(false)
   const [followersModalOpen, setFollowersModalOpen] = useState(false)
   const [followingModalOpen, setFollowingModalOpen] = useState(false)
@@ -25,7 +23,7 @@ export function UserProfileDisplay() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-36 rounded-lg border border-dark-border bg-dark-bg-light animate-pulse" />
+      <div className="h-28 w-full animate-pulse rounded-lg bg-dark-bg-light" />
     )
   }
 
@@ -41,34 +39,33 @@ export function UserProfileDisplay() {
 
   return (
     <>
-      <div className="w-full rounded-lg border border-dark-border overflow-hidden">
-        <div className="relative">
-          <UserBanner bannerUrl={profileUser.userBanner} />
-          <UserProfilePicture
-            profilePicture={profileUser.profilePicture}
-            userName={profileUser.userName}
-          />
-        </div>
-
-        <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4 flex items-center justify-between">
-          <UserInfo
-            userName={profileUser.userName}
-            gamesAmount={profileUser.gamesAmount}
-            totalHoursPlayed={profileUser.totalHoursPlayed}
-            followersCount={profileUser.followersCount}
-            followingCount={profileUser.followingCount}
-            onFollowersClick={() => setFollowersModalOpen(true)}
-            onFollowingClick={() => setFollowingModalOpen(true)}
-          />
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => setIsOpen(true)}
-          >
-            Editar perfil
-          </Button>
-        </div>
-      </div>
+      <ProfileHeader
+        userName={profileUser.userName}
+        profilePicture={profileUser.profilePicture}
+        bannerUrl={profileUser.userBanner}
+        gamesAmount={profileUser.gamesAmount}
+        totalHoursPlayed={profileUser.totalHoursPlayed}
+        followersCount={profileUser.followersCount}
+        followingCount={profileUser.followingCount}
+        onFollowersClick={() => setFollowersModalOpen(true)}
+        onFollowingClick={() => setFollowingModalOpen(true)}
+        actions={
+          <>
+            {onImport && (
+              <Button type="button" variant="outline" onClick={onImport}>
+                Importar jogos
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsOpen(true)}
+            >
+              Editar perfil
+            </Button>
+          </>
+        }
+      />
 
       <UserProfileModal open={isOpen} onOpenChange={setIsOpen}>
         <UserProfileForm
@@ -83,9 +80,7 @@ export function UserProfileDisplay() {
         title="Seguidores"
         users={followers}
         renderAction={user =>
-          !followingIds.has(user.id) ? (
-            <FollowBackButton user={user} />
-          ) : null
+          !followingIds.has(user.id) ? <FollowBackButton user={user} /> : null
         }
       />
 

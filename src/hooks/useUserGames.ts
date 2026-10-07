@@ -33,6 +33,7 @@ export const useUserGames = (
     data: UserGamesResponse,
     isLoading: isLoadingUserGames,
     isError: isErrorUserGames,
+    refetch: refetchUserGames,
   } = useQuery<UserGamesResponse>({
     queryKey: ['userGames', userId, page, search, filter, sortBy, sortOrder],
     queryFn: async () =>
@@ -63,6 +64,7 @@ export const useUserGames = (
     UserGamesResponse,
     isLoadingUserGames,
     isErrorUserGames,
+    refetchUserGames,
     GamesToDisplay,
     isLoadingRecommendation,
     gamesByStatus,

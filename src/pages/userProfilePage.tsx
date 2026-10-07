@@ -5,10 +5,8 @@ import { api } from '../hooks/useApi'
 import { usePublicUserGames } from '../hooks/usePublicUserGames'
 import { useFollowers } from '../hooks/useFollowers'
 import { useFollowing } from '../hooks/useFollowing'
-import { UserBanner } from '../components/userGamesComponents/userBanner'
-import { UserProfilePicture } from '../components/userGamesComponents/userProfilePicture'
-import { UserInfo } from '../components/userGamesComponents/userInfo'
-import { UserGamesDiv } from '../components/UserGamesDiv'
+import { LibraryShelves } from '../components/libraryComponents/libraryShelves'
+import { ProfileHeader } from '../components/libraryComponents/profileHeader'
 import { FollowActionButton } from '../components/followActionButton'
 import { UserListModal } from '../components/userListModal'
 import { BackButton } from '../components/backButton'
@@ -21,10 +19,15 @@ export function UserProfilePage() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['publicUserProfile', userId],
     queryFn: () => api.getUserProfile(userId ?? null),
-    enabled: !!userId
+    enabled: !!userId,
   })
 
-  const { games, totalPerStatus } = usePublicUserGames(userId, true)
+  const {
+    games,
+    totalPerStatus,
+    isLoading: isLoadingGames,
+  } = usePublicUserGames(userId, true)
+  const hasGames = totalPerStatus.some(t => t.totalGames > 0)
   const { followers } = useFollowers(userId)
   const { following } = useFollowing(userId)
 
@@ -54,34 +57,30 @@ export function UserProfilePage() {
     <>
       <BackButton className="mt-4" />
 
-      <div className="w-full rounded-lg border border-dark-border overflow-hidden mt-2">
-        <div className="relative">
-          <UserBanner bannerUrl={user.userBanner ?? undefined} />
-          <UserProfilePicture
-            profilePicture={user.profilePicture ?? undefined}
-            userName={user.userName ?? 'Usuário'}
-          />
-        </div>
-
-        <div className="bg-dark-bg-light px-6 pt-10 md:pt-12 pb-4 flex flex-wrap items-center justify-between gap-3">
-          <UserInfo
-            userName={user.userName ?? 'Usuário'}
-            gamesAmount={user.gamesAmount ?? 0}
-            totalHoursPlayed={user.totalHoursPlayed ?? 0}
-            followersCount={user.followersCount}
-            followingCount={user.followingCount}
-            onFollowersClick={() => setFollowersModalOpen(true)}
-            onFollowingClick={() => setFollowingModalOpen(true)}
-          />
-          {userId && <FollowActionButton userId={userId} />}
-        </div>
-      </div>
-
-      <UserGamesDiv
-        Games={games}
-        totalPerStatus={totalPerStatus}
-        showAllLink={false}
+      <ProfileHeader
+        userName={user.userName ?? 'Usuário'}
+        profilePicture={user.profilePicture}
+        bannerUrl={user.userBanner}
+        gamesAmount={user.gamesAmount ?? 0}
+        totalHoursPlayed={user.totalHoursPlayed ?? 0}
+        followersCount={user.followersCount}
+        followingCount={user.followingCount}
+        onFollowersClick={() => setFollowersModalOpen(true)}
+        onFollowingClick={() => setFollowingModalOpen(true)}
+        actions={userId && <FollowActionButton userId={userId} />}
       />
+
+      {hasGames ? (
+        <LibraryShelves
+          games={games}
+          totalPerStatus={totalPerStatus}
+          readOnly
+        />
+      ) : (
+        !isLoadingGames && (
+          <p className="mt-8 text-gray-400">Nenhum jogo na biblioteca ainda.</p>
+        )
+      )}
 
       <UserListModal
         open={followersModalOpen}
