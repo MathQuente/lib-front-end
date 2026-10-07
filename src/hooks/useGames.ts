@@ -1,7 +1,7 @@
 import {
   keepPreviousData,
   useInfiniteQuery,
-  useQuery
+  useQuery,
 } from '@tanstack/react-query'
 import { api } from './useApi'
 import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
@@ -14,16 +14,16 @@ export const useGames = (
   sortOrder: SortOrder,
   limit?: number
 ) => {
-  const queryKey = ['games', page, search, sortBy, sortOrder]
+  const queryKey = ['games', page, search, sortBy, sortOrder, limit]
 
   const {
     data: GamesResponse,
     isLoading,
-    isError
+    isError,
   } = useQuery<UseGamesProps>({
     queryKey: queryKey,
     queryFn: async () => api.getGames(page, search, sortBy, sortOrder, limit),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 
   const {
@@ -33,7 +33,7 @@ export const useGames = (
     hasNextPage,
     isLoading: isLoadingInfinite,
     isError: isErrorInfinite,
-    refetch: refetchInfinite
+    refetch: refetchInfinite,
   } = useInfiniteQuery<UseGamesProps>({
     queryKey: ['gamesInfinite', search, sortBy, sortOrder],
     queryFn: async ({ pageParam }) =>
@@ -55,20 +55,24 @@ export const useGames = (
       return undefined
     },
     initialPageParam: 1,
-    enabled: !!limit
+    enabled: !!limit,
   })
 
   const { data: ComingSoon } = useQuery<UseGamesProps>({
     queryKey: ['comingSoon', page, search, sortBy, sortOrder, limit],
     queryFn: async () =>
       api.getComingSoon(page, search, sortOrder, sortBy, limit),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 
-  const { data: gamesFeatured } = useQuery<GamesFromHomePageResponse>({
+  const {
+    data: gamesFeatured,
+    isLoading: isLoadingFeatured,
+    isError: isErrorFeatured,
+  } = useQuery<GamesFromHomePageResponse>({
     queryKey: ['gamesFeatured'],
     queryFn: async () => api.getGamesFeatured(),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 
   return {
@@ -76,6 +80,8 @@ export const useGames = (
     GamesResponseInfinity,
     ComingSoon,
     gamesFeatured,
+    isLoadingFeatured,
+    isErrorFeatured,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -83,6 +89,6 @@ export const useGames = (
     isErrorInfinite,
     refetchInfinite,
     isLoading,
-    isError
+    isError,
   }
 }

@@ -1,183 +1,252 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Gamepad2 } from 'lucide-react'
-import useEmblaCarousel from 'embla-carousel-react'
-import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useRef } from 'react'
 
-import { useAuth } from '../hooks/useAuth'
-import userLibrary from '../assets/Screenshot From 2025-07-03 18-09-08.png'
-import { Button } from '../components/button'
 import { GameListSection } from '../components/gameListSection'
 import { GameCard } from '../components/gamesComponents/gameCard'
-import { useUserGames } from '../hooks/useUserGames'
+import { CoverRow } from '../components/homeComponents/coverRow'
+import { LibrarySummary } from '../components/homeComponents/librarySummary'
+import { LoggedOutHero } from '../components/homeComponents/loggedOutHero'
+import { NextUp } from '../components/homeComponents/nextUp'
+import { PlayingNow } from '../components/homeComponents/playingNow'
+import {
+  coverLink,
+  sectionTitle,
+  textLink,
+} from '../components/homeComponents/styles'
+import { useAuth } from '../hooks/useAuth'
 import { useGames } from '../hooks/useGames'
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { useUserGames } from '../hooks/useUserGames'
+import type { GamesFromHomePageResponse } from '../types/games'
 
-const STAT_KEYS = [
-  { label: 'Jogado', status: 'PLAYED' },
-  { label: 'Jogando', status: 'PLAYING' },
-  { label: 'Pendentes', status: 'BACKLOG' },
-  { label: 'Desejos', status: 'WISHLIST' }
-] as const
+const WALL_LIMIT = 60
+
+const SKELETON_COVERS = ['a', 'b', 'c', 'd', 'e', 'f']
+
+function LoggedInTop() {
+  const {
+    UserGamesResponse,
+    isLoadingUserGames,
+    isErrorUserGames,
+    GamesToDisplay,
+    gamesByStatus,
+    totalPerStatus,
+  } = useUserGames()
+
+  const libraryIds = useMemo(
+    () =>
+      new Set(
+        Object.values(gamesByStatus).flatMap(games =>
+          games.map(game => game.igdbId)
+        )
+      ),
+    [gamesByStatus]
+  )
+
+  if (!UserGamesResponse) {
+    if (isErrorUserGames) {
+      return (
+        <p className="mt-4 text-gray-400">
+          Não foi possível carregar sua biblioteca agora.
+        </p>
+      )
+    }
+
+    return (
+      <div
+        className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14"
+        aria-busy={isLoadingUserGames}
+      >
+        <div className="h-56 rounded-lg bg-dark-bg-light lg:h-80" />
+        <div className="h-56 rounded-lg bg-dark-bg-light lg:h-80" />
+      </div>
+    )
+  }
+
+  const playing = gamesByStatus.PLAYING
+  const backlog = gamesByStatus.BACKLOG
+  const playingTotal =
+    totalPerStatus.find(t => t.status === 'PLAYING')?.totalGames ??
+    playing.length
+
+  if (UserGamesResponse.total === 0) {
+    const hasSuggestion =
+      !!GamesToDisplay?.game && !libraryIds.has(GamesToDisplay.game.igdbId)
+
+    return (
+      <div className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14">
+        <section className="min-w-0">
+          <h2 className="max-w-md text-balance font-display text-2xl font-extrabold leading-tight tracking-tight text-white lg:text-3xl">
+            Sua biblioteca ainda está vazia.
+          </h2>
+          <p className="mt-3 max-w-md text-gray-400">
+            Os jogos que você marcar como Jogando e Pendente aparecem aqui.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Link
+              to="/games"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light active:scale-[0.98]"
+            >
+              Explorar jogos
+            </Link>
+            <Link to="/userLibrary" className={textLink}>
+              Importar da Steam ou PSN
+            </Link>
+          </div>
+        </section>
+        {hasSuggestion && (
+          <NextUp
+            backlog={backlog}
+            libraryIds={libraryIds}
+            suggestion={GamesToDisplay}
+            title="Uma sugestão para começar"
+            showEmptyNote={false}
+          />
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14">
+        <PlayingNow games={playing} total={playingTotal} />
+        <NextUp
+          backlog={backlog}
+          libraryIds={libraryIds}
+          suggestion={GamesToDisplay}
+        />
+      </div>
+      <LibrarySummary totalPerStatus={totalPerStatus} />
+    </>
+  )
+}
+
+function Discovery({
+  featured,
+  isLoading,
+}: {
+  featured: GamesFromHomePageResponse | undefined
+  isLoading: boolean
+}) {
+  if (!featured) {
+    if (!isLoading) {
+      return (
+        <p className="mt-12 text-gray-400">
+          Não foi possível carregar os jogos agora. Recarregue a página para
+          tentar de novo.
+        </p>
+      )
+    }
+
+    return (
+      <div className="mt-12" aria-busy="true">
+        <h2 className={sectionTitle}>Lançamentos recentes</h2>
+        <div className="mt-4 flex gap-3 overflow-hidden lg:gap-4">
+          {SKELETON_COVERS.map(key => (
+            <div
+              key={key}
+              className="aspect-[7/10] w-28 flex-none rounded-lg bg-dark-bg-light sm:w-36 lg:w-40"
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const recentGames = featured.recentGames
+
+  return (
+    <>
+      <section className="mt-12 min-w-0">
+        <h2 className={sectionTitle}>Lançamentos recentes</h2>
+        {recentGames.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-400">
+            Nenhum jogo disponível no momento.
+          </p>
+        ) : (
+          <>
+            <CoverRow games={recentGames} className="mt-4 lg:hidden" />
+            <ul className="mt-4 hidden gap-4 lg:flex">
+              {recentGames.map(game => (
+                <li key={game.igdbId} className="w-40 min-w-0 xl:w-44">
+                  <Link
+                    to={`/games/${encodeURIComponent(game.igdbId)}`}
+                    className={coverLink}
+                  >
+                    <GameCard game={game} size="medium" interactive={false} />
+                    <p className="mt-2 line-clamp-2 text-sm leading-snug text-white">
+                      {game.name}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+
+      <div className="mt-12 grid w-full grid-cols-1 gap-10 border-t border-dark-border pt-8 lg:grid-cols-3 lg:gap-12">
+        <GameListSection
+          type="coming"
+          games={featured.futureGames}
+          title="Em breve"
+        />
+        <GameListSection
+          type="trending"
+          games={featured.trendingGames}
+          title="Em alta"
+        />
+        <GameListSection
+          type="rateds"
+          games={featured.mostRatedGames}
+          title="Mais avaliados"
+        />
+      </div>
+    </>
+  )
+}
 
 export function Home() {
   const { user } = useAuth()
   const isLogged = !!user?.id
 
-  const { UserGamesResponse, GamesToDisplay } = useUserGames()
-  const { gamesFeatured } = useGames(1, '', 'name', 'asc')
-
-  const stableGame = useRef(GamesToDisplay)
-  if (GamesToDisplay && !stableGame.current) {
-    stableGame.current = GamesToDisplay
-  }
-
-  const prefersReducedMotion = usePrefersReducedMotion()
-
-  const recentGames = gamesFeatured?.recentGames ?? []
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: recentGames.length > 5, align: 'start', dragFree: true },
-    prefersReducedMotion
-      ? []
-      : [Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true })]
+  const { GamesResponse, gamesFeatured, isLoadingFeatured } = useGames(
+    1,
+    '',
+    'rating',
+    'desc',
+    isLogged ? undefined : WALL_LIMIT
   )
 
-  useEffect(() => {
-    emblaApi?.reInit()
-  }, [emblaApi, recentGames.length])
-
-  if (!gamesFeatured) return null
+  const wallCovers = useMemo(() => {
+    const games = [
+      ...(GamesResponse?.games ?? []),
+      ...(gamesFeatured?.mostRatedGames ?? []),
+      ...(gamesFeatured?.trendingGames ?? []),
+      ...(gamesFeatured?.recentGames ?? []),
+      ...(gamesFeatured?.futureGames ?? []),
+    ]
+    const byId = new Map<number, string>()
+    for (const game of games) {
+      if (game.coverUrl && !byId.has(game.igdbId)) {
+        byId.set(game.igdbId, game.coverUrl)
+      }
+    }
+    return [...byId.values()]
+  }, [GamesResponse, gamesFeatured])
 
   return (
     <>
       {isLogged ? (
-        <div className="w-full mt-8">
-          <h1 className="text-xl font-semibold text-white">
-            Olá, <span className="text-primary">{user.userName}</span>
-          </h1>
-
-          <div className="flex items-center flex-wrap gap-6 mt-4">
-            <div className="flex gap-5 flex-wrap">
-              {STAT_KEYS.map(({ label, status }) => {
-                const count =
-                  UserGamesResponse?.totalPerStatus.find(
-                    t => t.status === status
-                  )?.totalGames ?? 0
-                const displayLabel =
-                  count > 1 && label === 'Jogado' ? 'Jogados' : label
-                return (
-                  <div key={label} className="flex flex-col">
-                    <span className="text-lg font-bold text-white leading-tight">
-                      {count}
-                    </span>
-                    <span className="text-[11px] text-gray-400 uppercase tracking-widest">
-                      {displayLabel}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-
-            {stableGame.current?.game && (
-              <Link
-                to={`/games/${stableGame.current.game.igdbId}`}
-                className="inline-flex items-center gap-3 group w-fit pl-6 border-l border-dark-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
-              >
-                {stableGame.current.game.coverUrl && (
-                  <img
-                    src={stableGame.current.game.coverUrl}
-                    alt={stableGame.current.game.name}
-                    className="w-10 h-14 object-cover rounded flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity duration-150"
-                  />
-                )}
-                <div className="min-w-0">
-                  <p className="text-gray-400 text-xs mb-0.5">
-                    {stableGame.current.message}
-                  </p>
-                  <p className="text-white text-sm font-medium group-hover:text-primary-light transition-colors duration-150 truncate">
-                    {stableGame.current.game.name}
-                  </p>
-                </div>
-              </Link>
-            )}
-          </div>
-        </div>
+        <>
+          <h1 className="sr-only">Início</h1>
+          <LoggedInTop />
+        </>
       ) : (
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 pt-8 pb-12 lg:pt-14 lg:pb-20">
-          <div className="lg:col-span-5 flex flex-col justify-start gap-5 lg:pt-2">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-[1.1] max-w-md">
-              Organize seus jogos com <span className="text-primary">Zerei</span>
-            </h1>
-            <p className="text-gray-400 leading-relaxed max-w-sm">
-              Marque o que jogou, está jogando ou quer jogar. Um projeto pessoal
-              em desenvolvimento contínuo.
-            </p>
-            <div>
-              <Link to="/auth?tab=signUp">
-                <Button variant="primary" size="md">
-                  Criar conta
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7">
-            <img
-              src={userLibrary}
-              alt="Screenshot da biblioteca"
-              className="w-full h-full object-cover border-t border-l border-dark-border lg:rounded-tl-xl"
-            />
-          </div>
-        </section>
+        <LoggedOutHero covers={wallCovers} />
       )}
 
-      <section className="mt-10 mb-6">
-        <div className="flex items-baseline justify-between border-t border-dark-border pt-4 mb-5">
-          <h2 className="text-lg font-semibold text-white">
-            Lançamentos Recentes
-          </h2>
-        </div>
-
-        {recentGames.length > 0 ? (
-          <div className="overflow-hidden p-2" ref={emblaRef}>
-            <div className="flex -ml-3">
-              {recentGames.map(game => (
-                <div key={game.igdbId} className="flex-none w-44 pl-3">
-                  <Link
-                    to={`/games/${game.igdbId}`}
-                    className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-                  >
-                    <GameCard game={game} size="larger" interactive={false} />
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
-            <Gamepad2 className="size-4 shrink-0" />
-            <span>Nenhum jogo disponível no momento.</span>
-          </div>
-        )}
-      </section>
-
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <GameListSection
-          type="coming"
-          games={gamesFeatured.futureGames}
-          title="Em Breve"
-        />
-        <GameListSection
-          type="trending"
-          games={gamesFeatured.trendingGames}
-          title="Em Alta"
-        />
-        <GameListSection
-          type="rateds"
-          games={gamesFeatured.mostRatedGames}
-          title="Mais Avaliados"
-        />
-      </div>
+      <Discovery featured={gamesFeatured} isLoading={isLoadingFeatured} />
     </>
   )
 }

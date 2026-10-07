@@ -7,7 +7,7 @@ import type {
   GameToDisplayResponse,
   TotalPerStatus,
   UserGamesByStatus,
-  UserGamesResponse
+  UserGamesResponse,
 } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
 
@@ -16,7 +16,7 @@ const EMPTY_GROUPS: UserGamesByStatus = {
   PLAYING: [],
   PAUSED: [],
   BACKLOG: [],
-  WISHLIST: []
+  WISHLIST: [],
 }
 
 export const useUserGames = (
@@ -29,21 +29,24 @@ export const useUserGames = (
   const { user } = useAuth()
   const userId = user?.id ?? ''
 
-  const { data: UserGamesResponse, isLoading: isLoadingUserGames } =
-    useQuery<UserGamesResponse>({
-      queryKey: ['userGames', userId, page, search, filter, sortBy, sortOrder],
-      queryFn: async () =>
-        api.getUserGames(page, search, filter, sortBy, sortOrder),
-      placeholderData: keepPreviousData,
-      enabled: Boolean(userId)
-    })
+  const {
+    data: UserGamesResponse,
+    isLoading: isLoadingUserGames,
+    isError: isErrorUserGames,
+  } = useQuery<UserGamesResponse>({
+    queryKey: ['userGames', userId, page, search, filter, sortBy, sortOrder],
+    queryFn: async () =>
+      api.getUserGames(page, search, filter, sortBy, sortOrder),
+    placeholderData: keepPreviousData,
+    enabled: Boolean(userId),
+  })
 
   const { data: GamesToDisplay, isLoading: isLoadingRecommendation } =
     useQuery<GameToDisplayResponse>({
       queryKey: ['games', userId],
       queryFn: async () => api.getGamesToDisplay(),
       placeholderData: keepPreviousData,
-      enabled: Boolean(userId)
+      enabled: Boolean(userId),
     })
 
   const gamesByStatus = useMemo((): UserGamesByStatus => {
@@ -59,9 +62,10 @@ export const useUserGames = (
   return {
     UserGamesResponse,
     isLoadingUserGames,
+    isErrorUserGames,
     GamesToDisplay,
     isLoadingRecommendation,
     gamesByStatus,
-    totalPerStatus
+    totalPerStatus,
   }
 }

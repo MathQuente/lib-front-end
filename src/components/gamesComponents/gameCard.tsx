@@ -7,7 +7,7 @@ import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { GameInfo } from './gameInfo'
 import { GameModal } from './gameModal'
 
-const LIBRARY_STATUS_BADGES: Record<
+export const LIBRARY_STATUS_BADGES: Record<
   string,
   { icon: typeof Gift; barColor: string; iconColor: string; label: string }
 > = {

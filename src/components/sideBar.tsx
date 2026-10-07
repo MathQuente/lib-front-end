@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
+import logo from '../assets/euzerei-logo.svg'
 
 const focusRing =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm'
@@ -49,9 +50,9 @@ export function SideBar() {
     <>
       <div className="flex md:hidden items-center justify-between w-full py-2 border-b border-dark-border mb-4">
         <Link to="/" className={focusRing}>
-          <h1 className="font-bold text-white">
-            <span className="text-primary">Zerei</span>
-          </h1>
+          <div>
+            <img src={logo} alt="EuZerei" className="h-7 w-auto" />
+          </div>
         </Link>
         <button
           className={`p-2 text-gray-400 hover:text-white transition-colors ${focusRing}`}
@@ -172,9 +173,9 @@ export function SideBar() {
 
       <nav className="hidden md:flex items-center justify-between w-full py-3 border-b border-dark-border mb-6">
         <Link to="/" className={focusRing}>
-          <h1 className="font-bold text-white">
-            <span className="text-primary">Zerei</span>
-          </h1>
+          <div>
+            <img src={logo} alt="EuZerei" className="h-7 w-auto" />
+          </div>
         </Link>
 
         {isLoggedIn ? (

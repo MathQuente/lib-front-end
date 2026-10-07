@@ -5,7 +5,7 @@ import type { GamesGridProps } from '../../interfaces/games'
 export function GamesGrid({
   games,
   emptyState,
-  className = 'grid grid-cols-4 sm:grid-cols-6'
+  className = 'grid grid-cols-4 sm:grid-cols-6 2xl:grid-cols-8'
 }: GamesGridProps) {
   if (games.length === 0) {
     return (

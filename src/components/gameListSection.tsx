@@ -5,11 +5,14 @@ import { twMerge } from 'tailwind-merge'
 import { CalendarClock, Star, TrendingUp } from 'lucide-react'
 import { useRating } from '../hooks/useRating'
 import type { GameListSectionProps, SectionType } from '../interfaces/games'
+import type { GameBase } from '../types/games'
+import { CoverRow } from './homeComponents/coverRow'
+import { sectionTitle, textLink } from './homeComponents/styles'
 
 const EMPTY_STATE_ICON: Record<SectionType, typeof Star> = {
   coming: CalendarClock,
   trending: TrendingUp,
-  rateds: Star
+  rateds: Star,
 }
 
 function RatedScore({ igdbId }: { igdbId: number }) {
@@ -29,10 +32,22 @@ function RatedScore({ igdbId }: { igdbId: number }) {
 
   return (
     <div className="flex items-center gap-1 mt-0.5">
-      <Star className="size-3 text-primary fill-primary" />
+      <Star className="size-3 text-gray-300 fill-gray-300" />
       <span className="text-xs text-gray-300 font-medium">{score}</span>
       <span className="text-xs text-gray-400">/5</span>
     </div>
+  )
+}
+
+function GameMeta({ game, type }: { game: GameBase; type: SectionType }) {
+  if (type === 'rateds') return <RatedScore igdbId={game.igdbId} />
+
+  return (
+    <p className="text-xs text-gray-400 mt-0.5">
+      {game.releaseDate
+        ? dayjs.unix(game.releaseDate).format('DD MMM YYYY')
+        : '—'}
+    </p>
   )
 }
 
@@ -40,20 +55,14 @@ export function GameListSection({
   games,
   title,
   className,
-  type
+  type,
 }: GameListSectionProps) {
   return (
-    <div className={twMerge('flex flex-col w-full', className)}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-400 uppercase tracking-wide">
-          <span className="size-1.5 bg-primary" aria-hidden="true" />
-          {title}
-        </h2>
+    <div className={twMerge('flex flex-col w-full min-w-0', className)}>
+      <div className="flex items-baseline justify-between gap-4 mb-4">
+        <h2 className={sectionTitle}>{title}</h2>
         {type === 'coming' && (
-          <Link
-            to="/games/comingSoon"
-            className="text-xs text-gray-400 hover:text-primary transition-colors"
-          >
+          <Link to="/games/comingSoon" className={`text-sm ${textLink}`}>
             Ver mais
           </Link>
         )}
@@ -68,33 +77,32 @@ export function GameListSection({
           <span>Nenhum jogo disponível no momento.</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {games.map(game => (
-            <Link
-              to={`/games/${game.igdbId}`}
-              key={game.igdbId}
-              className="flex gap-3 items-center group rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-            >
-              <div className="flex-shrink-0">
-                <GameCard game={game} size="small" interactive={false} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm text-white group-hover:text-primary transition-colors truncate">
-                  {game.name}
-                </p>
-                {type === 'rateds' ? (
-                  <RatedScore igdbId={game.igdbId} />
-                ) : (
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {game.releaseDate
-                      ? dayjs.unix(game.releaseDate).format('DD MMM YYYY')
-                      : '—'}
+        <>
+          <CoverRow
+            games={games}
+            className="lg:hidden"
+            renderMeta={game => <GameMeta game={game} type={type} />}
+          />
+          <div className="hidden lg:flex flex-col gap-3">
+            {games.map(game => (
+              <Link
+                to={`/games/${encodeURIComponent(game.igdbId)}`}
+                key={game.igdbId}
+                className="flex gap-3 items-center group rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              >
+                <div className="flex-shrink-0">
+                  <GameCard game={game} size="small" interactive={false} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm text-white group-hover:underline underline-offset-4 truncate">
+                    {game.name}
                   </p>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+                  <GameMeta game={game} type={type} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
