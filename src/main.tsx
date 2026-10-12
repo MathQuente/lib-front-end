@@ -5,6 +5,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { Authentication } from './pages/authentication'
 import { ForgotPasswordPage } from './pages/forgotPasswordPage'
 import { ResetPasswordPage } from './pages/resetPasswordPage'
+import { VerifyEmailPage } from './pages/verifyEmailPage'
 import { Home } from './pages/home'
 import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: '/reset-password',
         element: <ResetPasswordPage />
+      },
+      {
+        path: '/verify-email',
+        element: <VerifyEmailPage />
       },
       {
         path: '/',

@@ -14,11 +14,24 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<Partial<User> | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const loadUser = async () => {
+    try {
+      const { user: currentUser } = await api.me()
+      setUser(currentUser)
+    } catch {}
+  }
+
+  const refreshUser = async () => {
+    if (!userRef.current) return
+    await loadUser()
+  }
+
   const login = async (email: string, password: string) => {
     try {
       const response = await api.login(email, password)
       const loggedUser = response.user
       setUser(loggedUser)
+      await loadUser()
       return true
     } catch {
       return false
@@ -29,6 +42,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     try {
       const { user: newUser } = await api.signup(email, password)
       setUser(newUser)
+      await loadUser()
       return null
     } catch (error) {
       const isPasswordError =
@@ -86,7 +100,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signup, refreshUser }}>
       {!loading && children}
     </AuthContext.Provider>
   )

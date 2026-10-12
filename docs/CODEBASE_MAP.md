@@ -16,7 +16,7 @@ React 18 + Vite + TypeScript + TailwindCSS SPA for "Lib" — personal game-libra
 graph TD
   subgraph Entry
     main[main.tsx: createBrowserRouter + QueryClientProvider + AuthProvider]
-    layout[layout.tsx: SideBar + Outlet + Footer + ToastContainer]
+    layout[layout.tsx: SideBar + EmailVerificationNotice + Outlet + Footer + ToastContainer]
   end
 
   subgraph Pages
@@ -106,6 +106,7 @@ All routes are children of one `<Layout/>` (persistent `SideBar` + `ToastContain
 | Path | Component | File | Auth-gated? |
 |---|---|---|---|
 | `/auth` | `Authentication` | `pages/authentication.tsx` | No |
+| `/verify-email` | `VerifyEmailPage` | `pages/verifyEmailPage.tsx` | No (works logged in or out; consumes `?token=`) |
 | `/` | `Home` | `pages/home.tsx` | No (renders differently if logged in) |
 | `/search/:query` | `SearchResults` | `pages/searchResults.tsx` | No |
 | `/games` | `Games` | `pages/games.tsx` | No |
@@ -135,11 +136,13 @@ Interconnection: `GameCard(enableModal=true)` owns local `open` state, lazily mo
 
 | File | Role |
 |---|---|
-| `contexts/auth/authContext.tsx` | `AuthContextType` (`user: Partial<User> \| null`, `loading`, `login`, `signup`, `logout`). |
-| `contexts/auth/authProvider.tsx` | Hydrates `user` via `api.me()` on mount. Whole app tree gated behind `!loading`. |
-| `contexts/auth/requireAuth.tsx` | Redirects to `/auth`, stashes `location.pathname` in `localStorage['redirectAfterLogin']`. |
+| `contexts/auth/authContext.tsx` | `AuthContextType` (`user: Partial<User> \| null`, `loading`, `login`, `signup`, `logout`, `refreshUser`). |
+| `contexts/auth/authProvider.tsx` | Hydrates `user` via `api.me()` on mount. Whole app tree gated behind `!loading`. `login`/`signup` call `api.me()` again after success, because those endpoints only return `{ id }` / `{ id, userName }` (no `email`, no `emailVerified`). `refreshUser()` re-fetches `/users/me` without touching `loading`, so it never unmounts the tree. |
+| `contexts/auth/requireAuth.tsx` | Redirects to `/auth`, stashes `location.pathname` in `sessionStorage['redirectAfterLogin']`. |
 | `hooks/useAuth.ts` | `useContext(AuthContext)`, throws outside provider. |
 | `formLogin.tsx` / `formSignUp.tsx` | react-hook-form + zod; read/clear `redirectAfterLogin` on success; render Google/Discord OAuth buttons. Use `useContext(AuthContext)` directly rather than `useAuth()` (inconsistent, functionally equivalent). |
+| `emailVerificationNotice.tsx` | Strip rendered by `layout.tsx` under the nav on every page, only when `user.emailVerified === false` (OAuth accounts come verified). "Reenviar" + dismiss; dismissal is stored per user id in `sessionStorage['emailNoticeDismissed']`, so it returns next session. |
+| `pages/verifyEmailPage.tsx` | Reads `?token=` once and strips it from the URL. Does **not** verify on load: it shows a "Confirmar e-mail" button and calls `api.verifyEmail` only on click, so link scanners in mail clients can't burn the single-use token (reloading before the click loses the token; reopening the email link works). Centered layout, display-font title. States: ready, success, invalid (400 or no token), already verified. Non-400 errors keep the button and show `getErrorMessage`. Logged in: `refreshUser()` then library link, or "Reenviar link" on an invalid link. Logged out: link to `/auth?tab=login`. |
 | `googleAuthButton.tsx` / `discordAuthButton.tsx` | Plain `<a href>` full-page redirects to backend OAuth endpoints. |
 | `useApi.ts` (`api.login/signup/logout/me`) | axios instance, `withCredentials: true`, 401 interceptor clears cookies on `session_expired`/`unauthorized`. |
 
@@ -156,6 +159,7 @@ Interconnection: `GameCard(enableModal=true)` owns local `open` state, lazily mo
 | `usePlayedCount.ts` | "Times completed" counter, enabled only when status id === 1 (hardcoded literal, not `USER_GAME_STATUS_ID.PLAYED`). | `['gameStats', userId, igdbId]` | Clamped min 1. |
 | `useUserGames.ts` | Library grouped by status + totals + one recommended game. | `['userGames', userId, ...]`, `['games', userId]` | Key-prefix overlaps `useGames`'s `['games', ...]`, distinguished only by arg shape. |
 | `useUserProfile.ts` | Profile fetch/update incl. Cloudinary upload. | `['userProfile', userId]` | Two-phase mutation: upload file(s), then submit URL string. |
+| `useResendVerification.ts` | `{ resend, isSending, secondsLeft }` for `POST /auth/resend-verification`. Success toast + 60 s cooldown; 429/503 go through `getErrorMessage`. | n/a | Cooldown end is a timestamp in `sessionStorage['emailVerificationResendAvailableAt']`, synced between the notice and the page by a window event. |
 | `usePrefersReducedMotion.ts` | `matchMedia('(prefers-reduced-motion: reduce)').matches`, read once per render — not reactive to live OS changes. | n/a | Feeds embla-carousel autoplay config. |
 
 ### Design tokens (`tailwind.config.js`)

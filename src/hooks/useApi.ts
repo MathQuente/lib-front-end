@@ -133,6 +133,19 @@ export const api = {
       toast.error('Ocorreu um erro inesperado. 🤯')
     }
   },
+  verifyEmail: async (token: string) => {
+    const response = await http.post<{ message: string }>(
+      '/auth/verify-email',
+      { token }
+    )
+    return response.data
+  },
+  resendVerification: async () => {
+    const response = await http.post<{ message: string }>(
+      '/auth/resend-verification'
+    )
+    return response.data
+  },
   logout: async () => {
     try {
       await http.post('/auth/logout')
