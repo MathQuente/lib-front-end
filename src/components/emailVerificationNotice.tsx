@@ -8,7 +8,7 @@ const DISMISSED_KEY = 'emailNoticeDismissed'
 
 export function EmailVerificationNotice() {
   const { user } = useAuth()
-  const { resend, isSending, secondsLeft } = useResendVerification()
+  const { resend, isSending, waitLabel } = useResendVerification()
   const [dismissedFor, setDismissedFor] = useState(() =>
     sessionStorage.getItem(DISMISSED_KEY)
   )
@@ -40,11 +40,11 @@ export function EmailVerificationNotice() {
           variant="outline"
           size="sm"
           loading={isSending}
-          disabled={secondsLeft > 0}
+          disabled={!!waitLabel}
           onClick={resend}
           className="tabular-nums"
         >
-          {secondsLeft > 0 ? `Reenviar em ${secondsLeft}s` : 'Reenviar'}
+          {waitLabel ? `Reenviar em ${waitLabel}` : 'Reenviar'}
         </Button>
         <button
           type="button"

@@ -15,10 +15,16 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   const [loading, setLoading] = useState(true)
 
   const loadUser = async () => {
-    try {
-      const { user: currentUser } = await api.me()
-      setUser(currentUser)
-    } catch {}
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const { user: currentUser } = await api.me()
+        setUser(currentUser)
+        return
+      } catch (error) {
+        const status = isAxiosError(error) ? error.response?.status : undefined
+        if (status && status < 500) return
+      }
+    }
   }
 
   const refreshUser = async () => {

@@ -1,5 +1,5 @@
 import { isAxiosError } from 'axios'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/button'
 import { api } from '../hooks/useApi'
@@ -29,7 +29,9 @@ export function VerifyEmailPage() {
   const [isConfirming, setIsConfirming] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { user, refreshUser } = useAuth()
-  const { resend, isSending, secondsLeft } = useResendVerification()
+  const { resend, isSending, waitLabel } = useResendVerification()
+  const [wasUnverified, setWasUnverified] = useState(false)
+  const confirming = useRef(false)
 
   useEffect(() => {
     if (!searchParams.has('token')) return
@@ -39,17 +41,19 @@ export function VerifyEmailPage() {
   }, [searchParams, setSearchParams])
 
   const confirm = async () => {
-    if (!token || isConfirming) return
+    if (!token || confirming.current) return
+    confirming.current = true
     setIsConfirming(true)
     setErrorMessage(null)
+    setWasUnverified(user?.emailVerified === false)
 
     try {
       await api.verifyEmail(token)
-      setStatus('success')
       await refreshUser()
+      setStatus('success')
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 400) {
-        setStatus('invalid')
+        setStatus(current => (current === 'success' ? current : 'invalid'))
         return
       }
       setErrorMessage(
@@ -59,13 +63,16 @@ export function VerifyEmailPage() {
         )
       )
     } finally {
+      confirming.current = false
       setIsConfirming(false)
     }
   }
 
   const isLoggedIn = !!user?.id
   const alreadyVerified =
-    status !== 'success' && isLoggedIn && user?.emailVerified === true
+    status === 'invalid' && isLoggedIn && user?.emailVerified === true
+  const confirmedOwnEmail =
+    isLoggedIn && wasUnverified && user?.emailVerified === true
 
   const libraryLink = (
     <Link to="/userLibrary" className={primaryLinkClass}>
@@ -103,10 +110,12 @@ export function VerifyEmailPage() {
     note = null
   } else if (status === 'success') {
     title = 'E-mail confirmado.'
-    body = isLoggedIn ? (
+    body = confirmedOwnEmail ? (
       <>
         O endereço <Email>{user?.email}</Email> agora está ligado à sua conta.
       </>
+    ) : isLoggedIn ? (
+      'O e-mail da conta deste link foi confirmado.'
     ) : (
       'Entre na sua conta para continuar.'
     )
@@ -129,11 +138,11 @@ export function VerifyEmailPage() {
           variant="primary"
           size="md"
           loading={isSending}
-          disabled={secondsLeft > 0}
+          disabled={!!waitLabel}
           onClick={resend}
           className={actionButtonClass}
         >
-          {secondsLeft > 0 ? `Reenviar em ${secondsLeft}s` : 'Reenviar link'}
+          {waitLabel ? `Reenviar em ${waitLabel}` : 'Reenviar link'}
         </Button>
         <Link to="/userLibrary" className={quietLinkClass}>
           Ir para a biblioteca
