@@ -11,6 +11,7 @@ import { useUserProfile } from '../../hooks/useUserProfile'
 import type { UserGamesFormProps } from '../../interfaces/user'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { Button } from '../button'
+import { fieldFocus } from '../../styles/focus'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 
@@ -257,7 +258,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
             id="userName"
             type="text"
             placeholder={UserProfileResponse?.user?.userName}
-            className="bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border focus:border-primary outline-none ring-2 ring-offset-1 ring-offset-dark-bg-darker ring-transparent focus-visible:ring-primary-light transition-colors duration-150"
+            className={`bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 px-3 border border-dark-border ${fieldFocus} transition-colors duration-150`}
             {...registerField('userName')}
           />
           <span className="text-red-500 text-xs min-h-[1rem]">

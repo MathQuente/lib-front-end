@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { FormResetPassword } from '../components/formResetPassword'
 import { api } from '../hooks/useApi'
+import { focusRing } from '../styles/focus'
 
 export function ResetPasswordPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -47,7 +48,7 @@ export function ResetPasswordPage() {
             Link inválido, expirado ou já usado. Peça um novo link na tela de{' '}
             <Link
               to="/forgot-password"
-              className="text-primary-light hover:underline"
+              className={`text-primary-light hover:underline rounded-sm ${focusRing}`}
             >
               esqueci a senha
             </Link>

@@ -4,12 +4,13 @@ import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
+import { focusRing } from '../styles/focus'
 
 const tabTrigger =
   'flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent ' +
   'data-[state=active]:text-white data-[state=active]:border-primary ' +
   'transition-colors duration-150 uppercase tracking-wide ' +
-  'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-light'
+  focusRing
 
 const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   access_denied: 'Login cancelado.',

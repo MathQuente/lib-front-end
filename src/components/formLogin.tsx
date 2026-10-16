@@ -11,6 +11,7 @@ import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
 import { DiscordAuthButton } from './discordAuthButton'
 import { AuthInput } from './authInput'
+import { focusRing } from '../styles/focus'
 
 type LoginForm = z.infer<typeof loginSchema>
 
@@ -61,7 +62,7 @@ export function FormLogin() {
         />
         <Link
           to="/forgot-password"
-          className="text-xs text-primary-light hover:underline self-end mt-1"
+          className={`text-xs text-primary-light hover:underline self-end mt-1 rounded-sm ${focusRing}`}
         >
           Esqueceu a senha?
         </Link>

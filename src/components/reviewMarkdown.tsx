@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { focusRing } from '../styles/focus'
 
 export function ReviewMarkdown({ text }: { text: string }) {
   return (
@@ -15,7 +16,7 @@ export function ReviewMarkdown({ text }: { text: string }) {
             href={href}
             target="_blank"
             rel="noreferrer"
-            className="text-primary hover:underline"
+            className={`text-primary hover:underline rounded-sm ${focusRing}`}
           >
             {children}
           </a>

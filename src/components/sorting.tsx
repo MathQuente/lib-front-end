@@ -1,9 +1,9 @@
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { GameStatusEnum } from '../types/games'
 import type { SortControlsProps } from '../interfaces/games'
+import { fieldFocus } from '../styles/focus'
 
-const selectClass =
-  'bg-dark-bg-darker text-xs sm:text-sm text-gray-300 rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 border border-dark-border focus:border-primary outline-2 outline-offset-1 outline-transparent focus-visible:outline-primary-light transition-colors duration-150 cursor-pointer'
+const selectClass = `bg-dark-bg-darker text-xs sm:text-sm text-gray-300 rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 border border-dark-border ${fieldFocus} transition-colors duration-150 cursor-pointer`
 
 export function SortControls({
   sortField,

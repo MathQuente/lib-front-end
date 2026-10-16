@@ -16,6 +16,7 @@ import { RatingAverage } from '../ratingAverage'
 import { GameModal } from './gameModal'
 import { GameStatusButtons } from './gameStatusButtons'
 import { LibraryStats } from './libraryStats'
+import { focusRing } from '../../styles/focus'
 
 export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()
@@ -137,7 +138,10 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
               </div>
             ) : (
               <p className="text-sm text-gray-400">
-                <Link to="/auth" className="text-primary-light hover:underline">
+                <Link
+                  to="/auth"
+                  className={`text-primary-light hover:underline rounded-sm ${focusRing}`}
+                >
                   Entrar
                 </Link>{' '}
                 para adicionar à sua biblioteca.

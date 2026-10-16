@@ -1,6 +1,7 @@
 import { forwardRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import type { AuthInputProps } from '../interfaces/ui'
+import { fieldFocus, fieldFocusError } from '../styles/focus'
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
   function AuthInput({ id, label, icon, error, type, ...inputProps }, ref) {
@@ -23,12 +24,12 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             type={resolvedType}
             spellCheck={false}
             {...inputProps}
-            className={`bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 pl-10 border outline-none ring-2 ring-transparent autofill:[-webkit-text-fill-color:white] autofill:[caret-color:white] autofill:[transition:background-color_600000s_0s,color_600000s_0s] ${
+            className={`bg-dark-bg-darker text-white placeholder-gray-500 rounded-lg block w-full text-sm py-3 pl-10 border autofill:[-webkit-text-fill-color:white] autofill:[caret-color:white] autofill:[transition:background-color_600000s_0s,color_600000s_0s] ${
               isPassword ? 'pr-10' : 'pr-3'
             } ${
               error
-                ? 'border-red-500 focus-visible:ring-red-500/30'
-                : 'border-dark-border focus:border-primary focus-visible:ring-primary-light/30'
+                ? `border-red-500 ${fieldFocusError}`
+                : `border-dark-border ${fieldFocus}`
             } transition-colors duration-150`}
           />
           {isPassword && (

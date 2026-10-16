@@ -4,6 +4,7 @@ import { useCompletedAt } from '../hooks/useCompletedAt'
 import { useHoursPlayed } from '../hooks/useHoursPlayed'
 import { usePlayedCount } from '../hooks/usePlayedCount'
 import type { GameCardData } from '../types/games'
+import { inlineFieldFocus } from '../styles/focus'
 
 const MAX_HOURS = 9999.99
 
@@ -13,8 +14,7 @@ function stripLeadingZeros(raw: string) {
   return raw.replace(/^0+(?=\d)/, '')
 }
 
-const inputClass =
-  'rounded-md bg-dark-bg px-2.5 py-1.5 text-sm text-white outline-none ring-2 ring-offset-1 ring-offset-dark-bg ring-transparent focus-visible:ring-primary-light disabled:opacity-50'
+const inputClass = `rounded-md bg-dark-bg px-2.5 py-1.5 text-sm text-white ${inlineFieldFocus} disabled:opacity-50`
 
 const stepButtonClass =
   'flex items-center justify-center size-7 rounded-md transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed'
