@@ -17,6 +17,7 @@ const EMPTY_GROUPS: UserGamesByStatus = {
   PAUSED: [],
   BACKLOG: [],
   WISHLIST: [],
+  DROPPED: [],
 }
 
 export const useUserGames = (

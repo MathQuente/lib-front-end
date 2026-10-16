@@ -7,7 +7,8 @@ const EMPTY_GROUPS: UserGamesResponse['games'] = {
   PLAYING: [],
   PAUSED: [],
   BACKLOG: [],
-  WISHLIST: []
+  WISHLIST: [],
+  DROPPED: []
 }
 
 export const usePublicUserGames = (

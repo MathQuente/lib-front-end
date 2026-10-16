@@ -1,16 +1,19 @@
+import { CircleX } from 'lucide-react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import type {
   GameStatusEnum,
   TotalPerStatus,
   UserGamesByStatus,
 } from '../../types/games'
-import { type ShelfLink, StatusShelf } from './statusShelf'
+import { type ShelfLink, type ShelfTab, StatusShelf } from './statusShelf'
 
-const MAX_PLAYING = 3
 const MAX_PER_SHELF = 8
 
 const EXPLORE: ShelfLink = { to: '/games', label: 'Explorar jogos' }
 
 type ShelfStatus = `${GameStatusEnum}`
+type PlayingTab = 'PLAYING' | 'PAUSED'
 
 function gameCount(count: number) {
   return `${count} ${count === 1 ? 'jogo' : 'jogos'}`
@@ -27,6 +30,8 @@ export function LibraryShelves({
   totalPerStatus,
   readOnly = false,
 }: LibraryShelvesProps) {
+  const [playingTab, setPlayingTab] = useState<PlayingTab>('PLAYING')
+
   const totalOf = (status: ShelfStatus) =>
     totalPerStatus.find(t => t.status === status)?.totalGames ??
     games[status].length
@@ -53,6 +58,17 @@ export function LibraryShelves({
         }
       : EXPLORE
 
+  const pausedTotal = totalOf('PAUSED')
+  const droppedTotal = totalOf('DROPPED')
+  const showingPaused = playingTab === 'PAUSED' && pausedTotal > 0
+  const playingTabs: ShelfTab[] | undefined =
+    pausedTotal > 0
+      ? [
+          { key: 'PLAYING', label: 'Agora', count: totalOf('PLAYING') },
+          { key: 'PAUSED', label: 'Pausados', count: pausedTotal },
+        ]
+      : undefined
+
   return (
     <div className="mt-2">
       <StatusShelf
@@ -72,12 +88,25 @@ export function LibraryShelves({
       <StatusShelf
         status="PLAYING"
         title="Jogando"
-        featured
-        games={games.PLAYING.slice(0, MAX_PLAYING)}
-        summary={`${gameCount(totalOf('PLAYING'))} em andamento`}
+        games={(showingPaused ? games.PAUSED : games.PLAYING).slice(
+          0,
+          MAX_PER_SHELF
+        )}
+        summary={
+          showingPaused
+            ? `${gameCount(pausedTotal)} para retomar`
+            : `${gameCount(totalOf('PLAYING'))} em andamento`
+        }
         emptyText="Nenhum jogo em andamento."
         emptyLink={readOnly ? undefined : playingEmptyLink}
-        allLink={allLink('PLAYING', 'playingGames')}
+        allLink={
+          showingPaused
+            ? allLink('PAUSED', 'pausedGames')
+            : allLink('PLAYING', 'playingGames')
+        }
+        tabs={playingTabs}
+        activeTab={showingPaused ? 'PAUSED' : 'PLAYING'}
+        onTabChange={key => setPlayingTab(key as PlayingTab)}
       />
       <StatusShelf
         status="BACKLOG"
@@ -103,6 +132,18 @@ export function LibraryShelves({
         emptyLink={explore}
         allLink={allLink('WISHLIST', 'wishlistGames')}
       />
+      {!readOnly && droppedTotal > 0 && (
+        <p className="flex items-center gap-2 border-t border-dark-border py-5 text-sm text-gray-400">
+          <CircleX className="size-4 shrink-0 text-red-400" aria-hidden="true" />
+          {droppedTotal === 1 ? '1 jogo largado' : `${droppedTotal} jogos largados`}
+          <Link
+            to="/userLibrary/droppedGames"
+            className="rounded-sm text-primary-light transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          >
+            Ver
+          </Link>
+        </p>
+      )}
     </div>
   )
 }

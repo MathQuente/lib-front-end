@@ -1,4 +1,13 @@
-import { Gamepad2, Gift, Library, Play, Star, Trophy } from 'lucide-react'
+import {
+  CircleX,
+  Gamepad2,
+  Gift,
+  Library,
+  Pause,
+  Play,
+  Star,
+  Trophy,
+} from 'lucide-react'
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import type { GameCardProps } from '../../interfaces/games'
@@ -22,6 +31,18 @@ export const LIBRARY_STATUS_BADGES: Record<
     barColor: 'bg-emerald-400',
     iconColor: 'text-emerald-400',
     label: 'Jogando',
+  },
+  PAUSED: {
+    icon: Pause,
+    barColor: 'bg-sky-400',
+    iconColor: 'text-sky-400',
+    label: 'Pausado',
+  },
+  DROPPED: {
+    icon: CircleX,
+    barColor: 'bg-red-400',
+    iconColor: 'text-red-400',
+    label: 'Larguei',
   },
   BACKLOG: {
     icon: Library,

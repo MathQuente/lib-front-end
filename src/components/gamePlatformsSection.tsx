@@ -20,6 +20,7 @@ const PLATFORM_QUESTION: Record<number, string> = {
   [STATUS.PLAYING]: 'Onde você está jogando?',
   [STATUS.PAUSED]: 'Onde você jogava?',
   [STATUS.BACKLOG]: 'Onde pretende jogar?',
+  [STATUS.DROPPED]: 'Onde você jogava?',
 }
 
 const today = () => new Date().toISOString().slice(0, 10)

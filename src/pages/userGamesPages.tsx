@@ -18,7 +18,8 @@ export function UserGamesPageByStatus() {
     [GameStatusEnum.Playing]: 'playingGames',
     [GameStatusEnum.Paused]: 'pausedGames',
     [GameStatusEnum.Backlog]: 'backlogGames',
-    [GameStatusEnum.Wishlist]: 'wishlistGames'
+    [GameStatusEnum.Wishlist]: 'wishlistGames',
+    [GameStatusEnum.Dropped]: 'droppedGames'
   }
 
   const routeToEnumMap: Record<string, GameStatusEnum> = {
@@ -26,7 +27,8 @@ export function UserGamesPageByStatus() {
     playingGames: GameStatusEnum.Playing,
     pausedGames: GameStatusEnum.Paused,
     backlogGames: GameStatusEnum.Backlog,
-    wishlistGames: GameStatusEnum.Wishlist
+    wishlistGames: GameStatusEnum.Wishlist,
+    droppedGames: GameStatusEnum.Dropped
   }
 
   const [page, setPage] = useState(() => {

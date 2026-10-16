@@ -3,5 +3,6 @@ export const USER_GAME_STATUS_ID = {
   PAUSED: 2,
   PLAYING: 3,
   BACKLOG: 4,
-  WISHLIST: 5
+  WISHLIST: 5,
+  DROPPED: 6
 } as const

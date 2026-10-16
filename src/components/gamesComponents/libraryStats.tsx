@@ -10,6 +10,7 @@ const SINGLE_PLATFORM_LABEL: Record<number, string> = {
   [STATUS.PLAYING]: 'Jogando em',
   [STATUS.PAUSED]: 'Pausado em',
   [STATUS.BACKLOG]: 'Pretende jogar em',
+  [STATUS.DROPPED]: 'Jogava em',
 }
 
 export function LibraryStats({

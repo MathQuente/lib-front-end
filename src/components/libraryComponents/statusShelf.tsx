@@ -14,6 +14,15 @@ export interface ShelfLink {
   label: string
 }
 
+export interface ShelfTab {
+  key: string
+  label: string
+  count: number
+}
+
+const tabClass =
+  'min-h-11 rounded-full border px-3 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+
 interface StatusShelfProps {
   status: keyof typeof LIBRARY_STATUS_BADGES
   title: string
@@ -22,7 +31,9 @@ interface StatusShelfProps {
   emptyText: string
   emptyLink?: ShelfLink
   allLink?: ShelfLink
-  featured?: boolean
+  tabs?: ShelfTab[]
+  activeTab?: string
+  onTabChange?: (key: string) => void
 }
 
 export function StatusShelf({
@@ -33,7 +44,9 @@ export function StatusShelf({
   emptyText,
   emptyLink,
   allLink,
-  featured = false,
+  tabs,
+  activeTab,
+  onTabChange,
 }: StatusShelfProps) {
   const { icon: Icon, iconColor } = LIBRARY_STATUS_BADGES[status]
   const isEmpty = games.length === 0
@@ -70,22 +83,36 @@ export function StatusShelf({
         )}
       </div>
 
+      {tabs && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {tabs.map(tab => {
+            const active = tab.key === activeTab
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onTabChange?.(tab.key)}
+                className={`${tabClass} ${
+                  active
+                    ? 'border-emerald-400 bg-emerald-400/10 font-medium text-white'
+                    : 'border-dark-border text-gray-400 hover:text-white'
+                }`}
+              >
+                {tab.label}{' '}
+                <span className="tabular-nums opacity-70">{tab.count}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {!isEmpty && (
-        <ul
-          className={
-            featured
-              ? 'mt-5 flex gap-3 lg:gap-6'
-              : '-mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-[repeat(6,minmax(0,12.5rem))] lg:gap-5 lg:max-2xl:[&>li:nth-child(n+7)]:hidden 2xl:grid-cols-[repeat(8,minmax(0,12.5rem))] lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden'
-          }
-        >
+        <ul className="-mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-[repeat(6,minmax(0,12.5rem))] lg:gap-5 lg:max-2xl:[&>li:nth-child(n+7)]:hidden 2xl:grid-cols-[repeat(8,minmax(0,12.5rem))] lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
           {games.map(game => (
             <li
               key={game.igdbId}
-              className={
-                featured
-                  ? 'w-32 min-w-0 sm:w-44 lg:w-56'
-                  : 'w-32 min-w-0 flex-none snap-start sm:w-40 lg:w-auto'
-              }
+              className="w-32 min-w-0 flex-none snap-start sm:w-40 lg:w-auto"
             >
               <GameCard game={game} size="medium" enableModal />
             </li>

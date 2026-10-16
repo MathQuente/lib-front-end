@@ -1,4 +1,12 @@
-import { Gamepad2, Gift, Library, Play } from 'lucide-react'
+import {
+  CircleX,
+  Gamepad2,
+  Gift,
+  Library,
+  type LucideIcon,
+  Pause,
+  Play,
+} from 'lucide-react'
 import { useState } from 'react'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
@@ -8,6 +16,23 @@ import type { GameFormProps } from '../../interfaces/games'
 import type { UserGamePlatformEntry } from '../../types/platform'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { ConfirmDialog } from '../confirmDialog'
+
+interface StatusButton {
+  statusId: number
+  icon: LucideIcon
+  label: string
+}
+
+const STOPPABLE_STATUS_IDS: number[] = [
+  STATUS.PLAYING,
+  STATUS.PAUSED,
+  STATUS.DROPPED,
+]
+
+const STOPPED_BUTTONS: StatusButton[] = [
+  { statusId: STATUS.PAUSED, icon: Pause, label: 'Pausado' },
+  { statusId: STATUS.DROPPED, icon: CircleX, label: 'Larguei' },
+]
 
 export function GameStatusButtons({ game }: GameFormProps) {
   const igdbId = game?.igdbId?.toString()
@@ -70,7 +95,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
     ? new Date() > new Date(game.releaseDate * 1000)
     : true
 
-  const buttons = [
+  const buttons: StatusButton[] = [
     ...(gameIsReleased
       ? [
           { statusId: STATUS.PLAYED, icon: Gamepad2, label: 'Jogado' },
@@ -90,6 +115,42 @@ export function GameStatusButtons({ game }: GameFormProps) {
     } catch {}
   }
 
+  const canStop =
+    !!activeStatus && STOPPABLE_STATUS_IDS.includes(activeStatus.id)
+
+  function renderStatusButton({ statusId, icon: Icon, label }: StatusButton) {
+    const active = hasStatus(statusId)
+    return (
+      <button
+        key={statusId}
+        type="button"
+        onClick={() => handleStatusClick(statusId)}
+        aria-pressed={active}
+        disabled={isSaving}
+        className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-60 disabled:cursor-wait group ${
+          active ? 'bg-primary/10' : 'hover:bg-dark-bg'
+        }`}
+      >
+        <Icon
+          className={`size-6 transition-colors ${
+            active
+              ? 'text-primary'
+              : 'text-gray-400 group-hover:text-gray-300'
+          }`}
+        />
+        <span
+          className={`text-xs text-center transition-colors ${
+            active
+              ? 'text-primary font-medium'
+              : 'text-gray-400 group-hover:text-gray-300'
+          }`}
+        >
+          {label}
+        </span>
+      </button>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-3 w-full">
       <div
@@ -97,41 +158,17 @@ export function GameStatusButtons({ game }: GameFormProps) {
           buttons.length === 1 ? 'grid-cols-1' : 'grid-cols-4'
         }`}
       >
-        {buttons.map(({ statusId, icon: Icon, label }) => {
-          const active = hasStatus(statusId)
-          return (
-            <button
-              key={statusId}
-              type="button"
-              onClick={() => handleStatusClick(statusId)}
-              aria-pressed={active}
-              disabled={isSaving}
-              className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-60 disabled:cursor-wait group ${
-                active
-                  ? 'bg-primary/10 ring-1 ring-primary/30'
-                  : 'hover:bg-dark-bg'
-              }`}
-            >
-              <Icon
-                className={`size-6 transition-colors ${
-                  active
-                    ? 'text-primary'
-                    : 'text-gray-400 group-hover:text-gray-300'
-                }`}
-              />
-              <span
-                className={`text-xs text-center transition-colors ${
-                  active
-                    ? 'text-primary font-medium'
-                    : 'text-gray-400 group-hover:text-gray-300'
-                }`}
-              >
-                {label}
-              </span>
-            </button>
-          )
-        })}
+        {buttons.map(renderStatusButton)}
       </div>
+
+      {canStop && (
+        <div className="flex flex-col gap-2">
+          <span className="text-xs text-gray-400">Parou de jogar?</span>
+          <div className="grid w-full grid-cols-4 gap-2">
+            {STOPPED_BUTTONS.map(renderStatusButton)}
+          </div>
+        </div>
+      )}
 
       {askingCompletion && (
         <fieldset className="flex flex-col gap-2 px-3 py-2 rounded-lg bg-dark-bg">

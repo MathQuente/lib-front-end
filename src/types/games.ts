@@ -4,6 +4,7 @@ export enum GameStatusEnum {
   Paused = 'PAUSED',
   Backlog = 'BACKLOG',
   Wishlist = 'WISHLIST',
+  Dropped = 'DROPPED',
 }
 
 export interface GameCardData {

@@ -64,6 +64,7 @@ function LoggedInTop() {
 
   const playing = gamesByStatus.PLAYING
   const backlog = gamesByStatus.BACKLOG
+  const nextUpQueue = [...gamesByStatus.PAUSED, ...backlog]
   const playingTotal =
     totalPerStatus.find(t => t.status === 'PLAYING')?.totalGames ??
     playing.length
@@ -111,7 +112,7 @@ function LoggedInTop() {
       <div className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14">
         <PlayingNow games={playing} total={playingTotal} />
         <NextUp
-          backlog={backlog}
+          backlog={nextUpQueue}
           libraryIds={libraryIds}
           suggestion={GamesToDisplay}
         />
