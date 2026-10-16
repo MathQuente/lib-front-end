@@ -79,6 +79,17 @@ async function openPlatformSignIn(path: string, expectedOrigin: string) {
   }
 }
 
+const LOGIN_ERROR_TOAST_ID = 'login-error'
+
+function showLoginError(message: string) {
+  if (toast.isActive(LOGIN_ERROR_TOAST_ID)) {
+    toast.update(LOGIN_ERROR_TOAST_ID, { render: message })
+    return
+  }
+
+  toast.error(message, { toastId: LOGIN_ERROR_TOAST_ID })
+}
+
 export const api = {
   login: async (email: string, password: string) => {
     try {
@@ -86,11 +97,11 @@ export const api = {
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(getErrorMessage(error, 'Não foi possível entrar.'))
+        showLoginError(getErrorMessage(error, 'Não foi possível entrar.'))
         return
       }
 
-      toast.error('Ocorreu um erro inesperado. 🤯')
+      showLoginError('Ocorreu um erro inesperado. 🤯')
     }
   },
   signup: async (email: string, password: string) => {
