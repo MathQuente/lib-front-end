@@ -4,6 +4,7 @@ import { Pagination } from './pagination'
 import { SortControls } from './sorting'
 import type { GameStatusEnum } from '../types/games'
 import type { GameListProps, SortField, SortOrder } from '../interfaces/games'
+import { pushListState } from '../utils/listHistory'
 
 const SORT_FIELDS: SortField[] = [
   'name',
@@ -78,7 +79,7 @@ export function GameListPage({
   function setCurrentPage(p: number) {
     const url = new URL(window.location.toString())
     url.searchParams.set('page', String(p))
-    window.history.pushState({}, '', url)
+    pushListState(url)
     setPage(p)
     window.scrollTo(0, 0)
   }
@@ -87,14 +88,14 @@ export function GameListPage({
     const value = e.target.value as SortField
     const url = new URL(window.location.toString())
     url.searchParams.set('sortField', value)
-    window.history.pushState({}, '', url)
+    pushListState(url)
     setSortField(value)
   }
 
   function onSortOrderChange(order: SortOrder) {
     const url = new URL(window.location.toString())
     url.searchParams.set('sortOrder', order)
-    window.history.pushState({}, '', url)
+    pushListState(url)
     setSortOrder(order)
   }
 
