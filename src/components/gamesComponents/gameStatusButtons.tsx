@@ -100,7 +100,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
       ? [
           { statusId: STATUS.PLAYED, icon: Gamepad2, label: 'Jogado' },
           { statusId: STATUS.PLAYING, icon: Play, label: 'Jogando' },
-          { statusId: STATUS.BACKLOG, icon: Library, label: 'Pendentes' },
+          { statusId: STATUS.BACKLOG, icon: Library, label: 'Na fila' },
         ]
       : []),
     { statusId: STATUS.WISHLIST, icon: Gift, label: 'Desejos' },

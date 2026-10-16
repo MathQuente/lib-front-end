@@ -6,7 +6,7 @@ import { textLink } from './styles'
 const LEGEND = [
   { status: 'PLAYED', label: 'Zerado' },
   { status: 'PLAYING', label: 'Jogando' },
-  { status: 'BACKLOG', label: 'Pendente' },
+  { status: 'BACKLOG', label: 'Na fila' },
   { status: 'WISHLIST', label: 'Desejo' },
 ]
 

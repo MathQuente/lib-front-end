@@ -48,7 +48,7 @@ export const LIBRARY_STATUS_BADGES: Record<
     icon: Library,
     barColor: 'bg-slate-400',
     iconColor: 'text-slate-400',
-    label: 'Pendentes',
+    label: 'Na fila',
   },
   PLAYED: {
     icon: Gamepad2,

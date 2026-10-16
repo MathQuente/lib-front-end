@@ -53,8 +53,8 @@ export function LibraryShelves({
           to: '/userLibrary/backlogGames',
           label:
             backlogTotal === 1
-              ? 'Ver o jogo pendente'
-              : `Escolher entre os ${backlogTotal} pendentes`,
+              ? 'Ver o jogo da fila'
+              : `Escolher entre os ${backlogTotal} da fila`,
         }
       : EXPLORE
 
@@ -76,9 +76,9 @@ export function LibraryShelves({
         title="Zerados"
         games={games.PLAYED.slice(0, MAX_PER_SHELF)}
         summary={
-          totalOf('PLAYED') === 1
-            ? '1 jogo'
-            : `${totalOf('PLAYED')} jogos, dos mais recentes aos mais antigos`
+          readOnly
+            ? `${gameCount(totalOf('PLAYED'))} zerados`
+            : `${gameCount(totalOf('PLAYED'))} que você já zerou`
         }
         emptyText={empty(
           'Nenhum jogo ainda. Os que você terminar aparecem aqui.'
@@ -110,9 +110,9 @@ export function LibraryShelves({
       />
       <StatusShelf
         status="BACKLOG"
-        title="Pendentes"
+        title="Na fila"
         games={games.BACKLOG.slice(0, MAX_PER_SHELF)}
-        summary={`${gameCount(backlogTotal)} na fila para jogar`}
+        summary={`${gameCount(backlogTotal)} esperando a vez`}
         emptyText={empty('Nenhum jogo ainda. Aqui fica a sua fila para jogar.')}
         emptyLink={explore}
         allLink={allLink('BACKLOG', 'backlogGames')}

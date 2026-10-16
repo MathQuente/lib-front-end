@@ -80,7 +80,7 @@ function LoggedInTop() {
             Sua biblioteca ainda está vazia.
           </h2>
           <p className="mt-3 max-w-md text-gray-400">
-            Os jogos que você marcar como Jogando e Pendente aparecem aqui.
+            Os jogos que você marcar como Jogando ou Na fila aparecem aqui.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
             <Link

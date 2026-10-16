@@ -6,7 +6,7 @@ import { sectionTitle } from '../homeComponents/styles'
 const SHELVES = [
   { status: 'PLAYING', label: 'Jogando' },
   { status: 'PLAYED', label: 'Zerados' },
-  { status: 'BACKLOG', label: 'Pendentes' },
+  { status: 'BACKLOG', label: 'Na fila' },
   { status: 'WISHLIST', label: 'Lista de desejos' },
 ]
 

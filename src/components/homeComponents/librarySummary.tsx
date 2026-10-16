@@ -5,7 +5,7 @@ import { textLink } from './styles'
 const SUMMARY_PARTS = [
   { status: 'PLAYED', one: 'zerado', many: 'zerados' },
   { status: 'PLAYING', one: 'jogando', many: 'jogando' },
-  { status: 'BACKLOG', one: 'pendente', many: 'pendentes' },
+  { status: 'BACKLOG', one: 'na fila', many: 'na fila' },
   {
     status: 'WISHLIST',
     one: 'na lista de desejos',

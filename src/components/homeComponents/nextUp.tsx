@@ -210,7 +210,7 @@ export function NextUp({
       ) : (
         <div className="mt-4 flex flex-col items-start gap-2">
           <p className="max-w-sm text-gray-400">
-            Sua fila está vazia. Marque jogos como Pendente para ver sugestões
+            Sua fila está vazia. Coloque jogos na fila para ver sugestões
             aqui.
           </p>
           <Link to="/games" className={textLink}>
