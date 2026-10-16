@@ -36,6 +36,9 @@ export const useGameStatus = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({ queryKey: ['gameStats', userId, igdbId] })
       queryClient.invalidateQueries({
+        queryKey: ['gameCompletedAt', userId, igdbId],
+      })
+      queryClient.invalidateQueries({
         queryKey: ['gamePlatforms', userId, igdbId],
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })

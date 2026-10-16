@@ -18,14 +18,16 @@ export const usePlayedCount = (igdbId: string) => {
   const queryClient = useQueryClient()
 
   const { gameStatus } = useGameStatus(igdbId)
-  const isPlayed = gameStatus?.userGameStatus?.id === 1
+  const statusId = gameStatus?.userGameStatus?.id
+  const isPlayed = statusId === 1
+  const tracksCompletions = statusId !== undefined && statusId !== 5
 
   const queryKey = getGameStatsQueryKey(userId, igdbId)
 
   const { data: completionsData } = useQuery<GameStatsResponse>({
     queryKey: queryKey,
     queryFn: () => api.getGameStats(igdbId),
-    enabled: Boolean(igdbId && userId && isPlayed),
+    enabled: Boolean(igdbId && userId && tracksCompletions),
     staleTime: 1000 * 60 * 5
   })
 
@@ -41,7 +43,7 @@ export const usePlayedCount = (igdbId: string) => {
       if (previousData) {
         const newCompletions = Math.max(
           (previousData.playedCount || 0) + incrementValue,
-          1
+          isPlayed ? 1 : 0
         )
         queryClient.setQueryData<GameStatsResponse>(queryKey, {
           ...previousData,

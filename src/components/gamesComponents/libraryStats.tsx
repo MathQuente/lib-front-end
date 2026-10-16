@@ -1,5 +1,8 @@
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
+import { useCompletedAt } from '../../hooks/useCompletedAt'
 import { useGamePlatforms } from '../../hooks/useGamePlatforms'
+import { useHoursPlayed } from '../../hooks/useHoursPlayed'
+import { usePlayedCount } from '../../hooks/usePlayedCount'
 import type { GameCardData } from '../../types/games'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { RatingAverage } from '../ratingAverage'
@@ -24,6 +27,10 @@ export function LibraryStats({
 }) {
   const igdbId = game.igdbId.toString()
   const { platforms, totals, isLoading } = useGamePlatforms(igdbId, true)
+  const { hoursPlayed } = useHoursPlayed(igdbId)
+  const { completions } = usePlayedCount(igdbId)
+  const { completedAt } = useCompletedAt(igdbId)
+  const hasRecord = hoursPlayed > 0 || completions > 0
 
   if (isLoading) {
     return <div className="h-20 rounded-lg bg-dark-bg animate-pulse" />
@@ -34,7 +41,15 @@ export function LibraryStats({
 
   return (
     <div className="overflow-hidden rounded-lg border border-dark-border bg-dark-bg">
-      {platforms.length === 0 ? (
+      {platforms.length === 0 && hasRecord ? (
+        <TotalsStrip
+          hours={hoursPlayed}
+          completions={completions}
+          completedAt={completions > 0 ? completedAt : null}
+          hideEmptyHours={!isPlayed}
+          className=""
+        />
+      ) : platforms.length === 0 ? (
         <p className="px-3 py-2 text-sm text-gray-400">
           Nenhuma plataforma registrada ainda.
         </p>

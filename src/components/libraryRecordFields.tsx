@@ -66,7 +66,8 @@ export function LibraryRecordFields({
 
   const isDirty = hoursDirty || dateDirty
   const isBusy = hoursLoading || dateLoading
-  const count = Math.max(completions ?? 0, 1)
+  const minimum = isPlayed ? 1 : 0
+  const count = Math.max(completions ?? 0, minimum)
 
   async function handleSave() {
     if (hoursDirty) await updateHoursPlayed(parsedHours)
@@ -97,52 +98,50 @@ export function LibraryRecordFields({
         </div>
       </div>
 
-      {isPlayed && (
-        <>
-          <div className="flex items-center justify-between gap-3 min-h-11">
-            <span className="text-xs text-gray-400">Vezes zerado</span>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => updatePlayedCount(-1)}
-                disabled={count <= 1}
-                className={stepButtonClass}
-                title="Diminuir vezes zerado"
-                aria-label="Diminuir vezes zerado"
-              >
-                <Minus className="size-4" />
-              </button>
-              <span className="w-6 text-center text-sm font-medium text-white tabular-nums">
-                {count}
-              </span>
-              <button
-                type="button"
-                onClick={() => updatePlayedCount(1)}
-                className={stepButtonClass}
-                title="Aumentar vezes zerado"
-                aria-label="Aumentar vezes zerado"
-              >
-                <Plus className="size-4" />
-              </button>
-            </div>
-          </div>
+      <div className="flex items-center justify-between gap-3 min-h-11">
+        <span className="text-xs text-gray-400">Vezes zerado</span>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => updatePlayedCount(-1)}
+            disabled={count <= minimum}
+            className={stepButtonClass}
+            title="Diminuir vezes zerado"
+            aria-label="Diminuir vezes zerado"
+          >
+            <Minus className="size-4" />
+          </button>
+          <span className="w-6 text-center text-sm font-medium text-white tabular-nums">
+            {count}
+          </span>
+          <button
+            type="button"
+            onClick={() => updatePlayedCount(1)}
+            className={stepButtonClass}
+            title="Aumentar vezes zerado"
+            aria-label="Aumentar vezes zerado"
+          >
+            <Plus className="size-4" />
+          </button>
+        </div>
+      </div>
 
-          <div className="flex items-center justify-between gap-3 min-h-11">
-            <label htmlFor={dateId} className="text-xs text-gray-400">
-              Finalizado em
-            </label>
-            <input
-              id={dateId}
-              type="date"
-              max={today()}
-              value={date}
-              onChange={e => setDate(e.target.value)}
-              disabled={isBusy}
-              aria-invalid={!dateValid}
-              className={`[color-scheme:dark] ${inputClass}`}
-            />
-          </div>
-        </>
+      {isPlayed && (
+        <div className="flex items-center justify-between gap-3 min-h-11">
+          <label htmlFor={dateId} className="text-xs text-gray-400">
+            Finalizado em
+          </label>
+          <input
+            id={dateId}
+            type="date"
+            max={today()}
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            disabled={isBusy}
+            aria-invalid={!dateValid}
+            className={`[color-scheme:dark] ${inputClass}`}
+          />
+        </div>
       )}
 
       {isDirty && (

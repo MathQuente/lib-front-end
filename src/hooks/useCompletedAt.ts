@@ -19,14 +19,15 @@ export const useCompletedAt = (igdbId: string) => {
   const queryClient = useQueryClient()
 
   const { gameStatus } = useGameStatus(igdbId)
-  const isPlayed = gameStatus?.userGameStatus?.id === STATUS.PLAYED
+  const statusId = gameStatus?.userGameStatus?.id
+  const inLibrary = statusId !== undefined && statusId !== STATUS.WISHLIST
 
   const queryKey = getCompletedAtQueryKey(userId, igdbId)
 
   const { data } = useQuery<GameCompletedAtResponse>({
     queryKey,
     queryFn: () => api.getGameCompletedAt(igdbId),
-    enabled: Boolean(igdbId && userId && isPlayed),
+    enabled: Boolean(igdbId && userId && inLibrary),
     staleTime: 1000 * 60 * 5
   })
 
