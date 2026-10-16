@@ -22,5 +22,6 @@ export interface ImportStatusResponse<TResult> {
   progress?: number
   result?: TResult
   error?: string
+  finishedAt?: number
   cooldownUntil?: number
 }

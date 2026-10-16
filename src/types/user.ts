@@ -12,6 +12,7 @@ export interface User {
   gamesAmount: number
   totalHoursPlayed: number
   steamId: string | null
+  steamPersonaName: string | null
   psnOnlineId: string | null
   xboxGamertag: string | null
   followersCount: number

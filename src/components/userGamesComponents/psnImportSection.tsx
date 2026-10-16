@@ -4,8 +4,10 @@ import { PlatformImportSection } from './platformImportSection'
 
 export function PsnImportSection({
   psnOnlineId,
+  onViewLibrary,
 }: {
   psnOnlineId: string | null
+  onViewLibrary?: () => void
 }) {
   const importState = usePsnImport()
 
@@ -20,6 +22,7 @@ export function PsnImportSection({
       verificationHint='Pra confirmar que o perfil é seu, cole este código no "Sobre mim" do seu perfil da PSN, salve e clique em Verificar. Depois de conectar você pode apagá-lo. O código vale por 15 minutos.'
       disconnectedDescription="Conecte seu ID da PSN pra importar os jogos de PS4 e PS5. Seu histórico de jogos e troféus precisa estar visível para todos."
       importState={importState}
+      onViewLibrary={onViewLibrary}
       getResultSections={result => [
         { title: 'Biblioteca', result: result.library },
       ]}

@@ -7,36 +7,83 @@ import type { PlatformImport } from '../../hooks/usePlatformImport'
 import { Button } from '../button'
 import { ConfirmDialog } from '../confirmDialog'
 import {
-  ImportResultModal,
+  ImportResultSummary,
   type ImportResultSection,
-} from '../importResultModal'
+} from '../importResultSummary'
+import { fieldFocus } from '../../styles/focus'
 
 const POLLING_STATUSES = ['waiting', 'active', 'delayed']
 
 const MIN_IMPORTING_VISIBLE_MS = 1500
 
+const CONNECTED_DESCRIPTION =
+  'Importe para trazer seus jogos. Os que já estão na biblioteca continuam lá.'
+
+function StatusPill({
+  connectedId,
+  connectedName,
+  hideConnectedId,
+  isImporting,
+}: {
+  connectedId: string | null
+  connectedName: string | null
+  hideConnectedId: boolean
+  isImporting: boolean
+}) {
+  const dotClass = isImporting
+    ? 'bg-primary-light animate-pulse motion-reduce:animate-none'
+    : connectedId
+      ? 'bg-green-400'
+      : 'bg-gray-500'
+  const text = isImporting
+    ? 'Importando'
+    : connectedId
+      ? connectedName
+        ? `Conectada como ${connectedName}`
+        : hideConnectedId
+          ? 'Conectada'
+          : `Conectada como ${connectedId}`
+      : 'Não conectada'
+
+  return (
+    <span className="flex min-w-0 items-center gap-1.5 text-xs text-gray-300">
+      <span
+        className={`size-2 shrink-0 rounded-full ${dotClass}`}
+        aria-hidden="true"
+      />
+      <span className="break-words">{text}</span>
+    </span>
+  )
+}
+
 interface PlatformImportSectionProps<TResult> {
   icon: ReactNode
   label: string
   connectedId: string | null
+  connectedName?: string | null
+  hideConnectedId?: boolean
   inputPlaceholder?: string
   connectLabel?: string
   verificationHint?: string
   disconnectedDescription: string
   importState: PlatformImport<TResult>
   getResultSections: (result: TResult) => ImportResultSection[]
+  onViewLibrary?: () => void
 }
 
 export function PlatformImportSection<TResult>({
   icon,
   label,
   connectedId,
+  connectedName = null,
+  hideConnectedId = false,
   inputPlaceholder,
   connectLabel,
   verificationHint,
   disconnectedDescription,
   importState,
   getResultSections,
+  onViewLibrary,
 }: PlatformImportSectionProps<TResult>) {
   const {
     status,
@@ -55,9 +102,11 @@ export function PlatformImportSection<TResult>({
 
   const [profileInput, setProfileInput] = useState('')
   const [verificationCode, setVerificationCode] = useState<string | null>(null)
-  const [resultModalOpen, setResultModalOpen] = useState(false)
+  const [justFinished, setJustFinished] = useState(false)
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false)
   const previousStatus = useRef<string | undefined>(undefined)
+  const progressRef = useRef<HTMLDivElement>(null)
+  const resultRef = useRef<HTMLOutputElement>(null)
   const isFirstStatusLoad = useRef(true)
 
   const [visuallyImporting, setVisuallyImporting] = useState(false)
@@ -105,7 +154,7 @@ export function PlatformImportSection<TResult>({
   function showImportResult() {
     setVisuallyImporting(false)
     importStartedAtRef.current = null
-    setResultModalOpen(true)
+    setJustFinished(true)
     refreshAfterImport()
   }
 
@@ -124,12 +173,21 @@ export function PlatformImportSection<TResult>({
     return () => clearInterval(interval)
   }, [isImporting])
 
+  useEffect(() => {
+    const focusLost =
+      !document.activeElement || document.activeElement === document.body
+    if (!focusLost) return
+    if (isImporting) progressRef.current?.focus()
+    else if (justFinished) resultRef.current?.focus()
+  }, [isImporting, justFinished])
+
   const slowImportNotice = getSlowImportNotice(elapsedSeconds)
   const progress =
     status?.status === 'active' ? (status.progress ?? 0) : undefined
 
   async function handleStartImport() {
     setVisuallyImporting(true)
+    setJustFinished(false)
     importStartedAtRef.current = Date.now()
     try {
       await startImport()
@@ -168,10 +226,6 @@ export function PlatformImportSection<TResult>({
     : null
 
   async function handleConnect() {
-    if (connectedId) {
-      setDisconnectDialogOpen(true)
-      return
-    }
     if (redirectsAway) {
       await connect()
       return
@@ -196,6 +250,9 @@ export function PlatformImportSection<TResult>({
     setVerificationCode(null)
   }
 
+  const showViewLibrary =
+    justFinished && status?.status === 'completed' && Boolean(onViewLibrary)
+
   const needsInput = !connectedId && !redirectsAway
   const isAwaitingVerification = !connectedId && verificationCode !== null
   const isConnectBusy = isConnecting || isRequestingVerification
@@ -207,53 +264,59 @@ export function PlatformImportSection<TResult>({
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-dark-border bg-dark-bg-darker px-3.5 py-3">
-      <div>
-        <p className="text-sm text-white flex items-center gap-1.5">
-          {icon}
-          {label}
-        </p>
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <p className="text-sm text-white flex items-center gap-1.5">
+            {icon}
+            {label}
+          </p>
+          <StatusPill
+            connectedId={connectedId}
+            connectedName={connectedName}
+            hideConnectedId={hideConnectedId}
+            isImporting={isImporting}
+          />
+        </div>
         <p className="text-xs text-gray-400">
-          {connectedId
-            ? `Sua conta ${label} está conectada.`
-            : disconnectedDescription}
+          {connectedId ? CONNECTED_DESCRIPTION : disconnectedDescription}
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          {(connectedId || needsInput) && (
-            <input
-              type="text"
-              placeholder={
-                connectedId ? `Conectado (${connectedId})` : inputPlaceholder
-              }
-              value={profileInput}
-              onChange={e => setProfileInput(e.target.value)}
-              maxLength={64}
-              disabled={
-                isConnectBusy || !!connectedId || isAwaitingVerification
-              }
-              className="bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border focus:border-primary outline-none ring-2 ring-offset-1 ring-offset-dark-bg ring-transparent focus-visible:ring-primary-light transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-          )}
-          {!isAwaitingVerification && (
-            <Button
-              type="button"
-              variant={connectedId ? 'cancel' : 'primary'}
-              size="sm"
-              className="px-3 py-1.5 font-medium shrink-0"
-              onClick={handleConnect}
-              disabled={(needsInput && !profileInput.trim()) || isConnectBusy}
-              loading={isConnectBusy}
-            >
-              {connectedId
-                ? 'Desconectar'
-                : redirectsAway
+        {!connectedId && (
+          <div className="flex items-center gap-2">
+            {needsInput && (
+              <input
+                type="text"
+                placeholder={inputPlaceholder}
+                value={profileInput}
+                onChange={e => setProfileInput(e.target.value)}
+                maxLength={64}
+                disabled={isConnectBusy || isAwaitingVerification}
+                className={`bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border ${fieldFocus} transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed`}
+              />
+            )}
+            {!isAwaitingVerification && (
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                className={
+                  needsInput
+                    ? 'px-3 py-1.5 text-sm shrink-0'
+                    : 'text-sm max-[480px]:w-full'
+                }
+                onClick={handleConnect}
+                disabled={(needsInput && !profileInput.trim()) || isConnectBusy}
+                loading={isConnectBusy}
+              >
+                {redirectsAway
                   ? (connectLabel ?? `Entrar com a ${label}`)
                   : 'Conectar'}
-            </Button>
-          )}
-        </div>
+              </Button>
+            )}
+          </div>
+        )}
 
         {isAwaitingVerification && (
           <div className="flex flex-col gap-2 rounded-lg border border-dark-border bg-dark-bg px-3 py-2.5">
@@ -287,25 +350,87 @@ export function PlatformImportSection<TResult>({
           </div>
         )}
 
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="primary"
-            onClick={handleStartImport}
-            disabled={!connectedId || isImporting || isStarting || isOnCooldown}
-            loading={isStarting}
-          >
-            {isImporting ? 'Importando...' : `Importar da ${label}`}
-          </Button>
-          {!isImporting && isOnCooldown && (
-            <span className="text-xs text-gray-400">
-              Você pode importar novamente em {cooldownLabel}.
-            </span>
+        <output
+          ref={resultRef}
+          tabIndex={-1}
+          className="flex flex-col gap-2 outline-none empty:hidden"
+        >
+          {connectedId &&
+            !isImporting &&
+            status?.status === 'completed' &&
+            status.result && (
+              <ImportResultSummary
+                platformLabel={label}
+                sections={getResultSections(status.result)}
+                variant={justFinished ? 'fresh' : 'last'}
+                finishedAt={status.finishedAt}
+              />
+            )}
+          {connectedId && !isImporting && status?.status === 'failed' && (
+            <div className="flex flex-col gap-1 rounded-md border border-dark-border border-l-red-400 border-l-4 bg-dark-bg-light px-3 py-2">
+              <p className="text-sm font-bold text-white">
+                Não foi possível importar da {label}
+              </p>
+              <p className="text-xs text-gray-300">
+                {status.error ??
+                  'Erro desconhecido ao importar sua biblioteca.'}
+              </p>
+            </div>
           )}
-        </div>
+        </output>
+
+        {connectedId && !isImporting && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {showViewLibrary ? (
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                className="text-sm max-[480px]:w-full"
+                onClick={onViewLibrary}
+              >
+                Ver na biblioteca
+              </Button>
+            ) : (
+              !isOnCooldown && (
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  className="text-sm max-[480px]:w-full"
+                  onClick={handleStartImport}
+                  loading={isStarting}
+                >
+                  {status?.status === 'failed'
+                    ? 'Tentar de novo'
+                    : `Importar da ${label}`}
+                </Button>
+              )
+            )}
+            {isOnCooldown && (
+              <p className="text-xs text-gray-400">
+                Você pode importar de novo em {cooldownLabel}.
+              </p>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              className="text-sm hover:text-white max-[480px]:w-full"
+              onClick={() => setDisconnectDialogOpen(true)}
+            >
+              Desconectar
+            </Button>
+          </div>
+        )}
 
         {isImporting && (
-          <div className="flex flex-col gap-1" aria-live="polite">
+          <div
+            ref={progressRef}
+            tabIndex={-1}
+            className="flex flex-col gap-1 outline-none"
+            aria-live="polite"
+          >
             {progress !== undefined && (
               <div className="h-1.5 w-full rounded-full bg-dark-bg overflow-hidden">
                 <div
@@ -330,15 +455,6 @@ export function PlatformImportSection<TResult>({
           </div>
         )}
       </div>
-
-      <ImportResultModal
-        open={resultModalOpen}
-        onOpenChange={setResultModalOpen}
-        platformLabel={label}
-        status={status?.status}
-        error={status?.error}
-        sections={status?.result ? getResultSections(status.result) : []}
-      />
 
       <ConfirmDialog
         open={disconnectDialogOpen}
