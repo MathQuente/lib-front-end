@@ -53,7 +53,14 @@ export interface SearchBarProps {
   onClose?: () => void
 }
 
-export interface EmptyStateProps {
-  title?: string
+export interface StatusMessageProps {
+  variant: 'not-found' | 'error' | 'empty'
+  icon?: 'not-found' | 'error' | 'offline' | 'empty'
+  title: string
   description: ReactNode
+  primaryAction?: ReactNode
+  secondaryAction?: ReactNode
+  showSearch?: boolean
+  shortcuts?: { to: string; label: string }[]
+  documentTitle?: string
 }

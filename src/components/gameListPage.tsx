@@ -1,10 +1,12 @@
 import { type ChangeEvent, useEffect, useRef } from 'react'
+import { toast } from 'react-toastify'
 import { GamesGrid } from './gamesComponents/gamesGrid'
 import { Pagination } from './pagination'
 import { SortControls } from './sorting'
 import type { GameStatusEnum } from '../types/games'
 import type { GameListProps, SortField, SortOrder } from '../interfaces/games'
 import { pushListState } from '../utils/listHistory'
+import { parsePage } from '../utils/parsePage'
 
 const SORT_FIELDS: SortField[] = [
   'name',
@@ -39,6 +41,22 @@ export function GameListPage({
   const safePage =
     typeof page === 'number' && !Number.isNaN(page) && page > 0 ? page : 1
   const totalPages = Math.ceil(safeTotal / pageSize) || 1
+  // Lista vazia com total maior que zero não é um vazio de verdade: é uma página além do total
+  // ou a resposta anterior mantida (keepPreviousData) enquanto a página certa carrega.
+  // Nesses casos mostra o esqueleto, e não o estado vazio.
+  const isAwaitingPage = gamesArray.length === 0 && safeTotal > 0
+
+  useEffect(() => {
+    if (safeTotal > 0 && safePage > totalPages) {
+      const url = new URL(window.location.toString())
+      url.searchParams.set('page', String(totalPages))
+      window.history.replaceState(window.history.state, '', url)
+      setPage(totalPages)
+      toast.info(`A página ${safePage} não existe. Mostrando a última.`, {
+        toastId: 'page-out-of-range'
+      })
+    }
+  }, [safeTotal, safePage, totalPages, setPage])
 
   const fallbackSort = useRef(
     defaultSort ?? { field: sortField, order: sortOrder }
@@ -51,11 +69,10 @@ export function GameListPage({
 
     function syncFromUrl() {
       const params = new URL(window.location.toString()).searchParams
-      const urlPage = Number(params.get('page'))
       const urlField = params.get('sortField') as SortField | null
       const urlOrder = params.get('sortOrder')
 
-      setPage(urlPage > 0 ? urlPage : 1)
+      setPage(parsePage(params.get('page')))
       setSortField(
         urlField && SORT_FIELDS.includes(urlField)
           ? urlField
@@ -118,7 +135,21 @@ export function GameListPage({
         totalGames={safeTotal}
       />
 
-      <GamesGrid games={gamesArray} emptyState={emptyState} />
+      {isAwaitingPage ? (
+        <div
+          className="grid grid-cols-4 sm:grid-cols-6 2xl:grid-cols-8 p-2 gap-x-1 sm:gap-x-2 gap-y-4 animate-pulse"
+          aria-hidden="true"
+        >
+          {Array.from({ length: 18 }, (_, i) => `sk${i}`).map(k => (
+            <div
+              key={k}
+              className="aspect-[7/10] w-full rounded-lg bg-dark-bg-lighter"
+            />
+          ))}
+        </div>
+      ) : (
+        <GamesGrid games={gamesArray} emptyState={emptyState} />
+      )}
 
       <Pagination
         currentPage={safePage}

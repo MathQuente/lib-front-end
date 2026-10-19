@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { api } from '../hooks/useApi'
@@ -10,13 +11,15 @@ import { ProfileHeader } from '../components/libraryComponents/profileHeader'
 import { FollowActionButton } from '../components/followActionButton'
 import { UserListModal } from '../components/userListModal'
 import { BackButton } from '../components/backButton'
+import { StatusMessage } from '../components/statusMessage'
+import { Button } from '../components/button'
 
 export function UserProfilePage() {
   const { userId } = useParams()
   const [followersModalOpen, setFollowersModalOpen] = useState(false)
   const [followingModalOpen, setFollowingModalOpen] = useState(false)
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['publicUserProfile', userId],
     queryFn: () => api.getUserProfile(userId ?? null),
     enabled: !!userId,
@@ -26,10 +29,10 @@ export function UserProfilePage() {
     games,
     totalPerStatus,
     isLoading: isLoadingGames,
-  } = usePublicUserGames(userId, true)
+  } = usePublicUserGames(userId, !!data)
   const hasGames = totalPerStatus.some(t => t.totalGames > 0)
-  const { followers } = useFollowers(userId)
-  const { following } = useFollowing(userId)
+  const { followers } = useFollowers(data ? userId : undefined)
+  const { following } = useFollowing(data ? userId : undefined)
 
   if (isLoading) {
     return (
@@ -40,13 +43,38 @@ export function UserProfilePage() {
     )
   }
 
+  // O backend responde 400 para id fora do formato de UUID e 404 para um UUID que não existe
+  const status = isAxiosError(error) ? error.response?.status : undefined
+  if (isError && (status === 400 || status === 404)) {
+    return (
+      <>
+        <BackButton className="mt-4" />
+        <StatusMessage
+          variant="not-found"
+          icon="not-found"
+          title="Perfil não encontrado"
+          description="Essa pessoa não existe ou mudou de endereço. Tente buscar pelo nome."
+          showSearch
+        />
+      </>
+    )
+  }
+
   if (isError || !data) {
     return (
       <>
         <BackButton className="mt-4" />
-        <div className="w-full rounded-lg border border-dark-border bg-dark-bg-light px-6 py-4 mt-2">
-          <p className="text-red-400 text-sm">Erro ao carregar perfil.</p>
-        </div>
+        <StatusMessage
+          variant="error"
+          icon="offline"
+          title="Não foi possível abrir o perfil"
+          description="Tente de novo em instantes."
+          primaryAction={
+            <Button variant="primary" size="md" onClick={() => refetch()}>
+              Tentar novamente
+            </Button>
+          }
+        />
       </>
     )
   }

@@ -1,10 +1,13 @@
 import { ArrowLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
 import { listStepsInHistory } from '../utils/listHistory'
 
 export function BackButton({ className }: { className?: string }) {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  if (location.key === 'default' && listStepsInHistory() === 0) return null
 
   return (
     <button

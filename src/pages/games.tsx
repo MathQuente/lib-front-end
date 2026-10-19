@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { parsePage } from '../utils/parsePage'
 import { GameListPage } from '../components/gameListPage'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
@@ -6,10 +7,7 @@ import type { SortField, SortOrder } from '../interfaces/games'
 export function Games() {
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
-    if (url.searchParams.has('page')) {
-      return Number(url.searchParams.get('page'))
-    }
-    return 1
+    return parsePage(url.searchParams.get('page'))
   })
 
   const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
@@ -49,6 +47,7 @@ export function Games() {
 
   return (
     <>
+      <h1 className="sr-only">Jogos</h1>
       <GameListPage
         games={GamesResponse}
         page={page}

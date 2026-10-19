@@ -50,6 +50,7 @@ export default {
       textColor: {
         primary: '#7A38CA',
         'primary-light': '#9D52E8',
+        'primary-link': '#B88AF2',
       },
       backgroundColor: {
         primary: '#7A38CA',

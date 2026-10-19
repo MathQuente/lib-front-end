@@ -1,5 +1,6 @@
+import { parsePage } from '../utils/parsePage'
 import { GameListPage } from '../components/gameListPage'
-import { EmptyState } from '../components/emptyState'
+import { StatusMessage } from '../components/statusMessage'
 import { BackButton } from '../components/backButton'
 import { useState } from 'react'
 import { useGames } from '../hooks/useGames'
@@ -9,11 +10,7 @@ export function ComingSoonPage() {
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
-    if (url.searchParams.has('page')) {
-      return Number(url.searchParams.get('page'))
-    }
-
-    return 1
+    return parsePage(url.searchParams.get('page'))
   })
 
   const [search] = useState(() => {
@@ -59,6 +56,7 @@ export function ComingSoonPage() {
   return (
     <>
       <BackButton className="mt-4" />
+      <h1 className="sr-only">Em breve</h1>
       <GameListPage
         games={ComingSoon}
         page={page}
@@ -70,7 +68,8 @@ export function ComingSoonPage() {
         setSortField={setSortField}
         defaultSort={{ field: 'name', order: 'asc' }}
         emptyState={
-          <EmptyState
+          <StatusMessage
+            variant="empty"
             title="Nenhum jogo em breve"
             description="Nenhum jogo programado para lançamento no momento."
           />

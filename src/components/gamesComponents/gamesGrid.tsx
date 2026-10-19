@@ -1,5 +1,5 @@
 import { GameCard } from '../gamesComponents/gameCard'
-import { EmptyState } from '../emptyState'
+import { StatusMessage } from '../statusMessage'
 import type { GamesGridProps } from '../../interfaces/games'
 
 export function GamesGrid({
@@ -11,7 +11,11 @@ export function GamesGrid({
     return (
       <>
         {emptyState ?? (
-          <EmptyState description="Nenhum jogo disponível no momento." />
+          <StatusMessage
+            variant="empty"
+            title="Nenhum jogo por aqui"
+            description="Nenhum jogo disponível no momento."
+          />
         )}
       </>
     )

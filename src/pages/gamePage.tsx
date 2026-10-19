@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { BackButton } from '../components/backButton'
+import { Button } from '../components/button'
 import { CategoriesDiv } from '../components/categoriesDiv'
 import { CommunityReviewsSection } from '../components/communityReviewsSection'
 import { Details } from '../components/details'
@@ -9,6 +10,7 @@ import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { GameMediaGallery } from '../components/gameMediaGallery'
 import { GameForm } from '../components/gamesComponents/gameForm'
+import { StatusLink, StatusMessage } from '../components/statusMessage'
 import { PlatformDiv } from '../components/platformDiv'
 import { PlayersInfo } from '../components/playersInfo'
 import { RatingAverage } from '../components/ratingAverage'
@@ -25,8 +27,9 @@ export function GamePage() {
   const { user } = useAuth()
   const { igdbId } = useParams<{ igdbId: string }>()
   const { hash } = useLocation()
-  const { GameResponse, SimilarGames } = useGame(igdbId)
-  const isLoaded = Boolean(GameResponse && SimilarGames)
+  const { GameResponse, SimilarGames, isValidId, isNotFound, isLoadFailed, refetch } =
+    useGame(igdbId)
+  const isLoaded = Boolean(GameResponse)
 
   useEffect(() => {
     if (hash !== '#biblioteca' || !isLoaded) return
@@ -35,7 +38,40 @@ export function GamePage() {
     })
   }, [hash, isLoaded])
 
-  if (!GameResponse || !SimilarGames) {
+  if (isLoadFailed) {
+    return (
+      <>
+        <BackButton className="mt-4" />
+        <StatusMessage
+          variant="error"
+          icon="offline"
+          title="Não foi possível carregar o jogo"
+          description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
+          primaryAction={
+            <Button variant="primary" size="md" onClick={() => refetch()}>
+              Tentar novamente
+            </Button>
+          }
+        />
+      </>
+    )
+  }
+
+  if (!isValidId || isNotFound) {
+    return (
+      <>
+        <BackButton className="mt-4" />
+        <StatusMessage
+          variant="not-found"
+          title="Jogo não encontrado"
+          description="Nenhum jogo tem esse endereço. O link pode estar incompleto ou o jogo saiu do catálogo."
+          primaryAction={<StatusLink to="/games">Ver catálogo</StatusLink>}
+        />
+      </>
+    )
+  }
+
+  if (!GameResponse) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4 w-full animate-pulse">
         <div className="lg:col-span-1">
@@ -212,7 +248,7 @@ export function GamePage() {
 
           <DlcAndOriginalGameArea game={game} relatedGames={relatedGames} />
 
-          <SimilarGamesSlider SimilarGames={SimilarGames} />
+          {SimilarGames && <SimilarGamesSlider SimilarGames={SimilarGames} />}
         </div>
       </div>
     </>

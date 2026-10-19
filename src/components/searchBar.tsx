@@ -64,6 +64,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Buscar"
+          aria-label="Buscar jogos ou pessoas"
         />
         {search && (
           <button

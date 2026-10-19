@@ -4,8 +4,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import { EmailVerificationNotice } from './components/emailVerificationNotice'
 import { Footer } from './components/footer'
 import { SideBar } from './components/sideBar'
+import { useFocusOnRouteChange } from './hooks/useFocusOnRouteChange'
 
 export function Layout() {
+  useFocusOnRouteChange()
+
   return (
     <div className="flex flex-col min-h-screen bg-dark-bg mx-auto w-full max-w-[1920px] overflow-x-clip px-4 sm:px-6 lg:px-10 2xl:px-16 pt-4 pb-8">
       <SideBar />

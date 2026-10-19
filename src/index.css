@@ -9,3 +9,8 @@
   font-display: swap;
   src: url('./assets/fonts/JetBrainsMono-ExtraBold.woff2') format('woff2');
 }
+
+h1[tabindex="-1"]:focus,
+main[tabindex="-1"]:focus {
+  outline: none;
+}

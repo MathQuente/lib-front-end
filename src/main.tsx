@@ -20,11 +20,14 @@ import { ComingSoonPage } from './pages/comingSoonPage'
 import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
+import { NotFoundPage } from './pages/notFoundPage'
+import { RouteError } from './components/routeError'
 import { PostLoginRedirect } from './components/postLoginRedirect'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      refetchOnWindowFocus: query => query.state.status !== 'error',
       retry: (failureCount, error) => {
         const status = isAxiosError(error) ? error.response?.status : undefined
         if (status && status >= 400 && status < 500) return false
@@ -44,64 +47,73 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/auth',
-        element: <Authentication />
-      },
-      {
-        path: '/forgot-password',
-        element: <ForgotPasswordPage />
-      },
-      {
-        path: '/reset-password',
-        element: <ResetPasswordPage />
-      },
-      {
-        path: '/verify-email',
-        element: <VerifyEmailPage />
-      },
-      {
-        path: '/',
-        element: <Home />
-      },
-      {
-        path: '/search/:query',
-        element: <SearchResults />
-      },
-      {
-        path: '/games',
-        element: <Games />
-      },
-      {
-        path: '/games/comingSoon',
-        element: <ComingSoonPage />
-      },
-      {
-        path: '/games/:igdbId',
-        element: <GamePage />
-      },
-      {
-        path: '/games/:igdbId/reviews',
-        element: <GameReviewsPage />
-      },
-      {
-        path: '/users/:userId',
-        element: <UserProfilePage />
-      },
-      {
-        path: '/userLibrary',
-        element: (
-          <RequireAuth>
-            <UserLibrary />
-          </RequireAuth>
-        )
-      },
-      {
-        path: '/userLibrary/:status',
-        element: (
-          <RequireAuth>
-            <UserGamesPageByStatus />
-          </RequireAuth>
-        )
+        errorElement: <RouteError />,
+        children: [
+          {
+            path: '/auth',
+            element: <Authentication />
+          },
+          {
+            path: '/forgot-password',
+            element: <ForgotPasswordPage />
+          },
+          {
+            path: '/reset-password',
+            element: <ResetPasswordPage />
+          },
+          {
+            path: '/verify-email',
+            element: <VerifyEmailPage />
+          },
+          {
+            path: '/',
+            element: <Home />
+          },
+          {
+            path: '/search/:query',
+            element: <SearchResults />
+          },
+          {
+            path: '/games',
+            element: <Games />
+          },
+          {
+            path: '/games/comingSoon',
+            element: <ComingSoonPage />
+          },
+          {
+            path: '/games/:igdbId',
+            element: <GamePage />
+          },
+          {
+            path: '/games/:igdbId/reviews',
+            element: <GameReviewsPage />
+          },
+          {
+            path: '/users/:userId',
+            element: <UserProfilePage />
+          },
+          {
+            path: '/userLibrary',
+            element: (
+              <RequireAuth>
+                <UserLibrary />
+              </RequireAuth>
+            )
+          },
+          {
+            path: '/userLibrary/:status',
+            element: (
+              <RequireAuth>
+                <UserGamesPageByStatus />
+              </RequireAuth>
+            )
+          },
+          {
+            path: '*',
+            element: <NotFoundPage />
+          }
+        ]
       }
     ]
   }

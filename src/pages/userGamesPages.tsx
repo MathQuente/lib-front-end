@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { GameStatusEnum } from '../types/games'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { parsePage } from '../utils/parsePage'
 import { GameListPage } from '../components/gameListPage'
 import { BackButton } from '../components/backButton'
 import { useUserGames } from '../hooks/useUserGames'
@@ -10,7 +12,7 @@ import type { GameListData } from '../types/games'
 const ITEMS_PER_PAGE = 40
 
 export function UserGamesPageByStatus() {
-  const { status } = useParams<{ status: GameStatusEnum }>()
+  const { status } = useParams<{ status: string }>()
   const navigate = useNavigate()
 
   const enumToRouteMap: Record<GameStatusEnum, string> = {
@@ -34,11 +36,7 @@ export function UserGamesPageByStatus() {
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
-    if (url.searchParams.has('page')) {
-      return Number(url.searchParams.get('page'))
-    }
-
-    return 1
+    return parsePage(url.searchParams.get('page'))
   })
 
   const startsOnPlayed =
@@ -111,9 +109,24 @@ export function UserGamesPageByStatus() {
     total: UserGamesResponse?.total ?? 0
   }
 
+  const isInvalidStatus = !status || !(status in routeToEnumMap)
+
+  useEffect(() => {
+    if (isInvalidStatus) {
+      toast.info('Essa seção da biblioteca não existe. Mostrando toda a sua biblioteca.', {
+        toastId: 'invalid-library-status'
+      })
+    }
+  }, [isInvalidStatus])
+
+  if (isInvalidStatus) {
+    return <Navigate to="/userLibrary" replace />
+  }
+
   return (
     <>
       <BackButton className="mt-4" />
+      <h1 className="sr-only">Minha biblioteca</h1>
       {UserGamesResponse && (
         <GameListPage
           games={gamesForList}

@@ -6,7 +6,7 @@ import { useUserSearch } from '../hooks/useUserSearch'
 import dayjs from 'dayjs'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
-import { EmptyState } from '../components/emptyState'
+import { StatusMessage } from '../components/statusMessage'
 import { GameCard } from '../components/gamesComponents/gameCard'
 import { BackButton } from '../components/backButton'
 import { SectionHeading } from '../components/sectionHeading'
@@ -86,13 +86,14 @@ export function SearchResults() {
     )
   } else if (resultForSearchGames.length === 0) {
     gamesSection = (
-      <EmptyState
+      <StatusMessage
+        variant="empty"
         title="Nenhum jogo encontrado"
         description={
           query ? (
             <span>
               Não encontramos resultados para{' '}
-              <span className="text-primary font-medium">"{query}"</span>.
+              <span className="text-primary-link font-medium">"{query}"</span>.
               Tente termos diferentes ou verifique a ortografia.
             </span>
           ) : (
@@ -171,13 +172,14 @@ export function SearchResults() {
       ))}
     </div>
   ) : users.length === 0 ? (
-    <EmptyState
+    <StatusMessage
+      variant="empty"
       title="Nenhuma pessoa encontrada"
       description={
         query ? (
           <span>
             Não encontramos usuários para{' '}
-            <span className="text-primary font-medium">"{query}"</span>.
+            <span className="text-primary-link font-medium">"{query}"</span>.
           </span>
         ) : (
           'Não há usuários pra mostrar no momento.'

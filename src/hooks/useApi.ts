@@ -261,7 +261,7 @@ export const api = {
     return response.data
   },
   getGame: async (igdbId: string | undefined) => {
-    const response = await http.get(`/games/${igdbId}`)
+    const response = await http.get(`/games/${encodeURIComponent(String(igdbId))}`)
     return response.data
   },
   getGameStatus: async (igdbId: string | undefined) => {
