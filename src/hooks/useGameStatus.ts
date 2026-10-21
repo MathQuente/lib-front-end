@@ -18,7 +18,8 @@ export const useGameStatus = (igdbId: string | undefined) => {
 
   const queryKey = getGameStatusQueryKey(userId, igdbId)
 
-  const { data: gameStatusResponse } = useQuery<GameStatusResponse>({
+  const { data: gameStatusResponse, isLoading: isLoadingStatus } =
+    useQuery<GameStatusResponse>({
     queryKey,
     queryFn: () => api.getGameStatus(igdbId),
     enabled: Boolean(userId && igdbId),
@@ -60,6 +61,7 @@ export const useGameStatus = (igdbId: string | undefined) => {
 
   return {
     gameStatus: gameStatusResponse,
+    isLoadingStatus,
     updateGameStatus: (data: { statusIds: number }) =>
       updateGameStatus.mutateAsync(data),
   }

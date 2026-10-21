@@ -38,7 +38,7 @@ export function CommunityReviewsSection({
 
       <div className="flex flex-col gap-3">
         {reviews.map(review => (
-          <CommunityReviewCard key={review.userId} review={review} clamp />
+          <CommunityReviewCard key={review.userId} review={review} expandable />
         ))}
       </div>
     </div>

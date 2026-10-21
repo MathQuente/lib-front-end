@@ -24,7 +24,8 @@ export const usePlayedCount = (igdbId: string) => {
 
   const queryKey = getGameStatsQueryKey(userId, igdbId)
 
-  const { data: completionsData } = useQuery<GameStatsResponse>({
+  const { data: completionsData, isLoading: isFetchingCompletions } =
+    useQuery<GameStatsResponse>({
     queryKey: queryKey,
     queryFn: () => api.getGameStats(igdbId),
     enabled: Boolean(igdbId && userId && tracksCompletions),
@@ -75,6 +76,7 @@ export const usePlayedCount = (igdbId: string) => {
 
   return {
     completions: completionsData?.playedCount ?? 0,
+    isFetchingCompletions,
     updatePlayedCount: (incrementValue: number) =>
       updatePlayedCount.mutateAsync(incrementValue),
     isLoading: updatePlayedCount.isPending

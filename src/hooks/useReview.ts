@@ -31,9 +31,13 @@ export const useReview = (igdbId: string | undefined) => {
 
   const saveReview = useMutation({
     mutationFn: (text: string) => api.upsertReview(igdbId, text),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
-      queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
+    onSuccess: async data => {
+      await queryClient.invalidateQueries({
+        queryKey: ['communityReviews', igdbId]
+      })
+      queryClient.setQueryData<GetReviewResponse>(queryKey, {
+        review: data.review
+      })
       toast.success('Resenha salva com sucesso 👌')
     },
     onError: err => {
@@ -43,9 +47,11 @@ export const useReview = (igdbId: string | undefined) => {
 
   const deleteReview = useMutation({
     mutationFn: () => api.deleteReview(igdbId),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['communityReviews', igdbId]
+      })
       queryClient.setQueryData<GetReviewResponse>(queryKey, { review: null })
-      queryClient.invalidateQueries({ queryKey: ['communityReviews', igdbId] })
       toast.success('Resenha removida com sucesso 👌')
     },
     onError: err => {

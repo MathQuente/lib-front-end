@@ -16,7 +16,7 @@ export function ReviewMarkdown({ text }: { text: string }) {
             href={href}
             target="_blank"
             rel="noreferrer"
-            className={`text-primary hover:underline rounded-sm ${focusRing}`}
+            className={`text-primary-link hover:underline rounded-sm ${focusRing}`}
           >
             {children}
           </a>

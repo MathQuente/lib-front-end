@@ -7,12 +7,13 @@ export const useCommunityReviews = (
   pageIndex: number,
   limit?: number
 ) => {
-  const { data, isLoading, isError, refetch } =
-    useQuery<GetCommunityReviewsResponse>({
-      queryKey: ['communityReviews', igdbId, pageIndex, limit],
-      queryFn: () => api.getCommunityReviews(igdbId, pageIndex, limit),
-      enabled: Boolean(igdbId)
-    })
+  const { data, isLoading, isError, refetch } = useQuery<GetCommunityReviewsResponse>({
+    queryKey: ['communityReviews', igdbId, pageIndex, limit],
+    queryFn: () => api.getCommunityReviews(igdbId, pageIndex, limit),
+    enabled: Boolean(igdbId),
+    placeholderData: (previous, previousQuery) =>
+      previousQuery?.queryKey[1] === igdbId ? previous : undefined
+  })
 
   return {
     reviews: data?.reviews ?? [],

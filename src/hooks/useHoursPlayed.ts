@@ -23,7 +23,8 @@ export const useHoursPlayed = (igdbId: string) => {
 
   const queryKey = getGameHoursQueryKey(userId, igdbId)
 
-  const { data: hoursData } = useQuery<GameHoursResponse>({
+  const { data: hoursData, isLoading: isFetchingHours } =
+    useQuery<GameHoursResponse>({
     queryKey,
     queryFn: () => api.getGameHours(igdbId),
     enabled: Boolean(igdbId && userId && !isWishlist),
@@ -61,6 +62,7 @@ export const useHoursPlayed = (igdbId: string) => {
 
   return {
     hoursPlayed: hoursData?.hoursPlayed ?? 0,
+    isFetchingHours,
     updateHoursPlayed: (hoursPlayed: number) =>
       updateHoursPlayed.mutateAsync(hoursPlayed),
     isLoading: updateHoursPlayed.isPending

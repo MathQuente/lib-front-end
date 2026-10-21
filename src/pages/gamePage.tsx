@@ -30,13 +30,14 @@ export function GamePage() {
   const { GameResponse, SimilarGames, isValidId, isNotFound, isLoadFailed, refetch } =
     useGame(igdbId)
   const isLoaded = Boolean(GameResponse)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (hash !== '#biblioteca' || !isLoaded) return
-    document.getElementById('biblioteca')?.scrollIntoView({
-      behavior: usePrefersReducedMotion() ? 'auto' : 'smooth',
+    if ((hash !== '#biblioteca' && hash !== '#resenha') || !isLoaded) return
+    document.getElementById(hash.slice(1))?.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     })
-  }, [hash, isLoaded])
+  }, [hash, isLoaded, prefersReducedMotion])
 
   if (isLoadFailed) {
     return (
@@ -240,7 +241,11 @@ export function GamePage() {
             </div>
           )}
 
-          {user && <ReviewSection game={game} />}
+          {user && (
+            <div id="resenha" className="scroll-mt-6">
+              <ReviewSection game={game} />
+            </div>
+          )}
 
           <CommunityReviewsSection igdbId={igdbId} />
 

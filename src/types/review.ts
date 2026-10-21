@@ -11,6 +11,8 @@ export interface UpsertReviewResponse {
   review: Review
 }
 
+import type { GameStatusEnum } from './games'
+
 export interface CommunityReview {
   userId: string
   userName: string | null
@@ -18,6 +20,8 @@ export interface CommunityReview {
   rating: number | null
   hoursPlayed: number
   completions: number
+  status?: GameStatusEnum | null
+  endless?: boolean
   text: string
   createdAt: string
 }
