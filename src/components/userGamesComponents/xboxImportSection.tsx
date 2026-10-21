@@ -15,6 +15,7 @@ export function XboxImportSection({
     <PlatformImportSection
       icon={<FaXbox className="size-4 text-gray-300" aria-hidden="true" />}
       label="Xbox"
+      masculine
       connectLabel="Entrar com a Microsoft"
       connectedId={xboxGamertag}
       disconnectedDescription="Entre com a sua conta Microsoft pra confirmar que o perfil é seu e importar os jogos do Xbox. Seu perfil e o histórico de jogos precisam estar públicos."

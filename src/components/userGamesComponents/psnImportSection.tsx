@@ -17,6 +17,7 @@ export function PsnImportSection({
         <FaPlaystation className="size-4 text-gray-300" aria-hidden="true" />
       }
       label="PlayStation"
+      masculine
       connectedId={psnOnlineId}
       inputPlaceholder="ID online da PSN"
       verificationHint='Pra confirmar que o perfil é seu, cole este código no "Sobre mim" do seu perfil da PSN, salve e clique em Verificar. Depois de conectar você pode apagá-lo. O código vale por 15 minutos.'

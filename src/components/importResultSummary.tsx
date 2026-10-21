@@ -12,7 +12,7 @@ export interface ImportResultSection {
 }
 
 interface ImportResultSummaryProps {
-  platformLabel: string
+  platformLabelOf: string
   sections: ImportResultSection[]
   variant: 'fresh' | 'last'
   finishedAt?: number
@@ -46,7 +46,7 @@ function Count({ children }: { children: number }) {
 }
 
 export function ImportResultSummary({
-  platformLabel,
+  platformLabelOf,
   sections,
   variant,
   finishedAt,
@@ -137,7 +137,7 @@ export function ImportResultSummary({
       {missing > 0 && (
         <>
           <p className="text-xs text-gray-400">
-            Betas, testes, ferramentas e itens removidos da {platformLabel}{' '}
+            Betas, testes, ferramentas e itens removidos {platformLabelOf}{' '}
             costumam não ter ficha no catálogo de jogos.
           </p>
           {groups.map(group => (

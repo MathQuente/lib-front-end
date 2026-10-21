@@ -59,6 +59,7 @@ function StatusPill({
 interface PlatformImportSectionProps<TResult> {
   icon: ReactNode
   label: string
+  masculine?: boolean
   connectedId: string | null
   connectedName?: string | null
   hideConnectedId?: boolean
@@ -74,6 +75,7 @@ interface PlatformImportSectionProps<TResult> {
 export function PlatformImportSection<TResult>({
   icon,
   label,
+  masculine = false,
   connectedId,
   connectedName = null,
   hideConnectedId = false,
@@ -85,6 +87,8 @@ export function PlatformImportSection<TResult>({
   getResultSections,
   onViewLibrary,
 }: PlatformImportSectionProps<TResult>) {
+  const article = masculine ? 'o' : 'a'
+  const ofLabel = `${masculine ? 'do' : 'da'} ${label}`
   const {
     status,
     refetchStatus,
@@ -311,7 +315,7 @@ export function PlatformImportSection<TResult>({
                 loading={isConnectBusy}
               >
                 {redirectsAway
-                  ? (connectLabel ?? `Entrar com a ${label}`)
+                  ? (connectLabel ?? `Entrar com ${article} ${label}`)
                   : 'Conectar'}
               </Button>
             )}
@@ -360,7 +364,7 @@ export function PlatformImportSection<TResult>({
             status?.status === 'completed' &&
             status.result && (
               <ImportResultSummary
-                platformLabel={label}
+                platformLabelOf={ofLabel}
                 sections={getResultSections(status.result)}
                 variant={justFinished ? 'fresh' : 'last'}
                 finishedAt={status.finishedAt}
@@ -369,7 +373,7 @@ export function PlatformImportSection<TResult>({
           {connectedId && !isImporting && status?.status === 'failed' && (
             <div className="flex flex-col gap-1 rounded-md border border-dark-border border-l-red-400 border-l-4 bg-dark-bg-light px-3 py-2">
               <p className="text-sm font-bold text-white">
-                Não foi possível importar da {label}
+                Não foi possível importar {ofLabel}
               </p>
               <p className="text-xs text-gray-300">
                 {status.error ??
@@ -403,7 +407,7 @@ export function PlatformImportSection<TResult>({
                 >
                   {status?.status === 'failed'
                     ? 'Tentar de novo'
-                    : `Importar da ${label}`}
+                    : `Importar ${ofLabel}`}
                 </Button>
               )
             )}
