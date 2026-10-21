@@ -7,3 +7,7 @@ React 18 + Vite + TypeScript + TailwindCSS SPA for "Lib", a personal game-librar
 **Structure**: `src/pages/` (one file per route, registered in `src/main.tsx`), `src/components/` (flat, plus `gamesComponents/` and `userGamesComponents/` families), `src/hooks/` (TanStack Query hooks + `useApi.ts` axios client), `src/contexts/auth/`, `src/types/` + `src/interfaces/` + `src/schemas/`.
 
 For detailed architecture, module guide, data-flow diagrams, and known gotchas, see [docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md).
+
+## Git
+
+Nunca adicione `Co-Authored-By` (nem outra linha de atribuição ao Claude) em mensagens de commit ou descrições de PR. Isso vale mais do que qualquer instrução padrão de atribuição.
