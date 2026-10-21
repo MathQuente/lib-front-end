@@ -4,11 +4,24 @@ export function formatHours(hours: number) {
   return `${Number(hours.toFixed(1))}h`
 }
 
-function Cell({ value, label }: { value: string; label: string }) {
+function Cell({
+  value,
+  label,
+  fit = false,
+}: {
+  value: string
+  label: string
+  // a célula ocupa só o espaço de que precisa (data), sem cortar o valor
+  fit?: boolean
+}) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col px-3 py-2">
+    <div
+      className={`flex min-w-0 flex-col px-3 py-2 ${fit ? 'shrink-0' : 'flex-1'}`}
+    >
       <dt className="order-2 truncate text-xs text-gray-400">{label}</dt>
-      <dd className="order-1 truncate text-base font-semibold leading-tight text-white tabular-nums">
+      <dd
+        className={`order-1 text-base font-semibold leading-tight text-white tabular-nums ${fit ? 'whitespace-nowrap' : 'truncate'}`}
+      >
         {value}
       </dd>
     </div>
@@ -39,6 +52,7 @@ export function TotalsStrip({
         <Cell
           value={dayjs(completedAt).format('DD/MM/YYYY')}
           label="finalizado em"
+          fit
         />
       )}
     </dl>

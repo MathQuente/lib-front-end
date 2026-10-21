@@ -116,6 +116,7 @@ export function SideBar() {
                   </NavLink>
                   <NavLink
                     to="/games"
+                    end
                     onClick={closeMobileMenu}
                     className={mobileNavLinkClass}
                   >
@@ -158,6 +159,7 @@ export function SideBar() {
                   </Link>
                   <NavLink
                     to="/games"
+                    end
                     onClick={closeMobileMenu}
                     className={mobileNavLinkClass}
                   >
@@ -186,7 +188,7 @@ export function SideBar() {
             <NavLink to="/userLibrary" className={desktopNavLinkClass}>
               Minha Biblioteca
             </NavLink>
-            <NavLink to="/games" className={desktopNavLinkClass}>
+            <NavLink to="/games" end className={desktopNavLinkClass}>
               Jogos
             </NavLink>
             <button
@@ -215,7 +217,7 @@ export function SideBar() {
             >
               Criar conta
             </Link>
-            <NavLink to="/games" className={desktopNavLinkClass}>
+            <NavLink to="/games" end className={desktopNavLinkClass}>
               Jogos
             </NavLink>
             <SearchBar isMobile={false} />

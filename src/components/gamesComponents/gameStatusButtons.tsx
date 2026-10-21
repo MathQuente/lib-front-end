@@ -153,11 +153,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div
-        className={`grid gap-2 w-full ${
-          buttons.length === 1 ? 'grid-cols-1' : 'grid-cols-4'
-        }`}
-      >
+      <div className="grid gap-2 w-full grid-cols-4">
         {buttons.map(renderStatusButton)}
       </div>
 
