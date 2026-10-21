@@ -21,6 +21,7 @@ export interface GameCardData {
   playedOn?: string[]
   platforms?: string[]
   status?: string
+  endless?: boolean
 }
 
 export interface GameBase extends GameCardData {
@@ -72,6 +73,7 @@ export interface UserGameEntry extends GameCardData {
   completions: number
   hoursPlayed: number
   status: string
+  endless: boolean
 }
 
 export type UserGamesByStatus = Record<GameStatusEnum, UserGameEntry[]>
@@ -119,7 +121,8 @@ export type GameStatus = {
 }
 
 export type GameStatusResponse = {
-  userGameStatus: GameStatus
+  userGameStatus: GameStatus | null
+  endless: boolean
 }
 
 export interface GameResponse {

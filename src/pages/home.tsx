@@ -62,7 +62,9 @@ function LoggedInTop() {
     )
   }
 
-  const playing = gamesByStatus.PLAYING
+  const playing = [...gamesByStatus.PLAYING].sort(
+    (a, b) => Number(a.endless) - Number(b.endless)
+  )
   const backlog = gamesByStatus.BACKLOG
   const nextUpQueue = [...gamesByStatus.PAUSED, ...backlog]
   const playingTotal =

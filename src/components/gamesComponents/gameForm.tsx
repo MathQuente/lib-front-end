@@ -1,9 +1,11 @@
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
+import { endlessControl } from '../../utils/endlessAvailability'
 import { useGamePlatforms } from '../../hooks/useGamePlatforms'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import type { GameFormProps } from '../../interfaces/games'
 import { GamePlatformsSection } from '../gamePlatformsSection'
 import { LibraryRecordFields } from '../libraryRecordFields'
+import { EndlessToggle } from '../endlessToggle'
 import { GameStatusButtons } from './gameStatusButtons'
 
 export function GameForm({ game }: GameFormProps) {
@@ -26,10 +28,19 @@ export function GameForm({ game }: GameFormProps) {
   if (!game) return null
 
   const usesPlatforms = canHavePlatforms && platforms.length > 0
+  const isUpcoming = game.releaseDate ? game.releaseDate * 1000 > Date.now() : false
+  const endless = endlessControl(activeStatus?.id, isUpcoming)
 
   return (
     <div className="flex flex-col gap-3 w-full">
       <GameStatusButtons game={game} />
+
+      {endless.show && (
+        <EndlessToggle
+          igdbId={game.igdbId.toString()}
+          disabledReason={endless.disabledReason}
+        />
+      )}
 
       {canHavePlatforms && (
         <GamePlatformsSection

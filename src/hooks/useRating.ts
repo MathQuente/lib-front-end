@@ -52,7 +52,9 @@ export const useRating = (igdbId: string | undefined) => {
         queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
       })
 
-      if (response?.data?.promotedToPlayed) {
+      if (response?.data?.addedAsPlaying) {
+        toast.success('Jogo adicionado como Jogando')
+      } else if (response?.data?.promotedToPlayed) {
         toast.success('Avaliação salva. Jogo marcado como Jogado.')
       }
     },

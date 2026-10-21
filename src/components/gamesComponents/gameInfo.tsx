@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { Pencil, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
+import { endlessControl } from '../../utils/endlessAvailability'
 import { api } from '../../hooks/useApi'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameStatus } from '../../hooks/useGameStatus'
@@ -13,6 +14,7 @@ import { hiResCover } from '../../utils/hiResCover'
 import { Button } from '../button'
 import { CategoriesDiv } from '../categoriesDiv'
 import { RatingAverage } from '../ratingAverage'
+import { EndlessChip } from './endlessChip'
 import { GameModal } from './gameModal'
 import { GameStatusButtons } from './gameStatusButtons'
 import { LibraryStats } from './libraryStats'
@@ -46,6 +48,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
   const isUpcoming = releaseDate
     ? dayjs.unix(releaseDate).isAfter(dayjs())
     : false
+  const endless = endlessControl(statusId, isUpcoming)
   const genres = details?.game.genres.slice(0, 3) ?? []
   const summary = details?.game.summary ?? game.summary
 
@@ -58,6 +61,13 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
     <p className="text-sm text-gray-300 leading-relaxed line-clamp-4">
       {summary}
     </p>
+  ) : isDetailsLoading ? (
+    <div className="flex flex-col gap-2 py-1 animate-pulse" aria-hidden="true">
+      <div className="h-3.5 w-full rounded bg-dark-bg" />
+      <div className="h-3.5 w-full rounded bg-dark-bg" />
+      <div className="h-3.5 w-full rounded bg-dark-bg" />
+      <div className="h-3.5 w-2/3 rounded bg-dark-bg" />
+    </div>
   ) : null
 
   return (
@@ -88,6 +98,9 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
               {game.name}
             </h2>
           </GameModal.Title>
+          {user && endless.show && (
+            <EndlessChip igdbId={igdbId} disabledReason={endless.disabledReason} />
+          )}
           {inLibrary ? null : isDetailsLoading ? (
             <div className="h-7 w-48 rounded-full bg-dark-bg animate-pulse" />
           ) : (
@@ -111,6 +124,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
               game={game}
               isPlayed={statusId === STATUS.PLAYED}
               statusId={statusId}
+              onSeeDetails={goToDetails}
             />
           </>
         ) : (

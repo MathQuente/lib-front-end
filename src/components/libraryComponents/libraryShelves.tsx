@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import type {
   GameStatusEnum,
   TotalPerStatus,
+  UserGameEntry,
   UserGamesByStatus,
 } from '../../types/games'
 import { type ShelfLink, type ShelfTab, StatusShelf } from './statusShelf'
@@ -13,7 +14,7 @@ const MAX_PER_SHELF = 8
 const EXPLORE: ShelfLink = { to: '/games', label: 'Explorar jogos' }
 
 type ShelfStatus = `${GameStatusEnum}`
-type PlayingTab = 'PLAYING' | 'PAUSED'
+type PlayingTab = 'NOW' | 'ENDLESS' | 'PAUSED'
 
 function gameCount(count: number) {
   return `${count} ${count === 1 ? 'jogo' : 'jogos'}`
@@ -30,7 +31,7 @@ export function LibraryShelves({
   totalPerStatus,
   readOnly = false,
 }: LibraryShelvesProps) {
-  const [playingTab, setPlayingTab] = useState<PlayingTab>('PLAYING')
+  const [playingTab, setPlayingTab] = useState<PlayingTab>('NOW')
 
   const totalOf = (status: ShelfStatus) =>
     totalPerStatus.find(t => t.status === status)?.totalGames ??
@@ -60,13 +61,56 @@ export function LibraryShelves({
 
   const pausedTotal = totalOf('PAUSED')
   const droppedTotal = totalOf('DROPPED')
-  const showingPaused = playingTab === 'PAUSED' && pausedTotal > 0
+
+  const nowGames = games.PLAYING.filter(game => !game.endless)
+  const endlessGames = games.PLAYING.filter(game => game.endless)
+  // No perfil público a lista de cada status vem cortada, então a contagem
+  // por marca só é confiável quando todos os jogos em andamento vieram.
+  const playingComplete = totalOf('PLAYING') <= games.PLAYING.length
+
+  const playingShelves: Record<
+    PlayingTab,
+    { label: string; games: UserGameEntry[]; count?: number; summary: string }
+  > = {
+    NOW: {
+      label: 'Agora',
+      games: nowGames,
+      count: playingComplete ? nowGames.length : undefined,
+      summary: playingComplete
+        ? `${gameCount(nowGames.length)} em andamento`
+        : 'Em andamento',
+    },
+    ENDLESS: {
+      label: 'Sempre jogando',
+      games: endlessGames,
+      count: playingComplete ? endlessGames.length : undefined,
+      summary: playingComplete
+        ? `${gameCount(endlessGames.length)} sem fim`
+        : 'Jogos sem fim',
+    },
+    PAUSED: {
+      label: 'Pausados',
+      games: games.PAUSED,
+      count: pausedTotal,
+      summary: `${gameCount(pausedTotal)} para retomar`,
+    },
+  }
+  const availableTabs = (['NOW', 'ENDLESS', 'PAUSED'] as const).filter(key =>
+    key === 'PAUSED'
+      ? pausedTotal > 0
+      : playingShelves[key].games.length > 0
+  )
+  const activeTab: PlayingTab = availableTabs.includes(playingTab)
+    ? playingTab
+    : (availableTabs[0] ?? 'NOW')
+  const activeShelf = playingShelves[activeTab]
   const playingTabs: ShelfTab[] | undefined =
-    pausedTotal > 0
-      ? [
-          { key: 'PLAYING', label: 'Agora', count: totalOf('PLAYING') },
-          { key: 'PAUSED', label: 'Pausados', count: pausedTotal },
-        ]
+    availableTabs.length > 1
+      ? availableTabs.map(key => ({
+          key,
+          label: playingShelves[key].label,
+          count: playingShelves[key].count,
+        }))
       : undefined
 
   return (
@@ -88,24 +132,17 @@ export function LibraryShelves({
       <StatusShelf
         status="PLAYING"
         title="Jogando"
-        games={(showingPaused ? games.PAUSED : games.PLAYING).slice(
-          0,
-          MAX_PER_SHELF
-        )}
-        summary={
-          showingPaused
-            ? `${gameCount(pausedTotal)} para retomar`
-            : `${gameCount(totalOf('PLAYING'))} em andamento`
-        }
+        games={activeShelf.games.slice(0, MAX_PER_SHELF)}
+        summary={activeShelf.summary}
         emptyText="Nenhum jogo em andamento."
         emptyLink={readOnly ? undefined : playingEmptyLink}
         allLink={
-          showingPaused
+          activeTab === 'PAUSED'
             ? allLink('PAUSED', 'pausedGames')
             : allLink('PLAYING', 'playingGames')
         }
         tabs={playingTabs}
-        activeTab={showingPaused ? 'PAUSED' : 'PLAYING'}
+        activeTab={activeTab}
         onTabChange={key => setPlayingTab(key as PlayingTab)}
       />
       <StatusShelf

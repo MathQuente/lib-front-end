@@ -284,6 +284,14 @@ export const api = {
     )
     return response
   },
+  setEndless: async (igdbId: string | undefined, endless: boolean) => {
+    const response = await http.put<{ igdbId: number; endless: boolean }>(
+      `/users/endless/${igdbId}`,
+      { endless },
+      {}
+    )
+    return response.data
+  },
   removeGame: async (igdbId: string | undefined) => {
     const response = await http.delete(`/users/games/${igdbId}`, {})
     return response

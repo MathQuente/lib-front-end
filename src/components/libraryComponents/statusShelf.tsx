@@ -17,7 +17,7 @@ export interface ShelfLink {
 export interface ShelfTab {
   key: string
   label: string
-  count: number
+  count?: number
 }
 
 const tabClass =
@@ -99,8 +99,13 @@ export function StatusShelf({
                     : 'border-dark-border text-gray-400 hover:text-white'
                 }`}
               >
-                {tab.label}{' '}
-                <span className="tabular-nums opacity-70">{tab.count}</span>
+                {tab.label}
+                {tab.count !== undefined && (
+                  <>
+                    {' '}
+                    <span className="tabular-nums opacity-70">{tab.count}</span>
+                  </>
+                )}
               </button>
             )
           })}

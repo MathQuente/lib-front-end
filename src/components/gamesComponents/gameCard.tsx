@@ -2,6 +2,7 @@ import {
   CircleX,
   Gamepad2,
   Gift,
+  Infinity as InfinityIcon,
   Library,
   Pause,
   Play,
@@ -128,6 +129,7 @@ export function GameCard({
       : null
 
   const showRating = size !== 'small' && game?.rating != null
+  const showEndless = size !== 'small' && game?.endless === true
   const completions = game?.completions ?? 0
   const showReplayBadge =
     size !== 'small' &&
@@ -197,18 +199,34 @@ export function GameCard({
         </span>
       )}
 
-      {showRating && (
-        <span
-          className={`absolute bottom-1.5 left-1.5 z-10 ${badgeClass}`}
-          title="Sua nota"
-          aria-label={`Sua nota: ${game?.rating}`}
-        >
-          <Star
-            className={`size-2 sm:size-2.5 fill-current ${accentColor}`}
-            aria-hidden="true"
-          />
-          <span aria-hidden="true">{game?.rating}</span>
-        </span>
+      {(showRating || showEndless) && (
+        <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1">
+          {showRating && (
+            <span
+              className={badgeClass}
+              title="Sua nota"
+              aria-label={`Sua nota: ${game?.rating}`}
+            >
+              <Star
+                className={`size-2 sm:size-2.5 fill-current ${accentColor}`}
+                aria-hidden="true"
+              />
+              <span aria-hidden="true">{game?.rating}</span>
+            </span>
+          )}
+          {showEndless && (
+            <span
+              className="inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+              title="Infinito"
+              aria-label="Infinito"
+            >
+              <InfinityIcon
+                className="size-2 sm:size-2.5 text-primary-light"
+                aria-hidden="true"
+              />
+            </span>
+          )}
+        </div>
       )}
 
       {visiblePlatforms.length > 0 && (

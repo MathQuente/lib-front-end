@@ -5,6 +5,7 @@ export interface RatingResponse {
 export interface CreateRatingResponse {
   rating: number
   promotedToPlayed: boolean
+  addedAsPlaying: boolean
 }
 
 export interface RatingsDistributionResponse {
