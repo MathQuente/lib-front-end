@@ -1,4 +1,5 @@
-import { Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Outlet, useLocation, useNavigationType } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { EmailVerificationNotice } from './components/emailVerificationNotice'
@@ -8,6 +9,14 @@ import { useFocusOnRouteChange } from './hooks/useFocusOnRouteChange'
 
 export function Layout() {
   useFocusOnRouteChange()
+  const { pathname, hash } = useLocation()
+  const navigationType = useNavigationType()
+
+  // O router mantém a rolagem ao trocar de página. Página nova começa no topo;
+  // voltar/avançar (POP) e links com âncora (#biblioteca) ficam como estão.
+  useEffect(() => {
+    if (navigationType !== 'POP' && !hash) window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <div className="flex flex-col min-h-screen bg-dark-bg mx-auto w-full max-w-[1920px] overflow-x-clip px-4 sm:px-6 lg:px-10 2xl:px-16 pt-4 pb-8">
