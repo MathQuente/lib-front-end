@@ -113,7 +113,7 @@ export function StatusShelf({
       )}
 
       {!isEmpty && (
-        <ul className="-mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-[repeat(6,minmax(0,12.5rem))] lg:gap-5 lg:max-2xl:[&>li:nth-child(n+7)]:hidden 2xl:grid-cols-[repeat(8,minmax(0,12.5rem))] lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
+        <ul className="-mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-[repeat(6,minmax(0,12.5rem))] lg:gap-5 lg:[&>li:nth-child(n+7)]:hidden xl:[&>li:nth-child(n+7)]:list-item xl:grid-cols-[repeat(8,minmax(0,12.5rem))] lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
           {games.map(game => (
             <li
               key={game.igdbId}
