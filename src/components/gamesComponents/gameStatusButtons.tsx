@@ -7,7 +7,7 @@ import {
   Pause,
   Play,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
 import { useGamePlatforms } from '../../hooks/useGamePlatforms'
@@ -15,6 +15,7 @@ import { useGameStatus } from '../../hooks/useGameStatus'
 import type { GameFormProps } from '../../interfaces/games'
 import type { UserGamePlatformEntry } from '../../types/platform'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
+import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { ConfirmDialog } from '../confirmDialog'
 
 interface StatusButton {
@@ -51,6 +52,15 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const [confirmingRemoval, setConfirmingRemoval] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const completionRef = useRef<HTMLFieldSetElement>(null)
+  const completionHintId = useId()
+  const completionTitleId = useId()
+  // Linha que já ganhou a zerada nesta pergunta: uma nova tentativa não soma de novo.
+  const recordedRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (askingCompletion) completionRef.current?.querySelector('button')?.focus()
+  }, [askingCompletion])
 
   if (!game) return null
 
@@ -78,10 +88,14 @@ export function GameStatusButtons({ game }: GameFormProps) {
     setIsSaving(true)
     try {
       if (hasExistingStatus) {
-        await updateGameStatus({ statusIds: statusId })
+        // Com 2+ plataformas, pergunta antes: mudar o status recarrega a biblioteca
+        // e fecha o modal, e a pergunta sumiria junto.
         if (statusId === STATUS.PLAYED && platforms.length > 1) {
+          recordedRef.current = null
           setAskingCompletion(true)
+          return
         }
+        await updateGameStatus({ statusIds: statusId })
       } else {
         await addGame({ statusIds: statusId })
       }
@@ -106,13 +120,26 @@ export function GameStatusButtons({ game }: GameFormProps) {
     { statusId: STATUS.WISHLIST, icon: Gift, label: 'Desejos' },
   ]
 
-  async function markCompletedOn(entry: UserGamePlatformEntry) {
+  async function applyPlayed(entry: UserGamePlatformEntry | null) {
+    setIsSaving(true)
     try {
-      await updatePlatform(entry.platform, {
-        completions: entry.completions + 1,
-      })
+      if (entry && recordedRef.current === null) {
+        await updatePlatform(entry.platform, entry.console, {
+          completions: entry.completions + 1,
+        })
+        recordedRef.current = entryKey(entry)
+      }
+      await updateGameStatus({ statusIds: STATUS.PLAYED })
       setAskingCompletion(false)
-    } catch {}
+    } catch {
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  function cancelCompletion() {
+    recordedRef.current = null
+    setAskingCompletion(false)
   }
 
   const canStop =
@@ -120,6 +147,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
 
   function renderStatusButton({ statusId, icon: Icon, label }: StatusButton) {
     const active = hasStatus(statusId)
+    const choosing = askingCompletion && statusId === STATUS.PLAYED
     return (
       <button
         key={statusId}
@@ -128,19 +156,23 @@ export function GameStatusButtons({ game }: GameFormProps) {
         aria-pressed={active}
         disabled={isSaving}
         className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-60 disabled:cursor-wait group ${
-          active ? 'bg-primary/10' : 'hover:bg-dark-bg'
+          active
+            ? 'bg-primary/10'
+            : choosing
+              ? 'bg-primary/5 ring-1 ring-primary/50'
+              : 'hover:bg-dark-bg'
         }`}
       >
         <Icon
           className={`size-6 transition-colors ${
-            active
+            active || choosing
               ? 'text-primary'
               : 'text-gray-400 group-hover:text-gray-300'
           }`}
         />
         <span
           className={`text-xs text-center transition-colors ${
-            active
+            active || choosing
               ? 'text-primary font-medium'
               : 'text-gray-400 group-hover:text-gray-300'
           }`}
@@ -167,34 +199,57 @@ export function GameStatusButtons({ game }: GameFormProps) {
       )}
 
       {askingCompletion && (
-        <fieldset className="flex flex-col gap-2 px-3 py-2 rounded-lg bg-dark-bg">
-          <legend className="float-left text-xs text-gray-300">
-            Em qual plataforma você zerou?
-          </legend>
-          <div className="flex flex-wrap gap-1.5">
+        <fieldset
+          ref={completionRef}
+          aria-labelledby={completionTitleId}
+          aria-describedby={completionHintId}
+          className="flex min-w-0 flex-col gap-1 rounded-lg border border-dark-border bg-dark-bg px-2.5 py-1.5"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span id={completionTitleId} className="text-xs text-gray-300">
+              Em qual plataforma você zerou?
+            </span>
+            <button
+              type="button"
+              onClick={cancelCompletion}
+              disabled={isSaving}
+              className="relative inline-flex min-h-6 items-center rounded-md px-2 text-xs text-gray-400 transition-colors after:absolute after:-inset-y-2.5 after:inset-x-0 after:content-[''] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+            >
+              Cancelar
+            </button>
+          </div>
+          <p id={completionHintId} className="sr-only">
+            Soma 1 zerada na plataforma escolhida e marca o jogo como Jogado.
+          </p>
+          <div className="flex flex-wrap items-center gap-1.5">
             {platforms.map(entry => {
               const option = getLibraryPlatform(entry.platform)
               if (!option) return null
               const Icon = option.icon
               return (
                 <button
-                  key={entry.platform}
+                  key={entryKey(entry)}
                   type="button"
-                  onClick={() => markCompletedOn(entry)}
-                  disabled={isMutating}
-                  className="min-h-11 flex items-center gap-1 px-3 rounded-full border border-dark-border text-xs text-gray-300 hover:text-white hover:border-primary/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+                  onClick={() => applyPlayed(entry)}
+                  disabled={isMutating || isSaving}
+                  className="relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 border border-dark-border bg-dark-bg-light text-gray-200 hover:border-primary/50 hover:text-white"
                 >
-                  <Icon className="size-3" aria-hidden />
-                  {option.label}
+                  <Icon className="size-3.5 shrink-0" aria-hidden />
+                  <span className="truncate">
+                    {entryDisplayName(entry, option.label)}
+                  </span>
                 </button>
               )
             })}
             <button
               type="button"
-              onClick={() => setAskingCompletion(false)}
-              className="min-h-11 px-3 rounded-full text-xs text-gray-400 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              onClick={() => applyPlayed(null)}
+              aria-label="Só marcar como Jogado"
+              title="Só marcar como Jogado, sem registrar a zerada em uma plataforma"
+              disabled={isMutating || isSaving}
+              className="relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 border border-dashed border-dark-border text-gray-300 hover:border-primary/50 hover:text-white"
             >
-              Pular
+              Só marcar
             </button>
           </div>
         </fieldset>

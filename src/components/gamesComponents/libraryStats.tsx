@@ -9,6 +9,7 @@ import { usePlayedCount } from '../../hooks/usePlayedCount'
 import { useRating } from '../../hooks/useRating'
 import type { GameCardData } from '../../types/games'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
+import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { focusRing } from '../../styles/focus'
 import { RatingAverage } from '../ratingAverage'
 import { formatHours } from '../totalsGrid'
@@ -99,6 +100,10 @@ export function LibraryStats({
   }
 
   const isSingle = platforms.length === 1
+  const uniquePlatforms = platforms.filter(
+    (entry, index) =>
+      platforms.findIndex(other => other.platform === entry.platform) === index
+  )
   const totalsOfPlatforms = totalItems(
     totals?.hoursPlayed ?? 0,
     totals?.completions ?? 0,
@@ -117,6 +122,10 @@ export function LibraryStats({
 
   const singleOption = isSingle ? getLibraryPlatform(platforms[0].platform) : undefined
   const SingleIcon = singleOption?.icon
+  const singleName =
+    singleOption && isSingle
+      ? entryDisplayName(platforms[0], singleOption.label)
+      : ''
 
   return (
     <div className="flex flex-col gap-1">
@@ -139,7 +148,7 @@ export function LibraryStats({
             <span className="inline-flex items-center gap-1.5">
               {SINGLE_PLATFORM_LABEL[statusId ?? STATUS.PLAYED] ?? 'Jogado em'}
               <SingleIcon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
-              <span className="font-medium text-gray-100">{singleOption.label}</span>
+              <span className="font-medium text-gray-100">{singleName}</span>
             </span>
           )}
           {totalsOfPlatforms}
@@ -151,7 +160,7 @@ export function LibraryStats({
           )}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-gray-400">
             <span className="inline-flex items-center gap-1.5">
-              {platforms.map(entry => {
+              {uniquePlatforms.map(entry => {
                 const option = getLibraryPlatform(entry.platform)
                 if (!option) return null
                 const Icon = option.icon
@@ -163,10 +172,17 @@ export function LibraryStats({
                   />
                 )
               })}
-              <span>{platforms.length} plataformas</span>
+              <span>
+                {uniquePlatforms.length === platforms.length
+                  ? `${platforms.length} plataformas`
+                  : `${platforms.length} plataformas e consoles`}
+              </span>
               <span className="sr-only">
                 {platforms
-                  .map(entry => getLibraryPlatform(entry.platform)?.label)
+                  .map(entry => {
+                    const base = getLibraryPlatform(entry.platform)?.label
+                    return base ? entryDisplayName(entry, base) : undefined
+                  })
                   .filter(Boolean)
                   .join(', ')}
               </span>
@@ -200,19 +216,20 @@ export function LibraryStats({
               if (!option) return null
               const Icon = option.icon
               const hours = entry.hoursPlayed ?? 0
-              const label = `${option.label}: ${formatHours(hours)}${
+              const name = entryDisplayName(entry, option.label)
+              const label = `${name}: ${formatHours(hours)}${
                 entry.completions > 1
                   ? `, zerado ${entry.completions} vezes`
                   : ''
               }`
               return (
                 <li
-                  key={entry.platform}
+                  key={entryKey(entry)}
                   aria-label={label}
                   className="flex items-center gap-1.5 whitespace-nowrap"
                 >
                   <Icon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
-                  <span className="text-gray-200">{option.label}</span>
+                  <span className="text-gray-200">{name}</span>
                   <span
                     className={`${valueClass} ${hours > 0 ? 'text-white' : 'text-gray-400'}`}
                   >

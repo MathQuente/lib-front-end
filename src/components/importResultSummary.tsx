@@ -134,6 +134,13 @@ export function ImportResultSummary({
   const details = (
     <div id={detailId} className="flex flex-col gap-3 pt-1">
       {variant === 'last' && supportLine}
+      {skipped > 0 && (
+        <p className="text-xs text-gray-400">
+          Se algum jogo seu tem mais de um console da mesma plataforma, a
+          importação não o atualiza e ele entra nessa contagem. Ajuste as horas
+          direto no jogo.
+        </p>
+      )}
       {missing > 0 && (
         <>
           <p className="text-xs text-gray-400">

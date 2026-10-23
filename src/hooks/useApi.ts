@@ -16,6 +16,7 @@ import type {
 } from '../types/platform'
 import type {
   ConnectPsnResponse,
+  PlatformConsole,
   PsnImportStatusResponse,
   PsnVerificationResponse,
 } from '../types/psn'
@@ -338,9 +339,13 @@ export const api = {
     )
     return response.data
   },
-  addGamePlatform: async (igdbId: string, platform: LibraryPlatform) => {
+  addGamePlatform: async (
+    igdbId: string,
+    platform: LibraryPlatform,
+    gameConsole: PlatformConsole
+  ) => {
     const response = await http.put<UserGamePlatformsResponse>(
-      `/users/platforms/${igdbId}/${platform}`,
+      `/users/platforms/${igdbId}/${platform}/${gameConsole}`,
       {},
       {}
     )
@@ -352,15 +357,20 @@ export const api = {
     patch: UserGamePlatformPatch
   ) => {
     const response = await http.patch<UserGamePlatformsResponse>(
-      `/users/platforms/${igdbId}/${platform}`,
+      `/users/platforms/${igdbId}/${platform}/${gameConsole}`,
       patch,
+    gameConsole: PlatformConsole,
       {}
     )
     return response.data
   },
-  removeGamePlatform: async (igdbId: string, platform: LibraryPlatform) => {
+  removeGamePlatform: async (
+    igdbId: string,
+    platform: LibraryPlatform,
+    gameConsole: PlatformConsole
+  ) => {
     const response = await http.delete<UserGamePlatformsResponse>(
-      `/users/platforms/${igdbId}/${platform}`,
+      `/users/platforms/${igdbId}/${platform}/${gameConsole}`,
       {}
     )
     return response.data

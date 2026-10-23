@@ -53,16 +53,18 @@ function libraryPlatformsFor(gamePlatformName: string): LibraryPlatform[] {
   return found
 }
 
+// "Outro" continua em LIBRARY_PLATFORMS só para exibir registros antigos; não se adiciona mais.
 export function getAvailableLibraryPlatforms(
   gamePlatforms: string[] | undefined,
   registered: LibraryPlatform[] = []
 ) {
-  if (!gamePlatforms || gamePlatforms.length === 0) return LIBRARY_PLATFORMS
+  const addable = LIBRARY_PLATFORMS.filter(p => p.value !== 'OTHER')
+  if (!gamePlatforms || gamePlatforms.length === 0) return addable
 
-  const available = new Set<LibraryPlatform>(['OTHER', ...registered])
+  const available = new Set<LibraryPlatform>(registered)
   for (const name of gamePlatforms) {
     for (const platform of libraryPlatformsFor(name)) available.add(platform)
   }
 
-  return LIBRARY_PLATFORMS.filter(p => available.has(p.value))
+  return addable.filter(p => available.has(p.value))
 }

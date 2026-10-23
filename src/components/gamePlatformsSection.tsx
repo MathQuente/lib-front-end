@@ -1,15 +1,29 @@
 import { ChevronRight, Minus, Plus, Trash2 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
+import { toast } from 'react-toastify'
 import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
 import type {
   LibraryPlatform,
+  PlatformConsole,
   UserGamePlatformEntry,
   UserGamePlatformPatch,
+  UserGamePlatformsResponse,
 } from '../types/platform'
 import {
   getAvailableLibraryPlatforms,
   getLibraryPlatform,
 } from '../utils/libraryPlatforms'
+import {
+  consoleGroupsFor,
+  consoleLabel,
+  consolesForGame,
+  entryDisplayName,
+  entryHint,
+  entryKey,
+  hasFreeConsole,
+  platformAsksConsole,
+  singleConsoleFor,
+} from '../utils/platformConsoles'
 import { ConfirmDialog } from './confirmDialog'
 import { TotalsStrip, formatHours } from './totalsGrid'
 import { inlineFieldFocus } from '../styles/focus'
@@ -59,6 +73,7 @@ export function PlatformEditor({
   onSave: (patch: UserGamePlatformPatch) => Promise<unknown>
 }) {
   const option = getLibraryPlatform(entry.platform)
+  const name = option ? entryDisplayName(entry, option.label) : ''
   const [hours, setHours] = useState(entry.hoursPlayed?.toString() ?? '')
   const [date, setDate] = useState(entry.completedAt ?? '')
   const [showCompletions, setShowCompletions] = useState(false)
@@ -106,7 +121,7 @@ export function PlatformEditor({
             value={hours}
             onChange={e => setHours(stripLeadingZeros(e.target.value))}
             disabled={disabled}
-            aria-label={`Horas jogadas na ${option.label}`}
+            aria-label={`Horas jogadas em ${name}`}
             aria-invalid={!hoursValid}
             className={`w-16 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${inputClass}`}
           />
@@ -133,7 +148,7 @@ export function PlatformEditor({
                 onClick={() => onSave({ completions: entry.completions - 1 })}
                 disabled={disabled || entry.completions <= (isPlayed ? 1 : 0)}
                 className={iconButtonClass}
-                aria-label={`Diminuir vezes zerado na ${option.label}`}
+                aria-label={`Diminuir vezes zerado em ${name}`}
               >
                 <Minus className="size-3.5" />
               </button>
@@ -145,7 +160,7 @@ export function PlatformEditor({
                 onClick={() => onSave({ completions: entry.completions + 1 })}
                 disabled={disabled}
                 className={iconButtonClass}
-                aria-label={`Aumentar vezes zerado na ${option.label}`}
+                aria-label={`Aumentar vezes zerado em ${name}`}
               >
                 <Plus className="size-3.5" />
               </button>
@@ -214,6 +229,7 @@ export function RemovePlatformButton({
 
 function PlatformRow({
   entry,
+  hint,
   isPlayed,
   disabled,
   open,
@@ -222,6 +238,7 @@ function PlatformRow({
   onRemove,
 }: {
   entry: UserGamePlatformEntry
+  hint: string | null
   isPlayed: boolean
   disabled: boolean
   open: boolean
@@ -234,6 +251,7 @@ function PlatformRow({
 
   if (!option) return null
   const Icon = option.icon
+  const name = entryDisplayName(entry, option.label)
 
   return (
     <div className="flex flex-col rounded-md border border-dark-border">
@@ -251,7 +269,10 @@ function PlatformRow({
               aria-hidden
             />
             <Icon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
-            <span className="text-sm text-white truncate">{option.label}</span>
+            <span className="flex min-w-0 flex-col">
+              <span className="text-sm text-white truncate">{name}</span>
+              {hint && <span className="text-xs text-gray-400 truncate">{hint}</span>}
+            </span>
           </span>
           <span className="flex items-baseline gap-2 shrink-0 tabular-nums">
             <span className="text-sm text-gray-300">
@@ -268,7 +289,7 @@ function PlatformRow({
           </span>
         </button>
         <RemovePlatformButton
-          label={option.label}
+          label={name}
           disabled={disabled}
           onClick={onRemove}
         />
@@ -284,6 +305,87 @@ function PlatformRow({
           onSave={onSave}
         />
       )}
+    </div>
+  )
+}
+
+function ConsolePicker({
+  platform,
+  platformLabel,
+  released,
+  taken,
+  disabled,
+  onCancel,
+  onConfirm,
+}: {
+  platform: LibraryPlatform
+  platformLabel: string
+  released: Set<PlatformConsole> | null
+  taken: PlatformConsole[]
+  disabled: boolean
+  onCancel: () => void
+  onConfirm: (value: PlatformConsole) => void
+}) {
+  const selectId = useId()
+  const [value, setValue] = useState<PlatformConsole | ''>('')
+  const groups = consoleGroupsFor(platform, released)
+    .map(group => ({
+      ...group,
+      consoles: group.consoles.filter(c => !taken.includes(c)),
+    }))
+    .filter(group => group.consoles.length > 0)
+  const grouped = groups.length > 1
+
+  return (
+    <div className="mt-2 flex flex-col gap-2 rounded-md border border-dark-border p-3">
+      <label htmlFor={selectId} className="text-xs text-gray-400">
+        Em qual console? ({platformLabel})
+      </label>
+      <select
+        id={selectId}
+        value={value}
+        onChange={e => setValue(e.target.value as PlatformConsole)}
+        disabled={disabled}
+        className={`w-full min-h-11 ${inputClass}`}
+      >
+        <option value="" disabled>
+          Escolha o console
+        </option>
+        {groups.map(group =>
+          grouped ? (
+            <optgroup key={group.label} label={group.label}>
+              {group.consoles.map(c => (
+                <option key={c} value={c}>
+                  {consoleLabel(c)}
+                </option>
+              ))}
+            </optgroup>
+          ) : (
+            group.consoles.map(c => (
+              <option key={c} value={c}>
+                {consoleLabel(c)}
+              </option>
+            ))
+          )
+        )}
+      </select>
+      <div className="flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-2.5 py-1 min-h-9 rounded-md text-xs text-gray-300 hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          disabled={disabled || value === ''}
+          onClick={() => value !== '' && onConfirm(value)}
+          className="px-2.5 py-1 min-h-9 rounded-md text-xs font-medium text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          Adicionar
+        </button>
+      </div>
     </div>
   )
 }
@@ -309,48 +411,102 @@ export function GamePlatformsSection({
   isPlayed: boolean
   statusId?: number
   disabled: boolean
-  onAdd: (platform: LibraryPlatform) => Promise<unknown>
+  onAdd: (
+    platform: LibraryPlatform,
+    gameConsole: PlatformConsole
+  ) => Promise<UserGamePlatformsResponse>
   onUpdate: (
     platform: LibraryPlatform,
+    gameConsole: PlatformConsole,
     patch: UserGamePlatformPatch
   ) => Promise<unknown>
-  onRemove: (platform: LibraryPlatform) => Promise<unknown>
+  onRemove: (
+    platform: LibraryPlatform,
+    gameConsole: PlatformConsole
+  ) => Promise<unknown>
 }) {
   const [pendingRemoval, setPendingRemoval] =
     useState<UserGamePlatformEntry | null>(null)
 
-  const [openKey, setOpenKey] = useState<LibraryPlatform | null>(null)
+  const [openKey, setOpenKey] = useState<string | null>(null)
+  const [pickingFor, setPickingFor] = useState<LibraryPlatform | null>(null)
 
+  const releasedConsoles = consolesForGame(gamePlatforms)
   const registered = platforms.map(p => p.platform)
   const addable = getAvailableLibraryPlatforms(
     gamePlatforms,
     registered
-  ).filter(p => !registered.includes(p.value))
+  ).filter(p =>
+    platformAsksConsole(p.value)
+      ? hasFreeConsole(p.value, platforms, releasedConsoles)
+      : !registered.includes(p.value)
+  )
 
   function requestRemoval(entry: UserGamePlatformEntry) {
-    if (hasPlatformData(entry)) {
-      setPendingRemoval(entry)
-      return
-    }
-    onRemove(entry.platform)
+    setPendingRemoval(entry)
   }
 
-  async function handleAdd(platform: LibraryPlatform) {
+  async function addWithConsole(
+    platform: LibraryPlatform,
+    gameConsole: PlatformConsole
+  ) {
+    const hadUnknown = platforms.some(
+      p => p.platform === platform && p.console === 'UNKNOWN'
+    )
     try {
-      await onAdd(platform)
-      setOpenKey(platform)
+      const next = await onAdd(platform, gameConsole)
+      setPickingFor(null)
+      setOpenKey(entryKey({ platform, console: gameConsole }))
+      const adopted =
+        hadUnknown &&
+        next.platforms.length === platforms.length &&
+        !next.platforms.some(
+          p => p.platform === platform && p.console === 'UNKNOWN'
+        )
+      if (adopted) {
+        toast.info(
+          `O registro sem console virou ${consoleLabel(gameConsole)}; nenhuma plataforma nova foi criada.`
+        )
+      }
     } catch {}
+  }
+
+  function handleAdd(platform: LibraryPlatform) {
+    if (platformAsksConsole(platform)) {
+      const only = singleConsoleFor(platform, platforms, releasedConsoles)
+      if (only) {
+        addWithConsole(platform, only)
+        return
+      }
+      setPickingFor(pickingFor === platform ? null : platform)
+      return
+    }
+    addWithConsole(platform, 'UNKNOWN')
   }
 
   async function confirmRemoval() {
     if (!pendingRemoval) return
-    await onRemove(pendingRemoval.platform)
-    setPendingRemoval(null)
+    try {
+      await onRemove(pendingRemoval.platform, pendingRemoval.console)
+      setPendingRemoval(null)
+    } catch {}
   }
 
-  const pendingLabel = pendingRemoval
+  const pendingPlatformLabel = pendingRemoval
     ? getLibraryPlatform(pendingRemoval.platform)?.label
-    : ''
+    : undefined
+  const pendingLabel =
+    pendingRemoval && pendingPlatformLabel
+      ? entryDisplayName(pendingRemoval, pendingPlatformLabel)
+      : ''
+
+  const multiConsolePlatforms = Array.from(
+    new Set(platforms.map(p => p.platform))
+  ).filter(
+    platform =>
+      platforms.filter(p => p.platform === platform && p.console !== 'UNKNOWN')
+        .length >= 2
+  )
 
   return (
     <div className="flex flex-col gap-3 w-full">
@@ -363,20 +519,29 @@ export function GamePlatformsSection({
         />
       )}
 
-      {platforms.map(entry => (
-        <PlatformRow
-          key={entry.platform}
-          entry={entry}
-          isPlayed={isPlayed}
-          disabled={disabled}
-          open={openKey === entry.platform}
-          onToggle={() =>
-            setOpenKey(openKey === entry.platform ? null : entry.platform)
-          }
-          onSave={patch => onUpdate(entry.platform, patch)}
-          onRemove={() => requestRemoval(entry)}
-        />
-      ))}
+      {platforms.map(entry => {
+        const key = entryKey(entry)
+        return (
+          <PlatformRow
+            key={key}
+            entry={entry}
+            hint={entryHint(entry, platforms)}
+            isPlayed={isPlayed}
+            disabled={disabled}
+            open={openKey === key}
+            onToggle={() => setOpenKey(openKey === key ? null : key)}
+            onSave={patch => onUpdate(entry.platform, entry.console, patch)}
+            onRemove={() => requestRemoval(entry)}
+          />
+        )
+      })}
+
+      {multiConsolePlatforms.length > 0 && (
+        <p className="text-xs text-gray-400">
+          Com mais de um console na mesma plataforma, a importação não atualiza
+          as horas deste jogo. Ajuste aqui.
+        </p>
+      )}
 
       {addable.length > 0 && (
         <fieldset>
@@ -394,6 +559,9 @@ export function GamePlatformsSection({
                 onClick={() => handleAdd(value)}
                 disabled={disabled}
                 aria-label={`Adicionar ${label}`}
+                aria-expanded={
+                  platformAsksConsole(value) ? pickingFor === value : undefined
+                }
                 className="relative flex items-center gap-1 px-2 py-1 rounded-full border border-dark-border text-xs text-gray-400 transition-colors motion-reduce:transition-none hover:text-gray-300 hover:border-primary/40 after:absolute after:-inset-x-0.5 after:-inset-y-2.5 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
               >
                 <Plus className="size-3" aria-hidden />
@@ -402,6 +570,20 @@ export function GamePlatformsSection({
               </button>
             ))}
           </div>
+          {pickingFor && (
+            <ConsolePicker
+              key={pickingFor}
+              platform={pickingFor}
+              platformLabel={getLibraryPlatform(pickingFor)?.label ?? ''}
+              released={releasedConsoles}
+              taken={platforms
+                .filter(p => p.platform === pickingFor)
+                .map(p => p.console)}
+              disabled={disabled}
+              onCancel={() => setPickingFor(null)}
+              onConfirm={value => addWithConsole(pickingFor, value)}
+            />
+          )}
         </fieldset>
       )}
 
@@ -409,7 +591,11 @@ export function GamePlatformsSection({
         open={pendingRemoval !== null}
         onOpenChange={open => !open && setPendingRemoval(null)}
         title={`Remover ${pendingLabel}`}
-        description={`As horas, vezes zerado e data de finalização registradas na ${pendingLabel} serão apagadas deste jogo.`}
+        description={
+          pendingRemoval && hasPlatformData(pendingRemoval)
+            ? `As horas, vezes zerado e data de finalização registradas em ${pendingLabel} serão apagadas deste jogo.`
+            : `${pendingLabel} será removido deste jogo. Ainda não há horas, zeradas nem data nele.`
+        }
         confirmLabel="Remover"
         onConfirm={confirmRemoval}
         isLoading={disabled}

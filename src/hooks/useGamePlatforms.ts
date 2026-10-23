@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import type {
   LibraryPlatform,
+  PlatformConsole,
   UserGamePlatformPatch,
   UserGamePlatformsResponse,
 } from '../types/platform'
@@ -38,8 +39,13 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
   }
 
   const addPlatform = useMutation({
-    mutationFn: (platform: LibraryPlatform) =>
-      api.addGamePlatform(igdbId, platform),
+    mutationFn: ({
+      platform,
+      gameConsole,
+    }: {
+      platform: LibraryPlatform
+      gameConsole: PlatformConsole
+    }) => api.addGamePlatform(igdbId, platform, gameConsole),
     onSuccess: onChanged,
     onError: onError('Erro ao adicionar plataforma.'),
   })
@@ -47,18 +53,25 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
   const updatePlatform = useMutation({
     mutationFn: ({
       platform,
+      gameConsole,
       patch,
     }: {
       platform: LibraryPlatform
+      gameConsole: PlatformConsole
       patch: UserGamePlatformPatch
-    }) => api.updateGamePlatform(igdbId, platform, patch),
+    }) => api.updateGamePlatform(igdbId, platform, gameConsole, patch),
     onSuccess: onChanged,
     onError: onError('Erro ao atualizar plataforma.'),
   })
 
   const removePlatform = useMutation({
-    mutationFn: (platform: LibraryPlatform) =>
-      api.removeGamePlatform(igdbId, platform),
+    mutationFn: ({
+      platform,
+      gameConsole,
+    }: {
+      platform: LibraryPlatform
+      gameConsole: PlatformConsole
+    }) => api.removeGamePlatform(igdbId, platform, gameConsole),
     onSuccess: onChanged,
     onError: onError('Erro ao remover plataforma.'),
   })
@@ -67,12 +80,15 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
     platforms: data?.platforms ?? [],
     totals: data?.totals,
     isLoading,
-    addPlatform: (platform: LibraryPlatform) =>
-      addPlatform.mutateAsync(platform),
-    updatePlatform: (platform: LibraryPlatform, patch: UserGamePlatformPatch) =>
-      updatePlatform.mutateAsync({ platform, patch }),
-    removePlatform: (platform: LibraryPlatform) =>
-      removePlatform.mutateAsync(platform),
+    addPlatform: (platform: LibraryPlatform, gameConsole: PlatformConsole) =>
+      addPlatform.mutateAsync({ platform, gameConsole }),
+    updatePlatform: (
+      platform: LibraryPlatform,
+      gameConsole: PlatformConsole,
+      patch: UserGamePlatformPatch
+    ) => updatePlatform.mutateAsync({ platform, gameConsole, patch }),
+    removePlatform: (platform: LibraryPlatform, gameConsole: PlatformConsole) =>
+      removePlatform.mutateAsync({ platform, gameConsole }),
     isMutating:
       addPlatform.isPending ||
       updatePlatform.isPending ||
