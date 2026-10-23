@@ -308,7 +308,7 @@ export function PlatformImportSection<TResult>({
                 className={
                   needsInput
                     ? 'px-3 py-1.5 text-sm shrink-0'
-                    : 'text-sm max-[480px]:w-full'
+                    : 'text-sm [@media(max-width:480px)]:w-full'
                 }
                 onClick={handleConnect}
                 disabled={(needsInput && !profileInput.trim()) || isConnectBusy}
@@ -390,7 +390,7 @@ export function PlatformImportSection<TResult>({
                 type="button"
                 variant="primary"
                 size="md"
-                className="text-sm max-[480px]:w-full"
+                className="text-sm [@media(max-width:480px)]:w-full"
                 onClick={onViewLibrary}
               >
                 Ver na biblioteca
@@ -401,7 +401,7 @@ export function PlatformImportSection<TResult>({
                   type="button"
                   variant="primary"
                   size="md"
-                  className="text-sm max-[480px]:w-full"
+                  className="text-sm [@media(max-width:480px)]:w-full"
                   onClick={handleStartImport}
                   loading={isStarting}
                 >
@@ -420,7 +420,7 @@ export function PlatformImportSection<TResult>({
               type="button"
               variant="outline"
               size="md"
-              className="text-sm hover:text-white max-[480px]:w-full"
+              className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
               onClick={() => setDisconnectDialogOpen(true)}
             >
               Desconectar

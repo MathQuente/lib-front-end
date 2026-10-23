@@ -179,7 +179,7 @@ export function ImportResultSummary({
               type="button"
               variant="outline"
               size="sm"
-              className="max-[480px]:w-full"
+              className="[@media(max-width:480px)]:w-full"
               onClick={copyList}
             >
               Copiar lista
