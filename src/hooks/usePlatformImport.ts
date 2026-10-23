@@ -89,6 +89,9 @@ export const usePlatformImport = <TResult>(
     queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
     queryClient.invalidateQueries({ queryKey: ['games'] })
     queryClient.invalidateQueries({ queryKey: ['gamePlatforms', userId] })
+    queryClient.invalidateQueries({
+      queryKey: ['completionSuggestions', userId],
+    })
   }
 
   return {

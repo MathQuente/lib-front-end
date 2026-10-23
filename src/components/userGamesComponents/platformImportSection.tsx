@@ -1,9 +1,12 @@
+import { EyeOff } from 'lucide-react'
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 import {
   getImportMessage,
   getSlowImportNotice,
 } from '../../constants/importMessages'
+import { useHiddenImportResult } from '../../hooks/useHiddenImportResult'
 import type { PlatformImport } from '../../hooks/usePlatformImport'
+import type { LibraryPlatform } from '../../types/platform'
 import { Button } from '../button'
 import { ConfirmDialog } from '../confirmDialog'
 import {
@@ -11,6 +14,8 @@ import {
   type ImportResultSection,
 } from '../importResultSummary'
 import { fieldFocus } from '../../styles/focus'
+import { CompletionSuggestionsBlock } from './completionSuggestions'
+import { HiddenImportRow } from './hiddenImportRow'
 
 const POLLING_STATUSES = ['waiting', 'active', 'delayed']
 
@@ -70,6 +75,7 @@ interface PlatformImportSectionProps<TResult> {
   importState: PlatformImport<TResult>
   getResultSections: (result: TResult) => ImportResultSection[]
   onViewLibrary?: () => void
+  suggestionsPlatform?: LibraryPlatform
 }
 
 export function PlatformImportSection<TResult>({
@@ -86,6 +92,7 @@ export function PlatformImportSection<TResult>({
   importState,
   getResultSections,
   onViewLibrary,
+  suggestionsPlatform,
 }: PlatformImportSectionProps<TResult>) {
   const article = masculine ? 'o' : 'a'
   const ofLabel = `${masculine ? 'do' : 'da'} ${label}`
@@ -111,6 +118,9 @@ export function PlatformImportSection<TResult>({
   const previousStatus = useRef<string | undefined>(undefined)
   const progressRef = useRef<HTMLDivElement>(null)
   const resultRef = useRef<HTMLOutputElement>(null)
+  const restoreRef = useRef<HTMLButtonElement>(null)
+  const focusAfterToggle = useRef<'restore' | 'first' | null>(null)
+  const [hideAnnouncement, setHideAnnouncement] = useState('')
   const isFirstStatusLoad = useRef(true)
 
   const [visuallyImporting, setVisuallyImporting] = useState(false)
@@ -184,6 +194,34 @@ export function PlatformImportSection<TResult>({
     if (isImporting) progressRef.current?.focus()
     else if (justFinished) resultRef.current?.focus()
   }, [isImporting, justFinished])
+
+  const hiddenResult = useHiddenImportResult(
+    label.toLowerCase(),
+    status?.finishedAt
+  )
+  const showHiddenRow = !justFinished && hiddenResult.hidden
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: roda quando o resultado é ocultado ou mostrado
+  useEffect(() => {
+    const target = focusAfterToggle.current
+    focusAfterToggle.current = null
+    if (target === 'restore') restoreRef.current?.focus()
+    else if (target === 'first') {
+      resultRef.current?.querySelector('button')?.focus()
+    }
+  }, [showHiddenRow])
+
+  function hideResult() {
+    focusAfterToggle.current = 'restore'
+    setHideAnnouncement('Resultado da última importação oculto.')
+    hiddenResult.hide()
+  }
+
+  function showResult() {
+    focusAfterToggle.current = 'first'
+    setHideAnnouncement('Resultado da última importação visível.')
+    hiddenResult.show()
+  }
 
   const slowImportNotice = getSlowImportNotice(elapsedSeconds)
   const progress =
@@ -354,6 +392,8 @@ export function PlatformImportSection<TResult>({
           </div>
         )}
 
+        <output className="sr-only">{hideAnnouncement}</output>
+
         <output
           ref={resultRef}
           tabIndex={-1}
@@ -363,12 +403,48 @@ export function PlatformImportSection<TResult>({
             !isImporting &&
             status?.status === 'completed' &&
             status.result && (
-              <ImportResultSummary
-                platformLabelOf={ofLabel}
-                sections={getResultSections(status.result)}
-                variant={justFinished ? 'fresh' : 'last'}
-                finishedAt={status.finishedAt}
-              />
+              <>
+                {showHiddenRow ? (
+                  <HiddenImportRow
+                    ref={restoreRef}
+                    platform={suggestionsPlatform}
+                    memoryOnly={hiddenResult.memoryOnly}
+                    onShow={showResult}
+                  />
+                ) : (
+                  <ImportResultSummary
+                    platformLabelOf={ofLabel}
+                    sections={getResultSections(status.result)}
+                    variant={justFinished ? 'fresh' : 'last'}
+                    finishedAt={status.finishedAt}
+                  />
+                )}
+                {suggestionsPlatform && (
+                  // Continua montado quando oculto: as linhas aceitas e o "Desfazer" vivem no estado do bloco.
+                  <div hidden={showHiddenRow}>
+                    <CompletionSuggestionsBlock
+                      platform={suggestionsPlatform}
+                      variant={justFinished ? 'fresh' : 'last'}
+                      expectedCount={
+                        getResultSections(status.result)[0]?.result
+                          .suggestions ?? 0
+                      }
+                    />
+                  </div>
+                )}
+                {!showHiddenRow && !justFinished && hiddenResult.canHide && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="min-h-11 self-start gap-1.5 text-[13px] text-gray-400 hover:text-white"
+                    onClick={hideResult}
+                  >
+                    <EyeOff className="size-4" aria-hidden="true" />
+                    Ocultar até a próxima importação
+                  </Button>
+                )}
+              </>
             )}
           {connectedId && !isImporting && status?.status === 'failed' && (
             <div className="flex flex-col gap-1 rounded-md border border-dark-border border-l-red-400 border-l-4 bg-dark-bg-light px-3 py-2">

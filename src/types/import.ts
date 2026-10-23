@@ -7,6 +7,7 @@ export interface ImportSectionResult {
   updated: number
   skipped: number
   notFound: string[]
+  suggestions?: number
 }
 
 export type ImportJobStatus =

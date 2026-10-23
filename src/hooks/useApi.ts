@@ -10,13 +10,18 @@ import type {
 import type { GameStatusEnum, UserGamesResponse } from '../types/games'
 import type { StartImportResponse } from '../types/import'
 import type {
+  AcceptSuggestionResponse,
+  CompletionSuggestionsResponse,
+  UndoSuggestionResponse,
+} from '../types/suggestion'
+import type {
   LibraryPlatform,
+  PlatformConsole,
   UserGamePlatformPatch,
   UserGamePlatformsResponse,
 } from '../types/platform'
 import type {
   ConnectPsnResponse,
-  PlatformConsole,
   PsnImportStatusResponse,
   PsnVerificationResponse,
 } from '../types/psn'
@@ -354,12 +359,12 @@ export const api = {
   updateGamePlatform: async (
     igdbId: string,
     platform: LibraryPlatform,
+    gameConsole: PlatformConsole,
     patch: UserGamePlatformPatch
   ) => {
     const response = await http.patch<UserGamePlatformsResponse>(
       `/users/platforms/${igdbId}/${platform}/${gameConsole}`,
       patch,
-    gameConsole: PlatformConsole,
       {}
     )
     return response.data
@@ -475,6 +480,32 @@ export const api = {
     openPlatformSignIn('/users/steam/openid', 'https://steamcommunity.com'),
   disconnectSteam: async () => {
     await http.delete('/users/steam', {})
+  },
+  getSuggestions: async (platform: LibraryPlatform) => {
+    const response = await http.get<CompletionSuggestionsResponse>(
+      '/users/suggestions',
+      { params: { platform } }
+    )
+    return response.data
+  },
+  acceptSuggestion: async (igdbId: number) => {
+    const response = await http.post<AcceptSuggestionResponse>(
+      `/users/suggestions/${igdbId}/accept`,
+      {},
+      {}
+    )
+    return response.data
+  },
+  dismissSuggestion: async (igdbId: number) => {
+    await http.post(`/users/suggestions/${igdbId}/dismiss`, {}, {})
+  },
+  undoSuggestion: async (igdbId: number) => {
+    const response = await http.post<UndoSuggestionResponse>(
+      `/users/suggestions/${igdbId}/undo`,
+      {},
+      {}
+    )
+    return response.data
   },
   startSteamImport: async () => {
     const response = await http.post<StartImportResponse>(

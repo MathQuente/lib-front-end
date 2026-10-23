@@ -23,6 +23,7 @@ export function SteamImportSection({
       disconnectedDescription="Entre com a sua conta Steam pra confirmar que ela é sua e importar sua biblioteca automaticamente."
       importState={importState}
       onViewLibrary={onViewLibrary}
+      suggestionsPlatform="STEAM"
       getResultSections={result => [
         { title: 'Biblioteca', result: result.library },
         { title: 'Lista de desejos', result: result.wishlist },
