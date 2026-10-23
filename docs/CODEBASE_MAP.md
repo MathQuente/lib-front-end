@@ -95,7 +95,7 @@ src/
   pages/                     one file per route
   schemas/                   zod schemas (login/signup/profile)
   types/                     domain types (games/user/rating/sidebar)
-  utils/
+  utils/                     helpers; `platformConsoles.ts` mirrors the back end console × platform map
 docs/                        this map
 ```
 
@@ -127,6 +127,9 @@ Core reusable "show a game, let a user act on it" unit.
 | `gameCard.tsx` | Cover thumbnail, 4 sizes (`small`/`medium`/`compact`/`larger`). Exports `GameCard` + `getGameTag()` helper (also used standalone by `dlcAndOriginalGameArea.tsx`). `CATEGORY_TAGS` (IGDB category id → PT label) + `TEXT_HINTS` (regex fallback via name/summary when category id missing). `interactive` prop toggles `<button>` (default) vs plain `<div>` — exists solely so callers who already wrap the card in a router `<Link>` don't nest a button inside an anchor. |
 | `gameModal.tsx` | Radix `Dialog` wrapper for game popovers; visually-hidden title for a11y. |
 | `gameForm.tsx` | Status button row (Jogado/Jogando/Backlog/Lista de Desejos), filtered by whether `game.releaseDate` is past. Toggling active status removes it; different status updates; no status adds. Renders `PlayedCount` only when status is PLAYED. |
+| `../gamePlatformsSection.tsx` | Platform rows in the game modal. Row key is `platform:console`; PlayStation/Xbox/Nintendo/Steam ask for the console through `ConsolePicker` (native `<select>`, options filtered by the game's IGDB platforms via `consolesForGame`; a single remaining console is added without asking), Epic adds as `UNKNOWN`. "Outro" is no longer offered (old `OTHER` rows still display). Row name is the console, or the platform when the console is `UNKNOWN`. Shows a note when a platform has 2+ known consoles (imports skip those games). |
+| `../userGamesComponents/completionSuggestions.tsx` | `CompletionSuggestionsBlock`: expandable list under the import summary in the Steam card of the "Importar jogos" modal (`fresh` toggle with amber dot, `last` outline button). Rows: cover/initials, hours vs time-to-beat, achievements, multiplayer warning (`lowConfidence`), "Marcar como Jogado" / "Ainda não terminei". Undo in the row and in a 10 s toast. `role="status"` region is always mounted. |
+| `../userGamesComponents/hiddenImportRow.tsx` | Collapsed one-line row shown instead of the last import result when the user hid it (`Importação oculta · ● N para revisar · Mostrar`; count becomes a chip under 520 px). Count comes from the shared suggestions query. |
 | `gameInfo.tsx` | Modal body: cover + name + `GameForm` + `RatingAverage` (or login prompt) + "Ver Detalhes"/"Cancelar". |
 | `gamesGrid.tsx` | Grid wrapper, `GameCardData[]` → `GameCard` (`size="medium" enableModal`), falls back to `EmptyState`. |
 
@@ -152,6 +155,9 @@ Interconnection: `GameCard(enableModal=true)` owns local `open` state, lazily mo
 |---|---|---|---|
 | `useApi.ts` | Not a hook — exports `api` (axios wrapper), also called directly by `sideBar.tsx`/`rouletteWheel.tsx`, bypassing hook layer. | n/a | Sort-field mapping gotcha, see below. |
 | `useGames.ts` | Catalog: paged, infinite (search), coming-soon, home-featured. | `['games',...]`, `['gamesInfinite',...]`, `['comingSoon',...]`, `['gamesFeatured']` | `keepPreviousData` on paging/sort. |
+| `useGamePlatforms.ts` | Per-game platform rows (`platform` + `console`, one row per console). `addPlatform/updatePlatform/removePlatform` take `(platform, console, ...)` and hit `/users/platforms/:igdbId/:platform/:console`; the response replaces the cache. | `['gamePlatforms', userId, igdbId]` | `PUT` with a known console adopts an existing `UNKNOWN` row of the same platform (no new row). Console × platform map mirrors the back end in `utils/platformConsoles.ts`. |
+| `useCompletionSuggestions.ts` | "Looks finished" suggestions per import platform (Steam only today). Query + accept/dismiss/undo; accepted rows are kept in local state because the back end drops the game from the list once it becomes Played, so Undo only lives while the screen is open. Accept/undo invalidate library, profile and per-game caches. | `['completionSuggestions', userId, platform]` | Invalidated by `refreshAfterImport`. 409 becomes an inline row message. |
+| `useHiddenImportResult.ts` | Hides the last import result and the suggestions block until the next import finishes. Stores the import's `finishedAt` in `localStorage` (`importHidden:v1:{userId}:{platform}`) via `useSyncExternalStore`; falls back to memory when storage fails and notifies same-tab listeners itself (the `storage` event only reaches other tabs). | n/a | A new import changes `finishedAt`, so the result shows again. Browser-only, not synced. |
 | `useGame.ts` | Single game + similar games. | `['game', igdbId]`, `['similarGames', igdbId]` | |
 | `useGameStatus.ts` | Get/update one game's status. | `['gamesStatus', userId, igdbId]` | Invalidates `gameStats`, `userGames`. |
 | `useAddGame.ts` | Add/remove from library. `removeGame` vs `removeUserGame` are near-duplicate mutations differing only in which cache they patch (`['games']` vs `['userGames', userId]`). | invalidates `games`, `userGames`, `gamesStatus`, `rating` | Optimistic + rollback. |
