@@ -61,6 +61,9 @@ export const LIBRARY_STATUS_BADGES: Record<
 
 const MAX_CARD_PLATFORMS = 3
 
+// Listas de mais bem avaliados trazem a média da comunidade (3,6969…); a nota do usuário é inteira.
+const RATING_FORMAT = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
+
 const badgeClass =
   'inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200'
 
@@ -129,6 +132,8 @@ export function GameCard({
       : null
 
   const showRating = size !== 'small' && game?.rating != null
+  const ratingText =
+    game?.rating != null ? RATING_FORMAT.format(game.rating) : ''
   const showEndless = size !== 'small' && game?.endless === true
   const completions = game?.completions ?? 0
   const showReplayBadge =
@@ -204,14 +209,14 @@ export function GameCard({
           {showRating && (
             <span
               className={badgeClass}
-              title="Sua nota"
-              aria-label={`Sua nota: ${game?.rating}`}
+              title="Nota"
+              aria-label={`Nota: ${ratingText}`}
             >
               <Star
                 className={`size-2 sm:size-2.5 fill-current ${accentColor}`}
                 aria-hidden="true"
               />
-              <span aria-hidden="true">{game?.rating}</span>
+              <span aria-hidden="true">{ratingText}</span>
             </span>
           )}
           {showEndless && (
