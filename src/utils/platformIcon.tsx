@@ -12,9 +12,11 @@ import {
   SiPlaystation5,
   SiPlaystationvita
 } from 'react-icons/si'
-import type { IconType } from 'react-icons'
+import type { ComponentType } from 'react'
 
-export function getPlatformIcon(name: string): IconType {
+export function getPlatformIcon(
+  name: string
+): ComponentType<{ className?: string }> {
   const n = name.toLowerCase()
 
   if (n.includes('playstation')) {
