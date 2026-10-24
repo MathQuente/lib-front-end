@@ -6,6 +6,7 @@ import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
 import { useResendVerification } from '../hooks/useResendVerification'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type Status = 'ready' | 'success' | 'invalid'
 
@@ -23,6 +24,7 @@ function Email({ children }: { children: ReactNode }) {
 }
 
 export function VerifyEmailPage() {
+  useDocumentTitle('Verificar e-mail')
   const [searchParams, setSearchParams] = useSearchParams()
   const [token] = useState(() => searchParams.get('token'))
   const [status, setStatus] = useState<Status>(token ? 'ready' : 'invalid')

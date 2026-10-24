@@ -5,8 +5,10 @@ import { BackButton } from '../components/backButton'
 import { useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function ComingSoonPage() {
+  useDocumentTitle('Em breve')
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 

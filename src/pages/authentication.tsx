@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
 import { focusRing } from '../styles/focus'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const tabTrigger =
   'flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent ' +
@@ -22,6 +23,7 @@ const OAUTH_ERROR_FALLBACK = 'Não foi possível entrar. Tente novamente.'
 export function Authentication() {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') === 'signUp' ? 'signUp' : 'login'
+  useDocumentTitle(tab === 'signUp' ? 'Criar conta' : 'Entrar')
   const oauthError = searchParams.get('error')
 
   useEffect(() => {

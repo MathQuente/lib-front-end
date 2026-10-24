@@ -3,8 +3,10 @@ import { parsePage } from '../utils/parsePage'
 import { GameListPage } from '../components/gameListPage'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function Games() {
+  useDocumentTitle('Jogos')
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
     return parsePage(url.searchParams.get('page'))

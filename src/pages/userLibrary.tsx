@@ -6,10 +6,12 @@ import { LibraryShelves } from '../components/libraryComponents/libraryShelves'
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
 import { usePlatformLinkResult } from '../hooks/usePlatformLinkResult'
 import { useUserGames } from '../hooks/useUserGames'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const SKELETON_SHELVES = ['a', 'b', 'c']
 
 export function UserLibrary() {
+  useDocumentTitle('Minha biblioteca')
   usePlatformLinkResult()
   const [importOpen, setImportOpen] = useState(false)
   const {

@@ -23,6 +23,7 @@ import { hiResCover } from '../utils/hiResCover'
 import { isValidIgdbId } from '../utils/isValidIgdbId'
 import { parsePage } from '../utils/parsePage'
 import type { GameResponse } from '../types/games'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const PAGE_SIZE = 10
 
@@ -80,6 +81,14 @@ export function GameReviewsPage() {
 
   const isGameNotFound =
     isAxiosError(gameError) && gameError.response?.status === 404
+
+  useDocumentTitle(
+    !isValidId || isGameNotFound
+      ? undefined
+      : game
+        ? `Resenhas de ${game.name}`
+        : 'Resenhas da comunidade'
+  )
 
   if (!isValidId || isGameNotFound) {
     return (

@@ -11,11 +11,13 @@ import { BackButton } from '../components/backButton'
 import { SectionHeading } from '../components/sectionHeading'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import { releaseYear } from '../utils/releaseDate'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type SearchTab = 'todos' | 'jogos' | 'pessoas'
 
 export function SearchResults() {
   const { query } = useParams()
+  useDocumentTitle(query ? `Busca: ${query}` : 'Busca')
   const [searchParams, setSearchParams] = useSearchParams()
   const tab: SearchTab =
     searchParams.get('tab') === 'jogos' || searchParams.get('tab') === 'pessoas'

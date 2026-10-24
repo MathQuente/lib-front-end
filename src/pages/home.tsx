@@ -17,6 +17,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useGames } from '../hooks/useGames'
 import { useUserGames } from '../hooks/useUserGames'
 import type { GamesFromHomePageResponse } from '../types/games'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const WALL_LIMIT = 60
 
@@ -210,6 +211,7 @@ function Discovery({
 }
 
 export function Home() {
+  useDocumentTitle('')
   const { user } = useAuth()
   const isLogged = !!user?.id
 

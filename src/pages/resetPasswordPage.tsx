@@ -3,8 +3,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { FormResetPassword } from '../components/formResetPassword'
 import { api } from '../hooks/useApi'
 import { focusRing } from '../styles/focus'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function ResetPasswordPage() {
+  useDocumentTitle('Redefinir senha')
   const [searchParams, setSearchParams] = useSearchParams()
   const [token] = useState(() => searchParams.get('token'))
   const [isValid, setIsValid] = useState<boolean | null>(token ? null : false)

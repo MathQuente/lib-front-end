@@ -1,6 +1,8 @@
 import { FormForgotPassword } from '../components/formForgotPassword'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function ForgotPasswordPage() {
+  useDocumentTitle('Esqueceu a senha?')
   return (
     <div className="flex justify-center pt-2 pb-8 md:pt-4 md:pb-12">
       <div className="w-full max-w-md">

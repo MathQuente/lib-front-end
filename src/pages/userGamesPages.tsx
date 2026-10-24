@@ -8,6 +8,7 @@ import { BackButton } from '../components/backButton'
 import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { GameListData } from '../types/games'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const ITEMS_PER_PAGE = 48
 
@@ -110,6 +111,21 @@ export function UserGamesPageByStatus() {
   }
 
   const isInvalidStatus = !status || !(status in routeToEnumMap)
+
+  const statusLabels: Record<GameStatusEnum, string> = {
+    [GameStatusEnum.Played]: 'Jogado',
+    [GameStatusEnum.Playing]: 'Jogando',
+    [GameStatusEnum.Paused]: 'Pausado',
+    [GameStatusEnum.Backlog]: 'Na fila',
+    [GameStatusEnum.Wishlist]: 'Lista de desejos',
+    [GameStatusEnum.Dropped]: 'Larguei'
+  }
+
+  useDocumentTitle(
+    isInvalidStatus
+      ? undefined
+      : `${statusLabels[routeToEnumMap[status]]} · Minha biblioteca`
+  )
 
   useEffect(() => {
     if (isInvalidStatus) {

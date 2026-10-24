@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Compass, Search, TriangleAlert, WifiOff } from 'lucide-react'
 import { SearchBar } from './searchBar'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import type { StatusMessageProps } from '../interfaces/ui'
 
 const ICONS = {
@@ -29,15 +30,12 @@ export function StatusMessage({
   const isPage = variant !== 'empty'
   const Icon = ICONS[icon ?? variant]
 
+  useDocumentTitle(isPage ? (documentTitle ?? title) : undefined)
+
   useEffect(() => {
     if (!isPage) return
-    const previousTitle = document.title
-    document.title = `${documentTitle ?? title} · Lib`
     headingRef.current?.focus({ preventScroll: true })
-    return () => {
-      document.title = previousTitle
-    }
-  }, [isPage, documentTitle, title])
+  }, [isPage, title])
 
   const Heading = isPage ? 'h1' : 'h3'
 

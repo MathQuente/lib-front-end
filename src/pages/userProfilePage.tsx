@@ -13,6 +13,7 @@ import { UserListModal } from '../components/userListModal'
 import { BackButton } from '../components/backButton'
 import { StatusMessage } from '../components/statusMessage'
 import { Button } from '../components/button'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function UserProfilePage() {
   const { userId } = useParams()
@@ -33,6 +34,8 @@ export function UserProfilePage() {
   const hasGames = totalPerStatus.some(t => t.totalGames > 0)
   const { followers } = useFollowers(data ? userId : undefined)
   const { following } = useFollowing(data ? userId : undefined)
+
+  useDocumentTitle(isError ? undefined : (data?.user.userName ?? 'Perfil'))
 
   if (isLoading) {
     return (

@@ -22,6 +22,7 @@ import { useGame } from '../hooks/useGame'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import { hiResCover } from '../utils/hiResCover'
 import { formatReleaseDate } from '../utils/releaseDate'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function GamePage() {
   const { user } = useAuth()
@@ -30,6 +31,11 @@ export function GamePage() {
   const { GameResponse, SimilarGames, isValidId, isNotFound, isLoadFailed, refetch } =
     useGame(igdbId)
   const isLoaded = Boolean(GameResponse)
+  useDocumentTitle(
+    isLoadFailed || !isValidId || isNotFound
+      ? undefined
+      : (GameResponse?.game.name ?? 'Jogo')
+  )
   const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
