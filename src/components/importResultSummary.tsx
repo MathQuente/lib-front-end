@@ -164,7 +164,7 @@ export function ImportResultSummary({
                         href={`https://store.steampowered.com/app/${item.appId}`}
                         target="_blank"
                         rel="noreferrer"
-                        className={`shrink-0 rounded-sm text-primary-light hover:underline ${focusRing}`}
+                        className={`shrink-0 rounded-sm text-primary-link hover:underline ${focusRing}`}
                       >
                         Ver na loja
                       </a>
@@ -177,7 +177,7 @@ export function ImportResultSummary({
           <div>
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="[@media(max-width:480px)]:w-full"
               onClick={copyList}
@@ -231,7 +231,7 @@ export function ImportResultSummary({
         <div>
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             aria-expanded={expanded}
             aria-controls={expanded ? detailId : undefined}

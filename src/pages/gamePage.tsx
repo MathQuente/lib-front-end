@@ -49,7 +49,7 @@ export function GamePage() {
           title="Não foi possível carregar o jogo"
           description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
           primaryAction={
-            <Button variant="primary" size="md" onClick={() => refetch()}>
+            <Button variant="secondary" size="md" onClick={() => refetch()}>
               Tentar novamente
             </Button>
           }
@@ -152,7 +152,7 @@ export function GamePage() {
               <p className="text-sm text-center text-gray-400">
                 <Link
                   to="/auth?tab=login"
-                  className="text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+                  className="text-primary-link hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
                 >
                   Faça login
                 </Link>{' '}

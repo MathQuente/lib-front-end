@@ -1,13 +1,14 @@
+import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { UserGameEntry } from '../../types/games'
 import { GameCard, LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { sectionTitle } from '../homeComponents/styles'
 
 const shelfLink =
-  'whitespace-nowrap rounded-sm text-primary-light underline underline-offset-4 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+  'whitespace-nowrap rounded-sm text-primary-link underline underline-offset-4 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
 
 const allLinkClass =
-  'shrink-0 whitespace-nowrap rounded-sm text-sm text-primary-light transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+  '-my-2 inline-flex min-h-11 shrink-0 items-center gap-0.5 whitespace-nowrap rounded-sm text-sm text-gray-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
 
 export interface ShelfLink {
   to: string
@@ -79,6 +80,7 @@ export function StatusShelf({
         {!isEmpty && allLink && (
           <Link to={allLink.to} className={allLinkClass}>
             {allLink.label}
+            <ChevronRight className="size-4" aria-hidden="true" />
           </Link>
         )}
       </div>

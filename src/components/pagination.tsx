@@ -55,7 +55,7 @@ export function Pagination({
           title="Primeira página"
           aria-label="Primeira página"
         >
-          <ChevronsLeft className="size-4 text-primary" />
+          <ChevronsLeft className="size-4" />
         </IconButton>
 
         <IconButton
@@ -64,7 +64,7 @@ export function Pagination({
           title="Página anterior"
           aria-label="Página anterior"
         >
-          <ChevronLeft className="size-4 text-primary" />
+          <ChevronLeft className="size-4" />
         </IconButton>
 
         <IconButton
@@ -73,7 +73,7 @@ export function Pagination({
           title="Próxima página"
           aria-label="Próxima página"
         >
-          <ChevronRight className="size-4 text-primary" />
+          <ChevronRight className="size-4" />
         </IconButton>
 
         <IconButton
@@ -82,7 +82,7 @@ export function Pagination({
           title="Última página"
           aria-label="Última página"
         >
-          <ChevronsRight className="size-4 text-primary" />
+          <ChevronsRight className="size-4" />
         </IconButton>
       </div>
     </div>

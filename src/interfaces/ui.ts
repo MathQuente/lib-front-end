@@ -9,7 +9,7 @@ import type { FieldError } from 'react-hook-form'
 import type { MenuItem } from '../types/sidebar'
 
 export interface ButtonProps extends ComponentProps<'button'> {
-  variant?: 'primary' | 'secondary' | 'cancel' | 'outline' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   children: ReactNode
   loading?: boolean
@@ -40,6 +40,9 @@ export interface SearchInputProps {
 
 export interface IconButtonProps extends ComponentProps<'button'> {
   transparent?: boolean
+  size?: 'sm' | 'md'
+  tone?: 'neutral' | 'danger'
+  variant?: 'filled' | 'bare'
 }
 
 export interface SideBarItemProps extends MenuItem {

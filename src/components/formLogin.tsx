@@ -62,7 +62,7 @@ export function FormLogin() {
         />
         <Link
           to="/forgot-password"
-          className={`text-xs text-primary-light hover:underline self-end mt-1 rounded-sm ${focusRing}`}
+          className={`text-xs text-primary-link hover:underline self-end mt-1 rounded-sm ${focusRing}`}
         >
           Esqueceu a senha?
         </Link>

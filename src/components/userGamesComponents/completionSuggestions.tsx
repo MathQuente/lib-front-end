@@ -148,7 +148,7 @@ function SuggestionItem({
               </Button>
               <Button
                 type="button"
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 className="min-h-11 [@media(max-width:480px)]:w-full"
                 onClick={onDismiss}
@@ -290,7 +290,7 @@ export function CompletionSuggestionsBlock({
       <div>
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="sm"
           className="min-h-11"
           aria-expanded={expanded}
@@ -334,12 +334,12 @@ export function CompletionSuggestionsBlock({
               <div>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   className="min-h-11"
                   onClick={() => refetch()}
                 >
-                  Tentar de novo
+                  Tentar novamente
                 </Button>
               </div>
             </div>

@@ -8,6 +8,7 @@ import { useFollowing } from '../../hooks/useFollowing'
 import { useFollow } from '../../hooks/useFollow'
 import { ProfileHeader } from '../libraryComponents/profileHeader'
 import { Button } from '../button'
+import { IconButton } from '../iconButton'
 import { UserMinus, UserPlus } from 'lucide-react'
 import type { FollowSummary } from '../../types/follow'
 
@@ -52,13 +53,13 @@ export function UserProfileDisplay({ onImport }: { onImport?: () => void }) {
         actions={
           <>
             {onImport && (
-              <Button type="button" variant="outline" onClick={onImport}>
+              <Button type="button" variant="secondary" onClick={onImport}>
                 Importar jogos
               </Button>
             )}
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               onClick={() => setIsOpen(true)}
             >
               Editar perfil
@@ -99,16 +100,16 @@ function FollowBackButton({ user }: { user: FollowSummary }) {
   const { follow, isMutating } = useFollow(user.id)
 
   return (
-    <button
-      type="button"
+    <IconButton
+      variant="bare"
       onClick={() => follow()}
       disabled={isMutating}
       title="Seguir de volta"
       aria-label={`Seguir ${user.userName ?? 'usuário'} de volta`}
-      className="flex items-center justify-center size-6 rounded-full text-primary hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+      className="rounded-full"
     >
       <UserPlus className="size-3.5" aria-hidden="true" />
-    </button>
+    </IconButton>
   )
 }
 
@@ -116,15 +117,16 @@ function UnfollowButton({ userId }: { userId: string }) {
   const { unfollow, isMutating } = useFollow(userId)
 
   return (
-    <button
-      type="button"
+    <IconButton
+      variant="bare"
+      tone="danger"
       onClick={() => unfollow()}
       disabled={isMutating}
       title="Deixar de seguir"
       aria-label="Deixar de seguir"
-      className="flex items-center justify-center size-6 rounded-full text-gray-400 hover:text-red-400 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+      className="rounded-full"
     >
       <UserMinus className="size-3.5" aria-hidden="true" />
-    </button>
+    </IconButton>
   )
 }

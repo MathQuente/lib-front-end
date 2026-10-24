@@ -3,6 +3,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { useReview } from '../hooks/useReview'
 import { useReviewPermission } from '../hooks/useReviewPermission'
 import { ConfirmDialog } from './confirmDialog'
+import { IconButton } from './iconButton'
 import { ReviewEditor } from './reviewEditor'
 import { ReviewRequirement } from './reviewRequirement'
 import { SectionHeading } from './sectionHeading'
@@ -71,24 +72,23 @@ export function ReviewSection({ game }: { game: GameCardData }) {
         <SectionHeading>Sua resenha</SectionHeading>
         {!showEditor && (
           <div className="flex items-center gap-1 -mt-4">
-            <button
-              type="button"
+            <IconButton
+              variant="bare"
               onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-primary hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
               title="Editar resenha"
               aria-label="Editar resenha"
             >
               <Pencil className="size-3.5" />
-            </button>
-            <button
-              type="button"
+            </IconButton>
+            <IconButton
+              variant="bare"
+              tone="danger"
               onClick={() => setConfirmOpen(true)}
-              className="flex items-center justify-center size-7 rounded-md text-gray-400 hover:text-red-400 hover:bg-dark-bg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
               title="Excluir resenha"
               aria-label="Excluir resenha"
             >
               <Trash2 className="size-3.5" />
-            </button>
+            </IconButton>
           </div>
         )}
       </div>

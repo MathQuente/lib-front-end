@@ -184,7 +184,8 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | File | Purpose |
 |---|---|
 | `authInput.tsx` | Password-visibility-toggling input, `forwardRef` for RHF. |
-| `button.tsx` | Variant/size system (primary/secondary/cancel/outline/ghost), loading spinner. |
+| `button.tsx` | Variant/size system (primary/secondary/ghost/danger; secondary is the outlined style, danger is `red-700` for destructive confirms), loading spinner, `max-sm:min-h-11` touch height. |
+| `iconButton.tsx` | The only icon-button component: `size` sm (28px) / md (36px), `tone` neutral/danger, `variant` filled/bare; a `before:` pseudo-element extends the touch area to 44px. |
 | `categoriesDiv.tsx` | Pill chip — named for IGDB "category" but `gamePage.tsx` actually feeds it genre strings. |
 | `details.tsx` | Genres/developers/publishers chips on game page. |
 | `dlcAndOriginalGameArea.tsx` | Parent-game link + paginated DLC list, reuses `getGameTag`. |

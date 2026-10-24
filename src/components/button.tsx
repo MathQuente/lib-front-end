@@ -1,6 +1,39 @@
 import { twMerge } from 'tailwind-merge'
 import type { ButtonProps } from '../interfaces/ui'
 
+const baseStyles =
+  'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light max-sm:min-h-11 disabled:opacity-50 disabled:cursor-not-allowed'
+
+const variants = {
+  primary: 'bg-primary hover:bg-primary-hover text-white font-bold',
+  secondary:
+    'bg-transparent hover:bg-dark-bg-lighter text-gray-300 hover:text-white border border-dark-border',
+  ghost:
+    'bg-transparent hover:bg-dark-bg-lighter text-gray-300 hover:text-white border border-transparent',
+  danger: 'bg-red-700 hover:bg-red-600 text-white font-bold'
+}
+
+const sizes = {
+  sm: 'px-3 py-1.5 text-sm rounded',
+  md: 'px-4 py-2 text-base rounded-md',
+  lg: 'px-6 py-3 text-lg rounded-lg'
+}
+
+export function buttonClasses({
+  variant = 'primary',
+  size = 'sm',
+  fullWidth = false,
+  className
+}: Pick<ButtonProps, 'variant' | 'size' | 'fullWidth' | 'className'> = {}) {
+  return twMerge(
+    baseStyles,
+    variants[variant],
+    sizes[size],
+    fullWidth ? 'w-full' : '',
+    className
+  )
+}
+
 export function Button({
   variant = 'primary',
   size = 'sm',
@@ -11,38 +44,11 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 disabled:cursor-not-allowed'
-  const variants = {
-    primary: 'bg-primary hover:bg-primary-hover text-white font-bold',
-    secondary:
-      'bg-primary hover:bg-primary-hover text-white border border-primary',
-    cancel:
-      'bg-dark-bg-lighter hover:bg-dark-bg-light text-gray-300 hover:text-white border border-dark-border disabled:hover:bg-dark-bg-lighter disabled:hover:text-gray-300',
-    outline:
-      'bg-transparent hover:bg-dark-bg-lighter text-gray-300 border border-dark-border',
-    ghost: 'bg-transparent hover:bg-dark-bg-lighter text-gray-300 border border-transparent'
-  }
-
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm rounded',
-    md: 'px-4 py-2 text-base rounded-md',
-    lg: 'px-6 py-3 text-lg rounded-lg'
-  }
-
-  const widthClass = fullWidth ? 'w-full' : ''
-
   return (
     <button
       {...props}
       disabled={disabled || loading}
-      className={twMerge(
-        baseStyles,
-        variants[variant],
-        sizes[size],
-        widthClass,
-        className
-      )}
+      className={buttonClasses({ variant, size, fullWidth, className })}
     >
       {loading && (
         <svg

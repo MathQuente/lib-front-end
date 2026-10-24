@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useState, useEffect } from 'react'
 import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
+import { buttonClasses } from './button'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 import logo from '../assets/euzerei-logo.svg'
@@ -13,14 +14,12 @@ const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 text-base py-2 transition-colors ${focusRing} ${
     isActive
       ? 'text-white font-semibold'
-      : 'text-primary hover:text-primary-light'
+      : 'text-gray-300 hover:text-white'
   }`
 
 const desktopNavLinkClass = ({ isActive }: { isActive: boolean }) =>
   `text-sm transition-colors ${focusRing} ${
-    isActive
-      ? 'text-white font-semibold'
-      : 'text-primary hover:text-primary-light'
+    isActive ? 'text-white font-semibold' : 'text-gray-300 hover:text-white'
   }`
 
 export function SideBar() {
@@ -143,20 +142,6 @@ export function SideBar() {
                     <Home className="size-5" aria-hidden="true" />
                     Início
                   </NavLink>
-                  <Link
-                    to="/auth?tab=login"
-                    onClick={closeMobileMenu}
-                    className={`text-base text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
-                  >
-                    Entrar
-                  </Link>
-                  <Link
-                    to="/auth?tab=signUp"
-                    onClick={closeMobileMenu}
-                    className={`text-base text-primary hover:text-primary-light py-2 transition-colors ${focusRing}`}
-                  >
-                    Criar conta
-                  </Link>
                   <NavLink
                     to="/games"
                     end
@@ -166,6 +151,22 @@ export function SideBar() {
                     <Gamepad2 className="size-5" aria-hidden="true" />
                     Jogos
                   </NavLink>
+                  <Link
+                    to="/auth?tab=login"
+                    onClick={closeMobileMenu}
+                    className={`text-base text-gray-300 hover:text-white py-2 transition-colors ${focusRing}`}
+                  >
+                    Entrar
+                  </Link>
+                  <Link
+                    to="/auth?tab=signUp"
+                    onClick={closeMobileMenu}
+                    className={buttonClasses({
+                      className: 'mt-2 min-h-11'
+                    })}
+                  >
+                    Criar conta
+                  </Link>
                 </>
               )}
             </div>
@@ -205,21 +206,18 @@ export function SideBar() {
             <NavLink to="/" end className={desktopNavLinkClass}>
               Início
             </NavLink>
-            <Link
-              to="/auth?tab=login"
-              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/auth?tab=signUp"
-              className={`text-sm text-primary hover:text-primary-light transition-colors ${focusRing}`}
-            >
-              Criar conta
-            </Link>
             <NavLink to="/games" end className={desktopNavLinkClass}>
               Jogos
             </NavLink>
+            <Link
+              to="/auth?tab=login"
+              className={`text-sm text-gray-300 hover:text-white transition-colors ${focusRing}`}
+            >
+              Entrar
+            </Link>
+            <Link to="/auth?tab=signUp" className={buttonClasses()}>
+              Criar conta
+            </Link>
             <SearchBar isMobile={false} />
           </div>
         )}

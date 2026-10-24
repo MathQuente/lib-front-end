@@ -91,17 +91,17 @@ export function StatusLink({
   children
 }: {
   to: string
-  variant?: 'primary' | 'outline'
+  variant?: 'primary' | 'secondary'
   children: ReactNode
 }) {
   const styles =
     variant === 'primary'
       ? 'bg-primary hover:bg-primary-hover text-white font-bold'
-      : 'bg-transparent hover:bg-dark-bg-lighter text-gray-300 border border-dark-border font-medium'
+      : 'bg-transparent hover:bg-dark-bg-lighter text-gray-300 hover:text-white border border-dark-border font-medium'
   return (
     <Link
       to={to}
-      className={`inline-flex items-center justify-center px-4 py-2 rounded-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${styles}`}
+      className={`inline-flex items-center justify-center px-4 py-2 max-sm:min-h-11 rounded-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${styles}`}
     >
       {children}
     </Link>

@@ -5,6 +5,8 @@ import { useHoursPlayed } from '../hooks/useHoursPlayed'
 import { usePlayedCount } from '../hooks/usePlayedCount'
 import type { GameCardData } from '../types/games'
 import { inlineFieldFocus } from '../styles/focus'
+import { Button } from './button'
+import { IconButton } from './iconButton'
 
 const MAX_HOURS = 9999.99
 
@@ -15,9 +17,6 @@ function stripLeadingZeros(raw: string) {
 }
 
 const inputClass = `rounded-md bg-dark-bg px-2.5 py-1.5 text-sm text-white ${inlineFieldFocus} disabled:opacity-50`
-
-const stepButtonClass =
-  'flex items-center justify-center size-7 rounded-md transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed'
 
 export function LibraryRecordFields({
   game,
@@ -101,28 +100,26 @@ export function LibraryRecordFields({
       <div className="flex items-center justify-between gap-3 min-h-11">
         <span className="text-xs text-gray-400">Vezes zerado</span>
         <div className="flex items-center gap-1">
-          <button
-            type="button"
+          <IconButton
+            variant="bare"
             onClick={() => updatePlayedCount(-1)}
             disabled={count <= minimum}
-            className={stepButtonClass}
             title="Diminuir vezes zerado"
             aria-label="Diminuir vezes zerado"
           >
             <Minus className="size-4" />
-          </button>
+          </IconButton>
           <span className="w-6 text-center text-sm font-medium text-white tabular-nums">
             {count}
           </span>
-          <button
-            type="button"
+          <IconButton
+            variant="bare"
             onClick={() => updatePlayedCount(1)}
-            className={stepButtonClass}
             title="Aumentar vezes zerado"
             aria-label="Aumentar vezes zerado"
           >
             <Plus className="size-4" />
-          </button>
+          </IconButton>
         </div>
       </div>
 
@@ -146,14 +143,15 @@ export function LibraryRecordFields({
 
       {isDirty && (
         <div className="flex justify-end">
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="sm"
             onClick={handleSave}
             disabled={isBusy}
-            className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Salvar
-          </button>
+          </Button>
         </div>
       )}
     </div>

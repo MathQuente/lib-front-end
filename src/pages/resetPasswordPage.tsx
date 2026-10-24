@@ -48,7 +48,7 @@ export function ResetPasswordPage() {
             Link inválido, expirado ou já usado. Peça um novo link na tela de{' '}
             <Link
               to="/forgot-password"
-              className={`text-primary-light hover:underline rounded-sm ${focusRing}`}
+              className={`text-primary-link hover:underline rounded-sm ${focusRing}`}
             >
               esqueci a senha
             </Link>

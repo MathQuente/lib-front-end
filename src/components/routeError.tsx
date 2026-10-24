@@ -25,7 +25,7 @@ export function RouteError() {
         </Button>
       }
       secondaryAction={
-        <StatusLink to="/" variant="outline">
+        <StatusLink to="/" variant="secondary">
           Ir para o início
         </StatusLink>
       }

@@ -154,7 +154,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
               <p className="text-sm text-gray-400">
                 <Link
                   to="/auth"
-                  className={`text-primary-light hover:underline rounded-sm ${focusRing}`}
+                  className={`text-primary-link hover:underline rounded-sm ${focusRing}`}
                 >
                   Entrar
                 </Link>{' '}

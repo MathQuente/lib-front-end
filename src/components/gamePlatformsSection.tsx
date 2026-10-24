@@ -25,6 +25,8 @@ import {
   singleConsoleFor,
 } from '../utils/platformConsoles'
 import { ConfirmDialog } from './confirmDialog'
+import { Button } from './button'
+import { IconButton } from './iconButton'
 import { TotalsStrip, formatHours } from './totalsGrid'
 import { inlineFieldFocus } from '../styles/focus'
 
@@ -45,9 +47,6 @@ function stripLeadingZeros(raw: string) {
 }
 
 const inputClass = `rounded-md bg-dark-bg px-2 py-1 text-sm text-white ${inlineFieldFocus} disabled:opacity-50`
-
-const iconButtonClass =
-  'flex items-center justify-center size-6 rounded-md transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed'
 
 export function hasPlatformData(entry: UserGamePlatformEntry) {
   return (
@@ -132,7 +131,7 @@ export function PlatformEditor({
         <button
           type="button"
           onClick={() => setShowCompletions(true)}
-          className="self-start text-xs text-primary-light hover:underline rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          className="self-start text-xs text-primary-link hover:underline rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
         >
           Já zerei antes nesta plataforma
         </button>
@@ -143,27 +142,25 @@ export function PlatformEditor({
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-gray-400">Vezes zerado</span>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
+              <IconButton
+                variant="bare"
                 onClick={() => onSave({ completions: entry.completions - 1 })}
                 disabled={disabled || entry.completions <= (isPlayed ? 1 : 0)}
-                className={iconButtonClass}
                 aria-label={`Diminuir vezes zerado em ${name}`}
               >
                 <Minus className="size-3.5" />
-              </button>
+              </IconButton>
               <span className="w-5 text-center text-sm font-medium text-white">
                 {entry.completions}
               </span>
-              <button
-                type="button"
+              <IconButton
+                variant="bare"
                 onClick={() => onSave({ completions: entry.completions + 1 })}
                 disabled={disabled}
-                className={iconButtonClass}
                 aria-label={`Aumentar vezes zerado em ${name}`}
               >
                 <Plus className="size-3.5" />
-              </button>
+              </IconButton>
             </div>
           </div>
           {isPlayed && (
@@ -188,14 +185,15 @@ export function PlatformEditor({
 
       {isDirty && (
         <div className="flex justify-end">
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="sm"
             onClick={() => onSave(patch)}
             disabled={disabled}
-            className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Salvar
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -214,16 +212,18 @@ export function RemovePlatformButton({
   className?: string
 }) {
   return (
-    <button
-      type="button"
+    <IconButton
+      variant="bare"
+      size="md"
+      tone="danger"
       onClick={onClick}
       disabled={disabled}
       title={`Remover ${label}`}
       aria-label={`Remover ${label} do jogo`}
-      className={`flex items-center justify-center size-9 shrink-0 rounded-md text-gray-400 hover:text-red-400 hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 ${className}`}
+      className={className}
     >
       <Trash2 className="size-4" aria-hidden />
-    </button>
+    </IconButton>
   )
 }
 
@@ -370,21 +370,23 @@ function ConsolePicker({
         )}
       </select>
       <div className="flex justify-end gap-2">
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={onCancel}
-          className="px-2.5 py-1 min-h-9 rounded-md text-xs text-gray-300 hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="primary"
+          size="sm"
           disabled={disabled || value === ''}
           onClick={() => value !== '' && onConfirm(value)}
-          className="px-2.5 py-1 min-h-9 rounded-md text-xs font-medium text-primary hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Adicionar
-        </button>
+        </Button>
       </div>
     </div>
   )

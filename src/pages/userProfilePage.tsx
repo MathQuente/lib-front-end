@@ -70,7 +70,7 @@ export function UserProfilePage() {
           title="Não foi possível abrir o perfil"
           description="Tente de novo em instantes."
           primaryAction={
-            <Button variant="primary" size="md" onClick={() => refetch()}>
+            <Button variant="secondary" size="md" onClick={() => refetch()}>
               Tentar novamente
             </Button>
           }

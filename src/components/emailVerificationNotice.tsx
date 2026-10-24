@@ -37,7 +37,7 @@ export function EmailVerificationNotice() {
       <div className="flex shrink-0 items-center justify-between gap-2">
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="sm"
           loading={isSending}
           disabled={!!waitLabel}

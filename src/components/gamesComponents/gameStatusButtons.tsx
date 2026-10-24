@@ -166,14 +166,14 @@ export function GameStatusButtons({ game }: GameFormProps) {
         <Icon
           className={`size-6 transition-colors ${
             active || choosing
-              ? 'text-primary'
+              ? 'text-primary-light'
               : 'text-gray-400 group-hover:text-gray-300'
           }`}
         />
         <span
           className={`text-xs text-center transition-colors ${
             active || choosing
-              ? 'text-primary font-medium'
+              ? 'text-primary-link font-medium'
               : 'text-gray-400 group-hover:text-gray-300'
           }`}
         >

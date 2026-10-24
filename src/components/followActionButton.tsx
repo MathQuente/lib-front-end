@@ -14,7 +14,7 @@ export function FollowActionButton({ userId }: { userId: string }) {
     return (
       <Button
         type="button"
-        variant="cancel"
+        variant="secondary"
         onClick={() => unfollow()}
         loading={isMutating}
         title="Deixar de seguir"

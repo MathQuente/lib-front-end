@@ -57,7 +57,7 @@ export function ReviewEditor({
         </span>
         <div className="flex gap-2">
           {onCancel && (
-            <Button variant="cancel" onClick={onCancel}>
+            <Button variant="secondary" onClick={onCancel}>
               Cancelar
             </Button>
           )}

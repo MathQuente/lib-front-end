@@ -171,7 +171,7 @@ export function GameReviewsPage() {
                 Verifique a conexão e tente de novo.
               </p>
             </div>
-            <Button variant="primary" size="md" onClick={() => refetch()}>
+            <Button variant="secondary" size="md" onClick={() => refetch()}>
               Tentar novamente
             </Button>
           </div>

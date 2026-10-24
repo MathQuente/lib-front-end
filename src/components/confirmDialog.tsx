@@ -6,7 +6,7 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmLabel = 'Confirmar',
+  confirmLabel,
   onConfirm,
   isLoading
 }: {
@@ -14,7 +14,7 @@ export function ConfirmDialog({
   onOpenChange: (open: boolean) => void
   title: string
   description: string
-  confirmLabel?: string
+  confirmLabel: string
   onConfirm: () => void
   isLoading?: boolean
 }) {
@@ -29,13 +29,12 @@ export function ConfirmDialog({
           <Dialog.Description className="text-sm text-gray-400">
             {description}
           </Dialog.Description>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Dialog.Close asChild>
-              <Button variant="cancel">Cancelar</Button>
+              <Button variant="secondary">Cancelar</Button>
             </Dialog.Close>
             <Button
-              variant="primary"
-              className="bg-red-600 hover:bg-red-500"
+              variant="danger"
               onClick={onConfirm}
               loading={isLoading}
             >

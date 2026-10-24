@@ -380,7 +380,7 @@ export function PlatformImportSection<TResult>({
               </Button>
               <Button
                 type="button"
-                variant="cancel"
+                variant="secondary"
                 size="sm"
                 className="px-3 py-1.5 font-medium"
                 onClick={handleCancelVerification}
@@ -482,7 +482,7 @@ export function PlatformImportSection<TResult>({
                   loading={isStarting}
                 >
                   {status?.status === 'failed'
-                    ? 'Tentar de novo'
+                    ? 'Tentar novamente'
                     : `Importar ${ofLabel}`}
                 </Button>
               )
@@ -494,7 +494,7 @@ export function PlatformImportSection<TResult>({
             )}
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="md"
               className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
               onClick={() => setDisconnectDialogOpen(true)}

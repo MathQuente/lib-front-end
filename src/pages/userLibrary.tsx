@@ -37,10 +37,10 @@ export function UserLibrary() {
             </p>
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               onClick={() => refetchUserGames()}
             >
-              Tentar de novo
+              Tentar novamente
             </Button>
           </div>
         ) : (

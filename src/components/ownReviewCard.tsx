@@ -178,7 +178,7 @@ export function OwnReviewCard({
           <div className="flex items-center gap-2">
             <div ref={triggerRef}>
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 onClick={() => setEditing(true)}
               >
@@ -186,7 +186,7 @@ export function OwnReviewCard({
               </Button>
             </div>
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => setConfirmOpen(true)}
             >

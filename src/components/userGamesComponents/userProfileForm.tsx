@@ -269,7 +269,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         <div className="flex justify-end gap-3 pt-4 border-t border-dark-border">
           <Button
             type="button"
-            variant="cancel"
+            variant="secondary"
             onClick={handleCancel}
             disabled={isUpdatingProfile}
           >
