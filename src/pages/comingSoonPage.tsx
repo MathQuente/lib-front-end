@@ -34,7 +34,7 @@ export function ComingSoonPage() {
         : 'name'
   })
 
-  const LIMIT = 36
+  const LIMIT = 48
   const { ComingSoon } = useGames(page, search, sortField, sortOrder, LIMIT)
 
   if (!ComingSoon) {

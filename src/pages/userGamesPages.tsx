@@ -9,7 +9,7 @@ import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
 import type { GameListData } from '../types/games'
 
-const ITEMS_PER_PAGE = 40
+const ITEMS_PER_PAGE = 48
 
 export function UserGamesPageByStatus() {
   const { status } = useParams<{ status: string }>()

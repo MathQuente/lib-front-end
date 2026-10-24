@@ -26,7 +26,7 @@ export function Games() {
         : 'name'
   })
 
-  const LIMIT = 40
+  const LIMIT = 48
   const { GamesResponse } = useGames(page, '', sortField, sortOrder, LIMIT)
 
   if (!GamesResponse) {
