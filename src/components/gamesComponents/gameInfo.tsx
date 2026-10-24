@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import dayjs from 'dayjs'
 import { Pencil, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
@@ -19,6 +18,11 @@ import { GameModal } from './gameModal'
 import { GameStatusButtons } from './gameStatusButtons'
 import { LibraryStats } from './libraryStats'
 import { focusRing } from '../../styles/focus'
+import {
+  daysUntilRelease,
+  formatReleaseDate,
+  releaseYear as yearOf
+} from '../../utils/releaseDate'
 
 export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()
@@ -44,10 +48,8 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
   const inWishlist = statusId === STATUS.WISHLIST
 
   const releaseDate = details?.game.releaseDate ?? game.releaseDate ?? null
-  const releaseYear = releaseDate ? dayjs.unix(releaseDate).year() : null
-  const isUpcoming = releaseDate
-    ? dayjs.unix(releaseDate).isAfter(dayjs())
-    : false
+  const releaseYear = releaseDate ? yearOf(releaseDate) : null
+  const isUpcoming = releaseDate ? daysUntilRelease(releaseDate) > 0 : false
   const endless = endlessControl(statusId, isUpcoming)
   const genres = details?.game.genres.slice(0, 3) ?? []
   const summary = details?.game.summary ?? game.summary
@@ -131,7 +133,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
           <>
             {inWishlist && isUpcoming && releaseDate && (
               <p className="text-sm text-primary-light">
-                Lança em {dayjs.unix(releaseDate).format('DD/MM/YYYY')}
+                Lança em {formatReleaseDate(releaseDate)}
               </p>
             )}
             {!inWishlist && hasCommunityAverage && (

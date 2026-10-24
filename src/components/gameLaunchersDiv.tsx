@@ -1,6 +1,6 @@
-import dayjs from 'dayjs'
 import type { GameLaunchersDivProps } from '../interfaces/games'
 import { getPlatformIcon } from '../utils/platformIcon'
+import { formatReleaseDate } from '../utils/releaseDate'
 
 export function GameLaunchersDiv({ platformName, date }: GameLaunchersDivProps) {
   const Icon = getPlatformIcon(platformName)
@@ -10,7 +10,7 @@ export function GameLaunchersDiv({ platformName, date }: GameLaunchersDivProps) 
       <Icon className="size-4 text-gray-400 flex-shrink-0" />
       <span className="text-gray-400">{platformName}:</span>
       <span className="text-gray-300">
-        {date ? dayjs.unix(date).format('DD/MM/YYYY') : 'Data desconhecida'}
+        {date ? formatReleaseDate(date) : 'Data desconhecida'}
       </span>
     </div>
   )

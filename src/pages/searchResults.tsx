@@ -3,7 +3,6 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { Gamepad2, Users } from 'lucide-react'
 import { useGames } from '../hooks/useGames'
 import { useUserSearch } from '../hooks/useUserSearch'
-import dayjs from 'dayjs'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
 import { StatusMessage } from '../components/statusMessage'
@@ -11,6 +10,7 @@ import { GameCard } from '../components/gamesComponents/gameCard'
 import { BackButton } from '../components/backButton'
 import { SectionHeading } from '../components/sectionHeading'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
+import { releaseYear } from '../utils/releaseDate'
 
 type SearchTab = 'todos' | 'jogos' | 'pessoas'
 
@@ -134,7 +134,7 @@ export function SearchResults() {
                   </h2>
                   {game.releaseDate && (
                     <span className="text-sm text-gray-300 bg-dark-bg-lighter border border-dark-border rounded-full px-2.5 py-1 self-start sm:self-center flex-shrink-0">
-                      {dayjs.unix(game.releaseDate).format('YYYY')}
+                      {releaseYear(game.releaseDate)}
                     </span>
                   )}
                 </div>

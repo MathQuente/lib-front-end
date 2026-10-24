@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { BackButton } from '../components/backButton'
@@ -22,6 +21,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useGame } from '../hooks/useGame'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import { hiResCover } from '../utils/hiResCover'
+import { formatReleaseDate } from '../utils/releaseDate'
 
 export function GamePage() {
   const { user } = useAuth()
@@ -202,7 +202,7 @@ export function GamePage() {
                   Lançamento
                 </p>
                 <span className="inline-flex items-center px-2.5 py-1 bg-dark-bg-lighter border border-dark-border rounded-full text-sm text-gray-300">
-                  {dayjs.unix(game.releaseDate).format('DD/MM/YYYY')}
+                  {formatReleaseDate(game.releaseDate)}
                 </span>
               </div>
             )}
