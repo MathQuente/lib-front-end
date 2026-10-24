@@ -1,5 +1,10 @@
 {
   "name": "EuZerei",
+  "short_name": "EuZerei",
+  "description": "Organize e acompanhe sua biblioteca de jogos.",
+  "id": "/",
+  "start_url": "/",
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "/icon-192.png",
