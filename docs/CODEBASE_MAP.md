@@ -95,7 +95,7 @@ src/
   pages/                     one file per route
   schemas/                   zod schemas (login/signup/profile)
   types/                     domain types (games/user/rating/sidebar)
-  utils/                     helpers; `platformConsoles.ts` mirrors the back end console × platform map
+  utils/                     helpers; `platformConsoles.ts` mirrors the back end console × platform map; `releaseDate.ts` formats IGDB release dates in UTC (IGDB sends midnight UTC, local formatting shows the previous day in Brazil); `platformLabel.ts` shortens platform names (PC, PS5, Xbox Series...)
 docs/                        this map
 ```
 
@@ -124,7 +124,7 @@ Core reusable "show a game, let a user act on it" unit.
 
 | File | Role |
 |---|---|
-| `gameCard.tsx` | Cover thumbnail, 4 sizes (`small`/`medium`/`compact`/`larger`). Exports `GameCard` + `getGameTag()` helper (also used standalone by `dlcAndOriginalGameArea.tsx`). `CATEGORY_TAGS` (IGDB category id → PT label) + `TEXT_HINTS` (regex fallback via name/summary when category id missing). `interactive` prop toggles `<button>` (default) vs plain `<div>` — exists solely so callers who already wrap the card in a router `<Link>` don't nest a button inside an anchor. |
+| `gameCard.tsx` | Cover thumbnail, 6 sizes (`small`/`medium`/`compact`/`larger` plus `row` 44px and `feature` 92px, both 7:10 and without badges or hover overlay). Exports `GameCard` + `getGameTag()` helper (also used standalone by `dlcAndOriginalGameArea.tsx`). `CATEGORY_TAGS` (IGDB category id → PT label) + `TEXT_HINTS` (regex fallback via name/summary when category id missing). `interactive` prop toggles `<button>` (default) vs plain `<div>` — exists solely so callers who already wrap the card in a router `<Link>` don't nest a button inside an anchor. |
 | `gameModal.tsx` | Radix `Dialog` wrapper for game popovers; visually-hidden title for a11y. |
 | `gameForm.tsx` | Status button row (Jogado/Jogando/Backlog/Lista de Desejos), filtered by whether `game.releaseDate` is past. Toggling active status removes it; different status updates; no status adds. Renders `PlayedCount` only when status is PLAYED. |
 | `../gamePlatformsSection.tsx` | Platform rows in the game modal. Row key is `platform:console`; PlayStation/Xbox/Nintendo/Steam ask for the console through `ConsolePicker` (native `<select>`, options filtered by the game's IGDB platforms via `consolesForGame`; a single remaining console is added without asking), Epic adds as `UNKNOWN`. "Outro" is no longer offered (old `OTHER` rows still display). Row name is the console, or the platform when the console is `UNKNOWN`. Shows a note when a platform has 2+ known consoles (imports skip those games). |
@@ -192,7 +192,7 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | `emptyState.tsx` | Generic empty-state message. |
 | `gameLaunchersDiv.tsx` | Per-platform release-date pill. |
 | `gameListPage.tsx` | Composes `SortControls`+`GamesGrid`+`Pagination`; manages URL query params via manual `URL`/`history.pushState` (not `useSearchParams`, unlike `authentication.tsx`). |
-| `gameListSection.tsx` | Home page's 3 list sections: list from `lg`, horizontal `CoverRow` below; local `RatedScore` calls `useRating` per game (N+1 pattern). |
+| `gameListSection.tsx` | Home page's 3 list sections: from `lg` one `FeaturedGameRow` (first game) plus `GameRow`s (numbered for trending/rated), horizontal `CoverRow` below. `RatedScore` (in `homeComponents/gameListRows.tsx`) calls `useRating` per game (N+1 pattern). Release dates and platform labels come from `utils/releaseDate.ts` and `utils/platformLabel.ts`. |
 | `footer.tsx` | Site footer rendered by `layout.tsx` on every page; account links depend on login state. |
 | `homeComponents/` | Home blocks: `coverWall` (CSS-animated cover rows, logged out), `loggedOutHero`, `playingNow`, `nextUp` (backlog suggestion + queue), `librarySummary`, `coverRow` (horizontal cover strip), `styles` (shared title/link classes). |
 | `iconButton.tsx` | Icon-only button base for pagination. |

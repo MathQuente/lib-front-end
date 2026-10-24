@@ -72,6 +72,8 @@ const sizes = {
   medium: 'aspect-[7/10] w-full',
   compact: 'w-32 h-44',
   larger: 'w-44 h-56',
+  row: 'aspect-[7/10] w-11',
+  feature: 'aspect-[7/10] w-[92px]',
 }
 
 const CATEGORY_TAGS: Record<number, string> = {
@@ -126,27 +128,28 @@ export function GameCard({
   interactive = true,
 }: GameCardProps) {
   const [open, setOpen] = useState(false)
+  const bare = size === 'small' || size === 'row' || size === 'feature'
   const tag =
-    game && size !== 'small'
+    game && !bare
       ? getGameTag(game.name, game.summary, game.category, game.parentGameId)
       : null
 
-  const showRating = size !== 'small' && game?.rating != null
+  const showRating = !bare && game?.rating != null
   const ratingText =
     game?.rating != null ? RATING_FORMAT.format(game.rating) : ''
-  const showEndless = size !== 'small' && game?.endless === true
+  const showEndless = !bare && game?.endless === true
   const completions = game?.completions ?? 0
   const showReplayBadge =
-    size !== 'small' &&
+    !bare &&
     completions > 0 &&
     (game?.status === 'PLAYING' || game?.status === 'BACKLOG')
   const statusBadge =
-    size !== 'small' && game?.status
+    !bare && game?.status
       ? LIBRARY_STATUS_BADGES[game.status]
       : undefined
   const accentColor = statusBadge?.iconColor ?? 'text-primary'
   const playedOn =
-    size !== 'small'
+    !bare
       ? (game?.playedOn ?? [])
           .map(getLibraryPlatform)
           .filter(p => p !== undefined)
@@ -154,8 +157,11 @@ export function GameCard({
   const visiblePlatforms = playedOn.slice(0, MAX_CARD_PLATFORMS)
   const hiddenPlatformCount = playedOn.length - visiblePlatforms.length
 
+  const lifts = size !== 'row' && size !== 'feature'
   const cardClassName = twMerge(
-    'group relative rounded-lg overflow-hidden hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
+    'group relative rounded-lg overflow-hidden',
+    lifts &&
+      'hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
     interactive &&
       'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light',
     size === 'medium' ? 'block w-full' : sizes[size]
@@ -258,7 +264,7 @@ export function GameCard({
           className={twMerge(
             sizes[size],
             'rounded-lg object-cover',
-            size !== 'small' &&
+            !bare &&
               'transition-opacity duration-200 group-hover:opacity-20'
           )}
           src={hiResCover(game.coverUrl)}
@@ -278,7 +284,7 @@ export function GameCard({
         </div>
       )}
 
-      {size !== 'small' && (
+      {!bare && (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <span className="text-white font-semibold text-center px-3 text-sm md:text-base translate-y-2 group-hover:translate-y-0 transition-transform duration-200 drop-shadow-lg">
             {game?.name}

@@ -1,12 +1,15 @@
-import dayjs from 'dayjs'
-import { GameCard } from './gamesComponents/gameCard'
 import { Link } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
 import { CalendarClock, Star, TrendingUp } from 'lucide-react'
-import { useRating } from '../hooks/useRating'
 import type { GameListSectionProps, SectionType } from '../interfaces/games'
 import type { GameBase } from '../types/games'
+import { formatReleaseDate } from '../utils/releaseDate'
 import { CoverRow } from './homeComponents/coverRow'
+import {
+  FeaturedGameRow,
+  GameRow,
+  RatedScore,
+} from './homeComponents/gameListRows'
 import { sectionTitle, textLink } from './homeComponents/styles'
 
 const EMPTY_STATE_ICON: Record<SectionType, typeof Star> = {
@@ -15,38 +18,12 @@ const EMPTY_STATE_ICON: Record<SectionType, typeof Star> = {
   rateds: Star,
 }
 
-function RatedScore({ igdbId }: { igdbId: number }) {
-  const { average, isAverageLoading, isAverageError } = useRating(
-    igdbId.toString()
-  )
-
-  const score = (() => {
-    if (isAverageLoading) return null
-    if (isAverageError || !average || average.average == null) return null
-    return Math.round(average.average * 10) / 10
-  })()
-
-  if (score === null) {
-    return <p className="text-xs text-gray-400 mt-0.5">Sem avaliações</p>
-  }
-
-  return (
-    <div className="flex items-center gap-1 mt-0.5">
-      <Star className="size-3 text-gray-300 fill-gray-300" />
-      <span className="text-xs text-gray-300 font-medium">{score}</span>
-      <span className="text-xs text-gray-400">/5</span>
-    </div>
-  )
-}
-
 function GameMeta({ game, type }: { game: GameBase; type: SectionType }) {
   if (type === 'rateds') return <RatedScore igdbId={game.igdbId} />
 
   return (
     <p className="text-xs text-gray-400 mt-0.5">
-      {game.releaseDate
-        ? dayjs.unix(game.releaseDate).format('DD MMM YYYY')
-        : '—'}
+      {game.releaseDate ? formatReleaseDate(game.releaseDate) : '—'}
     </p>
   )
 }
@@ -83,24 +60,20 @@ export function GameListSection({
             className="lg:hidden"
             renderMeta={game => <GameMeta game={game} type={type} />}
           />
-          <div className="hidden lg:flex flex-col gap-3">
-            {games.map(game => (
-              <Link
-                to={`/games/${encodeURIComponent(game.igdbId)}`}
-                key={game.igdbId}
-                className="flex gap-3 items-center group rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-              >
-                <div className="flex-shrink-0">
-                  <GameCard game={game} size="small" interactive={false} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm text-white group-hover:underline underline-offset-4 truncate">
-                    {game.name}
-                  </p>
-                  <GameMeta game={game} type={type} />
-                </div>
-              </Link>
-            ))}
+          <div className="hidden lg:flex flex-col">
+            <FeaturedGameRow game={games[0]} type={type} />
+            {games.length > 1 && (
+              <div className="mt-3 flex flex-col gap-1 border-t border-dark-border pt-3">
+                {games.slice(1).map((game, i) => (
+                  <GameRow
+                    key={game.igdbId}
+                    game={game}
+                    type={type}
+                    rank={type === 'coming' ? undefined : i + 2}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </>
       )}
