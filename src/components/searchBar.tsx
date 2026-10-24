@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Search, X } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { SearchBarProps } from '../interfaces/ui'
 import { fieldFocus } from '../styles/focus'
 
 export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarProps) {
   const { query } = useParams()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const internalInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>('')
 
@@ -19,10 +20,8 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
       justSubmittedRef.current = false
       return
     }
-    if (query) {
-      setSearch(query)
-    }
-  }, [query])
+    setSearch(query ?? '')
+  }, [pathname, query])
 
   useEffect(() => {
     if (!autoFocus) return
