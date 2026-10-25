@@ -266,6 +266,18 @@ export const api = {
     })
     return response.data
   },
+  searchGames: async (query: string, page: number, limit: number) => {
+    const response = await http.get('/games', {
+      params: {
+        pageIndex: page - 1,
+        query,
+        sortBy: 'relevance',
+        sortOrder: 'desc',
+        limit
+      }
+    })
+    return response.data
+  },
   getGame: async (igdbId: string | undefined) => {
     const response = await http.get(`/games/${encodeURIComponent(String(igdbId))}`)
     return response.data

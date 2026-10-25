@@ -1,8 +1,4 @@
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQuery,
-} from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { api } from './useApi'
 import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
@@ -26,38 +22,6 @@ export const useGames = (
     placeholderData: keepPreviousData,
   })
 
-  const {
-    data: GamesResponseInfinity,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    isLoading: isLoadingInfinite,
-    isError: isErrorInfinite,
-    refetch: refetchInfinite,
-  } = useInfiniteQuery<UseGamesProps>({
-    queryKey: ['gamesInfinite', search, sortBy, sortOrder],
-    queryFn: async ({ pageParam }) =>
-      api.getGames(pageParam as number, search, sortBy, sortOrder, limit),
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage) {
-        return undefined
-      }
-
-      const totalLoadedGames = allPages.reduce(
-        (acc, page) => acc + (page.games.length || 0),
-        0
-      )
-
-      if (totalLoadedGames < lastPage.total) {
-        return allPages.length + 1
-      }
-
-      return undefined
-    },
-    initialPageParam: 1,
-    enabled: !!limit,
-  })
-
   const { data: ComingSoon } = useQuery<UseGamesProps>({
     queryKey: ['comingSoon', page, search, sortBy, sortOrder, limit],
     queryFn: async () =>
@@ -77,17 +41,10 @@ export const useGames = (
 
   return {
     GamesResponse,
-    GamesResponseInfinity,
     ComingSoon,
     gamesFeatured,
     isLoadingFeatured,
     isErrorFeatured,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoadingInfinite,
-    isErrorInfinite,
-    refetchInfinite,
     isLoading,
     isError,
   }

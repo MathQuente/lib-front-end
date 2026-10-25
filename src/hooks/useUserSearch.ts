@@ -3,7 +3,7 @@ import { api } from './useApi'
 import type { SearchUsersResponse } from '../types/follow'
 
 export const useUserSearch = (query: string) => {
-  const { data, isLoading } = useQuery<SearchUsersResponse>({
+  const { data, isLoading, isError, refetch } = useQuery<SearchUsersResponse>({
     queryKey: ['userSearch', query],
     queryFn: () => api.searchUsers(query),
     enabled: query.trim().length > 0
@@ -11,6 +11,8 @@ export const useUserSearch = (query: string) => {
 
   return {
     users: data?.users ?? [],
-    isLoading
+    isLoading,
+    isError,
+    refetch
   }
 }

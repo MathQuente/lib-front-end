@@ -69,7 +69,7 @@ export const useRating = (igdbId: string | undefined) => {
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['games'] })
-      queryClient.invalidateQueries({ queryKey: ['gamesInfinite'] })
+      queryClient.invalidateQueries({ queryKey: ['gameSearch'] })
       queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })

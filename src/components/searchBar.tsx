@@ -8,7 +8,7 @@ import { fieldFocus } from '../styles/focus'
 export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarProps) {
   const { query } = useParams()
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const { pathname, search: locationSearch } = useLocation()
   const internalInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>('')
 
@@ -42,7 +42,12 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
     e.preventDefault()
     if (search.trim()) {
       justSubmittedRef.current = true
-      navigate(`/search/${encodeURIComponent(search.trim())}`)
+      const keepTab =
+        pathname.startsWith('/search/') &&
+        new URLSearchParams(locationSearch).get('tab') === 'pessoas'
+      navigate(
+        `/search/${encodeURIComponent(search.trim())}${keepTab ? '?tab=pessoas' : ''}`
+      )
       setSearch('')
       if (isMobile) {
         onClose?.()
@@ -51,7 +56,11 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
   }
 
   return (
-    <form onSubmit={handleSearch}>
+    <form
+      onSubmit={handleSearch}
+      role="search"
+      aria-label="Buscar jogos ou pessoas"
+    >
       <div className="relative flex items-center">
         <Search className="absolute left-2.5 text-gray-400 pointer-events-none size-4" />
         <input

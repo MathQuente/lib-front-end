@@ -1,267 +1,275 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Gamepad2, Users } from 'lucide-react'
-import { useGames } from '../hooks/useGames'
-import { useUserSearch } from '../hooks/useUserSearch'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { Button } from '../components/button'
 import { StatusMessage } from '../components/statusMessage'
-import { GameCard } from '../components/gamesComponents/gameCard'
 import { BackButton } from '../components/backButton'
-import { SectionHeading } from '../components/sectionHeading'
+import { Pagination } from '../components/pagination'
+import { SearchResultCard } from '../components/searchResultCard'
+import { rowLink } from '../components/homeComponents/styles'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
-import { releaseYear } from '../utils/releaseDate'
+import { SEARCH_PAGE_SIZE, useGameSearch } from '../hooks/useGameSearch'
+import { useUserSearch } from '../hooks/useUserSearch'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { parsePage } from '../utils/parsePage'
 
-type SearchTab = 'todos' | 'jogos' | 'pessoas'
+const USERS_PAGE_SIZE = 30
+
+const tabClass = (active: boolean) =>
+  `px-3 py-1.5 text-sm rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
+    active ? 'bg-primary text-white font-semibold' : 'text-gray-400 hover:text-white'
+  }`
+
+const GAMES_GRID =
+  'grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8 gap-x-3 sm:gap-x-4 gap-y-5'
+
+function GamesSkeleton() {
+  return (
+    <div className={`grid ${GAMES_GRID} animate-pulse`} aria-hidden="true">
+      {Array.from({ length: 12 }, (_, i) => `sk${i}`).map(k => (
+        <div key={k} className="flex flex-col gap-1.5">
+          <div className="aspect-[7/10] w-full rounded-lg bg-dark-bg-lighter" />
+          <div className="h-3 w-4/5 rounded bg-dark-bg-lighter" />
+          <div className="h-3 w-1/4 rounded bg-dark-bg-lighter" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SkeletonRows() {
+  return (
+    <div className="flex flex-col gap-1 animate-pulse" aria-hidden="true">
+      {Array.from({ length: 8 }, (_, i) => `sk${i}`).map(k => (
+        <div key={k} className="flex items-center gap-3 p-2">
+          <div className="w-11 aspect-[7/10] rounded-lg bg-dark-bg-lighter shrink-0" />
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="h-4 w-2/3 rounded bg-dark-bg-lighter" />
+            <div className="h-3 w-1/3 rounded bg-dark-bg-lighter" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export function SearchResults() {
   const { query } = useParams()
-  useDocumentTitle(query ? `Busca: ${query}` : 'Busca')
   const [searchParams, setSearchParams] = useSearchParams()
-  const tab: SearchTab =
-    searchParams.get('tab') === 'jogos' || searchParams.get('tab') === 'pessoas'
-      ? (searchParams.get('tab') as SearchTab)
-      : 'todos'
-
-  function handleTabChange(next: SearchTab) {
-    setSearchParams(next === 'todos' ? {} : { tab: next }, { replace: true })
-  }
+  const tab = searchParams.get('tab') === 'pessoas' ? 'pessoas' : 'jogos'
+  const page = parsePage(searchParams.get('page'))
+  const listRef = useRef<HTMLDivElement>(null)
 
   const {
-    GamesResponseInfinity,
-    fetchNextPage,
-    hasNextPage,
-    isLoadingInfinite,
-    isErrorInfinite,
-    refetchInfinite
-  } = useGames(1, query, 'name', 'asc', 10)
+    games,
+    total,
+    isLoading: isLoadingGames,
+    isError: isErrorGames,
+    isPlaceholderData,
+    refetch: refetchGames
+  } = useGameSearch(query, page)
 
-  const { users, isLoading: isLoadingUsers } = useUserSearch(query ?? '')
+  const {
+    users,
+    isLoading: isLoadingUsers,
+    isError: isErrorUsers,
+    refetch: refetchUsers
+  } = useUserSearch(query ?? '')
 
-  const resultForSearchGames =
-    GamesResponseInfinity?.pages.flatMap(page => page.games) ?? []
-  const totalGames = GamesResponseInfinity?.pages[0]?.total ?? 0
+  const totalPages = Math.max(Math.ceil(total / SEARCH_PAGE_SIZE), 1)
+  const usersLabel =
+    users.length >= USERS_PAGE_SIZE ? `${USERS_PAGE_SIZE}+` : users.length
+  const showsPageInTitle =
+    tab === 'jogos' && !isLoadingGames && page > 1 && page <= totalPages
 
-  const showGames = tab === 'todos' || tab === 'jogos'
-  const showPeople = tab === 'todos' || tab === 'pessoas'
+  useDocumentTitle(
+    query
+      ? `Busca: ${query}${showsPageInTitle ? ` (página ${page} de ${totalPages})` : ''}`
+      : 'Busca'
+  )
 
-  const tabClass = (active: boolean) =>
-    `px-3 py-1.5 text-sm rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
-      active
-        ? 'bg-primary text-white font-semibold'
-        : 'text-gray-400 hover:text-white'
-    }`
+  useEffect(() => {
+    if (tab === 'jogos' && total > 0 && page > totalPages) {
+      setSearchParams(
+        prev => {
+          const params = new URLSearchParams(prev)
+          if (totalPages <= 1) params.delete('page')
+          else params.set('page', String(totalPages))
+          return params
+        },
+        { replace: true }
+      )
+    }
+  }, [tab, total, page, totalPages, setSearchParams])
 
-  let gamesSection: ReactNode
-
-  if (isLoadingInfinite) {
-    gamesSection = (
-      <div className="flex flex-col gap-4 mt-4 animate-pulse">
-        {Array.from({ length: 5 }, (_, i) => `sk${i}`).map(k => (
-          <div key={k} className="flex gap-4 p-4">
-            <div className="w-32 h-40 rounded-lg bg-dark-bg-light flex-shrink-0" />
-            <div className="flex-1 flex flex-col gap-3 py-1">
-              <div className="h-5 bg-dark-bg-light rounded w-3/4" />
-              <div className="h-4 bg-dark-bg-light rounded w-1/3" />
-              <div className="h-3 bg-dark-bg-light rounded w-full" />
-              <div className="h-3 bg-dark-bg-light rounded w-5/6" />
-            </div>
-          </div>
-        ))}
-      </div>
-    )
-  } else if (isErrorInfinite) {
-    gamesSection = (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">Erro ao carregar jogos</p>
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => refetchInfinite()}
-          >
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    )
-  } else if (resultForSearchGames.length === 0) {
-    gamesSection = (
-      <StatusMessage
-        variant="empty"
-        title="Nenhum jogo encontrado"
-        description={
-          query ? (
-            <span>
-              Não encontramos resultados para{' '}
-              <span className="text-primary-link font-medium">"{query}"</span>.
-              Tente termos diferentes ou verifique a ortografia.
-            </span>
-          ) : (
-            'Não há jogos disponíveis no momento.'
-          )
-        }
-      />
-    )
-  } else {
-    gamesSection = (
-      <InfiniteScroll
-        dataLength={resultForSearchGames.length}
-        next={fetchNextPage}
-        hasMore={hasNextPage}
-        loader={
-          <div className="flex justify-center py-4">
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
-              <p className="text-gray-400">Carregando mais jogos...</p>
-            </div>
-          </div>
-        }
-      >
-        {resultForSearchGames.map(game => (
-          <div key={game.igdbId}>
-            <Link
-              to={`/games/${game.igdbId}`}
-              className="group flex flex-col sm:flex-row items-start gap-4 p-4 rounded-lg hover:bg-dark-bg-lighter transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-            >
-              <div className="w-full sm:w-auto flex-shrink-0">
-                <GameCard game={game} size="larger" interactive={false} />
-              </div>
-
-              <div className="flex-1 w-full sm:w-auto min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                  <h2 className="text-white font-semibold text-lg sm:text-xl group-hover:text-primary transition-colors duration-200 truncate">
-                    {game.name}
-                  </h2>
-                  {game.releaseDate && (
-                    <span className="text-sm text-gray-300 bg-dark-bg-lighter border border-dark-border rounded-full px-2.5 py-1 self-start sm:self-center flex-shrink-0">
-                      {releaseYear(game.releaseDate)}
-                    </span>
-                  )}
-                </div>
-
-                {game.platforms && game.platforms.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-3 text-sm text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                      <span className="break-words">
-                        {game.platforms.join(', ')}
-                      </span>
-                    </span>
-                  </div>
-                )}
-
-                {game.summary && (
-                  <p className="text-gray-300 text-sm line-clamp-2 sm:line-clamp-3 break-words">
-                    {game.summary}
-                  </p>
-                )}
-              </div>
-            </Link>
-
-            <div className="border-b border-dark-border mt-4 mb-4" />
-          </div>
-        ))}
-      </InfiniteScroll>
-    )
+  function handlePageChange(next: number) {
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev)
+      if (next <= 1) params.delete('page')
+      else params.set('page', String(next))
+      return params
+    })
+    listRef.current?.scrollIntoView({ block: 'start' })
   }
 
+  let statusText = ''
+  if (tab === 'jogos') {
+    if (isLoadingGames) statusText = 'Buscando jogos…'
+    else if (!isErrorGames)
+      statusText = `${total} ${total === 1 ? 'jogo encontrado' : 'jogos encontrados'} para “${query}”`
+  } else if (isLoadingUsers) {
+    statusText = 'Buscando pessoas…'
+  } else if (!isErrorUsers) {
+    statusText = `${usersLabel} ${users.length === 1 ? 'pessoa encontrada' : 'pessoas encontradas'} para “${query}”`
+  }
+
+  const emptyDescription = (kind: string) =>
+    query ? (
+      <span>
+        Não encontramos {kind} para{' '}
+        <span className="text-primary-link font-medium">"{query}"</span>.
+        Tente termos diferentes ou verifique a ortografia.
+      </span>
+    ) : (
+      `Não há ${kind} disponíveis no momento.`
+    )
+
+  const isOutOfRange = !isErrorGames && games.length === 0 && total > 0
+
+  const gamesSection = isLoadingGames || isOutOfRange ? (
+    <GamesSkeleton />
+  ) : isErrorGames ? (
+    <div role="alert">
+      <StatusMessage
+        variant="empty"
+        icon="offline"
+        title="Não foi possível buscar jogos"
+        description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
+        primaryAction={
+          <Button variant="secondary" size="md" onClick={() => refetchGames()}>
+            Tentar novamente
+          </Button>
+        }
+      />
+    </div>
+  ) : games.length === 0 ? (
+    <StatusMessage
+      variant="empty"
+      title="Nenhum jogo encontrado"
+      description={emptyDescription('jogos')}
+    />
+  ) : (
+    <>
+      {!isLoadingUsers && users.length > 0 && page === 1 && (
+        <p className="mb-3 text-sm text-gray-400">
+          {usersLabel} {users.length === 1 ? 'pessoa também combina' : 'pessoas também combinam'}{' '}
+          com a busca.{' '}
+          <Link
+            to="?tab=pessoas"
+            className="text-primary-link hover:text-white transition-colors rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          >
+            Ver pessoas
+          </Link>
+        </p>
+      )}
+      <ul
+        className={`grid ${GAMES_GRID} transition-opacity ${isPlaceholderData ? 'opacity-60' : ''}`}
+        aria-busy={isPlaceholderData}
+      >
+        {games.map(game => (
+          <SearchResultCard key={game.igdbId} game={game} />
+        ))}
+      </ul>
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={total}
+          itemsPerPage={games.length}
+          onPageChange={handlePageChange}
+        />
+      )}
+    </>
+  )
+
   const peopleSection = isLoadingUsers ? (
-    <div className="flex flex-col gap-2 animate-pulse">
-      {Array.from({ length: 2 }, (_, i) => `sk${i}`).map(k => (
-        <div key={k} className="h-12 rounded-lg bg-dark-bg-lighter" />
-      ))}
+    <SkeletonRows />
+  ) : isErrorUsers ? (
+    <div role="alert">
+      <StatusMessage
+        variant="empty"
+        icon="offline"
+        title="Não foi possível buscar pessoas"
+        description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
+        primaryAction={
+          <Button variant="secondary" size="md" onClick={() => refetchUsers()}>
+            Tentar novamente
+          </Button>
+        }
+      />
     </div>
   ) : users.length === 0 ? (
     <StatusMessage
       variant="empty"
       title="Nenhuma pessoa encontrada"
-      description={
-        query ? (
-          <span>
-            Não encontramos usuários para{' '}
-            <span className="text-primary-link font-medium">"{query}"</span>.
-          </span>
-        ) : (
-          'Não há usuários pra mostrar no momento.'
-        )
-      }
+      description={emptyDescription('usuários')}
     />
   ) : (
-    <div className="flex flex-col gap-2">
+    <ul className="flex flex-col">
       {users.map(u => (
-        <Link
-          key={u.id}
-          to={`/users/${u.id}`}
-          className="flex items-center gap-3 rounded-lg hover:bg-dark-bg-lighter px-2 py-2 -mx-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
-        >
-          <img
-            src={u.profilePicture || userProfilePictureDefault}
-            alt=""
-            className="size-9 rounded-full object-cover border border-dark-border shrink-0"
-          />
-          <div className="min-w-0">
-            <p className="text-sm text-white font-medium truncate">
-              {u.userName ?? 'Usuário'}
-            </p>
-            <p className="text-xs text-gray-400">
-              {u.userGamesAmount} {u.userGamesAmount === 1 ? 'jogo' : 'jogos'}
-            </p>
-          </div>
-        </Link>
+        <li key={u.id}>
+          <Link to={`/users/${u.id}`} className={rowLink}>
+            <img
+              src={u.profilePicture || userProfilePictureDefault}
+              alt=""
+              className="size-9 rounded-full object-cover border border-dark-border shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-white">
+                {u.userName ?? 'Usuário'}
+              </p>
+              <p className="text-xs text-gray-400">
+                {u.userGamesAmount} {u.userGamesAmount === 1 ? 'jogo' : 'jogos'}
+              </p>
+            </div>
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 
   return (
     <>
       <BackButton className="mt-4 mb-2" />
 
-      <h1 className="text-center sm:text-left mb-4">
-        <span className="text-white text-lg sm:text-xl font-bold break-words">
-          Resultados para "{query}"
-        </span>
+      <h1 className="mb-1 text-center sm:text-left text-white text-lg sm:text-xl font-bold break-words">
+        Resultados para "{query}"
       </h1>
+      <p
+        role="status"
+        className="mb-4 min-h-5 text-center sm:text-left text-sm text-gray-400"
+      >
+        {statusText}
+      </p>
 
-      <div className="flex items-center gap-2 mb-4">
-        <button
-          type="button"
-          onClick={() => handleTabChange('todos')}
-          className={tabClass(tab === 'todos')}
-        >
-          Todos
-        </button>
-        <button
-          type="button"
-          onClick={() => handleTabChange('jogos')}
+      <nav aria-label="Tipo de resultado" className="mb-4 flex items-center gap-2">
+        <Link
+          to="?"
+          aria-current={tab === 'jogos' ? 'page' : undefined}
           className={tabClass(tab === 'jogos')}
         >
-          Jogos ({totalGames})
-        </button>
-        <button
-          type="button"
-          onClick={() => handleTabChange('pessoas')}
+          Jogos{!isLoadingGames && !isErrorGames ? ` (${total})` : ''}
+        </Link>
+        <Link
+          to="?tab=pessoas"
+          aria-current={tab === 'pessoas' ? 'page' : undefined}
           className={tabClass(tab === 'pessoas')}
         >
-          Pessoas ({users.length})
-        </button>
-      </div>
+          Pessoas{!isLoadingUsers && !isErrorUsers ? ` (${usersLabel})` : ''}
+        </Link>
+      </nav>
 
-      <div className="flex flex-col gap-6">
-        {showPeople && (isLoadingUsers || users.length > 0 || tab === 'pessoas') && (
-          <div className="bg-dark-bg-light border border-dark-border rounded-lg px-6 py-4">
-            <SectionHeading icon={Users}>Pessoas</SectionHeading>
-            {peopleSection}
-          </div>
-        )}
-
-        {showGames && (
-          <div className={tab === 'todos' ? 'bg-dark-bg-light border border-dark-border rounded-lg px-6 py-4' : ''}>
-            {tab === 'todos' && <SectionHeading icon={Gamepad2}>Jogos</SectionHeading>}
-            {gamesSection}
-          </div>
-        )}
+      <div ref={listRef} className="scroll-mt-4">
+        {tab === 'jogos' ? gamesSection : peopleSection}
       </div>
     </>
   )
