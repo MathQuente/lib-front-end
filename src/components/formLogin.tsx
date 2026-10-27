@@ -84,6 +84,30 @@ export function FormLogin() {
         <GoogleAuthButton />
         <DiscordAuthButton />
       </div>
+
+      <p className="text-xs leading-normal text-gray-400 text-center">
+        Primeiro acesso? Crie a conta na aba Criar conta para aceitar os{' '}
+        <Link
+          to="/termos"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`text-primary-link underline underline-offset-2 rounded-sm ${focusRing}`}
+        >
+          Termos de uso
+          <span className="sr-only"> (abre em nova aba)</span>
+        </Link>{' '}
+        e a{' '}
+        <Link
+          to="/privacidade"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`text-primary-link underline underline-offset-2 rounded-sm ${focusRing}`}
+        >
+          Política de privacidade
+          <span className="sr-only"> (abre em nova aba)</span>
+        </Link>
+        .
+      </p>
     </form>
   )
 }

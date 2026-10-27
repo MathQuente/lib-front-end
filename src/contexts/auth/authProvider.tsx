@@ -40,13 +40,27 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     }
   }
 
-  const signup = async (email: string, password: string) => {
+  const signup = async (
+    email: string,
+    password: string,
+    acceptedTerms: boolean
+  ) => {
     try {
-      const { user: newUser } = await api.signup(email, password)
+      const { user: newUser } = await api.signup(
+        email,
+        password,
+        acceptedTerms
+      )
       setUser(newUser)
       await loadUser()
       return null
     } catch (error) {
+      const termsMessage = isAxiosError(error)
+        ? error.response?.data?.error?.acceptedTerms?.[0]
+        : undefined
+      if (typeof termsMessage === 'string') {
+        return { field: 'acceptedTerms' as const, message: termsMessage }
+      }
       const isPasswordError =
         isAxiosError(error) &&
         typeof error.response?.data?.error?.password?.[0] === 'string'

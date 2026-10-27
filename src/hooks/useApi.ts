@@ -117,8 +117,12 @@ export const api = {
       showLoginError('Ocorreu um erro inesperado. 🤯')
     }
   },
-  signup: async (email: string, password: string) => {
-    const response = await http.post('/auth/register', { email, password })
+  signup: async (email: string, password: string, acceptedTerms: boolean) => {
+    const response = await http.post('/auth/register', {
+      email,
+      password,
+      acceptedTerms
+    })
     setAccountDeletionInProgress(false)
     return response.data
   },

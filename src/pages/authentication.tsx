@@ -1,5 +1,5 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
@@ -18,6 +18,8 @@ const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   email_not_verified:
     'O email dessa conta ainda não foi verificado no provedor. Verifique o email lá e tente de novo.'
 }
+const TERMS_REQUIRED_MESSAGE =
+  'Ainda não existe conta para esse login. Marque a caixa abaixo e continue com Google ou Discord para criar uma.'
 const OAUTH_ERROR_FALLBACK = 'Não foi possível entrar. Tente novamente.'
 
 export function Authentication() {
@@ -25,14 +27,25 @@ export function Authentication() {
   const tab = searchParams.get('tab') === 'signUp' ? 'signUp' : 'login'
   useDocumentTitle(tab === 'signUp' ? 'Criar conta' : 'Entrar')
   const oauthError = searchParams.get('error')
+  const [termsNotice, setTermsNotice] = useState(false)
+
+  useEffect(() => {
+    if (tab === 'login' && !oauthError) setTermsNotice(false)
+  }, [tab, oauthError])
 
   useEffect(() => {
     if (!oauthError) return
 
-    toast.error(OAUTH_ERROR_MESSAGES[oauthError] ?? OAUTH_ERROR_FALLBACK)
-
     const next = new URLSearchParams(searchParams)
     next.delete('error')
+
+    if (oauthError === 'terms_required') {
+      setTermsNotice(true)
+      next.set('tab', 'signUp')
+    } else {
+      toast.error(OAUTH_ERROR_MESSAGES[oauthError] ?? OAUTH_ERROR_FALLBACK)
+    }
+
     setSearchParams(next, { replace: true })
   }, [oauthError, searchParams, setSearchParams])
 
@@ -54,6 +67,14 @@ export function Authentication() {
               Criar conta
             </Tabs.Trigger>
           </Tabs.List>
+
+          <div aria-live="assertive" aria-atomic="true">
+            {termsNotice && tab === 'signUp' && (
+              <p className="mb-5 rounded-lg border border-red-900 bg-red-950/50 px-3 py-2.5 text-[13px] leading-snug text-red-300">
+                {TERMS_REQUIRED_MESSAGE}
+              </p>
+            )}
+          </div>
 
           <Tabs.Content value="login">
             <FormLogin />

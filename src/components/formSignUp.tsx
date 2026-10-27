@@ -3,8 +3,8 @@ import { Mail, Lock } from 'lucide-react'
 import { safeRedirectPath } from '../utils/safeRedirectPath'
 import { signUpSchema } from '../schemas/signUpSchema'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useContext, useId } from 'react'
 import { AuthContext } from '../contexts/auth/authContext'
 import type { z } from 'zod'
 
@@ -12,6 +12,7 @@ import { Button } from './button'
 import { GoogleAuthButton } from './googleAuthButton'
 import { DiscordAuthButton } from './discordAuthButton'
 import { AuthInput } from './authInput'
+import { focusRing } from '../styles/focus'
 
 type SignUpForm = z.infer<typeof signUpSchema>
 
@@ -23,13 +24,21 @@ export function FormSignUp() {
     register,
     handleSubmit,
     setError,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm<SignUpForm>({
-    resolver: zodResolver(signUpSchema)
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { acceptedTerms: false }
   })
+  const termsMessageId = useId()
+  const acceptedTerms = watch('acceptedTerms')
 
   async function onSubmit(data: SignUpForm) {
-    const signupError = await auth.signup(data.email, data.password)
+    const signupError = await auth.signup(
+      data.email,
+      data.password,
+      data.acceptedTerms
+    )
     if (!signupError) {
       const redirectTo = safeRedirectPath(
         sessionStorage.getItem('redirectAfterLogin')
@@ -64,6 +73,50 @@ export function FormSignUp() {
         {...register('password')}
       />
 
+      <div className="flex flex-col gap-1.5">
+        <label className="flex items-start gap-2.5 text-[13px] leading-normal text-gray-300 cursor-pointer max-sm:min-h-11">
+          <input
+            type="checkbox"
+            aria-invalid={errors.acceptedTerms ? true : undefined}
+            aria-describedby={termsMessageId}
+            className={`mt-0.5 size-4 shrink-0 cursor-pointer accent-primary rounded-sm ${focusRing}`}
+            {...register('acceptedTerms')}
+          />
+          <span>
+            Declaro que tenho 18 anos ou mais e aceito os{' '}
+            <Link
+              to="/termos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-primary-link underline underline-offset-2 rounded-sm ${focusRing}`}
+            >
+              Termos de uso
+              <span className="sr-only"> (abre em nova aba)</span>
+            </Link>{' '}
+            e a{' '}
+            <Link
+              to="/privacidade"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-primary-link underline underline-offset-2 rounded-sm ${focusRing}`}
+            >
+              Política de privacidade
+              <span className="sr-only"> (abre em nova aba)</span>
+            </Link>
+            .
+          </span>
+        </label>
+        <span
+          id={termsMessageId}
+          className={`pl-[1.625rem] text-xs min-h-[1rem] ${
+            errors.acceptedTerms ? 'text-red-500' : 'text-gray-400'
+          }`}
+        >
+          {errors.acceptedTerms?.message ??
+            (acceptedTerms ? ' ' : 'Marque a caixa para continuar.')}
+        </span>
+      </div>
+
       <Button variant="primary" size="md" fullWidth loading={isSubmitting}>
         Criar conta
       </Button>
@@ -77,8 +130,16 @@ export function FormSignUp() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <GoogleAuthButton />
-        <DiscordAuthButton />
+        <GoogleAuthButton
+          acceptedTerms={acceptedTerms}
+          disabled={!acceptedTerms}
+          describedBy={termsMessageId}
+        />
+        <DiscordAuthButton
+          acceptedTerms={acceptedTerms}
+          disabled={!acceptedTerms}
+          describedBy={termsMessageId}
+        />
       </div>
     </form>
   )
