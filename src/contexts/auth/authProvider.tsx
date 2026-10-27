@@ -71,6 +71,8 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     setUser(null)
   }
 
+  const clearSession = () => setUser(null)
+
   const checkAuth = async () => {
     setLoading(true)
 
@@ -106,7 +108,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, signup, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signup, refreshUser, clearSession }}>
       {!loading && children}
     </AuthContext.Provider>
   )

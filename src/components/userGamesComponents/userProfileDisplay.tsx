@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { UserProfileModal } from './userProfileModal'
 import { UserProfileForm } from './userProfileForm'
+import { DeleteAccountSection } from './deleteAccountSection'
 import { UserListModal } from '../userListModal'
 import { useUserProfile } from '../../hooks/useUserProfile'
 import { useFollowers } from '../../hooks/useFollowers'
@@ -73,6 +74,7 @@ export function UserProfileDisplay({ onImport }: { onImport?: () => void }) {
           afterSave={() => setIsOpen(false)}
           onCancel={() => setIsOpen(false)}
         />
+        <DeleteAccountSection />
       </UserProfileModal>
 
       <UserListModal

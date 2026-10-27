@@ -46,6 +46,12 @@ import { getErrorMessage } from '../utils/getErrorMessage'
 
 export const SESSION_ENDED_EVENT = 'auth:session-ended'
 
+let accountDeletionInProgress = false
+
+export function setAccountDeletionInProgress(value: boolean) {
+  accountDeletionInProgress = value
+}
+
 const http = axios.create({
   baseURL: '/api',
   withCredentials: true,
@@ -54,7 +60,7 @@ const http = axios.create({
 http.interceptors.response.use(
   response => response,
   error => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !accountDeletionInProgress) {
       const status = error.response.data?.status
 
       if (status === 'session_expired' || status === 'unauthorized') {
@@ -100,6 +106,7 @@ export const api = {
   login: async (email: string, password: string) => {
     try {
       const response = await http.post('/auth/login', { email, password })
+      setAccountDeletionInProgress(false)
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -112,6 +119,7 @@ export const api = {
   },
   signup: async (email: string, password: string) => {
     const response = await http.post('/auth/register', { email, password })
+    setAccountDeletionInProgress(false)
     return response.data
   },
   forgotPassword: async (email: string) => {
@@ -168,6 +176,15 @@ export const api = {
       await http.post('/auth/logout')
     } catch {} finally {
       window.location.reload()
+    }
+  },
+  deleteAccount: async () => {
+    setAccountDeletionInProgress(true)
+    try {
+      await http.delete('/users')
+    } catch (error) {
+      setAccountDeletionInProgress(false)
+      throw error
     }
   },
   getUserGames: async (
