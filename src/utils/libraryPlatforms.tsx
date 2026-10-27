@@ -53,7 +53,6 @@ function libraryPlatformsFor(gamePlatformName: string): LibraryPlatform[] {
   return found
 }
 
-// "Outro" continua em LIBRARY_PLATFORMS só para exibir registros antigos; não se adiciona mais.
 export function getAvailableLibraryPlatforms(
   gamePlatforms: string[] | undefined,
   registered: LibraryPlatform[] = []

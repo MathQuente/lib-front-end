@@ -6,10 +6,6 @@ import type { User } from '../../types/user'
 import { api, SESSION_ENDED_EVENT } from '../../hooks/useApi'
 import { getErrorMessage } from '../../utils/getErrorMessage'
 
-// const redirectToAuth = () => {
-//   window.location.href = '/auth'
-// }
-
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<Partial<User> | null>(null)
   const [loading, setLoading] = useState(true)

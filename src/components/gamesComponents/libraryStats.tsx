@@ -22,7 +22,6 @@ const SINGLE_PLATFORM_LABEL: Record<number, string> = {
   [STATUS.DROPPED]: 'Jogava em',
 }
 
-// Acima disso o detalhe por plataforma fica só na página do jogo.
 const MAX_PLATFORMS_IN_MODAL = 2
 
 const valueClass = 'font-display text-[15px] font-extrabold tabular-nums'

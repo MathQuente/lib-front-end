@@ -4,7 +4,6 @@ import { useCompletionSuggestions } from '../../hooks/useCompletionSuggestions'
 import { focusRing } from '../../styles/focus'
 import type { LibraryPlatform } from '../../types/platform'
 
-// Classes escritas por extenso: o Tailwind não enxerga nomes montados por interpolação.
 function Dot() {
   return (
     <span
@@ -27,7 +26,6 @@ export const HiddenImportRow = forwardRef<
     platform ?? 'STEAM',
     Boolean(platform)
   )
-  // Sem plataforma de sugestões o hook só devolve o cache da Steam: ignorar.
   const pendingCount = platform ? suggestions.pendingCount : 0
 
   const tip = `Volta sozinho depois da próxima importação.${

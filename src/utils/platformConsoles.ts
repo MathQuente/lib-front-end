@@ -1,8 +1,6 @@
 import type { LibraryPlatform, PlatformConsole } from '../types/platform'
 import type { UserGamePlatformEntry } from '../types/platform'
 
-// Espelha CONSOLES_BY_PLATFORM do back end (lib/src/utils/platform-consoles.ts).
-// O back valida de novo, então um valor fora do mapa só gera 400.
 const PLAYSTATION: PlatformConsole[] = [
   'PS1',
   'PS2',
@@ -12,8 +10,6 @@ const PLAYSTATION: PlatformConsole[] = [
   'PSP',
   'PS_VITA',
 ]
-// O back também aceita PC em XBOX (Game Pass no PC); a interface não oferece:
-// jogo de PC se registra em Steam, Epic ou Outro > PC.
 const XBOX: PlatformConsole[] = [
   'XBOX_ORIGINAL',
   'XBOX_360',
@@ -90,8 +86,6 @@ const CONSOLES_BY_PLATFORM: Partial<Record<LibraryPlatform, ConsoleGroup[]>> = {
   NINTENDO: [{ label: 'Nintendo', consoles: NINTENDO }],
 }
 
-// Epic só tem PC: não há o que escolher e entra como UNKNOWN (o back aceita
-// em qualquer ecossistema). Steam pergunta entre PC e Steam Deck.
 export function platformAsksConsole(platform: LibraryPlatform) {
   return platform in CONSOLES_BY_PLATFORM
 }
@@ -158,8 +152,6 @@ function consoleFromIgdbName(name: string): PlatformConsole | undefined {
   return undefined
 }
 
-// Consoles em que o jogo saiu (mais os sucessores retrocompatíveis).
-// `null` = sem dado de plataformas: não filtra.
 export function consolesForGame(
   gamePlatforms: string[] | undefined
 ): Set<PlatformConsole> | null {
@@ -175,8 +167,6 @@ export function consolesForGame(
   return found.size > 0 ? found : null
 }
 
-// Sem nenhum console do ecossistema depois do filtro (dado da IGDB incompleto),
-// volta à lista inteira para o usuário não ficar sem opção.
 export function consoleGroupsFor(
   platform: LibraryPlatform,
   released: Set<PlatformConsole> | null = null
@@ -214,8 +204,6 @@ export function singleConsoleFor(
   return candidates.length === 1 ? candidates[0] : null
 }
 
-// Sobra console para escolher? Linha UNKNOWN nunca convive com consoles conhecidos
-// (o back a completa ao adicionar um), então basta olhar os consoles ainda sem linha.
 export function hasFreeConsole(
   platform: LibraryPlatform,
   entries: UserGamePlatformEntry[],
@@ -234,11 +222,9 @@ export function entryDisplayName(
   platformLabel: string
 ) {
   if (entry.console === 'UNKNOWN') return platformLabel
-  // "Steam · PC" é redundante: PC nas lojas de PC mostra só o nome da loja.
   if (entry.console === 'PC' && PC_STORES.includes(entry.platform)) {
     return platformLabel
   }
-  // Game Pass no PC: "PC" sozinho, com o ícone do Xbox, não diz de onde vem.
   if (entry.console === 'PC' && entry.platform === 'XBOX') {
     return `${platformLabel} (PC)`
   }

@@ -12,7 +12,6 @@ export function ReviewRequirement({
   onPicked
 }: {
   reason: ReviewBlockedReason
-  // 'link': aponta para os botões de status da própria página; 'picker': escolhe o status ali mesmo
   variant: 'link' | 'picker'
   igdbId: string
   inLibrary: boolean

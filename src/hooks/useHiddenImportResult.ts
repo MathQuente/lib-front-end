@@ -1,8 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react'
 import { useAuth } from './useAuth'
 
-// O resultado oculto só vale para a importação cujo término foi guardado:
-// uma importação nova muda o `finishedAt` e o resultado volta a aparecer.
 const memory = new Map<string, string>()
 const memoryOnlyKeys = new Set<string>()
 const listeners = new Set<() => void>()
@@ -33,7 +31,6 @@ function write(key: string, value: string | null) {
   for (const listener of listeners) listener()
 }
 
-// O evento `storage` só chega às outras abas; a aba atual é avisada pelos listeners.
 function subscribe(onChange: () => void) {
   listeners.add(onChange)
   window.addEventListener('storage', onChange)

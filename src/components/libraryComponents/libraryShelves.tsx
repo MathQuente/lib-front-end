@@ -64,8 +64,6 @@ export function LibraryShelves({
 
   const nowGames = games.PLAYING.filter(game => !game.endless)
   const endlessGames = games.PLAYING.filter(game => game.endless)
-  // No perfil público a lista de cada status vem cortada, então a contagem
-  // por marca só é confiável quando todos os jogos em andamento vieram.
   const playingComplete = totalOf('PLAYING') <= games.PLAYING.length
 
   const playingShelves: Record<

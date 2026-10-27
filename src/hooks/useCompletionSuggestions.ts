@@ -31,8 +31,6 @@ export interface ActionResult {
   canUndo?: boolean
 }
 
-// O back tira o jogo da lista ao aceitar. As linhas aceitas ficam no estado
-// local para o "Desfazer" continuar visível enquanto a tela estiver aberta.
 export const useCompletionSuggestions = (
   platform: LibraryPlatform,
   enabled: boolean

@@ -9,8 +9,6 @@ import { useReview } from './useReview'
 
 export type ReviewBlockedReason = 'unreleased' | 'status'
 
-// Quem já tem resenha pode editar em qualquer situação; a regra vale só para criar.
-// Na fila conta como jogado quando há horas ou zeradas registradas (histórico de quem vai rejogar).
 export function useReviewPermission(
   igdbId: string,
   releaseDate?: number | null

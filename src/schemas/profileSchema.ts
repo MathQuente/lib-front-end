@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 3 // 3MB
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 3
 const ACCEPTED_FILE_TYPES = ['image/png', 'image/gif', 'image/jpeg']
 
 export const updateProfileSchema = z.object({

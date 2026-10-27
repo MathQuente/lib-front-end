@@ -23,8 +23,6 @@ export interface GameCardProps {
   className?: string
   size?: 'small' | 'medium' | 'compact' | 'larger' | 'row' | 'feature'
   enableModal?: boolean
-  // false quando o card já é embrulhado por um <Link> (ou outro elemento
-  // clicável) do chamador — evita renderizar um <button> dentro de <a>.
   interactive?: boolean
 }
 

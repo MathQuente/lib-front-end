@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-  const { user, loading } = useAuth() // REMOVE checkAuth daqui
+  const { user, loading } = useAuth()
   const location = useLocation()
 
   useEffect(() => {

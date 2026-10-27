@@ -8,7 +8,6 @@ export function EndlessChip({
   disabledReason = null
 }: {
   igdbId: string
-  // quando presente, o chip fica inativo e o motivo aparece ao lado
   disabledReason?: string | null
 }) {
   const reasonId = useId()

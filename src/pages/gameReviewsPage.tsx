@@ -64,8 +64,6 @@ export function GameReviewsPage() {
   )
   const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1)
 
-  // O router mantém a rolagem ao navegar (vindo de "Ver todas", lá embaixo na página do jogo).
-  // Entrando na página, volta ao topo; na volta pelo navegador (POP), deixa a rolagem restaurada.
   useEffect(() => {
     if (navigationType !== 'POP') window.scrollTo(0, 0)
   }, [igdbId])

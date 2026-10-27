@@ -8,7 +8,6 @@ export function EndlessToggle({
   disabledReason = null
 }: {
   igdbId: string
-  // quando presente, o controle fica inativo e o motivo aparece no lugar da descrição
   disabledReason?: string | null
 }) {
   const { endless, setEndless, isLoading } = useEndless(igdbId)

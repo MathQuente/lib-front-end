@@ -41,9 +41,6 @@ export function GameListPage({
   const safePage =
     typeof page === 'number' && !Number.isNaN(page) && page > 0 ? page : 1
   const totalPages = Math.ceil(safeTotal / pageSize) || 1
-  // Lista vazia com total maior que zero não é um vazio de verdade: é uma página além do total
-  // ou a resposta anterior mantida (keepPreviousData) enquanto a página certa carrega.
-  // Nesses casos mostra o esqueleto, e não o estado vazio.
   const isAwaitingPage = gamesArray.length === 0 && safeTotal > 0
 
   useEffect(() => {

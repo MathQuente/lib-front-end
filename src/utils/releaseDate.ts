@@ -3,7 +3,6 @@ const COUNTDOWN_MAX_DAYS = 30
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-// O IGDB manda a data de lançamento como meia-noite UTC; formatar no fuso local mostra o dia anterior no Brasil.
 function toDate(ts: number) {
   return new Date(ts * 1000)
 }

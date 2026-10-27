@@ -420,7 +420,6 @@ export function PlatformImportSection<TResult>({
                   />
                 )}
                 {suggestionsPlatform && (
-                  // Continua montado quando oculto: as linhas aceitas e o "Desfazer" vivem no estado do bloco.
                   <div hidden={showHiddenRow}>
                     <CompletionSuggestionsBlock
                       platform={suggestionsPlatform}

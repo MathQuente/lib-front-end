@@ -98,7 +98,6 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       const previousProfile =
         queryClient.getQueryData<UserProfileResponse>(queryKey)
 
-      // Optimistic update
       if (newData.userName && previousProfile) {
         queryClient.setQueryData<UserProfileResponse>(queryKey, old => {
           if (!old) return old
@@ -120,14 +119,12 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       options?.onUpdateSuccess?.()
     },
     onError: (error, _variables, context) => {
-      // Rollback em caso de erro
       if (context?.previousProfile) {
         queryClient.setQueryData(queryKey, context.previousProfile)
       }
       toast.error(getErrorMessage(error, 'Erro ao atualizar perfil.'))
     },
     onSettled: () => {
-      // Invalidate related queries
       queryClient.invalidateQueries({
         queryKey: ['userProfile', userId]
       })

@@ -48,7 +48,6 @@ export function OwnReviewCard({
   const loginNoticeId = useId()
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  // Button é componente de função e não repassa `ref`; por isso o ref fica num wrapper
   const triggerRef = useRef<HTMLDivElement>(null)
   const restoreFocus = useRef(false)
   useEffect(() => {

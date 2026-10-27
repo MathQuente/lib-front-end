@@ -46,7 +46,6 @@ export function UserProfilePage() {
     )
   }
 
-  // O backend responde 400 para id fora do formato de UUID e 404 para um UUID que não existe
   const status = isAxiosError(error) ? error.response?.status : undefined
   if (isError && (status === 400 || status === 404)) {
     return (

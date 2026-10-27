@@ -55,7 +55,6 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const completionRef = useRef<HTMLFieldSetElement>(null)
   const completionHintId = useId()
   const completionTitleId = useId()
-  // Linha que já ganhou a zerada nesta pergunta: uma nova tentativa não soma de novo.
   const recordedRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -88,8 +87,6 @@ export function GameStatusButtons({ game }: GameFormProps) {
     setIsSaving(true)
     try {
       if (hasExistingStatus) {
-        // Com 2+ plataformas, pergunta antes: mudar o status recarrega a biblioteca
-        // e fecha o modal, e a pergunta sumiria junto.
         if (statusId === STATUS.PLAYED && platforms.length > 1) {
           recordedRef.current = null
           setAskingCompletion(true)

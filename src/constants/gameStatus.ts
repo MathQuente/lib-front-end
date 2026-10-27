@@ -14,7 +14,6 @@ export const REVIEW_ELIGIBLE_STATUS_IDS: number[] = [
   USER_GAME_STATUS_ID.DROPPED
 ]
 
-// Só os status que dão direito a resenha têm rótulo no cartão
 export const REVIEW_STATUS_LABEL: Record<string, string> = {
   PLAYED: 'Jogado',
   PLAYING: 'Jogando',

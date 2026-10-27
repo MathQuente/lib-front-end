@@ -12,8 +12,6 @@ export function Layout() {
   const { pathname, hash } = useLocation()
   const navigationType = useNavigationType()
 
-  // O router mantém a rolagem ao trocar de página. Página nova começa no topo;
-  // voltar/avançar (POP) e links com âncora (#biblioteca) ficam como estão.
   useEffect(() => {
     if (navigationType !== 'POP' && !hash) window.scrollTo(0, 0)
   }, [pathname])

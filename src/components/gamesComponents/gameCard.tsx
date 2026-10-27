@@ -61,7 +61,6 @@ export const LIBRARY_STATUS_BADGES: Record<
 
 const MAX_CARD_PLATFORMS = 3
 
-// Listas de mais bem avaliados trazem a média da comunidade (3,6969…); a nota do usuário é inteira.
 const RATING_FORMAT = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
 
 const badgeClass =

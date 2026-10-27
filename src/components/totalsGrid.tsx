@@ -11,7 +11,6 @@ function Cell({
 }: {
   value: string
   label: string
-  // a célula ocupa só o espaço de que precisa (data), sem cortar o valor
   fit?: boolean
 }) {
   return (

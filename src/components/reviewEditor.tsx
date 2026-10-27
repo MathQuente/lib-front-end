@@ -17,7 +17,6 @@ export function ReviewEditor({
   onCancel?: () => void
   isSaving: boolean
   autoFocus?: boolean
-  // campo visível e desativado (sem foco nem cursor); describedBy aponta para o texto do motivo
   locked?: boolean
   describedBy?: string
 }) {
