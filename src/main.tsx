@@ -21,6 +21,10 @@ import { UserProfilePage } from './pages/userProfilePage'
 import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
 import { NotFoundPage } from './pages/notFoundPage'
+import { TermsPage } from './pages/termsPage'
+import { PrivacyPage } from './pages/privacyPage'
+import { AboutPage } from './pages/aboutPage'
+import { ContactPage } from './pages/contactPage'
 import { RouteError } from './components/routeError'
 import { PostLoginRedirect } from './components/postLoginRedirect'
 
@@ -108,6 +112,22 @@ const router = createBrowserRouter([
                 <UserGamesPageByStatus />
               </RequireAuth>
             )
+          },
+          {
+            path: '/termos',
+            element: <TermsPage />
+          },
+          {
+            path: '/privacidade',
+            element: <PrivacyPage />
+          },
+          {
+            path: '/sobre',
+            element: <AboutPage />
+          },
+          {
+            path: '/contato',
+            element: <ContactPage />
           },
           {
             path: '*',
