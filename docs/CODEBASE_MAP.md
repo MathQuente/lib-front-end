@@ -113,6 +113,10 @@ All routes are children of one `<Layout/>` (persistent `SideBar` + `ToastContain
 | `/games/comingSoon` | `ComingSoonPage` | `pages/comingSoonPage.tsx` | No |
 | `/games/:igdbId` | `GamePage` | `pages/gamePage.tsx` | No (interactive parts hidden if logged out) |
 | `/roulette` | `RouletteWheel` | `pages/rouletteWheel.tsx` | No (but needs `user.id` internally — see Gotchas) |
+| `/termos` | `TermsPage` | `pages/termsPage.tsx` | No (linked from the footer "O projeto" column and from the sign-up checkbox label) |
+| `/privacidade` | `PrivacyPage` | `pages/privacyPage.tsx` | No (same) |
+| `/sobre` | `AboutPage` | `pages/aboutPage.tsx` | No (same) |
+| `/contato` | `ContactPage` | `pages/contactPage.tsx` | No (same) |
 | `/userLibrary` | `UserLibrary` | `pages/userLibrary.tsx` | **Yes** (`RequireAuth`) |
 | `/userLibrary/:status` | `UserGamesPageByStatus` | `pages/userGamesPages.tsx` | **Yes** (`RequireAuth`) |
 
@@ -146,7 +150,7 @@ Interconnection: `GameCard(enableModal=true)` owns local `open` state, lazily mo
 | `formLogin.tsx` / `formSignUp.tsx` | react-hook-form + zod; read/clear `redirectAfterLogin` on success; render Google/Discord OAuth buttons. Use `useContext(AuthContext)` directly rather than `useAuth()` (inconsistent, functionally equivalent). |
 | `emailVerificationNotice.tsx` | Strip rendered by `layout.tsx` under the nav on every page, only when `user.emailVerified === false` (OAuth accounts come verified). "Reenviar" + dismiss; dismissal is stored per user id in `sessionStorage['emailNoticeDismissed']`, so it returns next session. |
 | `pages/verifyEmailPage.tsx` | Reads `?token=` once and strips it from the URL. Does **not** verify on load: it shows a "Confirmar e-mail" button and calls `api.verifyEmail` only on click, so link scanners in mail clients can't burn the single-use token (reloading before the click loses the token; reopening the email link works). Centered layout, display-font title. States: ready, success, invalid (400 or no token); "já está confirmado" only after a 400 for a verified session. The success copy names the session's email only if that session went from unverified to verified, since the link may belong to another account. Non-400 errors keep the button and show `getErrorMessage`. Logged in: `refreshUser()` then library link, or "Reenviar link" on an invalid link. Logged out: link to `/auth?tab=login`. |
-| `googleAuthButton.tsx` / `discordAuthButton.tsx` | Plain `<a href>` full-page redirects to backend OAuth endpoints. |
+| `googleAuthButton.tsx` / `discordAuthButton.tsx` | Full-page redirects to backend OAuth endpoints. Without props they are a plain `<a href>` (Login). With `acceptedTerms` the link carries `?acceptedTerms=true`; with `disabled` they render a `<button type="button" aria-disabled>` that ignores clicks and points to the checkbox message through `aria-describedby`. Both are thin wrappers over `oauthButton.tsx`. |
 | `useApi.ts` (`api.login/signup/logout/me`) | axios instance, `withCredentials: true`, 401 interceptor clears cookies on `session_expired`/`unauthorized`. |
 
 ### Custom hooks (`src/hooks/`)
@@ -286,6 +290,55 @@ sequenceDiagram
 11. **`types/sidebar.ts`'s `MenuItem`** and `interfaces/ui.ts`'s `SideBarItemProps` are leftover types from a `SideBarItem` component that no longer exists (removed as dead code in a prior cleanup) — latent dead types, not caught by file-level orphan scans since the type files themselves are still imported elsewhere.
 12. **Local variable names shadow their own type names** in destructured `useQuery` results (e.g. `const { data: GameResponse } = useQuery(...)`) across several hooks — stylistic, not a bug.
 13. **`index.html`'s `<body class="bg-dark-bg-lighter">`** vs `Layout`'s root div `bg-dark-bg` — redundant double background declaration, harmless (Layout's div covers the body).
+
+## Non-obvious behaviour
+
+Reasons that used to live in code comments (the project keeps source files comment-free; lint directives such as `biome-ignore`, `eslint-disable` and `@ts-expect-error` stay in place).
+
+**Lists and library**
+- `components/gameListPage.tsx`: an empty list with a total above zero is not a real empty state. It is a page past the total, or the previous response kept by `keepPreviousData` while the right page loads. Both show the skeleton, not the empty state.
+- `components/libraryComponents/libraryShelves.tsx`: on a public profile each status list arrives cut, so the per-mark count (Agora / Sempre jogando) is only reliable when every in-progress game came (`totalOf('PLAYING') <= games.PLAYING.length`).
+- `components/gamesComponents/libraryStats.tsx`: `MAX_PLATFORMS_IN_MODAL` caps the per-platform detail in the modal; above it the detail lives only on the game page.
+- `components/gamesComponents/gameCard.tsx`: top-rated lists carry the community average (for example 3.6969…), while the user's own rating is an integer.
+- `interfaces/games.ts` (`interactive`): false when the caller already wraps the card in a `<Link>` or another clickable element, to avoid a `<button>` inside an `<a>`.
+
+**Status, completions and the modal**
+- `components/gamesComponents/gameStatusButtons.tsx`: with 2+ platforms the app asks first, because changing the status reloads the library and closes the modal, and the question would disappear with it. A row that already got the completion in this question does not add again on a retry.
+- `constants/gameStatus.ts` (`REVIEW_STATUS_LABEL`): only the statuses that allow a review have a label on the card.
+- `hooks/useReviewPermission.ts`: someone who already has a review can edit it in any situation; the rule only applies to creating. A game in the backlog counts as played when there are hours or completions recorded (history of people who replay).
+- `components/reviewRequirement.tsx` (`variant`): `link` points to the status buttons of the page itself; `picker` chooses the status right there.
+- `components/reviewEditor.tsx` (`locked`): the field stays visible and disabled (no focus, no cursor) and `describedBy` points to the text with the reason.
+- `utils/endlessAvailability.ts`: in Jogando, Pausado and Largado the flag is editable. In Jogado the control shows locked, because the flag may have stayed on from before. In Na fila, Lista de desejos and unreleased games it makes no sense, so the control does not show.
+- `components/endlessToggle.tsx` and `components/gamesComponents/endlessChip.tsx` (`disabledReason`): when present, the control is inactive and the reason replaces the description (toggle) or appears beside it (chip).
+- `components/ownReviewCard.tsx`: `Button` is a function component and does not forward `ref`, so the ref lives on a wrapper.
+
+**Platforms and consoles**
+- `utils/platformConsoles.ts` mirrors `CONSOLES_BY_PLATFORM` of the back end (`lib/src/utils/platform-consoles.ts`). The back validates again, so a value outside the map only yields a 400.
+  - The back also accepts PC under XBOX (Game Pass on PC); the interface does not offer it: a PC game is registered under Steam, Epic or Outro > PC.
+  - Epic has only PC: nothing to choose, so it enters as UNKNOWN (the back accepts it in any ecosystem). Steam asks between PC and Steam Deck.
+  - The consoles list is the ones the game shipped on (plus backward-compatible successors); `null` means no platform data and does not filter. If the filter leaves no console of the ecosystem (incomplete IGDB data), it falls back to the whole list so the user is never left without an option.
+  - Is there a console left to choose? An UNKNOWN row never coexists with known consoles (the back completes it when adding one), so it is enough to look at the consoles still without a row.
+  - "Steam · PC" is redundant: PC on PC stores shows only the store name. Game Pass on PC shows "PC" with the Xbox icon, because "PC" alone would not say where it comes from.
+- `utils/libraryPlatforms.tsx`: "Outro" stays in `LIBRARY_PLATFORMS` only to display old records; nothing new is added to it.
+
+**Import**
+- `components/userGamesComponents/platformImportSection.tsx`: the hidden-result block stays mounted when hidden, because the accepted rows and the "Desfazer" live in the block's state.
+- `hooks/useCompletionSuggestions.ts`: the back removes the game from the list on accept. The accepted rows stay in local state so "Desfazer" stays visible while the screen is open.
+- `components/userGamesComponents/hiddenImportRow.tsx`: classes are written out in full because Tailwind does not see names built by interpolation. Without a suggestions platform the hook only returns the Steam cache, so the count is ignored (`platform ? suggestions.pendingCount : 0`).
+- `hooks/useHiddenImportResult.ts`: a hidden result only holds for the import whose end time was stored; a new import changes `finishedAt` and the result shows again. The `storage` event only reaches other tabs; the current tab is told by the listeners.
+
+**Account deletion** (`components/userGamesComponents/deleteAccount{Section,Dialog}.tsx`, `hooks/useDeleteAccount.ts`)
+- The section sits after the form inside the edit-profile modal (outside the `<form>`, so its button never submits it). The dialog asks to type the username (read from the profile query, so a rename in the same modal is respected), or the e-mail when the account has no username; the comparison trims the typed text but is case-sensitive, and a failed attempt's error clears as soon as the text changes.
+- The back end only accepts `DELETE /users` for a login of the last 10 minutes: older ones answer 403 `reauth_required` with a message, shown inside the dialog. Nothing is deleted and the request is not repeated after a new login.
+- A 404 with a JSON `message` counts as success (the account is already gone; a bare proxy 404 does not), but a deleted account's cookies usually fail earlier with 401, because the back end revokes the sessions: that goes through the normal session-ended flow. The 401 interceptor is silenced (`setAccountDeletionInProgress`) from the moment the DELETE is sent, and the flag is cleared on a failed request, on login and on sign-up, so requests still in flight do not show "Sua sessão terminou" over "Sua conta foi excluída". Queries are cancelled, the app navigates to `/`, `clearSession()` empties the user and `queryClient.clear()` drops the cache. `api.logout()` is not used: it reloads the page.
+- `/termos`, `/privacidade`, `/sobre` and `/contato` hold the owner's plain-language texts (no lawyer review; personal portfolio project), dated 2026-10-25. They are linked from the footer and from the sign-up checkbox label. The Terms say the user declares being 18+, and the sign-up form now has a required, unchecked-by-default checkbox for it (self-declaration, not age verification). If the texts change what the app really does (analytics, ads, private profiles), update them.
+- Terms acceptance (`components/formSignUp.tsx`, `pages/authentication.tsx`): `acceptedTerms` lives in the sign-up form (`signUpSchema`, `z.boolean().refine`, because `z.literal(true, { message })` does not show its message in zod 3.23) and travels `AuthContext.signup` -> `api.signup` -> body of `POST /auth/register`. The 400 comes as `error.acceptedTerms[0]` (the top-level `message` is the generic "Invalid input"), read in `authProvider.signup`. The Google/Discord buttons stay disabled until the box is checked, then carry `?acceptedTerms=true`; the Login tab sends no parameter. A new account without acceptance makes the back end redirect to `/auth?error=terms_required`: the page keeps the notice in state, switches to the sign-up tab in the same `setSearchParams` call that removes `error`, and shows no toast. The notice sits in an `aria-live` region that is always mounted and does not move focus, because `useFocusOnRouteChange` focuses `main` 400 ms after the route loads on pages without an `h1`. The notice is cleared when the tab becomes Login (an effect, so browser back/forward also clears it), except in the render where the error has just arrived.
+
+**Routing, scroll and errors**
+- `layout.tsx` and `pages/gameReviewsPage.tsx`: the router keeps the scroll when changing page. A new page starts at the top; back/forward (POP) and anchor links (`#biblioteca`) are left as they are. Coming from "Ver todas" at the bottom of the game page, the reviews page goes to the top, but on browser back the restored scroll stays.
+- `pages/userProfilePage.tsx`: the back end answers 400 for an id that is not a UUID and 404 for a UUID that does not exist; both show the not-found screen.
+- `hooks/useApi.ts` (`getUserGames`): `/users/userGames` uses different names from the rest of the app (`gameName`/`dateRelease` instead of `name`/`releaseDate`); the mapping happens here so the inconsistency does not leak into the rest of the front.
+- `utils/releaseDate.ts`: IGDB sends the release date as UTC midnight; formatting in the local time zone shows the previous day in Brazil.
 
 ## Navigation Guide
 
