@@ -190,7 +190,8 @@ export function GameCard({
           aria-label={`Já zerado ${completions} ${completions === 1 ? 'vez' : 'vezes'}`}
         >
           <Trophy
-            className="size-2 sm:size-2.5 text-primary-light"
+            className="size-3 sm:size-3.5 overflow-visible text-primary-light"
+            strokeWidth={2.5}
             aria-hidden="true"
           />
         </span>
@@ -198,27 +199,28 @@ export function GameCard({
 
       {statusBadge && (
         <span
-          className="absolute top-1.5 right-1.5 z-10 inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+          className="absolute top-2 right-2 z-10 inline-flex items-center justify-center size-5 sm:size-6 rounded-full bg-dark-bg/90 border border-dark-border shadow-sm shadow-black/40"
           title={statusBadge.label}
           aria-label={statusBadge.label}
         >
           <statusBadge.icon
-            className={`size-2 sm:size-2.5 ${statusBadge.iconColor}`}
+            className={`size-3 sm:size-3.5 overflow-visible ${statusBadge.iconColor}`}
+            strokeWidth={2.5}
             aria-hidden="true"
           />
         </span>
       )}
 
       {(showRating || showEndless) && (
-        <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1">
+        <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1">
           {showRating && (
             <span
-              className={badgeClass}
+              className={`h-5 sm:h-6 gap-1 px-1.5 sm:px-2 text-[9px] sm:text-[11px] leading-none shadow-sm shadow-black/40 ${badgeClass}`}
               title="Nota"
               aria-label={`Nota: ${ratingText}`}
             >
               <Star
-                className={`size-2 sm:size-2.5 fill-current ${accentColor}`}
+                className={`size-2.5 sm:size-3 overflow-visible fill-current ${accentColor}`}
                 aria-hidden="true"
               />
               <span aria-hidden="true">{ratingText}</span>
@@ -226,7 +228,7 @@ export function GameCard({
           )}
           {showEndless && (
             <span
-              className="inline-flex items-center justify-center size-4 sm:size-5 rounded-full bg-dark-bg/90 border border-dark-border"
+              className="inline-flex items-center justify-center size-5 sm:size-6 rounded-full bg-dark-bg/90 border border-dark-border shadow-sm shadow-black/40"
               title="Infinito"
               aria-label="Infinito"
             >
@@ -241,14 +243,14 @@ export function GameCard({
 
       {visiblePlatforms.length > 0 && (
         <span
-          className={`absolute bottom-1.5 right-1.5 z-10 ${badgeClass}`}
+          className={`absolute bottom-2 right-2 z-10 h-5 sm:h-6 gap-1 px-1.5 sm:px-2 text-[9px] sm:text-[11px] leading-none shadow-sm shadow-black/40 ${badgeClass}`}
           title={playedOn.map(p => p.label).join(', ')}
           aria-label={`Jogado em: ${playedOn.map(p => p.label).join(', ')}`}
         >
           {visiblePlatforms.map(({ value, icon: Icon }) => (
             <Icon
               key={value}
-              className="size-2 sm:size-2.5 text-gray-200"
+              className="size-2.5 sm:size-3 shrink-0 overflow-visible text-gray-200"
               aria-hidden
             />
           ))}

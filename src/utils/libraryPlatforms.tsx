@@ -1,5 +1,5 @@
+import { Gamepad2, type LucideIcon } from 'lucide-react'
 import type { IconType } from 'react-icons'
-import { FaGamepad } from 'react-icons/fa'
 import {
   SiEpicgames,
   SiNintendoswitch,
@@ -12,7 +12,7 @@ import type { LibraryPlatform } from '../types/platform'
 export interface LibraryPlatformOption {
   value: LibraryPlatform
   label: string
-  icon: IconType
+  icon: IconType | LucideIcon
 }
 
 export const LIBRARY_PLATFORMS: LibraryPlatformOption[] = [
@@ -21,7 +21,7 @@ export const LIBRARY_PLATFORMS: LibraryPlatformOption[] = [
   { value: 'XBOX', label: 'Xbox', icon: SiXbox },
   { value: 'NINTENDO', label: 'Nintendo', icon: SiNintendoswitch },
   { value: 'EPIC', label: 'Epic', icon: SiEpicgames },
-  { value: 'OTHER', label: 'Outro', icon: FaGamepad },
+  { value: 'OTHER', label: 'Outro', icon: Gamepad2 },
 ]
 
 const BY_VALUE = new Map(LIBRARY_PLATFORMS.map(p => [p.value, p]))
