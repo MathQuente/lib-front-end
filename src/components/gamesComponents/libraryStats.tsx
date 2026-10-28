@@ -9,10 +9,12 @@ import { usePlayedCount } from '../../hooks/usePlayedCount'
 import { useRating } from '../../hooks/useRating'
 import type { GameCardData } from '../../types/games'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
+import { hasAccountBreakdown, hasNoHours } from '../../utils/accountHours'
 import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { focusRing } from '../../styles/focus'
+import { AccountHoursLine } from '../accountHoursLine'
 import { RatingAverage } from '../ratingAverage'
-import { formatHours } from '../totalsGrid'
+import { NO_HOURS_LABEL, formatHours } from '../totalsGrid'
 
 const SINGLE_PLATFORM_LABEL: Record<number, string> = {
   [STATUS.PLAYED]: 'Jogado em',
@@ -30,17 +32,22 @@ function totalItems(
   hours: number,
   completions: number,
   completedAt: string | null | undefined,
-  isPlayed: boolean
+  isPlayed: boolean,
+  noHours: boolean
 ): ReactNode[] {
   const items: ReactNode[] = []
   if (hours > 0 || isPlayed) {
     items.push(
-      <span key="hours">
-        <span className={`${valueClass} text-primary-light`}>
-          {formatHours(hours)}
-        </span>{' '}
-        jogadas
-      </span>
+      noHours ? (
+        <span key="hours">{NO_HOURS_LABEL}</span>
+      ) : (
+        <span key="hours">
+          <span className={`${valueClass} text-primary-light`}>
+            {formatHours(hours)}
+          </span>{' '}
+          jogadas
+        </span>
+      )
     )
   }
   if (completions > 0) {
@@ -107,7 +114,8 @@ export function LibraryStats({
     totals?.hoursPlayed ?? 0,
     totals?.completions ?? 0,
     totals?.completedAt,
-    isPlayed
+    isPlayed,
+    hasNoHours(platforms)
   )
 
   const isReleased = game.releaseDate
@@ -134,7 +142,8 @@ export function LibraryStats({
             hoursPlayed,
             completions,
             completions > 0 ? completedAt : null,
-            isPlayed
+            isPlayed,
+            false
           )}
         </MetaLine>
       ) : platforms.length === 0 ? (
@@ -142,16 +151,23 @@ export function LibraryStats({
           Nenhuma plataforma registrada ainda.
         </p>
       ) : isSingle ? (
-        <MetaLine>
-          {singleOption && SingleIcon && (
-            <span className="inline-flex items-center gap-1.5">
-              {SINGLE_PLATFORM_LABEL[statusId ?? STATUS.PLAYED] ?? 'Jogado em'}
-              <SingleIcon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
-              <span className="font-medium text-gray-100">{singleName}</span>
-            </span>
-          )}
-          {totalsOfPlatforms}
-        </MetaLine>
+        <>
+          <MetaLine>
+            {singleOption && SingleIcon && (
+              <span className="inline-flex items-center gap-1.5">
+                {SINGLE_PLATFORM_LABEL[statusId ?? STATUS.PLAYED] ??
+                  'Jogado em'}
+                <SingleIcon
+                  className="size-3.5 shrink-0 text-gray-300"
+                  aria-hidden
+                />
+                <span className="font-medium text-gray-100">{singleName}</span>
+              </span>
+            )}
+            {totalsOfPlatforms}
+          </MetaLine>
+          <AccountHoursLine entry={platforms[0]} />
+        </>
       ) : platforms.length > MAX_PLATFORMS_IN_MODAL ? (
         <>
           {totalsOfPlatforms.length > 0 && (
@@ -215,8 +231,10 @@ export function LibraryStats({
               if (!option) return null
               const Icon = option.icon
               const hours = entry.hoursPlayed ?? 0
+              const hoursText =
+                entry.hoursPlayed === null ? NO_HOURS_LABEL : formatHours(hours)
               const name = entryDisplayName(entry, option.label)
-              const label = `${name}: ${formatHours(hours)}${
+              const label = `${name}: ${hoursText}${
                 entry.completions > 1
                   ? `, zerado ${entry.completions} vezes`
                   : ''
@@ -230,9 +248,13 @@ export function LibraryStats({
                   <Icon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
                   <span className="text-gray-200">{name}</span>
                   <span
-                    className={`${valueClass} ${hours > 0 ? 'text-white' : 'text-gray-400'}`}
+                    className={
+                      entry.hoursPlayed === null
+                        ? 'text-gray-400'
+                        : `${valueClass} ${hours > 0 ? 'text-white' : 'text-gray-400'}`
+                    }
                   >
-                    {formatHours(hours)}
+                    {hoursText}
                   </span>
                   {entry.completions > 1 && (
                     <span>zerado {entry.completions} vezes</span>
@@ -241,6 +263,17 @@ export function LibraryStats({
               )
             })}
           </ul>
+          {platforms.filter(hasAccountBreakdown).map(entry => {
+            const option = getLibraryPlatform(entry.platform)
+            if (!option) return null
+            return (
+              <AccountHoursLine
+                key={entryKey(entry)}
+                entry={entry}
+                label={entryDisplayName(entry, option.label)}
+              />
+            )
+          })}
         </>
       )}
 

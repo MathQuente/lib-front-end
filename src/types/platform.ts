@@ -47,12 +47,18 @@ export type PlatformConsole =
   | 'MOBILE'
   | 'ARCADE'
 
+export interface AccountHours {
+  gamertag: string
+  hoursPlayed: number
+}
+
 export interface UserGamePlatformEntry {
   platform: LibraryPlatform
   console: PlatformConsole
   hoursPlayed: number | null
   completions: number
   completedAt: string | null
+  accountHours: AccountHours[]
 }
 
 export interface UserGamePlatformsResponse {

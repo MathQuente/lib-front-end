@@ -27,7 +27,12 @@ import {
 import { ConfirmDialog } from './confirmDialog'
 import { Button } from './button'
 import { IconButton } from './iconButton'
-import { TotalsStrip, formatHours } from './totalsGrid'
+import {
+  accountHoursText,
+  hasAccountBreakdown,
+  hasNoHours,
+} from '../utils/accountHours'
+import { NO_HOURS_LABEL, TotalsStrip, formatHours } from './totalsGrid'
 import { inlineFieldFocus } from '../styles/focus'
 
 const MAX_HOURS = 9999.99
@@ -116,17 +121,22 @@ export function PlatformEditor({
             min={0}
             max={MAX_HOURS}
             step="any"
-            placeholder="0"
+            placeholder="—"
             value={hours}
             onChange={e => setHours(stripLeadingZeros(e.target.value))}
             disabled={disabled}
-            aria-label={`Horas jogadas em ${name}`}
+            aria-label={`Horas jogadas em ${name}${entry.hoursPlayed === null ? `, ${NO_HOURS_LABEL}` : ''}`}
             aria-invalid={!hoursValid}
             className={`w-16 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${inputClass}`}
           />
           <span className="text-xs text-gray-400">h</span>
         </div>
       </div>
+      {entry.accountHours.length > 0 && (
+        <p className="text-xs text-gray-400">
+          A próxima importação do Xbox substitui horas editadas à mão.
+        </p>
+      )}
       {!completionsVisible && (
         <button
           type="button"
@@ -271,12 +281,20 @@ function PlatformRow({
             <Icon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
             <span className="flex min-w-0 flex-col">
               <span className="text-sm text-white truncate">{name}</span>
-              {hint && <span className="text-xs text-gray-400 truncate">{hint}</span>}
+              {hint && (
+                <span className="text-xs text-gray-400 break-words">
+                  {hint}
+                </span>
+              )}
             </span>
           </span>
           <span className="flex items-baseline gap-2 shrink-0 tabular-nums">
-            <span className="text-sm text-gray-300">
-              {formatHours(entry.hoursPlayed ?? 0)}
+            <span
+              className={`text-gray-300 ${entry.hoursPlayed === null ? 'text-xs' : 'text-sm'}`}
+            >
+              {entry.hoursPlayed === null
+                ? NO_HOURS_LABEL
+                : formatHours(entry.hoursPlayed)}
             </span>
             {entry.completions > 0 && (
               <span
@@ -518,6 +536,7 @@ export function GamePlatformsSection({
           completions={totalCompletions}
           completedAt={totalCompletedAt}
           hideEmptyHours={!isPlayed}
+          noHours={hasNoHours(platforms)}
         />
       )}
 
@@ -527,7 +546,14 @@ export function GamePlatformsSection({
           <PlatformRow
             key={key}
             entry={entry}
-            hint={entryHint(entry, platforms)}
+            hint={
+              [
+                entryHint(entry, platforms),
+                hasAccountBreakdown(entry) ? accountHoursText(entry) : null,
+              ]
+                .filter(Boolean)
+                .join(' · ') || null
+            }
             isPlayed={isPlayed}
             disabled={disabled}
             open={openKey === key}

@@ -1,7 +1,11 @@
 import dayjs from 'dayjs'
 
+const hoursFormat = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
+
+export const NO_HOURS_LABEL = 'sem horas registradas'
+
 export function formatHours(hours: number) {
-  return `${Number(hours.toFixed(1))}h`
+  return `${hoursFormat.format(hours)}\u00a0h`
 }
 
 function Cell({
@@ -32,12 +36,14 @@ export function TotalsStrip({
   completions,
   completedAt,
   hideEmptyHours = false,
+  noHours = false,
   className = 'rounded-lg border border-dark-border bg-dark-bg',
 }: {
   hours: number
   completions: number
   completedAt: string | null | undefined
   hideEmptyHours?: boolean
+  noHours?: boolean
   className?: string
 }) {
   const showHours = hours > 0 || !hideEmptyHours
@@ -45,7 +51,12 @@ export function TotalsStrip({
 
   return (
     <dl className={`flex divide-x divide-dark-border ${className}`}>
-      {showHours && <Cell value={formatHours(hours)} label="jogadas" />}
+      {showHours &&
+        (noHours ? (
+          <Cell value="—" label={NO_HOURS_LABEL} />
+        ) : (
+          <Cell value={formatHours(hours)} label="jogadas" />
+        ))}
       {completions > 0 && <Cell value={`${completions}×`} label="zerado" />}
       {completedAt && (
         <Cell
