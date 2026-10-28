@@ -12,7 +12,7 @@ const sections: LegalSection[] = [
     paragraphs: [
       'Cadastro: e-mail e senha (guardada apenas em forma de hash) ou, se você entrar com Google ou Discord, os dados básicos que esses serviços informam.',
       'Perfil e uso: nome de usuário, foto, banner, biblioteca de jogos, horas jogadas, notas, resenhas e quem você segue.',
-      'Integrações opcionais: ao vincular Steam, Xbox ou PlayStation, guardamos o identificador da conta e importamos sua biblioteca, horas e conquistas.',
+      'Integrações opcionais: ao vincular Steam, Xbox ou PlayStation, guardamos o identificador das contas e importamos sua biblioteca, horas e conquistas.',
       'Aceite: data e versão dos Termos que você aceitou ao criar a conta.',
       'Dados técnicos: cookies de sessão e registros de acesso necessários para segurança e limite de tentativas.'
     ]

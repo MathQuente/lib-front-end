@@ -9,6 +9,6 @@ export const useXboxImport = () =>
     getStatus: () => api.getXboxImportStatus(),
     connect: () => api.startXboxLink(),
     redirectsAway: true,
-    disconnect: () => api.disconnectXbox(),
+    disconnect: accountId => api.disconnectXbox(accountId ?? ''),
     startImport: () => api.startXboxImport(),
   })

@@ -13,7 +13,7 @@ export interface PlatformImportConfig<TResult> {
   connect: (input: string) => Promise<unknown>
   redirectsAway?: boolean
   requestVerification?: (input: string) => Promise<{ code: string }>
-  disconnect: () => Promise<unknown>
+  disconnect: (accountId?: string) => Promise<unknown>
   startImport: () => Promise<unknown>
 }
 
@@ -64,9 +64,15 @@ export const usePlatformImport = <TResult>(
   })
 
   const disconnect = useMutation({
-    mutationFn: () => config.disconnect(),
+    mutationFn: (accountId?: string) => config.disconnect(accountId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
+      queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
+      queryClient.invalidateQueries({ queryKey: ['games'] })
+      queryClient.invalidateQueries({ queryKey: ['gamePlatforms', userId] })
+      queryClient.invalidateQueries({ queryKey: ['gameHours', userId] })
+      queryClient.invalidateQueries({ queryKey: ['gameStats', userId] })
+      queryClient.invalidateQueries({ queryKey })
       toast.success(`${config.label} desconectada`)
     },
     onError: error => {
@@ -105,7 +111,7 @@ export const usePlatformImport = <TResult>(
       ? (input: string) => requestVerification.mutateAsync(input)
       : undefined,
     isRequestingVerification: requestVerification.isPending,
-    disconnect: () => disconnect.mutateAsync(),
+    disconnect: (accountId?: string) => disconnect.mutateAsync(accountId),
     isDisconnecting: disconnect.isPending,
     startImport: () => startImport.mutateAsync(),
     isStarting: startImport.isPending,

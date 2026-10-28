@@ -2,6 +2,11 @@ export interface UserProfileResponse {
   user: User
 }
 
+export interface XboxAccount {
+  id: string
+  gamertag: string
+}
+
 export interface User {
   id: string
   email: string
@@ -14,7 +19,7 @@ export interface User {
   steamId: string | null
   steamPersonaName: string | null
   psnOnlineId: string | null
-  xboxGamertag: string | null
+  xboxAccounts: XboxAccount[]
   followersCount: number
   followingCount: number
 }

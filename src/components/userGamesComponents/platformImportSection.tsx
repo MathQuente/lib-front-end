@@ -6,6 +6,7 @@ import {
 } from '../../constants/importMessages'
 import { useHiddenImportResult } from '../../hooks/useHiddenImportResult'
 import type { PlatformImport } from '../../hooks/usePlatformImport'
+import type { ImportSectionResult } from '../../types/import'
 import type { LibraryPlatform } from '../../types/platform'
 import { Button } from '../button'
 import { ConfirmDialog } from '../confirmDialog'
@@ -24,15 +25,47 @@ const MIN_IMPORTING_VISIBLE_MS = 1500
 const CONNECTED_DESCRIPTION =
   'Importe para trazer seus jogos. Os que já estão na biblioteca continuam lá.'
 
+const MULTI_ACCOUNT_DESCRIPTION = `${CONNECTED_DESCRIPTION} Horas do mesmo jogo em contas diferentes são somadas.`
+
+function plural(count: number, one: string, many: string) {
+  return count === 1 ? one : many
+}
+
+function formatAccountResult({
+  imported,
+  updated,
+  notFound,
+}: ImportSectionResult) {
+  return [
+    `${imported} ${plural(imported, 'novo', 'novos')}`,
+    `${updated} ${plural(updated, 'atualizado', 'atualizados')}`,
+    `${notFound.length} ${plural(notFound.length, 'não encontrado', 'não encontrados')}`,
+  ].join(' · ')
+}
+
+interface PlatformAccount {
+  id: string
+  name: string
+}
+
+interface AccountImportResult {
+  name: string
+  result?: ImportSectionResult
+  error?: string
+  warning?: string
+}
+
 function StatusPill({
   connectedId,
   connectedName,
   hideConnectedId,
+  accountCount,
   isImporting,
 }: {
   connectedId: string | null
   connectedName: string | null
   hideConnectedId: boolean
+  accountCount: number
   isImporting: boolean
 }) {
   const dotClass = isImporting
@@ -42,13 +75,15 @@ function StatusPill({
       : 'bg-gray-500'
   const text = isImporting
     ? 'Importando'
-    : connectedId
-      ? connectedName
-        ? `Conectada como ${connectedName}`
-        : hideConnectedId
-          ? 'Conectada'
-          : `Conectada como ${connectedId}`
-      : 'Não conectada'
+    : connectedId && accountCount > 1
+      ? `${accountCount} contas conectadas`
+      : connectedId
+        ? connectedName
+          ? `Conectada como ${connectedName}`
+          : hideConnectedId
+            ? 'Conectada'
+            : `Conectada como ${connectedId}`
+        : 'Não conectada'
 
   return (
     <span className="flex min-w-0 items-center gap-1.5 text-xs text-gray-300">
@@ -68,12 +103,15 @@ interface PlatformImportSectionProps<TResult> {
   connectedId: string | null
   connectedName?: string | null
   hideConnectedId?: boolean
+  accounts?: PlatformAccount[]
+  maxAccounts?: number
   inputPlaceholder?: string
   connectLabel?: string
   verificationHint?: string
   disconnectedDescription: string
   importState: PlatformImport<TResult>
   getResultSections: (result: TResult) => ImportResultSection[]
+  getAccountResults?: (result: TResult) => AccountImportResult[]
   onViewLibrary?: () => void
   suggestionsPlatform?: LibraryPlatform
 }
@@ -85,12 +123,15 @@ export function PlatformImportSection<TResult>({
   connectedId,
   connectedName = null,
   hideConnectedId = false,
+  accounts,
+  maxAccounts = 1,
   inputPlaceholder,
   connectLabel,
   verificationHint,
   disconnectedDescription,
   importState,
   getResultSections,
+  getAccountResults,
   onViewLibrary,
   suggestionsPlatform,
 }: PlatformImportSectionProps<TResult>) {
@@ -114,7 +155,8 @@ export function PlatformImportSection<TResult>({
   const [profileInput, setProfileInput] = useState('')
   const [verificationCode, setVerificationCode] = useState<string | null>(null)
   const [justFinished, setJustFinished] = useState(false)
-  const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false)
+  const [disconnectTarget, setDisconnectTarget] =
+    useState<PlatformAccount | null>(null)
   const previousStatus = useRef<string | undefined>(undefined)
   const progressRef = useRef<HTMLDivElement>(null)
   const resultRef = useRef<HTMLOutputElement>(null)
@@ -292,6 +334,11 @@ export function PlatformImportSection<TResult>({
     setVerificationCode(null)
   }
 
+  const accountResults =
+    status?.status === 'completed' && status.result && getAccountResults
+      ? getAccountResults(status.result)
+      : []
+
   const showViewLibrary =
     justFinished && status?.status === 'completed' && Boolean(onViewLibrary)
 
@@ -299,9 +346,18 @@ export function PlatformImportSection<TResult>({
   const isAwaitingVerification = !connectedId && verificationCode !== null
   const isConnectBusy = isConnecting || isRequestingVerification
 
+  const accountList = accounts ?? []
+  const hasAccountList = accounts !== undefined
+  const canAddAccount = hasAccountList && accountList.length < maxAccounts
+  const isAtAccountLimit = hasAccountList && maxAccounts > 1 && !canAddAccount
+
   async function handleDisconnect() {
-    await disconnect()
-    setDisconnectDialogOpen(false)
+    await disconnect(disconnectTarget?.id)
+    setDisconnectTarget(null)
+  }
+
+  function askDisconnect() {
+    setDisconnectTarget(accountList[0] ?? { id: '', name: label })
   }
 
   return (
@@ -316,15 +372,45 @@ export function PlatformImportSection<TResult>({
             connectedId={connectedId}
             connectedName={connectedName}
             hideConnectedId={hideConnectedId}
+            accountCount={accountList.length}
             isImporting={isImporting}
           />
         </div>
         <p className="text-xs text-gray-400">
-          {connectedId ? CONNECTED_DESCRIPTION : disconnectedDescription}
+          {connectedId
+            ? accountList.length > 1
+              ? MULTI_ACCOUNT_DESCRIPTION
+              : CONNECTED_DESCRIPTION
+            : disconnectedDescription}
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
+        {connectedId && hasAccountList && maxAccounts > 1 && (
+          <ul className="flex flex-col gap-1.5">
+            {accountList.map(account => (
+              <li
+                key={account.id}
+                className="flex items-center justify-between gap-2.5 rounded-md border border-dark-border bg-dark-bg-light py-1.5 pl-2.5 pr-1.5"
+              >
+                <span className="min-w-0 break-words text-sm text-white">
+                  {account.name}
+                </span>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="shrink-0 hover:text-white"
+                  onClick={() => setDisconnectTarget(account)}
+                  disabled={isImporting}
+                >
+                  Desconectar
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+
         {!connectedId && (
           <div className="flex items-center gap-2">
             {needsInput && (
@@ -419,6 +505,39 @@ export function PlatformImportSection<TResult>({
                     finishedAt={status.finishedAt}
                   />
                 )}
+                {!showHiddenRow &&
+                  (accountResults.length > 1 ||
+                    accountResults.some(account => account.warning)) && (
+                    <ul className="flex flex-col gap-1.5">
+                      {accountResults.map(account => (
+                        <li
+                          key={account.name}
+                          className={`flex flex-col gap-0.5 rounded-md border border-dark-border bg-dark-bg-light px-3 py-2 ${
+                            account.error
+                              ? 'border-l-4 border-l-red-400'
+                              : account.warning
+                                ? 'border-l-4 border-l-amber-400'
+                                : ''
+                          }`}
+                        >
+                          <span className="text-xs text-primary-light">
+                            {account.name}
+                          </span>
+                          <span className="text-xs text-gray-300">
+                            {account.error ??
+                              (account.result
+                                ? formatAccountResult(account.result)
+                                : '')}
+                          </span>
+                          {account.warning && (
+                            <span className="text-xs text-amber-400">
+                              {account.warning}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 {suggestionsPlatform && (
                   <div hidden={showHiddenRow}>
                     <CompletionSuggestionsBlock
@@ -491,15 +610,38 @@ export function PlatformImportSection<TResult>({
                 Você pode importar de novo em {cooldownLabel}.
               </p>
             )}
-            <Button
-              type="button"
-              variant="secondary"
-              size="md"
-              className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
-              onClick={() => setDisconnectDialogOpen(true)}
-            >
-              Desconectar
-            </Button>
+            {hasAccountList && maxAccounts > 1 ? (
+              <>
+                {canAddAccount && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
+                    onClick={handleConnect}
+                    loading={isConnectBusy}
+                    disabled={isConnectBusy}
+                  >
+                    Adicionar outra conta
+                  </Button>
+                )}
+                {isAtAccountLimit && (
+                  <p className="text-xs text-gray-400">
+                    Limite de {maxAccounts} contas {label}.
+                  </p>
+                )}
+              </>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
+                onClick={askDisconnect}
+              >
+                Desconectar
+              </Button>
+            )}
           </div>
         )}
 
@@ -536,10 +678,14 @@ export function PlatformImportSection<TResult>({
       </div>
 
       <ConfirmDialog
-        open={disconnectDialogOpen}
-        onOpenChange={setDisconnectDialogOpen}
-        title={`Desconectar ${label}`}
-        description={`Sua conta ${label} será desvinculada. Os jogos já importados continuam na sua biblioteca.`}
+        open={disconnectTarget !== null}
+        onOpenChange={open => !open && setDisconnectTarget(null)}
+        title={`Desconectar ${disconnectTarget?.name ?? label}`}
+        description={
+          hasAccountList && maxAccounts > 1
+            ? `A conta ${disconnectTarget?.name} será desvinculada e as horas que ela trouxe saem dos jogos. Os jogos já importados continuam na sua biblioteca.`
+            : `Sua conta ${label} será desvinculada. Os jogos já importados continuam na sua biblioteca.`
+        }
         confirmLabel="Desconectar"
         onConfirm={handleDisconnect}
         isLoading={isDisconnecting}

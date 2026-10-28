@@ -586,8 +586,8 @@ export const api = {
       '/users/xbox/oauth',
       'https://login.microsoftonline.com'
     ),
-  disconnectXbox: async () => {
-    await http.delete('/users/xbox', {})
+  disconnectXbox: async (accountId: string) => {
+    await http.delete(`/users/xbox/${accountId}`, {})
   },
   startXboxImport: async () => {
     const response = await http.post<StartImportResponse>(

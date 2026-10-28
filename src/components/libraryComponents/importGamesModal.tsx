@@ -39,7 +39,7 @@ export function ImportGamesModal({
           onViewLibrary={viewLibrary}
         />
         <XboxImportSection
-          xboxGamertag={user?.xboxGamertag ?? null}
+          xboxAccounts={user?.xboxAccounts ?? []}
           onViewLibrary={viewLibrary}
         />
       </div>

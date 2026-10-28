@@ -26,6 +26,10 @@ const PLATFORMS: Record<string, Record<string, LinkMessage>> = {
       type: 'error',
       text: 'Este perfil do Xbox já está vinculado a outra conta.',
     },
+    limit: {
+      type: 'error',
+      text: 'Você já vinculou o máximo de 2 contas Xbox.',
+    },
     no_profile: {
       type: 'error',
       text: 'Essa conta Microsoft não tem um perfil do Xbox.',
