@@ -17,7 +17,7 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
 
   const queryKey = ['gamePlatforms', userId, igdbId]
 
-  const { data, isLoading } = useQuery<UserGamePlatformsResponse>({
+  const { data, isLoading, isError } = useQuery<UserGamePlatformsResponse>({
     queryKey,
     queryFn: () => api.getGamePlatforms(igdbId),
     enabled: Boolean(igdbId && userId && enabled),
@@ -25,6 +25,7 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
 
   const onChanged = (next: UserGamePlatformsResponse) => {
     queryClient.setQueryData(queryKey, next)
+    queryClient.invalidateQueries({ queryKey })
     queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
     queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
     queryClient.invalidateQueries({ queryKey: ['gameHours', userId, igdbId] })
@@ -80,6 +81,7 @@ export const useGamePlatforms = (igdbId: string, enabled: boolean) => {
     platforms: data?.platforms ?? [],
     totals: data?.totals,
     isLoading,
+    isError,
     addPlatform: (platform: LibraryPlatform, gameConsole: PlatformConsole) =>
       addPlatform.mutateAsync({ platform, gameConsole }),
     updatePlatform: (

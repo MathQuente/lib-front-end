@@ -44,7 +44,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const hasStatus = (statusId: number) => activeStatus?.id === statusId
   const canHavePlatforms = !!activeStatus && activeStatus.id !== STATUS.WISHLIST
 
-  const { platforms, updatePlatform, isMutating } = useGamePlatforms(
+  const { platforms, updatePlatform, isMutating, isLoading, isError } = useGamePlatforms(
     igdbId ?? '',
     canHavePlatforms
   )
@@ -52,10 +52,10 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const [confirmingRemoval, setConfirmingRemoval] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [completionPending, setCompletionPending] = useState(false)
   const completionRef = useRef<HTMLFieldSetElement>(null)
   const completionHintId = useId()
   const completionTitleId = useId()
-  const recordedRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (askingCompletion) completionRef.current?.querySelector('button')?.focus()
@@ -80,6 +80,10 @@ export function GameStatusButtons({ game }: GameFormProps) {
     setAskingCompletion(false)
 
     if (isAlreadyActive) {
+      if (statusId === STATUS.PLAYED && completionPending) {
+        setAskingCompletion(true)
+        return
+      }
       setConfirmingRemoval(true)
       return
     }
@@ -88,7 +92,6 @@ export function GameStatusButtons({ game }: GameFormProps) {
     try {
       if (hasExistingStatus) {
         if (statusId === STATUS.PLAYED && platforms.length > 1) {
-          recordedRef.current = null
           setAskingCompletion(true)
           return
         }
@@ -120,13 +123,16 @@ export function GameStatusButtons({ game }: GameFormProps) {
   async function applyPlayed(entry: UserGamePlatformEntry | null) {
     setIsSaving(true)
     try {
-      if (entry && recordedRef.current === null) {
+      if (!hasStatus(STATUS.PLAYED)) {
+        await updateGameStatus({ statusIds: STATUS.PLAYED })
+      }
+      if (entry) {
+        setCompletionPending(true)
         await updatePlatform(entry.platform, entry.console, {
           completions: entry.completions + 1,
         })
-        recordedRef.current = entryKey(entry)
       }
-      await updateGameStatus({ statusIds: STATUS.PLAYED })
+      setCompletionPending(false)
       setAskingCompletion(false)
     } catch {
     } finally {
@@ -135,7 +141,6 @@ export function GameStatusButtons({ game }: GameFormProps) {
   }
 
   function cancelCompletion() {
-    recordedRef.current = null
     setAskingCompletion(false)
   }
 
@@ -151,7 +156,10 @@ export function GameStatusButtons({ game }: GameFormProps) {
         type="button"
         onClick={() => handleStatusClick(statusId)}
         aria-pressed={active}
-        disabled={isSaving}
+        disabled={
+          isSaving ||
+          (statusId === STATUS.PLAYED && canHavePlatforms && (isLoading || isError))
+        }
         className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-60 disabled:cursor-wait group ${
           active
             ? 'bg-primary/10'
