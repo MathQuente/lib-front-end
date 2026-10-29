@@ -1,6 +1,6 @@
 import type { UserGamePlatformEntry } from '../types/platform'
 import { hasAccountBreakdown } from '../utils/accountHours'
-import { formatHours } from './totalsGrid'
+import { formatHoursDetailed } from '../utils/hours'
 
 export function AccountHoursLine({
   entry,
@@ -17,10 +17,13 @@ export function AccountHoursLine({
       className="flex flex-wrap gap-x-3.5 gap-y-0.5 text-xs text-gray-400"
     >
       {entry.accountHours.map((account, index) => (
-        <li key={`${account.gamertag}-${index}`} className="flex flex-wrap gap-x-1.5">
+        <li
+          key={`${account.gamertag}-${index}`}
+          className="flex flex-wrap gap-x-1.5"
+        >
           <span className="break-all text-gray-200">{account.gamertag}</span>
           <span className="font-display font-bold text-white tabular-nums">
-            {formatHours(account.hoursPlayed)}
+            {formatHoursDetailed(account.hoursPlayed)}
           </span>
         </li>
       ))}

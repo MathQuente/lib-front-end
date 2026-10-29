@@ -8,8 +8,8 @@ import {
 import { focusRing } from '../../styles/focus'
 import type { LibraryPlatform } from '../../types/platform'
 import type { CompletionSuggestion } from '../../types/suggestion'
+import { formatHours } from '../../utils/hours'
 import { Button } from '../button'
-import { formatHours } from '../totalsGrid'
 
 const UNDO_TOAST_MS = 10000
 

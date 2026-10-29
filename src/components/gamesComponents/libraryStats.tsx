@@ -14,7 +14,11 @@ import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { focusRing } from '../../styles/focus'
 import { AccountHoursLine } from '../accountHoursLine'
 import { RatingAverage } from '../ratingAverage'
-import { NO_HOURS_LABEL, formatHours } from '../totalsGrid'
+import {
+  NO_HOURS_LABEL,
+  formatHours,
+  formatHoursOrNone,
+} from '../../utils/hours'
 
 const SINGLE_PLATFORM_LABEL: Record<number, string> = {
   [STATUS.PLAYED]: 'Jogado em',
@@ -231,8 +235,7 @@ export function LibraryStats({
               if (!option) return null
               const Icon = option.icon
               const hours = entry.hoursPlayed ?? 0
-              const hoursText =
-                entry.hoursPlayed === null ? NO_HOURS_LABEL : formatHours(hours)
+              const hoursText = formatHoursOrNone(entry.hoursPlayed)
               const name = entryDisplayName(entry, option.label)
               const label = `${name}: ${hoursText}${
                 entry.completions > 1

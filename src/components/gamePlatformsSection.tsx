@@ -32,7 +32,8 @@ import {
   hasAccountBreakdown,
   hasNoHours,
 } from '../utils/accountHours'
-import { NO_HOURS_LABEL, TotalsStrip, formatHours } from './totalsGrid'
+import { NO_HOURS_LABEL, formatHoursOrNone } from '../utils/hours'
+import { TotalsStrip } from './totalsGrid'
 import { inlineFieldFocus } from '../styles/focus'
 
 const MAX_HOURS = 9999.99
@@ -292,9 +293,7 @@ function PlatformRow({
             <span
               className={`text-gray-300 ${entry.hoursPlayed === null ? 'text-xs' : 'text-sm'}`}
             >
-              {entry.hoursPlayed === null
-                ? NO_HOURS_LABEL
-                : formatHours(entry.hoursPlayed)}
+              {formatHoursOrNone(entry.hoursPlayed)}
             </span>
             {entry.completions > 0 && (
               <span

@@ -1,12 +1,5 @@
 import dayjs from 'dayjs'
-
-const hoursFormat = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
-
-export const NO_HOURS_LABEL = 'sem horas registradas'
-
-export function formatHours(hours: number) {
-  return `${hoursFormat.format(hours)}\u00a0h`
-}
+import { NO_HOURS_LABEL, formatHours } from '../utils/hours'
 
 function Cell({
   value,

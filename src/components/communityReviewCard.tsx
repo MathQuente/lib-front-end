@@ -8,6 +8,7 @@ import { useIsClamped } from '../hooks/useIsClamped'
 import { focusRing } from '../styles/focus'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import type { CommunityReview } from '../types/review'
+import { formatHours, formatHoursSpoken } from '../utils/hours'
 
 function ExpandableText({ text }: { text: string }) {
   const bodyId = useId()
@@ -92,10 +93,10 @@ export function CommunityReviewCard({
             <span
               className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-dark-bg border border-dark-border"
               title="Horas jogadas"
-              aria-label={`${review.hoursPlayed} horas jogadas`}
+              aria-label={`${formatHoursSpoken(review.hoursPlayed)} jogadas`}
             >
               <Clock className="size-3 text-primary-link" aria-hidden="true" />
-              {Number(review.hoursPlayed.toFixed(1))}h
+              {formatHours(review.hoursPlayed)}
             </span>
           )}
           {review.completions > 0 && (

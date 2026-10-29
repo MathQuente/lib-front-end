@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { UserGameEntry } from '../../types/games'
+import { formatHours } from '../../utils/hours'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { GameCard, LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { GameInfo } from '../gamesComponents/gameInfo'
@@ -18,7 +19,7 @@ const PLATFORM_PREPOSITION: Record<string, string> = {
 }
 
 function playedSummary(game: UserGameEntry) {
-  const hours = Math.round(game.hoursPlayed ?? 0)
+  const hours = Math.round((game.hoursPlayed ?? 0) * 10) / 10
   const platforms = (game.playedOn ?? []).flatMap(value => {
     const option = getLibraryPlatform(value)
     const preposition = PLATFORM_PREPOSITION[value]
@@ -29,7 +30,9 @@ function playedSummary(game: UserGameEntry) {
       ? `${platforms.slice(0, -1).join(', ')} e ${platforms[platforms.length - 1]}`
       : platforms.join('')
 
-  if (hours > 0) return where ? `${hours} h ${where}` : `${hours} h`
+  if (hours > 0) {
+    return where ? `${formatHours(hours)} ${where}` : formatHours(hours)
+  }
   return where ? where.charAt(0).toUpperCase() + where.slice(1) : null
 }
 

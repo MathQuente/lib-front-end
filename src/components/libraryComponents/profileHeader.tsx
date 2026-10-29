@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
+import { formatHours } from '../../utils/hours'
 
 const factButton =
   'rounded-sm transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
@@ -67,10 +68,7 @@ export function ProfileHeader({
             </span>
             {totalHoursPlayed > 0 && (
               <span>
-                <Fact
-                  value={`${Number(totalHoursPlayed.toFixed(1)).toLocaleString('pt-BR')} h`}
-                  label="jogadas"
-                />
+                <Fact value={formatHours(totalHoursPlayed)} label="jogadas" />
               </span>
             )}
             <button
