@@ -1,11 +1,8 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { UserGameEntry } from '../../types/games'
 import { formatHours } from '../../utils/hours'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
-import { GameCard, LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
-import { GameInfo } from '../gamesComponents/gameInfo'
-import { GameModal } from '../gamesComponents/gameModal'
+import { GameCard } from '../gamesComponents/gameCard'
 import { coverLink, sectionTitle, textLink } from './styles'
 
 const MAX_PLAYING = 3
@@ -34,42 +31,6 @@ function playedSummary(game: UserGameEntry) {
     return where ? `${formatHours(hours)} ${where}` : formatHours(hours)
   }
   return where ? where.charAt(0).toUpperCase() + where.slice(1) : null
-}
-
-function ChangeStatus({ game }: { game: UserGameEntry }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={`text-xs lg:text-sm ${textLink}`}
-      >
-        Mudar status
-      </button>
-      {open && (
-        <GameModal open={open} onOpenChange={setOpen}>
-          <GameInfo game={game} onClose={() => setOpen(false)} />
-        </GameModal>
-      )}
-    </>
-  )
-}
-
-function PlayingStatus({ game }: { game: UserGameEntry }) {
-  return (
-    <div className="mt-2 flex items-center gap-3 text-sm text-gray-400">
-      <span className="hidden items-center gap-1.5 lg:inline-flex">
-        <span
-          className={`size-2.5 rounded-full ${LIBRARY_STATUS_BADGES.PLAYING.barColor}`}
-          aria-hidden="true"
-        />
-        Jogando
-      </span>
-      <ChangeStatus game={game} />
-    </div>
-  )
 }
 
 export function PlayingNow({
@@ -121,7 +82,6 @@ export function PlayingNow({
                 {playedSummary(shown[0])}
               </p>
             )}
-            <PlayingStatus game={shown[0]} />
           </div>
         </div>
       )}
@@ -144,7 +104,6 @@ export function PlayingNow({
                   {playedSummary(game)}
                 </p>
               )}
-              <PlayingStatus game={game} />
             </li>
           ))}
         </ul>

@@ -13,6 +13,7 @@ import { GameCard } from '../gamesComponents/gameCard'
 import { coverLink, sectionTitle, textLink } from './styles'
 
 const QUEUE_SIZE = 3
+const SWAP_IN = 'animate-swap-in motion-reduce:animate-none'
 
 function StartPlayingButton({
   igdbId,
@@ -59,14 +60,18 @@ function Suggestion({
   message,
   inLibrary,
   onAnother,
+  swapped = false,
 }: {
   game: GameCardData
   message?: string
   inLibrary: boolean
   onAnother?: () => void
+  swapped?: boolean
 }) {
   return (
-    <div className="mt-4 flex items-end gap-4 lg:gap-6">
+    <div
+      className={`mt-4 flex items-end gap-4 lg:gap-6 ${swapped ? SWAP_IN : ''}`}
+    >
       <Link
         to={`/games/${encodeURIComponent(game.igdbId)}`}
         className={`w-28 flex-none sm:w-36 lg:w-44 ${coverLink}`}
@@ -107,12 +112,14 @@ export function NextUp({
   suggestion,
   title = 'Para jogar em seguida',
   showEmptyNote = true,
+  loadingSuggestion = false,
 }: {
   backlog: UserGameEntry[]
   libraryIds: Set<number>
   suggestion: GameToDisplayResponse | undefined
   title?: string
   showEmptyNote?: boolean
+  loadingSuggestion?: boolean
 }) {
   const [offset, setOffset] = useState(0)
   const pinnedId = useRef<number | null>(null)
@@ -137,6 +144,20 @@ export function NextUp({
     outsideSuggestion.current = suggestion
   }
 
+  if (backlog.length > 0 && loadingSuggestion && pinnedId.current === null) {
+    return (
+      <section className="min-w-0" aria-busy="true">
+        <h2 className={sectionTitle}>{title}</h2>
+        <div className="mt-4 flex items-end gap-4 lg:gap-6">
+          <div className="aspect-[7/10] w-28 flex-none rounded-lg bg-dark-bg-light sm:w-36 lg:w-44" />
+          <div className="h-24 w-48 max-w-full rounded-lg bg-dark-bg-light" />
+        </div>
+        <div className="mb-2 mt-6 h-4 w-32 rounded bg-dark-bg-light" />
+        <div className="h-14 rounded-lg bg-dark-bg-light" />
+      </section>
+    )
+  }
+
   if (backlog.length > 0) {
     const start = Math.max(
       0,
@@ -154,6 +175,8 @@ export function NextUp({
       <section className="min-w-0">
         <h2 className={sectionTitle}>{title}</h2>
         <Suggestion
+          key={current.igdbId}
+          swapped={offset > 0}
           game={current}
           message={
             current.igdbId === suggestedId ? suggestion?.message : undefined
@@ -168,7 +191,10 @@ export function NextUp({
             <p className="mb-2 mt-6 text-sm text-gray-400">
               Também na sua fila
             </p>
-            <ul className="flex flex-col gap-3 lg:flex-row lg:gap-4">
+            <ul
+              key={current.igdbId}
+              className={`flex flex-col gap-3 lg:flex-row lg:gap-4 ${offset > 0 ? SWAP_IN : ''}`}
+            >
               {queue.map(game => (
                 <li key={game.igdbId} className="min-w-0 lg:flex-1">
                   <Link

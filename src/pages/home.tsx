@@ -29,6 +29,7 @@ function LoggedInTop() {
     isLoadingUserGames,
     isErrorUserGames,
     GamesToDisplay,
+    isLoadingRecommendation,
     gamesByStatus,
     totalPerStatus,
   } = useUserGames()
@@ -118,6 +119,7 @@ function LoggedInTop() {
           backlog={nextUpQueue}
           libraryIds={libraryIds}
           suggestion={GamesToDisplay}
+          loadingSuggestion={isLoadingRecommendation}
         />
       </div>
       <LibrarySummary totalPerStatus={totalPerStatus} />

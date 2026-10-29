@@ -30,10 +30,15 @@ export default {
         'cursor-blink': {
           '50%': { opacity: '0' },
         },
+        'swap-in': {
+          from: { opacity: '0', transform: 'translateY(6px)' },
+          to: { opacity: '1', transform: 'none' },
+        },
       },
       animation: {
         'wall-slide': 'wall-slide 90s linear infinite',
         'cursor-blink': 'cursor-blink 1s steps(2, jump-none) infinite',
+        'swap-in': 'swap-in 250ms ease-out',
       },
       colors: {
         primary: {
