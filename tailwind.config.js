@@ -27,9 +27,13 @@ export default {
         'wall-slide': {
           to: { transform: 'translateX(-50%)' },
         },
+        'cursor-blink': {
+          '50%': { opacity: '0' },
+        },
       },
       animation: {
         'wall-slide': 'wall-slide 90s linear infinite',
+        'cursor-blink': 'cursor-blink 1s steps(2, jump-none) infinite',
       },
       colors: {
         primary: {
