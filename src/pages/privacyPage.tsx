@@ -4,7 +4,7 @@ const sections: LegalSection[] = [
   {
     heading: '1. Quem é o controlador',
     paragraphs: [
-      'Controlador: Matheus de Sousa Silva, e-mail mathsousadev@gmail.com. Pedidos sobre seus dados podem ser enviados para esse endereço.'
+      'Controlador: Matheus de Sousa Silva, e-mail euzerei.suporte@gmail.com. Pedidos sobre seus dados podem ser enviados para esse endereço.'
     ]
   },
   {
@@ -38,13 +38,13 @@ const sections: LegalSection[] = [
   {
     heading: '6. Retenção e exclusão',
     paragraphs: [
-      'Mantemos seus dados enquanto sua conta existir. Ao excluí-la em Editar perfil, os dados da conta são apagados na hora. Cópias de segurança e registros técnicos de acesso são mantidos pelos provedores de hospedagem por prazo limitado, definido por cada provedor, e apagados automaticamente ao fim desse prazo.'
+      'Mantemos seus dados enquanto sua conta existir. Ao excluí-la em Editar perfil, os dados da conta são apagados na hora do nosso banco de dados. Fotos e banner enviados ficam no Cloudinary e podem permanecer lá; para removê-los, escreva para euzerei.suporte@gmail.com. Cópias de segurança e registros técnicos de acesso são mantidos pelos provedores de hospedagem por prazo limitado, definido por cada provedor, e apagados automaticamente ao fim desse prazo.'
     ]
   },
   {
     heading: '7. Seus direitos',
     paragraphs: [
-      'Você pode pedir confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação de dados desnecessários, portabilidade, eliminação dos dados, informações sobre com quem compartilhamos e sobre a possibilidade de não dar consentimento. Também pode revogar um consentimento ou se opor a um tratamento. Escreva para mathsousadev@gmail.com; nosso compromisso é responder em até 2 dias úteis.'
+      'Conforme o art. 18 da LGPD, você pode pedir acesso, correção, eliminação, portabilidade, informações sobre compartilhamento, e revogar consentimento ou se opor a um tratamento. Escreva para euzerei.suporte@gmail.com; respondemos em até 15 dias.'
     ]
   },
   {
@@ -56,7 +56,7 @@ const sections: LegalSection[] = [
   {
     heading: '9. Crianças e adolescentes',
     paragraphs: [
-      'O EuZerei é destinado a maiores de 18 anos. Se identificarmos uma conta de menor de 18 anos, ela será encerrada e os dados pessoais, eliminados.'
+      'O EuZerei é só para maiores de 18 anos (veja os Termos de uso).'
     ]
   }
 ]
@@ -65,7 +65,7 @@ export function PrivacyPage() {
   return (
     <LegalPage
       title="Política de privacidade"
-      updatedAt="25 de outubro de 2026"
+      updatedAt="30 de outubro de 2026"
       sections={sections}
     />
   )

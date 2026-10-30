@@ -4,7 +4,7 @@ const sections: LegalSection[] = [
   {
     heading: '1. Quem somos',
     paragraphs: [
-      'O EuZerei é um projeto pessoal e gratuito, feito como portfólio, para registrar e avaliar jogos. Responsável: Matheus de Sousa Silva. Contato: mathsousadev@gmail.com.',
+      'O EuZerei é um projeto pessoal e gratuito, feito como portfólio, para registrar e avaliar jogos. Responsável: Matheus de Sousa Silva. Contato: euzerei.suporte@gmail.com.',
       'Ao criar uma conta, você declara que leu e aceita estes Termos e a Política de Privacidade.'
     ]
   },
@@ -19,13 +19,13 @@ const sections: LegalSection[] = [
     heading: '3. O que você publica',
     paragraphs: [
       'Resenhas, notas, nome de usuário e imagens ficam visíveis em perfis públicos. Você continua sendo o titular do que publica e autoriza o EuZerei a exibir, armazenar e processar esse conteúdo apenas para operar o serviço.',
-      'Conteúdo que viole estes Termos pode ser denunciado em mathsousadev@gmail.com. A denúncia será analisada em até 2 dias úteis e o conteúdo poderá ser removido ou a conta suspensa.'
+      'Conteúdo que viole estes Termos pode ser denunciado em euzerei.suporte@gmail.com. A denúncia será analisada em até 15 dias e o conteúdo poderá ser removido ou a conta suspensa.'
     ]
   },
   {
     heading: '4. Encerrar a conta',
     paragraphs: [
-      'Você pode excluir sua conta em Editar perfil. A exclusão é imediata e definitiva. Cópias de segurança do banco de dados e registros técnicos de acesso são mantidos pelos provedores de hospedagem por prazo limitado, definido por cada provedor, e apagados automaticamente ao fim desse prazo.',
+      'Você pode excluir sua conta em Editar perfil. A exclusão dos dados da conta é imediata e definitiva. Detalhes sobre cópias de segurança estão na Política de Privacidade.',
       'O EuZerei pode suspender ou encerrar contas que violem estes Termos.'
     ]
   },
@@ -48,7 +48,7 @@ export function TermsPage() {
   return (
     <LegalPage
       title="Termos de uso"
-      updatedAt="25 de outubro de 2026"
+      updatedAt="30 de outubro de 2026"
       sections={sections}
     />
   )
