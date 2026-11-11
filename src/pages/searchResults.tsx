@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Button } from '../components/button'
+import { Button, buttonClasses } from '../components/button'
 import { StatusMessage } from '../components/statusMessage'
 import { BackButton } from '../components/backButton'
 import { Pagination } from '../components/pagination'
@@ -156,6 +156,16 @@ export function SearchResults() {
       variant="empty"
       title="Nenhum jogo encontrado"
       description={emptyDescription('jogos')}
+      primaryAction={
+        !isLoadingUsers && users.length > 0 ? (
+          <Link
+            to="?tab=pessoas"
+            className={buttonClasses({ variant: 'secondary', size: 'md' })}
+          >
+            Ver {usersLabel} {users.length === 1 ? 'pessoa' : 'pessoas'}
+          </Link>
+        ) : undefined
+      }
     />
   ) : (
     <>

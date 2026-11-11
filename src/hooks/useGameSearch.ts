@@ -14,7 +14,7 @@ export const useGameSearch = (query: string | undefined, page: number) => {
     useQuery<UseGamesProps>({
       queryKey: ['gameSearch', user?.id ?? null, query, page, SEARCH_PAGE_SIZE],
       queryFn: () => api.searchGames(query ?? '', page, SEARCH_PAGE_SIZE),
-      enabled: !!query && !isLoadingAuth,
+      enabled: !!query?.trim() && !isLoadingAuth,
       placeholderData: (previous, previousQuery) =>
         previousQuery?.queryKey[QUERY_KEY_TERM] === query ? previous : undefined
     })
