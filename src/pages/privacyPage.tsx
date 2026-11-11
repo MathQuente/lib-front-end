@@ -4,7 +4,7 @@ const sections: LegalSection[] = [
   {
     heading: '1. Quem é o controlador',
     paragraphs: [
-      'Controlador: Matheus de Sousa Silva, e-mail euzerei.suporte@gmail.com. Pedidos sobre seus dados podem ser enviados para esse endereço.'
+      'Controlador: o EuZerei, projeto pessoal e gratuito. Pedidos sobre seus dados podem ser enviados para euzerei.suporte@gmail.com.'
     ]
   },
   {

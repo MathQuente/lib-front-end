@@ -3,7 +3,6 @@ import { sectionTitleClass } from './styles'
 const facts = [
   ['Gênero', 'Biblioteca pessoal de jogos'],
   ['Plataforma', 'Navegador, no computador e no celular'],
-  ['Feito por', 'Matheus de Sousa Silva'],
   ['Dados de jogos', 'IGDB'],
   ['Importa de', 'Steam, Xbox e PlayStation'],
   ['Preço', 'Gratuito'],

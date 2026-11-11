@@ -4,7 +4,7 @@ const sections: LegalSection[] = [
   {
     heading: '1. Quem somos',
     paragraphs: [
-      'O EuZerei é um projeto pessoal e gratuito, feito como portfólio, para registrar e avaliar jogos. Responsável: Matheus de Sousa Silva. Contato: euzerei.suporte@gmail.com.',
+      'O EuZerei é um projeto pessoal e gratuito, feito como portfólio, para registrar e avaliar jogos. Contato: euzerei.suporte@gmail.com.',
       'Ao criar uma conta, você declara que leu e aceita estes Termos e a Política de Privacidade.'
     ]
   },
