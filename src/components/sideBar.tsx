@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
 import { buttonClasses } from './button'
 import { SearchBar } from './searchBar'
@@ -26,11 +26,53 @@ export function SideBar() {
   const { user } = useAuth()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const asideRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : 'unset'
     return () => {
       document.body.style.overflow = 'unset'
+    }
+  }, [mobileMenuOpen])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const menuButton = menuButtonRef.current
+    const focusable = () =>
+      Array.from(
+        asideRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled])'
+        ) ?? []
+      )
+
+    focusable()[0]?.focus()
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false)
+        return
+      }
+      if (event.key !== 'Tab') return
+
+      const items = focusable()
+      if (items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      menuButton?.focus()
     }
   }, [mobileMenuOpen])
 
@@ -54,6 +96,7 @@ export function SideBar() {
           </div>
         </Link>
         <button
+          ref={menuButtonRef}
           className={`p-2 text-gray-400 hover:text-white transition-colors ${focusRing}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
@@ -73,8 +116,11 @@ export function SideBar() {
       )}
 
       <aside
-        className={`fixed right-0 top-0 h-full w-64 bg-dark-bg-light border-l border-dark-border transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        ref={asideRef}
+        className={`fixed right-0 top-0 h-full w-64 bg-dark-bg-light border-l border-dark-border transform z-50 md:hidden ${
+          mobileMenuOpen
+            ? 'translate-x-0 visible [transition:transform_300ms_ease-in-out,visibility_0s]'
+            : 'invisible translate-x-full [transition:transform_300ms_ease-in-out,visibility_0s_linear_300ms]'
         }`}
       >
         <div className="flex flex-col h-full">
