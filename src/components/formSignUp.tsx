@@ -83,7 +83,7 @@ export function FormSignUp() {
             {...register('acceptedTerms')}
           />
           <span>
-            Declaro que tenho 18 anos ou mais e aceito os{' '}
+            Li e aceito os{' '}
             <Link
               to="/termos"
               target="_blank"
