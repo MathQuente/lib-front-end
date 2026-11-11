@@ -94,7 +94,7 @@ function LoggedInTop() {
               Explorar jogos
             </Link>
             <Link to="/userLibrary" className={textLink}>
-              Importar da Steam ou PSN
+              Importar da Steam, PSN ou Xbox
             </Link>
           </div>
         </section>

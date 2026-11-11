@@ -27,6 +27,7 @@ export function LibraryRecordFields({
 }) {
   const igdbId = game.igdbId.toString()
   const hoursId = useId()
+  const hoursErrorId = useId()
   const dateId = useId()
 
   const {
@@ -91,11 +92,17 @@ export function LibraryRecordFields({
             onChange={e => setHours(stripLeadingZeros(e.target.value))}
             disabled={isBusy}
             aria-invalid={!hoursValid}
+            aria-describedby={hoursValid ? undefined : hoursErrorId}
             className={`w-20 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${inputClass}`}
           />
           <span className="text-xs text-gray-400">h</span>
         </div>
       </div>
+      {!hoursValid && (
+        <p id={hoursErrorId} className="text-[13px] leading-snug text-red-400">
+          Use um valor entre 0 e 9999,99.
+        </p>
+      )}
 
       <div className="flex items-center justify-between gap-3 min-h-11">
         <span className="text-xs text-gray-400">Vezes zerado</span>
