@@ -29,10 +29,16 @@ export function FormForgotPassword() {
 
   if (sent) {
     return (
-      <p className="text-sm text-gray-300">
-        Se existir uma conta com esse email, enviamos um link pra você
-        redefinir a senha. Confira sua caixa de entrada (e o spam).
-      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-gray-300">
+          Se existir uma conta com esse email, enviamos um link pra você
+          redefinir a senha. Confira sua caixa de entrada.
+        </p>
+        <p className="text-xs text-gray-400">
+          Não encontrou? Veja também a pasta de spam ou lixo eletrônico e
+          procure por euzerei.suporte@gmail.com.
+        </p>
+      </div>
     )
   }
 

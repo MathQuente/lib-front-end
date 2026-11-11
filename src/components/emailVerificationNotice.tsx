@@ -28,11 +28,17 @@ export function EmailVerificationNotice() {
       aria-label="Confirmação de e-mail"
       className="mb-4 flex flex-col gap-2 rounded border border-dark-border bg-dark-bg-light px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4 md:mb-6"
     >
-      <p className="min-w-0 text-sm text-gray-300">
-        Confirme seu e-mail. Enviamos um link para{' '}
-        <span className="break-words font-medium text-white">{user.email}</span>
-        .
-      </p>
+      <div className="min-w-0">
+        <p className="text-sm text-gray-300">
+          Confirme seu e-mail. Enviamos um link para{' '}
+          <span className="break-words font-medium text-white">{user.email}</span>
+          .
+        </p>
+        <p className="mt-1 text-xs text-gray-400">
+          Não encontrou? Veja também a pasta de spam ou lixo eletrônico e
+          procure por euzerei.suporte@gmail.com.
+        </p>
+      </div>
 
       <div className="flex shrink-0 items-center justify-between gap-2">
         <Button
