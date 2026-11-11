@@ -11,16 +11,19 @@ export function ReviewMarkdown({ text }: { text: string }) {
         p: ({ children }) => (
           <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>
         ),
-        a: ({ children, href }) => (
-          <a
-            href={href}
-            target="_blank"
-            rel="noreferrer"
-            className={`text-primary-link hover:underline rounded-sm ${focusRing}`}
-          >
-            {children}
-          </a>
-        ),
+        a: ({ children, href }) =>
+          href ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className={`text-primary-link hover:underline rounded-sm ${focusRing}`}
+            >
+              {children}
+            </a>
+          ) : (
+            <span>{children}</span>
+          ),
         strong: ({ children }) => (
           <strong className="font-semibold text-white">{children}</strong>
         ),
