@@ -1,10 +1,11 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
 import { focusRing } from '../styles/focus'
+import { useAuth } from '../hooks/useAuth'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const tabTrigger =
@@ -23,6 +24,8 @@ const TERMS_REQUIRED_MESSAGE =
 const OAUTH_ERROR_FALLBACK = 'Não foi possível entrar. Tente novamente.'
 
 export function Authentication() {
+  const { user } = useAuth()
+  const [alreadySignedIn] = useState(() => !!user?.id)
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') === 'signUp' ? 'signUp' : 'login'
   useDocumentTitle(tab === 'signUp' ? 'Criar conta' : 'Entrar')
@@ -48,6 +51,8 @@ export function Authentication() {
 
     setSearchParams(next, { replace: true })
   }, [oauthError, searchParams, setSearchParams])
+
+  if (alreadySignedIn) return <Navigate to="/" replace />
 
   function handleTabChange(value: string) {
     setSearchParams(value === 'signUp' ? { tab: 'signUp' } : {}, {
