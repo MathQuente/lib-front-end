@@ -16,6 +16,7 @@ import { hiResCover } from '../../utils/hiResCover'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { GameInfo } from './gameInfo'
 import { GameModal } from './gameModal'
+import { focusRing } from '../../styles/focus'
 
 export const LIBRARY_STATUS_BADGES: Record<
   string,
@@ -162,7 +163,7 @@ export function GameCard({
     lifts &&
       'hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
     interactive &&
-      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light',
+      focusRing,
     size === 'medium' ? 'block w-full' : sizes[size]
   )
 

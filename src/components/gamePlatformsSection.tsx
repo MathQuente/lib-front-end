@@ -34,7 +34,7 @@ import {
 } from '../utils/accountHours'
 import { NO_HOURS_LABEL, formatHoursOrNone } from '../utils/hours'
 import { TotalsStrip } from './totalsGrid'
-import { inlineFieldFocus } from '../styles/focus'
+import { inlineFieldFocus, focusRing } from '../styles/focus'
 
 const MAX_HOURS = 9999.99
 
@@ -142,7 +142,7 @@ export function PlatformEditor({
         <button
           type="button"
           onClick={() => setShowCompletions(true)}
-          className="self-start text-xs text-primary-link hover:underline rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          className={`self-start text-xs text-primary-link hover:underline rounded-sm ${focusRing}`}
         >
           Já zerei antes nesta plataforma
         </button>
@@ -272,7 +272,7 @@ function PlatformRow({
           onClick={onToggle}
           aria-expanded={open}
           aria-controls={bodyId}
-          className="flex-1 min-w-0 min-h-11 flex items-center justify-between gap-2 px-3 py-1.5 rounded-md text-left hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          className={`flex-1 min-w-0 min-h-11 flex items-center justify-between gap-2 px-3 py-1.5 rounded-md text-left hover:bg-dark-bg ${focusRing}`}
         >
           <span className="flex items-center gap-2 min-w-0">
             <ChevronRight
@@ -589,7 +589,7 @@ export function GamePlatformsSection({
                 aria-expanded={
                   platformAsksConsole(value) ? pickingFor === value : undefined
                 }
-                className="relative flex items-center gap-1 px-2 py-1 rounded-full border border-dark-border text-xs text-gray-400 transition-colors motion-reduce:transition-none hover:text-gray-300 hover:border-primary/40 after:absolute after:-inset-x-0.5 after:-inset-y-2.5 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+                className={`relative flex items-center gap-1 px-2 py-1 rounded-full border border-dark-border text-xs text-gray-400 transition-colors motion-reduce:transition-none hover:text-gray-300 hover:border-primary/40 after:absolute after:-inset-x-0.5 after:-inset-y-2.5 after:content-[''] ${focusRing} disabled:opacity-50`}
               >
                 <Plus className="size-3" aria-hidden />
                 <Icon className="size-3" aria-hidden />

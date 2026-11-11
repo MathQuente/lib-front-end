@@ -8,6 +8,7 @@ import type {
   UserGamesByStatus,
 } from '../../types/games'
 import { type ShelfLink, type ShelfTab, StatusShelf } from './statusShelf'
+import { focusRing } from '../../styles/focus'
 
 const MAX_PER_SHELF = 8
 
@@ -173,7 +174,7 @@ export function LibraryShelves({
           {droppedTotal === 1 ? '1 jogo largado' : `${droppedTotal} jogos largados`}
           <Link
             to="/userLibrary/droppedGames"
-            className="-my-3 inline-flex min-h-11 items-center gap-0.5 rounded-sm text-gray-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`-my-3 inline-flex min-h-11 items-center gap-0.5 rounded-sm text-gray-300 transition-colors hover:text-white ${focusRing}`}
           >
             Ver
             <ChevronRight className="size-4" aria-hidden="true" />

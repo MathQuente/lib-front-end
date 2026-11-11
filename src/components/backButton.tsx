@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
 import { listStepsInHistory } from '../utils/listHistory'
+import { focusRing } from '../styles/focus'
 
 export function BackButton({ className }: { className?: string }) {
   const navigate = useNavigate()
@@ -14,7 +15,7 @@ export function BackButton({ className }: { className?: string }) {
       type="button"
       onClick={() => navigate(-(1 + listStepsInHistory()))}
       className={twMerge(
-        'inline-flex self-start items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm',
+        `inline-flex self-start items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors ${focusRing} rounded-sm`,
         className
       )}
     >

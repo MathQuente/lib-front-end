@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '../button'
 import { LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { sectionTitle } from '../homeComponents/styles'
+import { focusRing } from '../../styles/focus'
 
 const SHELVES = [
   { status: 'PLAYING', label: 'Jogando' },
@@ -48,7 +49,7 @@ export function EmptyLibrary({ onImport }: { onImport: () => void }) {
           </p>
           <Link
             to="/games"
-            className="mt-2 inline-flex items-center justify-center rounded border border-dark-border px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors duration-200 hover:bg-dark-bg-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light active:scale-[0.98]"
+            className={`mt-2 inline-flex items-center justify-center rounded border border-dark-border px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors duration-200 hover:bg-dark-bg-lighter ${focusRing} active:scale-[0.98]`}
           >
             Explorar jogos
           </Link>

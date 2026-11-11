@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import type { FollowSummary } from '../types/follow'
+import { focusRing } from '../styles/focus'
 
 export function FollowList({
   users,
@@ -22,7 +23,7 @@ export function FollowList({
         <div key={user.id} className="flex items-center gap-3 py-2.5">
           <Link
             to={`/users/${user.id}`}
-            className="flex items-center gap-2.5 min-w-0 flex-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+            className={`flex items-center gap-2.5 min-w-0 flex-1 ${focusRing} rounded-sm`}
           >
             <img
               src={user.profilePicture || userProfilePictureDefault}

@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom'
 import { GameCard } from './gamesComponents/gameCard'
 import { releaseYear } from '../utils/releaseDate'
 import type { GameBase } from '../types/games'
+import { focusRing } from '../styles/focus'
 
 const titleLink =
-  'line-clamp-2 break-words rounded-sm text-sm font-medium leading-tight text-white transition-colors hover:text-primary-link focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+  `line-clamp-2 break-words rounded-sm text-sm font-medium leading-tight text-white transition-colors hover:text-primary-link ${focusRing}`
 
 export function SearchResultCard({ game }: { game: GameBase }) {
   return (

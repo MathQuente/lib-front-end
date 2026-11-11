@@ -4,6 +4,7 @@ import { useState, type SyntheticEvent } from 'react'
 import { Star, X } from 'lucide-react'
 import type { RatingAverageProps } from '../interfaces/games'
 import { PRIMARY, PRIMARY_LIGHT } from '../constants/colors'
+import { focusRing } from '../styles/focus'
 
 export function RatingAverage({
   game,
@@ -105,7 +106,7 @@ export function RatingAverage({
             aria-label="Remover avaliação"
             onClick={removeRating}
             disabled={isMutating}
-            className="text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+            className={`text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50 ${focusRing} rounded-sm`}
           >
             <X size={15} />
           </button>

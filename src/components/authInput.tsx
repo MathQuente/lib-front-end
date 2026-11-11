@@ -1,7 +1,7 @@
 import { forwardRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import type { AuthInputProps } from '../interfaces/ui'
-import { fieldFocus, fieldFocusError } from '../styles/focus'
+import { fieldFocus, fieldFocusError, focusRing } from '../styles/focus'
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
   function AuthInput({ id, label, icon, error, type, ...inputProps }, ref) {
@@ -36,7 +36,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(value => !value)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+              className={`absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors ${focusRing} rounded-sm`}
               title={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
             >

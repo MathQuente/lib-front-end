@@ -11,7 +11,7 @@ import { useUserProfile } from '../../hooks/useUserProfile'
 import type { UserGamesFormProps } from '../../interfaces/user'
 import { updateProfileSchema } from '../../schemas/profileSchema'
 import { Button } from '../button'
-import { fieldFocus } from '../../styles/focus'
+import { fieldFocus, focusRing } from '../../styles/focus'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 
@@ -200,7 +200,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
               <button
                 type="button"
                 onClick={handleRemoveBanner}
-                className="p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                className={`p-2 rounded-lg bg-red-900/60 border border-red-800 text-red-300 hover:text-white transition-colors ${focusRing}`}
                 title="Remover banner"
                 aria-label="Remover banner"
               >

@@ -1,10 +1,11 @@
 import { buttonClasses } from '../button'
+import { focusRing } from '../../styles/focus'
 
 export const sectionTitleClass =
   'font-display text-base font-extrabold text-white sm:text-lg'
 
 export const textLinkClass =
-  'rounded-sm text-primary-link underline underline-offset-4 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+  `rounded-sm text-primary-link underline underline-offset-4 transition-colors hover:text-white ${focusRing}`
 
 export const primaryButtonClass = buttonClasses({
   variant: 'primary',

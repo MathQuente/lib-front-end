@@ -11,11 +11,12 @@ import { SEARCH_PAGE_SIZE, useGameSearch } from '../hooks/useGameSearch'
 import { useUserSearch } from '../hooks/useUserSearch'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { parsePage } from '../utils/parsePage'
+import { focusRing } from '../styles/focus'
 
 const USERS_PAGE_SIZE = 30
 
 const tabClass = (active: boolean) =>
-  `px-3 py-1.5 text-sm rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${
+  `px-3 py-1.5 text-sm rounded-lg transition-colors ${focusRing} ${
     active ? 'bg-primary text-white font-semibold' : 'text-gray-400 hover:text-white'
   }`
 
@@ -175,7 +176,7 @@ export function SearchResults() {
           com a busca.{' '}
           <Link
             to="?tab=pessoas"
-            className="text-primary-link hover:text-white transition-colors rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`text-primary-link hover:text-white transition-colors rounded-sm ${focusRing}`}
           >
             Ver pessoas
           </Link>

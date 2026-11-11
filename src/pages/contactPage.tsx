@@ -3,6 +3,7 @@ import { sectionTitleClass } from '../components/aboutComponents/styles'
 import { CopyAddress } from '../components/contactComponents/copyAddress'
 import { TopicLink } from '../components/contactComponents/topicLink'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { focusRing } from '../styles/focus'
 
 const tips = [
   'Seu nome de usuário no EuZerei.',
@@ -119,7 +120,7 @@ export function ContactPage() {
                 <li key={to} className="min-w-0">
                   <Link
                     to={to}
-                    className="flex h-full min-h-[4.5rem] flex-col justify-center gap-0.5 rounded-lg border border-dark-border px-4 py-3 transition-colors hover:bg-dark-bg-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                    className={`flex h-full min-h-[4.5rem] flex-col justify-center gap-0.5 rounded-lg border border-dark-border px-4 py-3 transition-colors hover:bg-dark-bg-lighter ${focusRing}`}
                   >
                     <span className="font-semibold text-primary-link">
                       {title}

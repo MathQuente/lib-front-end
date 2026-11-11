@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useResendVerification } from '../hooks/useResendVerification'
 import { Button } from './button'
+import { focusRing } from '../styles/focus'
 
 const DISMISSED_KEY = 'emailNoticeDismissed'
 
@@ -57,7 +58,7 @@ export function EmailVerificationNotice() {
           onClick={dismiss}
           title="Fechar aviso"
           aria-label="Fechar aviso"
-          className="rounded-sm p-2 text-gray-400 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+          className={`rounded-sm p-2 text-gray-400 transition-colors hover:text-white ${focusRing}`}
         >
           <X size={18} aria-hidden="true" />
         </button>

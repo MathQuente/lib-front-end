@@ -6,19 +6,19 @@ import { buttonClasses } from './button'
 import { SearchBar } from './searchBar'
 import { api } from '../hooks/useApi'
 import logo from '../assets/euzerei-logo.svg'
+import { focusRing } from '../styles/focus'
 
-const focusRing =
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm'
+const navFocus = `${focusRing} rounded-sm`
 
 const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `flex items-center gap-2 text-base py-2 transition-colors ${focusRing} ${
+  `flex items-center gap-2 text-base py-2 transition-colors ${navFocus} ${
     isActive
       ? 'text-white font-semibold'
       : 'text-gray-300 hover:text-white'
   }`
 
 const desktopNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `text-sm transition-colors ${focusRing} ${
+  `text-sm transition-colors ${navFocus} ${
     isActive ? 'text-white font-semibold' : 'text-gray-300 hover:text-white'
   }`
 
@@ -97,7 +97,7 @@ export function SideBar() {
         </Link>
         <button
           ref={menuButtonRef}
-          className={`p-2 text-gray-400 hover:text-white transition-colors ${focusRing}`}
+          className={`p-2 text-gray-400 hover:text-white transition-colors ${navFocus}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
           title="Abrir menu"
@@ -126,7 +126,7 @@ export function SideBar() {
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-end px-4 py-4 border-b border-dark-border">
             <button
-              className={`p-1.5 text-gray-400 hover:text-white transition-colors ${focusRing}`}
+              className={`p-1.5 text-gray-400 hover:text-white transition-colors ${navFocus}`}
               type="button"
               onClick={closeMobileMenu}
               title="Fechar menu"
@@ -171,7 +171,7 @@ export function SideBar() {
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className={`flex items-center gap-2 text-base text-gray-400 hover:text-white py-2 text-left transition-colors ${focusRing}`}
+                    className={`flex items-center gap-2 text-base text-gray-400 hover:text-white py-2 text-left transition-colors ${navFocus}`}
                   >
                     <LogOut className="size-5" aria-hidden="true" />
                     Sair
@@ -200,7 +200,7 @@ export function SideBar() {
                   <Link
                     to="/auth?tab=login"
                     onClick={closeMobileMenu}
-                    className={`text-base text-gray-300 hover:text-white py-2 transition-colors ${focusRing}`}
+                    className={`text-base text-gray-300 hover:text-white py-2 transition-colors ${navFocus}`}
                   >
                     Entrar
                   </Link>
@@ -241,7 +241,7 @@ export function SideBar() {
             <button
               type="button"
               onClick={handleLogout}
-              className={`text-sm text-gray-400 hover:text-white transition-colors ${focusRing}`}
+              className={`text-sm text-gray-400 hover:text-white transition-colors ${navFocus}`}
             >
               Sair
             </button>
@@ -257,7 +257,7 @@ export function SideBar() {
             </NavLink>
             <Link
               to="/auth?tab=login"
-              className={`text-sm text-gray-300 hover:text-white transition-colors ${focusRing}`}
+              className={`text-sm text-gray-300 hover:text-white transition-colors ${navFocus}`}
             >
               Entrar
             </Link>

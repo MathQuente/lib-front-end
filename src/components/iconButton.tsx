@@ -1,5 +1,6 @@
 import { twMerge } from 'tailwind-merge'
 import type { IconButtonProps } from '../interfaces/ui'
+import { focusRing } from '../styles/focus'
 
 const sizes = {
   sm: 'size-7 before:-inset-2',
@@ -26,7 +27,7 @@ export function IconButton({
       {...props}
       className={twMerge(
         'relative inline-flex shrink-0 items-center justify-center rounded-md transition-colors before:absolute',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light',
+        focusRing,
         sizes[size],
         tones[tone],
         filled && (transparent ? 'bg-black/20' : 'bg-white/10'),

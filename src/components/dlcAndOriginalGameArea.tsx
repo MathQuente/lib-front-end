@@ -5,6 +5,7 @@ import { SectionHeading } from './sectionHeading'
 import { Pagination } from './pagination'
 import { getGameTag } from './gamesComponents/gameCard'
 import type { DlcAndOriginalGameAreaProps } from '../interfaces/games'
+import { focusRing } from '../styles/focus'
 
 const DLCS_PER_PAGE = 5
 
@@ -29,7 +30,7 @@ export function DlcAndOriginalGameArea({
           <SectionHeading icon={Crown}>Jogo Original</SectionHeading>
           <Link
             to={`/games/${game.parentGame.igdbId}`}
-            className="flex items-center gap-4 p-3 bg-dark-bg-lighter border border-dark-border rounded-lg hover:border-primary/50 transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`flex items-center gap-4 p-3 bg-dark-bg-lighter border border-dark-border rounded-lg hover:border-primary/50 transition-colors group ${focusRing}`}
           >
             {game.parentGame.coverUrl ? (
               <img
@@ -58,7 +59,7 @@ export function DlcAndOriginalGameArea({
               <Link
                 to={`/games/${dlc.igdbId}`}
                 key={dlc.igdbId}
-                className="flex items-center gap-4 p-3 bg-dark-bg-lighter border border-dark-border rounded-lg hover:border-primary/50 transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                className={`flex items-center gap-4 p-3 bg-dark-bg-lighter border border-dark-border rounded-lg hover:border-primary/50 transition-colors group ${focusRing}`}
               >
                 {dlc.coverUrl ? (
                   <img

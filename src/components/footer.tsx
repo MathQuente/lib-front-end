@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import logo from '../assets/euzerei-logo.svg'
 import { useAuth } from '../hooks/useAuth'
+import { focusRing } from '../styles/focus'
 
 const linkClass =
-  'block w-fit whitespace-nowrap rounded-sm py-1 text-sm text-gray-400 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:text-white focus-visible:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
+  `block w-fit whitespace-nowrap rounded-sm py-1 text-sm text-gray-400 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:text-white focus-visible:underline ${focusRing}`
 
 const groupTitleClass = 'mb-2 text-sm font-semibold text-white'
 

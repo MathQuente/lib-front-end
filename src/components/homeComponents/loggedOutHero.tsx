@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { CoverWall } from './coverWall'
 import { textLink } from './styles'
+import { focusRing } from '../../styles/focus'
 
 const LEGEND = [
   { status: 'PLAYED', label: 'Zerado' },
@@ -24,7 +25,7 @@ export function LoggedOutHero({ covers }: { covers: string[] }) {
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
           <Link
             to="/auth?tab=signUp"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light active:scale-[0.98]"
+            className={`inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light ${focusRing} active:scale-[0.98]`}
           >
             Criar conta
           </Link>

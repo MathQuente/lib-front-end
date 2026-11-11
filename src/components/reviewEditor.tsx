@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from './button'
+import { focusRing } from '../styles/focus'
 
 const MAX_LENGTH = 2000
 
@@ -48,7 +49,7 @@ export function ReviewEditor({
             ? 'Entre na sua conta para escrever'
             : 'Escreva sua resenha... (suporta markdown básico)'
         }
-        className={`w-full resize-y rounded-md bg-dark-bg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${locked ? 'opacity-60 cursor-not-allowed resize-none disabled:cursor-not-allowed' : ''}`}
+        className={`w-full resize-y rounded-md bg-dark-bg px-3 py-2 text-sm text-white placeholder:text-gray-500 ${focusRing} ${locked ? 'opacity-60 cursor-not-allowed resize-none disabled:cursor-not-allowed' : ''}`}
       />
       <div className="flex items-center justify-between">
         <span className="text-xs text-gray-400">

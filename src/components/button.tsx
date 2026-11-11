@@ -1,8 +1,9 @@
 import { twMerge } from 'tailwind-merge'
 import type { ButtonProps } from '../interfaces/ui'
+import { focusRing } from '../styles/focus'
 
 const baseStyles =
-  'inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light max-sm:min-h-11 disabled:opacity-50 disabled:cursor-not-allowed'
+  `inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] ${focusRing} max-sm:min-h-11 disabled:opacity-50 disabled:cursor-not-allowed`
 
 const variants = {
   primary: 'bg-primary hover:bg-primary-hover text-white font-bold',

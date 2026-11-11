@@ -4,6 +4,7 @@ import {
   secondaryButtonClass,
 } from '../aboutComponents/styles'
 import { SUPPORT_EMAIL, mailtoHref } from './supportEmail'
+import { focusRing } from '../../styles/focus'
 
 const MESSAGE_MS = 4000
 const ANNOUNCE_GAP_MS = 80
@@ -55,7 +56,7 @@ export function CopyAddress() {
       <a
         ref={addressRef}
         href={mailtoHref()}
-        className="inline-block w-fit max-w-full rounded-sm py-1 font-display text-lg font-extrabold tracking-tight text-white [overflow-wrap:anywhere] transition-colors hover:text-primary-link focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light sm:text-2xl lg:text-3xl xl:text-4xl"
+        className={`inline-block w-fit max-w-full rounded-sm py-1 font-display text-lg font-extrabold tracking-tight text-white [overflow-wrap:anywhere] transition-colors hover:text-primary-link ${focusRing} sm:text-2xl lg:text-3xl xl:text-4xl`}
       >
         {SUPPORT_EMAIL}
       </a>

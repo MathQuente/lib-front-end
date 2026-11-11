@@ -11,6 +11,7 @@ import type {
 import { Button } from '../button'
 import { GameCard } from '../gamesComponents/gameCard'
 import { coverLink, sectionTitle, textLink } from './styles'
+import { focusRing } from '../../styles/focus'
 
 const QUEUE_SIZE = 3
 const SWAP_IN = 'animate-swap-in motion-reduce:animate-none'
@@ -199,7 +200,7 @@ export function NextUp({
                 <li key={game.igdbId} className="min-w-0 lg:flex-1">
                   <Link
                     to={`/games/${encodeURIComponent(game.igdbId)}`}
-                    className="group flex w-fit max-w-full items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                    className={`group flex w-fit max-w-full items-center gap-3 rounded-lg ${focusRing}`}
                   >
                     <span className="flex-none">
                       <GameCard game={game} size="small" interactive={false} />

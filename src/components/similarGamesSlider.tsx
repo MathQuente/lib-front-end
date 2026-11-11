@@ -6,6 +6,7 @@ import { GameCard } from './gamesComponents/gameCard'
 import { SectionHeading } from './sectionHeading'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import type { SimilarGamesSliderProps } from '../interfaces/games'
+import { focusRing } from '../styles/focus'
 
 export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -40,7 +41,7 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
             <div key={game.igdbId} className="flex-none w-32 pl-3">
               <Link
                 to={`/games/${game.igdbId}`}
-                className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                className={`block rounded-lg ${focusRing}`}
               >
                 <GameCard game={game} size="compact" interactive={false} />
               </Link>

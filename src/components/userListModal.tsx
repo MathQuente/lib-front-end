@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { FollowList } from './followList'
 import type { FollowSummary } from '../types/follow'
+import { focusRing } from '../styles/focus'
 
 export function UserListModal({
   open,
@@ -27,7 +28,7 @@ export function UserListModal({
               {title}
             </Dialog.Title>
             <Dialog.Close
-              className="text-gray-500 hover:text-white transition-colors p-0.5 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              className={`text-gray-500 hover:text-white transition-colors p-0.5 rounded-sm ${focusRing}`}
               title="Fechar"
               aria-label="Fechar"
             >

@@ -5,6 +5,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react'
 import { SectionHeading } from './sectionHeading'
 import type { GameScreenshot, GameVideo } from '../types/games'
+import { focusRing } from '../styles/focus'
 
 function youtubeThumbUrl(videoId: string) {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
@@ -34,7 +35,7 @@ function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void 
       <button
         type="button"
         onClick={onPrev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center size-9 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+        className={`absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center size-9 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors ${focusRing}`}
         title="Anterior"
         aria-label="Anterior"
       >
@@ -43,7 +44,7 @@ function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void 
       <button
         type="button"
         onClick={onNext}
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center size-9 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+        className={`absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center size-9 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors ${focusRing}`}
         title="Próxima"
         aria-label="Próxima"
       >
@@ -97,7 +98,7 @@ export function GameMediaGallery({
                   key={video.videoId}
                   type="button"
                   onClick={() => setActiveVideoIndex(index)}
-                  className="group relative flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                  className={`group relative flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border ${focusRing}`}
                   title={video.name}
                 >
                   <img
@@ -130,7 +131,7 @@ export function GameMediaGallery({
                   key={screenshot.thumbUrl}
                   type="button"
                   onClick={() => setLightboxIndex(index)}
-                  className="flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+                  className={`flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border ${focusRing}`}
                   title="Ver em tamanho maior"
                 >
                   <img
@@ -174,7 +175,7 @@ export function GameMediaGallery({
               <NavArrows onPrev={goPrevVideo} onNext={goNextVideo} />
             )}
             <Dialog.Close
-              className="absolute -top-10 right-0 text-gray-300 hover:text-white transition-colors p-1 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              className={`absolute -top-10 right-0 text-gray-300 hover:text-white transition-colors p-1 rounded-sm ${focusRing}`}
               title="Fechar"
               aria-label="Fechar"
             >
@@ -210,7 +211,7 @@ export function GameMediaGallery({
               )}
             </div>
             <Dialog.Close
-              className="absolute -top-10 right-0 text-gray-300 hover:text-white transition-colors p-1 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+              className={`absolute -top-10 right-0 text-gray-300 hover:text-white transition-colors p-1 rounded-sm ${focusRing}`}
               title="Fechar"
               aria-label="Fechar"
             >

@@ -17,6 +17,7 @@ import type { UserGamePlatformEntry } from '../../types/platform'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { ConfirmDialog } from '../confirmDialog'
+import { focusRing } from '../../styles/focus'
 
 interface StatusButton {
   statusId: number
@@ -160,7 +161,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
           isSaving ||
           (statusId === STATUS.PLAYED && canHavePlatforms && (isLoading || isError))
         }
-        className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-60 disabled:cursor-wait group ${
+        className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors ${focusRing} disabled:opacity-60 disabled:cursor-wait group ${
           active
             ? 'bg-primary/10'
             : choosing
@@ -218,7 +219,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
               type="button"
               onClick={cancelCompletion}
               disabled={isSaving}
-              className="relative inline-flex min-h-6 items-center rounded-md px-2 text-xs text-gray-400 transition-colors after:absolute after:-inset-y-2.5 after:inset-x-0 after:content-[''] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50"
+              className={`relative inline-flex min-h-6 items-center rounded-md px-2 text-xs text-gray-400 transition-colors after:absolute after:-inset-y-2.5 after:inset-x-0 after:content-[''] hover:text-white ${focusRing} disabled:opacity-50`}
             >
               Cancelar
             </button>
@@ -237,7 +238,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
                   type="button"
                   onClick={() => applyPlayed(entry)}
                   disabled={isMutating || isSaving}
-                  className="relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 border border-dark-border bg-dark-bg-light text-gray-200 hover:border-primary/50 hover:text-white"
+                  className={`relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${focusRing} disabled:opacity-50 border border-dark-border bg-dark-bg-light text-gray-200 hover:border-primary/50 hover:text-white`}
                 >
                   <Icon className="size-3.5 shrink-0" aria-hidden />
                   <span className="truncate">
@@ -252,7 +253,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
               aria-label="Só marcar como Jogado"
               title="Só marcar como Jogado, sem registrar a zerada em uma plataforma"
               disabled={isMutating || isSaving}
-              className="relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light disabled:opacity-50 border border-dashed border-dark-border text-gray-300 hover:border-primary/50 hover:text-white"
+              className={`relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${focusRing} disabled:opacity-50 border border-dashed border-dark-border text-gray-300 hover:border-primary/50 hover:text-white`}
             >
               Só marcar
             </button>

@@ -18,6 +18,7 @@ import { useGames } from '../hooks/useGames'
 import { useUserGames } from '../hooks/useUserGames'
 import type { GamesFromHomePageResponse } from '../types/games'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { focusRing } from '../styles/focus'
 
 const WALL_LIMIT = 60
 
@@ -89,7 +90,7 @@ function LoggedInTop() {
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
             <Link
               to="/games"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light active:scale-[0.98]"
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light ${focusRing} active:scale-[0.98]`}
             >
               Explorar jogos
             </Link>

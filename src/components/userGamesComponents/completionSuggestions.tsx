@@ -246,7 +246,7 @@ export function CompletionSuggestionsBlock({
               closeToast?.()
               handleUndo(suggestion.igdbId, suggestion.name)
             }}
-            className="min-h-11 shrink-0 rounded-sm px-1 text-sm font-semibold text-primary-link underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`min-h-11 shrink-0 rounded-sm px-1 text-sm font-semibold text-primary-link underline ${focusRing}`}
           >
             Desfazer
           </button>

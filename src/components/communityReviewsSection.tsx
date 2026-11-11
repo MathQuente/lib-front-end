@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useCommunityReviews } from '../hooks/useCommunityReviews'
 import { CommunityReviewCard } from './communityReviewCard'
 import { SectionHeading } from './sectionHeading'
+import { focusRing } from '../styles/focus'
 
 const PREVIEW_LIMIT = 3
 
@@ -30,7 +31,7 @@ export function CommunityReviewsSection({
         <SectionHeading className="mb-0">Resenhas da comunidade</SectionHeading>
         <Link
           to={`/games/${igdbId}/reviews`}
-          className="text-xs text-gray-400 hover:text-primary transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+          className={`text-xs text-gray-400 hover:text-primary transition-colors ${focusRing} rounded-sm`}
         >
           Ver todas
         </Link>

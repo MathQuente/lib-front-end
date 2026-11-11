@@ -1,4 +1,5 @@
 import { mailtoHref } from './supportEmail'
+import { focusRing } from '../../styles/focus'
 
 export function TopicLink({
   title,
@@ -14,7 +15,7 @@ export function TopicLink({
   return (
     <a
       href={mailtoHref(subject)}
-      className="flex min-h-[5.5rem] items-center justify-between gap-4 rounded-lg bg-dark-bg-lighter px-3.5 py-2.5 transition-colors hover:bg-dark-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+      className={`flex min-h-[5.5rem] items-center justify-between gap-4 rounded-lg bg-dark-bg-lighter px-3.5 py-2.5 transition-colors hover:bg-dark-border ${focusRing}`}
     >
       <span className="flex min-w-0 flex-col gap-0.5">
         <span className="font-semibold text-white">{title}</span>

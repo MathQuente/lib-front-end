@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { Search, X } from 'lucide-react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { SearchBarProps } from '../interfaces/ui'
-import { fieldFocus } from '../styles/focus'
+import { fieldFocus, focusRing } from '../styles/focus'
 
 export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarProps) {
   const { query } = useParams()
@@ -77,7 +77,7 @@ export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarP
         {search && (
           <button
             type="button"
-            className="absolute right-2 text-gray-400 hover:text-gray-300 transition-colors rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`absolute right-2 text-gray-400 hover:text-gray-300 transition-colors rounded-sm ${focusRing}`}
             onClick={() => {
               setSearch('')
               actualInputRef.current?.focus()

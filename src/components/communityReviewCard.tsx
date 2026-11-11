@@ -61,7 +61,7 @@ export function CommunityReviewCard({
       <div className="flex items-center justify-between gap-3">
         <Link
           to={`/users/${review.userId}`}
-          className="flex items-center gap-2.5 min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+          className={`flex items-center gap-2.5 min-w-0 ${focusRing} rounded-sm`}
         >
           <img
             src={review.profilePicture || userProfilePictureDefault}

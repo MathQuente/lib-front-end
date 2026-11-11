@@ -4,6 +4,7 @@ import { Compass, Search, TriangleAlert, WifiOff } from 'lucide-react'
 import { SearchBar } from './searchBar'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import type { StatusMessageProps } from '../interfaces/ui'
+import { focusRing } from '../styles/focus'
 
 const ICONS = {
   'not-found': Compass,
@@ -13,7 +14,7 @@ const ICONS = {
 }
 
 const linkClass =
-  'text-primary-link hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm'
+  `text-primary-link hover:text-white transition-colors ${focusRing} rounded-sm`
 
 export function StatusMessage({
   variant,
@@ -99,7 +100,7 @@ export function StatusLink({
   return (
     <Link
       to={to}
-      className={`inline-flex items-center justify-center px-4 py-2 max-sm:min-h-11 rounded-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light ${styles}`}
+      className={`inline-flex items-center justify-center px-4 py-2 max-sm:min-h-11 rounded-md transition-colors ${focusRing} ${styles}`}
     >
       {children}
     </Link>

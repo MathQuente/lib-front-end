@@ -5,13 +5,11 @@ import { Button } from '../components/button'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
 import { useResendVerification } from '../hooks/useResendVerification'
+import { focusRing } from '../styles/focus'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type Status = 'ready' | 'success' | 'invalid'
-
-const focusRing =
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light'
 
 const primaryLinkClass = `inline-flex w-full items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-base font-bold text-white transition-colors duration-200 hover:bg-primary-light active:scale-[0.98] sm:w-auto ${focusRing}`
 

@@ -23,6 +23,7 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import { hiResCover } from '../utils/hiResCover'
 import { formatReleaseDate } from '../utils/releaseDate'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { focusRing } from '../styles/focus'
 
 export function GamePage() {
   const { user } = useAuth()
@@ -158,7 +159,7 @@ export function GamePage() {
               <p className="text-sm text-center text-gray-400">
                 <Link
                   to="/auth?tab=login"
-                  className="text-primary-link hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light rounded-sm"
+                  className={`text-primary-link hover:underline ${focusRing} rounded-sm`}
                 >
                   Faça login
                 </Link>{' '}

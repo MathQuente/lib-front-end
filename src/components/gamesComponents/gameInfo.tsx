@@ -76,7 +76,7 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
     <div key={igdbId} className="relative flex flex-col md:flex-row gap-6 p-5">
       <GameModal.Close
         aria-label="Fechar"
-        className="absolute top-2 right-2 size-11 flex items-center justify-center rounded-md text-gray-400 hover:text-white hover:bg-dark-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+        className={`absolute top-2 right-2 size-11 flex items-center justify-center rounded-md text-gray-400 hover:text-white hover:bg-dark-bg ${focusRing}`}
       >
         <X className="size-5" aria-hidden />
       </GameModal.Close>

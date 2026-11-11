@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { GameStatusEnum } from '../types/games'
 import type { SortControlsProps } from '../interfaces/games'
-import { fieldFocus } from '../styles/focus'
+import { fieldFocus, focusRing } from '../styles/focus'
 
 const selectClass = `bg-dark-bg-darker text-xs sm:text-sm text-gray-300 rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 border border-dark-border ${fieldFocus} transition-colors duration-150 cursor-pointer`
 
@@ -55,7 +55,7 @@ export function SortControls({
                 : 'Ordem decrescente, clique para inverter'
             }
             onClick={toggleOrder}
-            className="shrink-0 p-1 text-gray-300 hover:text-white border border-dark-border hover:border-primary rounded-lg transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light"
+            className={`shrink-0 p-1 text-gray-300 hover:text-white border border-dark-border hover:border-primary rounded-lg transition-colors duration-150 ${focusRing}`}
           >
             {sortOrder === 'asc' ? (
               <ArrowUp className="size-3.5" />
