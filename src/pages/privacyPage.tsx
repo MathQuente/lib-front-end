@@ -38,7 +38,7 @@ const sections: LegalSection[] = [
   {
     heading: '6. Retenção e exclusão',
     paragraphs: [
-      'Mantemos seus dados enquanto sua conta existir. Ao excluí-la em Editar perfil, os dados da conta são apagados na hora do nosso banco de dados. Fotos e banner enviados ficam no Cloudinary e podem permanecer lá; para removê-los, escreva para euzerei.suporte@gmail.com. Cópias de segurança e registros técnicos de acesso são mantidos pelos provedores de hospedagem por prazo limitado, definido por cada provedor, e apagados automaticamente ao fim desse prazo.'
+      'Mantemos seus dados enquanto sua conta existir. Ao excluí-la em Editar perfil, os dados da conta são apagados na hora do nosso banco de dados. Ao excluir a conta, ou ao trocar ou remover a foto ou o banner, o arquivo anterior é apagado do Cloudinary. Arquivos enviados e não salvos, ou enviados antes dessa mudança, podem permanecer lá; para removê-los, escreva para euzerei.suporte@gmail.com. Cópias de segurança e registros técnicos de acesso são mantidos pelos provedores de hospedagem por prazo limitado, definido por cada provedor, e apagados automaticamente ao fim desse prazo.'
     ]
   },
   {
@@ -65,7 +65,7 @@ export function PrivacyPage() {
   return (
     <LegalPage
       title="Política de privacidade"
-      updatedAt="30 de outubro de 2026"
+      updatedAt="11 de novembro de 2026"
       sections={sections}
     />
   )
