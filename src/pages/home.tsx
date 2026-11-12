@@ -36,13 +36,8 @@ function LoggedInTop() {
   } = useUserGames()
 
   const libraryIds = useMemo(
-    () =>
-      new Set(
-        Object.values(gamesByStatus).flatMap(games =>
-          games.map(game => game.igdbId)
-        )
-      ),
-    [gamesByStatus]
+    () => new Set(UserGamesResponse?.libraryIgdbIds ?? []),
+    [UserGamesResponse]
   )
 
   if (!UserGamesResponse) {

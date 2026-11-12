@@ -82,6 +82,7 @@ export interface UserGamesResponse {
   games: UserGamesByStatus
   totalPerStatus: TotalPerStatus[]
   total: number
+  libraryIgdbIds?: number[]
 }
 
 export interface UseGamesProps {
