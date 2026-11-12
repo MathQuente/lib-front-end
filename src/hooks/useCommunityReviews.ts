@@ -1,25 +1,26 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from './useApi'
 import type { GetCommunityReviewsResponse } from '../types/review'
+import { api } from './useApi'
 
 export const useCommunityReviews = (
   igdbId: string | undefined,
   pageIndex: number,
   limit?: number
 ) => {
-  const { data, isLoading, isError, refetch } = useQuery<GetCommunityReviewsResponse>({
-    queryKey: ['communityReviews', igdbId, pageIndex, limit],
-    queryFn: () => api.getCommunityReviews(igdbId, pageIndex, limit),
-    enabled: Boolean(igdbId),
-    placeholderData: (previous, previousQuery) =>
-      previousQuery?.queryKey[1] === igdbId ? previous : undefined
-  })
+  const { data, isLoading, isError, refetch } =
+    useQuery<GetCommunityReviewsResponse>({
+      queryKey: ['communityReviews', igdbId, pageIndex, limit],
+      queryFn: () => api.getCommunityReviews(igdbId, pageIndex, limit),
+      enabled: Boolean(igdbId),
+      placeholderData: (previous, previousQuery) =>
+        previousQuery?.queryKey[1] === igdbId ? previous : undefined,
+    })
 
   return {
     reviews: data?.reviews ?? [],
     total: data?.total ?? 0,
     isLoading,
     isError,
-    refetch
+    refetch,
   }
 }

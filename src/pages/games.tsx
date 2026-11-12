@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { parsePage } from '../utils/parsePage'
 import { GameListPage } from '../components/gameListPage'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { parsePage } from '../utils/parsePage'
 
 export function Games() {
   useDocumentTitle('Jogos')

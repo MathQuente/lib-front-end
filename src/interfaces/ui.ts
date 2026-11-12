@@ -3,7 +3,7 @@ import type {
   ComponentProps,
   InputHTMLAttributes,
   ReactNode,
-  RefObject
+  RefObject,
 } from 'react'
 import type { FieldError } from 'react-hook-form'
 import type { MenuItem } from '../types/sidebar'

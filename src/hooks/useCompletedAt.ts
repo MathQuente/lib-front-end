@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from './useAuth'
-import { api } from './useApi'
-import type { GameCompletedAtResponse } from '../types/user'
 import { toast } from 'react-toastify'
-import { useGameStatus } from './useGameStatus'
-import { getErrorMessage } from '../utils/getErrorMessage'
 import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
+import type { GameCompletedAtResponse } from '../types/user'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
+import { useGameStatus } from './useGameStatus'
 
 const getCompletedAtQueryKey = (userId: string, igdbId: string) => [
   'gameCompletedAt',
   userId,
-  igdbId
+  igdbId,
 ]
 
 export const useCompletedAt = (igdbId: string) => {
@@ -28,16 +28,20 @@ export const useCompletedAt = (igdbId: string) => {
     queryKey,
     queryFn: () => api.getGameCompletedAt(igdbId),
     enabled: Boolean(igdbId && userId && inLibrary),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
   const updateCompletedAt = useMutation({
-    mutationFn: (completedAt: string) => api.updateCompletedAt(igdbId, completedAt),
+    mutationFn: (completedAt: string) =>
+      api.updateCompletedAt(igdbId, completedAt),
     onMutate: async completedAt => {
       await queryClient.cancelQueries({ queryKey })
 
-      const previousData = queryClient.getQueryData<GameCompletedAtResponse>(queryKey)
-      queryClient.setQueryData<GameCompletedAtResponse>(queryKey, { completedAt })
+      const previousData =
+        queryClient.getQueryData<GameCompletedAtResponse>(queryKey)
+      queryClient.setQueryData<GameCompletedAtResponse>(queryKey, {
+        completedAt,
+      })
 
       return { previousData }
     },
@@ -50,14 +54,16 @@ export const useCompletedAt = (igdbId: string) => {
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData)
       }
-      toast.error(getErrorMessage(error, 'Erro ao atualizar a data de finalização.'))
-    }
+      toast.error(
+        getErrorMessage(error, 'Erro ao atualizar a data de finalização.')
+      )
+    },
   })
 
   return {
     completedAt: data?.completedAt ?? null,
     updateCompletedAt: (completedAt: string) =>
       updateCompletedAt.mutateAsync(completedAt),
-    isLoading: updateCompletedAt.isPending
+    isLoading: updateCompletedAt.isPending,
   }
 }

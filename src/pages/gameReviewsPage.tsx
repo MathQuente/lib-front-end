@@ -1,29 +1,29 @@
-import { useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import { useEffect, useRef } from 'react'
 import {
   Link,
   useNavigationType,
   useParams,
-  useSearchParams
+  useSearchParams,
 } from 'react-router-dom'
-import { useCommunityReviews } from '../hooks/useCommunityReviews'
-import { CommunityReviewCard } from '../components/communityReviewCard'
 import { BackButton } from '../components/backButton'
-import { Pagination } from '../components/pagination'
-import { StatusLink, StatusMessage } from '../components/statusMessage'
 import { Button } from '../components/button'
+import { CommunityReviewCard } from '../components/communityReviewCard'
 import { OwnReviewCard } from '../components/ownReviewCard'
+import { Pagination } from '../components/pagination'
 import { ReviewSummary } from '../components/reviewSummary'
+import { StatusLink, StatusMessage } from '../components/statusMessage'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
+import { useCommunityReviews } from '../hooks/useCommunityReviews'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useReview } from '../hooks/useReview'
 import { focusRing } from '../styles/focus'
+import type { GameResponse } from '../types/games'
 import { hiResCover } from '../utils/hiResCover'
 import { isValidIgdbId } from '../utils/isValidIgdbId'
 import { parsePage } from '../utils/parsePage'
-import type { GameResponse } from '../types/games'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const PAGE_SIZE = 10
 
@@ -51,7 +51,7 @@ export function GameReviewsPage() {
   const { data: gameData, error: gameError } = useQuery<GameResponse>({
     queryKey: ['game', igdbId],
     queryFn: () => api.getGame(igdbId),
-    enabled: isValidId
+    enabled: isValidId,
   })
   const game = gameData?.game
 

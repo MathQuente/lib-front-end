@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from './useAuth'
-import { api } from './useApi'
-import type { GameStatsResponse } from '../types/user'
 import { toast } from 'react-toastify'
-import { useGameStatus } from './useGameStatus'
+import type { GameStatsResponse } from '../types/user'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
+import { useGameStatus } from './useGameStatus'
 
 const getGameStatsQueryKey = (userId: string, igdbId: string) => [
   'gameStats',
   userId,
-  igdbId
+  igdbId,
 ]
 
 export const usePlayedCount = (igdbId: string) => {
@@ -26,11 +26,11 @@ export const usePlayedCount = (igdbId: string) => {
 
   const { data: completionsData, isLoading: isFetchingCompletions } =
     useQuery<GameStatsResponse>({
-    queryKey: queryKey,
-    queryFn: () => api.getGameStats(igdbId),
-    enabled: Boolean(igdbId && userId && tracksCompletions),
-    staleTime: 1000 * 60 * 5
-  })
+      queryKey: queryKey,
+      queryFn: () => api.getGameStats(igdbId),
+      enabled: Boolean(igdbId && userId && tracksCompletions),
+      staleTime: 1000 * 60 * 5,
+    })
 
   const updatePlayedCount = useMutation({
     mutationFn: (incrementValue: number) => {
@@ -48,7 +48,7 @@ export const usePlayedCount = (igdbId: string) => {
         )
         queryClient.setQueryData<GameStatsResponse>(queryKey, {
           ...previousData,
-          playedCount: newCompletions
+          playedCount: newCompletions,
         })
       }
 
@@ -57,7 +57,7 @@ export const usePlayedCount = (igdbId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['games'] })
@@ -71,7 +71,7 @@ export const usePlayedCount = (igdbId: string) => {
         queryClient.setQueryData(queryKey, context.previousData)
       }
       toast.error(getErrorMessage(error, 'Erro ao atualizar contagem.'))
-    }
+    },
   })
 
   return {
@@ -79,6 +79,6 @@ export const usePlayedCount = (igdbId: string) => {
     isFetchingCompletions,
     updatePlayedCount: (incrementValue: number) =>
       updatePlayedCount.mutateAsync(incrementValue),
-    isLoading: updatePlayedCount.isPending
+    isLoading: updatePlayedCount.isPending,
   }
 }

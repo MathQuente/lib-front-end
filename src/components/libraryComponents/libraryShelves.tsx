@@ -1,6 +1,7 @@
 import { ChevronRight, CircleX } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { focusRing } from '../../styles/focus'
 import type {
   GameStatusEnum,
   TotalPerStatus,
@@ -8,7 +9,6 @@ import type {
   UserGamesByStatus,
 } from '../../types/games'
 import { type ShelfLink, type ShelfTab, StatusShelf } from './statusShelf'
-import { focusRing } from '../../styles/focus'
 
 const MAX_PER_SHELF = 8
 
@@ -95,9 +95,7 @@ export function LibraryShelves({
     },
   }
   const availableTabs = (['NOW', 'ENDLESS', 'PAUSED'] as const).filter(key =>
-    key === 'PAUSED'
-      ? pausedTotal > 0
-      : playingShelves[key].games.length > 0
+    key === 'PAUSED' ? pausedTotal > 0 : playingShelves[key].games.length > 0
   )
   const activeTab: PlayingTab = availableTabs.includes(playingTab)
     ? playingTab
@@ -170,8 +168,13 @@ export function LibraryShelves({
       />
       {!readOnly && droppedTotal > 0 && (
         <p className="flex items-center gap-2 border-t border-dark-border py-5 text-sm text-gray-400">
-          <CircleX className="size-4 shrink-0 text-red-400" aria-hidden="true" />
-          {droppedTotal === 1 ? '1 jogo largado' : `${droppedTotal} jogos largados`}
+          <CircleX
+            className="size-4 shrink-0 text-red-400"
+            aria-hidden="true"
+          />
+          {droppedTotal === 1
+            ? '1 jogo largado'
+            : `${droppedTotal} jogos largados`}
           <Link
             to="/userLibrary/droppedGames"
             className={`-my-3 inline-flex min-h-11 items-center gap-0.5 rounded-sm text-gray-300 transition-colors hover:text-white ${focusRing}`}

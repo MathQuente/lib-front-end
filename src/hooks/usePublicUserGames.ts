@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from './useApi'
 import type { UserGamesResponse } from '../types/games'
+import { api } from './useApi'
 
 const EMPTY_GROUPS: UserGamesResponse['games'] = {
   PLAYED: [],
@@ -8,7 +8,7 @@ const EMPTY_GROUPS: UserGamesResponse['games'] = {
   PAUSED: [],
   BACKLOG: [],
   WISHLIST: [],
-  DROPPED: []
+  DROPPED: [],
 }
 
 export const usePublicUserGames = (
@@ -18,12 +18,12 @@ export const usePublicUserGames = (
   const { data, isLoading } = useQuery<UserGamesResponse>({
     queryKey: ['publicUserGames', userId],
     queryFn: () => api.getPublicUserGames(userId ?? null),
-    enabled: Boolean(userId) && enabled
+    enabled: Boolean(userId) && enabled,
   })
 
   return {
     games: data?.games ?? EMPTY_GROUPS,
     totalPerStatus: data?.totalPerStatus ?? [],
-    isLoading
+    isLoading,
   }
 }

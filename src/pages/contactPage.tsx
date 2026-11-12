@@ -47,8 +47,7 @@ export function ContactPage() {
             </p>
             <CopyAddress />
             <p className="max-w-[56ch] text-gray-400">
-              Respondemos em até 15 dias. Quem mantém o projeto lê as
-              mensagens.
+              Respondemos em até 15 dias. Quem mantém o projeto lê as mensagens.
             </p>
           </div>
 

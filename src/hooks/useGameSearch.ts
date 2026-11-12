@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
+import type { UseGamesProps } from '../types/games'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
-import type { UseGamesProps } from '../types/games'
 
 export const SEARCH_PAGE_SIZE = 48
 
@@ -16,7 +16,9 @@ export const useGameSearch = (query: string | undefined, page: number) => {
       queryFn: () => api.searchGames(query ?? '', page, SEARCH_PAGE_SIZE),
       enabled: !!query?.trim() && !isLoadingAuth,
       placeholderData: (previous, previousQuery) =>
-        previousQuery?.queryKey[QUERY_KEY_TERM] === query ? previous : undefined
+        previousQuery?.queryKey[QUERY_KEY_TERM] === query
+          ? previous
+          : undefined,
     })
 
   return {
@@ -25,6 +27,6 @@ export const useGameSearch = (query: string | undefined, page: number) => {
     isLoading: isLoading || isLoadingAuth,
     isError,
     isPlaceholderData,
-    refetch
+    refetch,
   }
 }

@@ -14,11 +14,11 @@ import {
   textLink,
 } from '../components/homeComponents/styles'
 import { useAuth } from '../hooks/useAuth'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useGames } from '../hooks/useGames'
 import { useUserGames } from '../hooks/useUserGames'
-import type { GamesFromHomePageResponse } from '../types/games'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { focusRing } from '../styles/focus'
+import type { GamesFromHomePageResponse } from '../types/games'
 
 const WALL_LIMIT = 60
 

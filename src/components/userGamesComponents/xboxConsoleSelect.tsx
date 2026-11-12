@@ -56,7 +56,9 @@ export function XboxConsoleSelect({ account }: { account: XboxAccount }) {
             Jogos que já têm console não mudam. Para corrigir um, edite o
             console do jogo.
           </p>
-          <p>Jogos que também rodam no Xbox 360 ficam sem console de propósito.</p>
+          <p>
+            Jogos que também rodam no Xbox 360 ficam sem console de propósito.
+          </p>
         </div>
       </details>
     </div>

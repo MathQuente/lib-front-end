@@ -1,23 +1,25 @@
 import { useEffect, useRef } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Button, buttonClasses } from '../components/button'
-import { StatusMessage } from '../components/statusMessage'
+import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import { BackButton } from '../components/backButton'
+import { Button, buttonClasses } from '../components/button'
+import { rowLink } from '../components/homeComponents/styles'
 import { Pagination } from '../components/pagination'
 import { SearchResultCard } from '../components/searchResultCard'
-import { rowLink } from '../components/homeComponents/styles'
-import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
+import { StatusMessage } from '../components/statusMessage'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { SEARCH_PAGE_SIZE, useGameSearch } from '../hooks/useGameSearch'
 import { useUserSearch } from '../hooks/useUserSearch'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import { parsePage } from '../utils/parsePage'
 import { focusRing } from '../styles/focus'
+import { parsePage } from '../utils/parsePage'
 
 const USERS_PAGE_SIZE = 30
 
 const tabClass = (active: boolean) =>
   `px-3 py-1.5 text-sm rounded-lg transition-colors ${focusRing} ${
-    active ? 'bg-primary text-white font-semibold' : 'text-gray-400 hover:text-white'
+    active
+      ? 'bg-primary text-white font-semibold'
+      : 'text-gray-400 hover:text-white'
   }`
 
 const GAMES_GRID =
@@ -66,14 +68,14 @@ export function SearchResults() {
     isLoading: isLoadingGames,
     isError: isErrorGames,
     isPlaceholderData,
-    refetch: refetchGames
+    refetch: refetchGames,
   } = useGameSearch(query, page)
 
   const {
     users,
     isLoading: isLoadingUsers,
     isError: isErrorUsers,
-    refetch: refetchUsers
+    refetch: refetchUsers,
   } = useUserSearch(query ?? '')
 
   const totalPages = Math.max(Math.ceil(total / SEARCH_PAGE_SIZE), 1)
@@ -127,8 +129,8 @@ export function SearchResults() {
     query ? (
       <span>
         Não encontramos {kind} para{' '}
-        <span className="text-primary-link font-medium">"{query}"</span>.
-        Tente termos diferentes ou verifique a ortografia.
+        <span className="text-primary-link font-medium">"{query}"</span>. Tente
+        termos diferentes ou verifique a ortografia.
       </span>
     ) : (
       `Não há ${kind} disponíveis no momento.`
@@ -136,71 +138,79 @@ export function SearchResults() {
 
   const isOutOfRange = !isErrorGames && games.length === 0 && total > 0
 
-  const gamesSection = isLoadingGames || isOutOfRange ? (
-    <GamesSkeleton />
-  ) : isErrorGames ? (
-    <div role="alert">
+  const gamesSection =
+    isLoadingGames || isOutOfRange ? (
+      <GamesSkeleton />
+    ) : isErrorGames ? (
+      <div role="alert">
+        <StatusMessage
+          variant="empty"
+          icon="offline"
+          title="Não foi possível buscar jogos"
+          description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
+          primaryAction={
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => refetchGames()}
+            >
+              Tentar novamente
+            </Button>
+          }
+        />
+      </div>
+    ) : games.length === 0 ? (
       <StatusMessage
         variant="empty"
-        icon="offline"
-        title="Não foi possível buscar jogos"
-        description="A conexão falhou ou o servidor não respondeu. Tente de novo em instantes."
+        title="Nenhum jogo encontrado"
+        description={emptyDescription('jogos')}
         primaryAction={
-          <Button variant="secondary" size="md" onClick={() => refetchGames()}>
-            Tentar novamente
-          </Button>
+          !isLoadingUsers && users.length > 0 ? (
+            <Link
+              to="?tab=pessoas"
+              className={buttonClasses({ variant: 'secondary', size: 'md' })}
+            >
+              Ver {usersLabel} {users.length === 1 ? 'pessoa' : 'pessoas'}
+            </Link>
+          ) : undefined
         }
       />
-    </div>
-  ) : games.length === 0 ? (
-    <StatusMessage
-      variant="empty"
-      title="Nenhum jogo encontrado"
-      description={emptyDescription('jogos')}
-      primaryAction={
-        !isLoadingUsers && users.length > 0 ? (
-          <Link
-            to="?tab=pessoas"
-            className={buttonClasses({ variant: 'secondary', size: 'md' })}
-          >
-            Ver {usersLabel} {users.length === 1 ? 'pessoa' : 'pessoas'}
-          </Link>
-        ) : undefined
-      }
-    />
-  ) : (
-    <>
-      {!isLoadingUsers && users.length > 0 && page === 1 && (
-        <p className="mb-3 text-sm text-gray-400">
-          {usersLabel} {users.length === 1 ? 'pessoa também combina' : 'pessoas também combinam'}{' '}
-          com a busca.{' '}
-          <Link
-            to="?tab=pessoas"
-            className={`text-primary-link hover:text-white transition-colors rounded-sm ${focusRing}`}
-          >
-            Ver pessoas
-          </Link>
-        </p>
-      )}
-      <ul
-        className={`grid ${GAMES_GRID} transition-opacity ${isPlaceholderData ? 'opacity-60' : ''}`}
-        aria-busy={isPlaceholderData}
-      >
-        {games.map(game => (
-          <SearchResultCard key={game.igdbId} game={game} />
-        ))}
-      </ul>
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          totalItems={total}
-          itemsPerPage={games.length}
-          onPageChange={handlePageChange}
-        />
-      )}
-    </>
-  )
+    ) : (
+      <>
+        {!isLoadingUsers && users.length > 0 && page === 1 && (
+          <p className="mb-3 text-sm text-gray-400">
+            {usersLabel}{' '}
+            {users.length === 1
+              ? 'pessoa também combina'
+              : 'pessoas também combinam'}{' '}
+            com a busca.{' '}
+            <Link
+              to="?tab=pessoas"
+              className={`text-primary-link hover:text-white transition-colors rounded-sm ${focusRing}`}
+            >
+              Ver pessoas
+            </Link>
+          </p>
+        )}
+        <ul
+          className={`grid ${GAMES_GRID} transition-opacity ${isPlaceholderData ? 'opacity-60' : ''}`}
+          aria-busy={isPlaceholderData}
+        >
+          {games.map(game => (
+            <SearchResultCard key={game.igdbId} game={game} />
+          ))}
+        </ul>
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={total}
+            itemsPerPage={games.length}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </>
+    )
 
   const peopleSection = isLoadingUsers ? (
     <SkeletonRows />
@@ -262,7 +272,10 @@ export function SearchResults() {
         {statusText}
       </p>
 
-      <nav aria-label="Tipo de resultado" className="mb-4 flex items-center gap-2">
+      <nav
+        aria-label="Tipo de resultado"
+        className="mb-4 flex items-center gap-2"
+      >
         <Link
           to="?"
           aria-current={tab === 'jogos' ? 'page' : undefined}

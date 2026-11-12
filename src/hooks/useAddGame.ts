@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from './useApi'
 import { toast } from 'react-toastify'
 import type { GameBase } from '../types/games'
-import { useAuth } from './useAuth'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
 
 export const useAddGame = (igdbId?: string) => {
   const { user } = useAuth()
@@ -15,7 +15,7 @@ export const useAddGame = (igdbId?: string) => {
       api.addGame(igdbId, data.statusIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
       toast.success('Jogo adicionado com sucesso 👌')
     },
@@ -26,10 +26,10 @@ export const useAddGame = (igdbId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['games'] })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
-    }
+    },
   })
 
   const removeGame = useMutation({
@@ -37,19 +37,19 @@ export const useAddGame = (igdbId?: string) => {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['games'] })
       await queryClient.cancelQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
 
       const previousGames = queryClient.getQueryData(['games'])
       const previousGameStatus = queryClient.getQueryData([
         'gamesStatus',
         userId,
-        igdbId
+        igdbId,
       ])
       const previousRating = queryClient.getQueryData([
         'rating',
         userId,
-        igdbId
+        igdbId,
       ])
 
       queryClient.setQueryData(['games'], (old: GameBase[] | undefined) =>
@@ -87,7 +87,7 @@ export const useAddGame = (igdbId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })
-    }
+    },
   })
 
   const removeUserGame = useMutation({
@@ -95,14 +95,14 @@ export const useAddGame = (igdbId?: string) => {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['userGames', userId] })
       await queryClient.cancelQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
 
       const previousGames = queryClient.getQueryData(['userGames', userId])
       const previousGameStatus = queryClient.getQueryData([
         'gamesStatus',
         userId,
-        igdbId
+        igdbId,
       ])
 
       return { previousGames, previousGameStatus }
@@ -131,12 +131,12 @@ export const useAddGame = (igdbId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['comingSoon'] })
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })
-    }
+    },
   })
 
   return {
     addGame: addGame.mutateAsync,
     removeGame: removeGame.mutateAsync,
-    removeUserGame: removeUserGame.mutateAsync
+    removeUserGame: removeUserGame.mutateAsync,
   }
 }

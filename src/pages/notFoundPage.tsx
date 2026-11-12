@@ -13,7 +13,7 @@ export function NotFoundPage() {
         shortcuts={[
           { to: '/games', label: 'Jogos' },
           { to: '/games/comingSoon', label: 'Em breve' },
-          { to: '/userLibrary', label: 'Minha biblioteca' }
+          { to: '/userLibrary', label: 'Minha biblioteca' },
         ]}
         primaryAction={<StatusLink to="/">Ir para o início</StatusLink>}
       />

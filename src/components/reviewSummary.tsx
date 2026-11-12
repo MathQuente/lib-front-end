@@ -73,7 +73,9 @@ export function ReviewSummary({ igdbId }: { igdbId: string }) {
                 >
                   <span
                     className="block h-full rounded bg-primary-light"
-                    style={{ width: `${Math.round((count / maxCount) * 100)}%` }}
+                    style={{
+                      width: `${Math.round((count / maxCount) * 100)}%`,
+                    }}
                   />
                 </span>
                 <span className="text-right tabular-nums">{count}</span>

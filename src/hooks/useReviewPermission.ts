@@ -1,6 +1,6 @@
 import {
   REVIEW_ELIGIBLE_STATUS_IDS,
-  USER_GAME_STATUS_ID as STATUS
+  USER_GAME_STATUS_ID as STATUS,
 } from '../constants/gameStatus'
 import { useGameStatus } from './useGameStatus'
 import { useHoursPlayed } from './useHoursPlayed'
@@ -41,6 +41,6 @@ export function useReviewPermission(
     isLoading:
       isLoadingStatus ||
       isReviewLoading ||
-      (inBacklog && (isFetchingHours || isFetchingCompletions))
+      (inBacklog && (isFetchingHours || isFetchingCompletions)),
   }
 }

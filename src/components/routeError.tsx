@@ -1,6 +1,6 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
-import { Button } from './button'
 import { NotFoundPage } from '../pages/notFoundPage'
+import { Button } from './button'
 import { StatusLink, StatusMessage } from './statusMessage'
 
 export function RouteError() {

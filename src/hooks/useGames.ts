@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { api } from './useApi'
-import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
 import type { SortField, SortOrder } from '../interfaces/games'
+import type { GamesFromHomePageResponse, UseGamesProps } from '../types/games'
+import { api } from './useApi'
 
 export const useGames = (
   page: number,

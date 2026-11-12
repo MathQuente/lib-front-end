@@ -1,6 +1,6 @@
+import { CalendarClock, Star, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
-import { CalendarClock, Star, TrendingUp } from 'lucide-react'
 import type { GameListSectionProps, SectionType } from '../interfaces/games'
 import type { GameBase } from '../types/games'
 import { formatReleaseDate } from '../utils/releaseDate'

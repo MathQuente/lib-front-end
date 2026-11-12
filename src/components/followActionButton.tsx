@@ -1,4 +1,4 @@
-import { UserPlus, UserCheck } from 'lucide-react'
+import { UserCheck, UserPlus } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useFollow } from '../hooks/useFollow'
 import { Button } from './button'

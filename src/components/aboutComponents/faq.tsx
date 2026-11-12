@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { sectionTitleClass, textLinkClass } from './styles'
 import { focusRing } from '../../styles/focus'
+import { sectionTitleClass, textLinkClass } from './styles'
 
 const items: { question: string; answer: ReactNode }[] = [
   {
@@ -55,7 +55,9 @@ export function Faq() {
       <div className="border-t border-dark-border">
         {items.map(({ question, answer }) => (
           <details key={question} className="group border-b border-dark-border">
-            <summary className={`flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-3 rounded-sm px-0.5 py-2.5 font-medium text-white ${focusRing} [&::-webkit-details-marker]:hidden`}>
+            <summary
+              className={`flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-3 rounded-sm px-0.5 py-2.5 font-medium text-white ${focusRing} [&::-webkit-details-marker]:hidden`}
+            >
               {question}
               <span
                 aria-hidden="true"

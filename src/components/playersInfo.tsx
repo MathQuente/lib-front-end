@@ -1,11 +1,11 @@
-import { Gamepad2, Play, Library, Gift, Star } from 'lucide-react'
+import { Gamepad2, Gift, Library, Play, Star } from 'lucide-react'
 import type { PlayerInfosProps } from '../interfaces/games'
 
 const rows = [
   { icon: Gamepad2, label: 'Jogado', key: 'PLAYED' },
   { icon: Play, label: 'Jogando', key: 'PLAYING' },
   { icon: Library, label: 'Na fila', key: 'BACKLOG' },
-  { icon: Gift, label: 'Lista de desejos', key: 'WISHLIST' }
+  { icon: Gift, label: 'Lista de desejos', key: 'WISHLIST' },
 ] as const
 
 export function PlayersInfo({ GameResponse }: PlayerInfosProps) {

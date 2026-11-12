@@ -1,17 +1,17 @@
-import { useState } from 'react'
 import { Crown, Plus } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SectionHeading } from './sectionHeading'
-import { Pagination } from './pagination'
-import { getGameTag } from './gamesComponents/gameCard'
 import type { DlcAndOriginalGameAreaProps } from '../interfaces/games'
 import { focusRing } from '../styles/focus'
+import { getGameTag } from './gamesComponents/gameCard'
+import { Pagination } from './pagination'
+import { SectionHeading } from './sectionHeading'
 
 const DLCS_PER_PAGE = 5
 
 export function DlcAndOriginalGameArea({
   game,
-  relatedGames
+  relatedGames,
 }: DlcAndOriginalGameAreaProps) {
   const [page, setPage] = useState(1)
 

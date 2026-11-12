@@ -12,11 +12,11 @@ import {
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import type { GameCardProps } from '../../interfaces/games'
+import { focusRing } from '../../styles/focus'
 import { hiResCover } from '../../utils/hiResCover'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { GameInfo } from './gameInfo'
 import { GameModal } from './gameModal'
-import { focusRing } from '../../styles/focus'
 
 export const LIBRARY_STATUS_BADGES: Record<
   string,
@@ -62,7 +62,9 @@ export const LIBRARY_STATUS_BADGES: Record<
 
 const MAX_CARD_PLATFORMS = 3
 
-const RATING_FORMAT = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
+const RATING_FORMAT = new Intl.NumberFormat('pt-BR', {
+  maximumFractionDigits: 1,
+})
 
 const badgeClass =
   'inline-flex items-center gap-0.5 px-1 py-0.5 sm:px-1.5 rounded-full bg-dark-bg/90 border border-dark-border text-[8px] sm:text-[10px] font-medium text-gray-200'
@@ -144,16 +146,13 @@ export function GameCard({
     completions > 0 &&
     (game?.status === 'PLAYING' || game?.status === 'BACKLOG')
   const statusBadge =
-    !bare && game?.status
-      ? LIBRARY_STATUS_BADGES[game.status]
-      : undefined
+    !bare && game?.status ? LIBRARY_STATUS_BADGES[game.status] : undefined
   const accentColor = statusBadge?.iconColor ?? 'text-primary'
-  const playedOn =
-    !bare
-      ? (game?.playedOn ?? [])
-          .map(getLibraryPlatform)
-          .filter(p => p !== undefined)
-      : []
+  const playedOn = !bare
+    ? (game?.playedOn ?? [])
+        .map(getLibraryPlatform)
+        .filter(p => p !== undefined)
+    : []
   const visiblePlatforms = playedOn.slice(0, MAX_CARD_PLATFORMS)
   const hiddenPlatformCount = playedOn.length - visiblePlatforms.length
 
@@ -162,8 +161,7 @@ export function GameCard({
     'group relative rounded-lg overflow-hidden',
     lifts &&
       'hover:ring-1 ring-primary/40 transition-transform duration-200 hover:scale-[1.02]',
-    interactive &&
-      focusRing,
+    interactive && focusRing,
     size === 'medium' ? 'block w-full' : sizes[size]
   )
 
@@ -266,8 +264,7 @@ export function GameCard({
           className={twMerge(
             sizes[size],
             'rounded-lg object-cover',
-            !bare &&
-              'transition-opacity duration-200 group-hover:opacity-20'
+            !bare && 'transition-opacity duration-200 group-hover:opacity-20'
           )}
           src={hiResCover(game.coverUrl)}
           loading="lazy"

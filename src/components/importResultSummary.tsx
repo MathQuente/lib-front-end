@@ -1,10 +1,10 @@
 import { ChevronRight } from 'lucide-react'
 import { type ReactNode, useId, useState } from 'react'
 import { toast } from 'react-toastify'
+import { focusRing } from '../styles/focus'
 import type { ImportSectionResult } from '../types/import'
 import { groupNotFound } from '../utils/groupNotFound'
 import { Button } from './button'
-import { focusRing } from '../styles/focus'
 
 export interface ImportResultSection {
   title: string

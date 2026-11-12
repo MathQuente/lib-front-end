@@ -1,17 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { api } from './useApi'
-import { useAuth } from './useAuth'
 import { toast } from 'react-toastify'
-import { getErrorMessage } from '../utils/getErrorMessage'
 import type {
   RatingResponse,
-  RatingsDistributionResponse
+  RatingsDistributionResponse,
 } from '../types/rating'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
 
-const getRatingQueryKey = (
-  userId: string,
-  igdbId: string | undefined
-) => ['rating', userId, igdbId]
+const getRatingQueryKey = (userId: string, igdbId: string | undefined) => [
+  'rating',
+  userId,
+  igdbId,
+]
 
 export const useRating = (igdbId: string | undefined) => {
   const { user } = useAuth()
@@ -23,12 +24,12 @@ export const useRating = (igdbId: string | undefined) => {
   const {
     data: userRatingResponse,
     isLoading: ratingIsLoading,
-    isError: ratingIsError
+    isError: ratingIsError,
   } = useQuery<RatingResponse>({
     queryKey,
     queryFn: () => api.getUserGameRating(igdbId),
     enabled: Boolean(userId && igdbId),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
   const addRating = useMutation({
@@ -49,7 +50,7 @@ export const useRating = (igdbId: string | undefined) => {
     onSuccess: response => {
       queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
       queryClient.invalidateQueries({
-        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
+        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating'],
       })
 
       if (response?.data?.addedAsPlaying) {
@@ -65,7 +66,7 @@ export const useRating = (igdbId: string | undefined) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['games'] })
@@ -74,7 +75,7 @@ export const useRating = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({ queryKey: ['gamesFeatured'] })
       queryClient.invalidateQueries({ queryKey: ['similarGames'] })
       queryClient.invalidateQueries({ queryKey: ['userProfile', userId] })
-    }
+    },
   })
 
   const removeRating = useMutation({
@@ -89,7 +90,7 @@ export const useRating = (igdbId: string | undefined) => {
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
       queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
       queryClient.invalidateQueries({
-        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating']
+        queryKey: [igdbId, userRatingResponse?.rating, 'averageRating'],
       })
     },
     onError: (err, _, context) => {
@@ -99,31 +100,31 @@ export const useRating = (igdbId: string | undefined) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({
-        queryKey: ['gamesStatus', userId, igdbId]
+        queryKey: ['gamesStatus', userId, igdbId],
       })
-    }
+    },
   })
 
   const {
     data: average,
     isLoading: isAverageLoading,
-    isError: isAverageError
+    isError: isAverageError,
   } = useQuery({
     queryFn: () => api.getAverageRating(igdbId),
     queryKey: [igdbId, userRatingResponse?.rating, 'averageRating'],
     enabled: Boolean(igdbId),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
   const {
     data: RatingDistrubution,
     isLoading: isLoadingRating,
-    isError: isErrorRatings
+    isError: isErrorRatings,
   } = useQuery<RatingsDistributionResponse>({
     queryFn: () => api.getRatingDistribution(igdbId),
     queryKey: ['ratings', igdbId],
     enabled: Boolean(igdbId),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
   return {
@@ -138,6 +139,6 @@ export const useRating = (igdbId: string | undefined) => {
     isAverageLoading,
     addRating: (value: number | null) => addRating.mutateAsync(value),
     removeRating: () => removeRating.mutateAsync(),
-    isMutating: addRating.isPending || removeRating.isPending
+    isMutating: addRating.isPending || removeRating.isPending,
   }
 }

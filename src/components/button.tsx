@@ -2,8 +2,7 @@ import { twMerge } from 'tailwind-merge'
 import type { ButtonProps } from '../interfaces/ui'
 import { focusRing } from '../styles/focus'
 
-const baseStyles =
-  `inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] ${focusRing} max-sm:min-h-11 disabled:opacity-50 disabled:cursor-not-allowed`
+const baseStyles = `inline-flex items-center justify-center font-medium transition-colors duration-200 active:scale-[0.98] ${focusRing} max-sm:min-h-11 disabled:opacity-50 disabled:cursor-not-allowed`
 
 const variants = {
   primary: 'bg-primary hover:bg-primary-hover text-white font-bold',
@@ -11,20 +10,20 @@ const variants = {
     'bg-transparent hover:bg-dark-bg-lighter text-gray-300 hover:text-white border border-dark-border',
   ghost:
     'bg-transparent hover:bg-dark-bg-lighter text-gray-300 hover:text-white border border-transparent',
-  danger: 'bg-red-700 hover:bg-red-600 text-white font-bold'
+  danger: 'bg-red-700 hover:bg-red-600 text-white font-bold',
 }
 
 const sizes = {
   sm: 'px-3 py-1.5 text-sm rounded',
   md: 'px-4 py-2 text-base rounded-md',
-  lg: 'px-6 py-3 text-lg rounded-lg'
+  lg: 'px-6 py-3 text-lg rounded-lg',
 }
 
 export function buttonClasses({
   variant = 'primary',
   size = 'sm',
   fullWidth = false,
-  className
+  className,
 }: Pick<ButtonProps, 'variant' | 'size' | 'fullWidth' | 'className'> = {}) {
   return twMerge(
     baseStyles,

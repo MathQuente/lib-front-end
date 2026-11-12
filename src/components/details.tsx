@@ -1,6 +1,6 @@
-import { Tag, Code, Building2 } from 'lucide-react'
-import { SectionHeading } from './sectionHeading'
+import { Building2, Code, Tag } from 'lucide-react'
 import type { DetailsProps } from '../interfaces/games'
+import { SectionHeading } from './sectionHeading'
 
 export function Details({ GameResponse }: DetailsProps) {
   const { game } = GameResponse

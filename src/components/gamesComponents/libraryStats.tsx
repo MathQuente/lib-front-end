@@ -7,18 +7,18 @@ import { useGamePlatforms } from '../../hooks/useGamePlatforms'
 import { useHoursPlayed } from '../../hooks/useHoursPlayed'
 import { usePlayedCount } from '../../hooks/usePlayedCount'
 import { useRating } from '../../hooks/useRating'
-import type { GameCardData } from '../../types/games'
-import { getLibraryPlatform } from '../../utils/libraryPlatforms'
-import { hasAccountBreakdown, hasNoHours } from '../../utils/accountHours'
-import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { focusRing } from '../../styles/focus'
-import { AccountHoursLine } from '../accountHoursLine'
-import { RatingAverage } from '../ratingAverage'
+import type { GameCardData } from '../../types/games'
+import { hasAccountBreakdown, hasNoHours } from '../../utils/accountHours'
 import {
   NO_HOURS_LABEL,
   formatHours,
   formatHoursOrNone,
 } from '../../utils/hours'
+import { getLibraryPlatform } from '../../utils/libraryPlatforms'
+import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
+import { AccountHoursLine } from '../accountHoursLine'
+import { RatingAverage } from '../ratingAverage'
 
 const SINGLE_PLATFORM_LABEL: Record<number, string> = {
   [STATUS.PLAYED]: 'Jogado em',
@@ -57,8 +57,7 @@ function totalItems(
   if (completions > 0) {
     items.push(
       <span key="completions">
-        zerado{' '}
-        <span className={`${valueClass} text-white`}>{completions}</span>{' '}
+        zerado <span className={`${valueClass} text-white`}>{completions}</span>{' '}
         <span className="text-gray-200">
           {completions === 1 ? 'vez' : 'vezes'}
         </span>
@@ -131,7 +130,9 @@ export function LibraryStats({
       : 'Sua nota'
   const showRatingValue = isReleased && userRating != null
 
-  const singleOption = isSingle ? getLibraryPlatform(platforms[0].platform) : undefined
+  const singleOption = isSingle
+    ? getLibraryPlatform(platforms[0].platform)
+    : undefined
   const SingleIcon = singleOption?.icon
   const singleName =
     singleOption && isSingle
@@ -248,7 +249,10 @@ export function LibraryStats({
                   aria-label={label}
                   className="flex items-center gap-1.5 whitespace-nowrap"
                 >
-                  <Icon className="size-3.5 shrink-0 text-gray-300" aria-hidden />
+                  <Icon
+                    className="size-3.5 shrink-0 text-gray-300"
+                    aria-hidden
+                  />
                   <span className="text-gray-200">{name}</span>
                   <span
                     className={

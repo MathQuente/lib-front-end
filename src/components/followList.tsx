@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
-import type { FollowSummary } from '../types/follow'
 import { focusRing } from '../styles/focus'
+import type { FollowSummary } from '../types/follow'
 
 export function FollowList({
   users,
   emptyMessage = 'Ninguém por aqui ainda.',
-  renderAction
+  renderAction,
 }: {
   users: FollowSummary[]
   emptyMessage?: string

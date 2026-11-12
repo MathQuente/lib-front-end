@@ -1,5 +1,5 @@
-import { mailtoHref } from './supportEmail'
 import { focusRing } from '../../styles/focus'
+import { mailtoHref } from './supportEmail'
 
 export function TopicLink({
   title,

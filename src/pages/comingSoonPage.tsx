@@ -1,11 +1,11 @@
-import { parsePage } from '../utils/parsePage'
+import { useState } from 'react'
+import { BackButton } from '../components/backButton'
 import { GameListPage } from '../components/gameListPage'
 import { StatusMessage } from '../components/statusMessage'
-import { BackButton } from '../components/backButton'
-import { useState } from 'react'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useGames } from '../hooks/useGames'
 import type { SortField, SortOrder } from '../interfaces/games'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { parsePage } from '../utils/parsePage'
 
 export function ComingSoonPage() {
   useDocumentTitle('Em breve')

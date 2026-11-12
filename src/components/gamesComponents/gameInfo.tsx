@@ -2,14 +2,20 @@ import { useQuery } from '@tanstack/react-query'
 import { Pencil, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
-import { endlessControl } from '../../utils/endlessAvailability'
 import { api } from '../../hooks/useApi'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import { useRating } from '../../hooks/useRating'
 import type { GameInfoProps } from '../../interfaces/games'
+import { focusRing } from '../../styles/focus'
 import type { GameResponse } from '../../types/games'
+import { endlessControl } from '../../utils/endlessAvailability'
 import { hiResCover } from '../../utils/hiResCover'
+import {
+  daysUntilRelease,
+  formatReleaseDate,
+  releaseYear as yearOf,
+} from '../../utils/releaseDate'
 import { Button } from '../button'
 import { CategoriesDiv } from '../categoriesDiv'
 import { RatingAverage } from '../ratingAverage'
@@ -17,12 +23,6 @@ import { EndlessChip } from './endlessChip'
 import { GameModal } from './gameModal'
 import { GameStatusButtons } from './gameStatusButtons'
 import { LibraryStats } from './libraryStats'
-import { focusRing } from '../../styles/focus'
-import {
-  daysUntilRelease,
-  formatReleaseDate,
-  releaseYear as yearOf
-} from '../../utils/releaseDate'
 
 export function GameInfo({ game, onClose }: GameInfoProps) {
   const { user } = useAuth()
@@ -101,7 +101,10 @@ export function GameInfo({ game, onClose }: GameInfoProps) {
             </h2>
           </GameModal.Title>
           {user && endless.show && (
-            <EndlessChip igdbId={igdbId} disabledReason={endless.disabledReason} />
+            <EndlessChip
+              igdbId={igdbId}
+              disabledReason={endless.disabledReason}
+            />
           )}
           {inLibrary ? null : isDetailsLoading ? (
             <div className="h-7 w-48 rounded-full bg-dark-bg animate-pulse" />

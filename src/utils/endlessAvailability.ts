@@ -15,7 +15,7 @@ export function endlessControl(
     return {
       show: true,
       disabledReason:
-        'Só vale para jogos que você está jogando, pausou ou largou.'
+        'Só vale para jogos que você está jogando, pausou ou largou.',
     }
   return { show: true, disabledReason: null }
 }

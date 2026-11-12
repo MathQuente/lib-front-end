@@ -1,14 +1,14 @@
+import dayjs from 'dayjs'
+import { Clock, Infinity as InfinityIcon, RotateCcw, Star } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Star, RotateCcw, Clock, Infinity as InfinityIcon } from 'lucide-react'
-import dayjs from 'dayjs'
-import { ReviewMarkdown } from './reviewMarkdown'
+import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import { REVIEW_STATUS_LABEL } from '../constants/gameStatus'
 import { useIsClamped } from '../hooks/useIsClamped'
 import { focusRing } from '../styles/focus'
-import userProfilePictureDefault from '../assets/Default_pfp.svg.png'
 import type { CommunityReview } from '../types/review'
 import { formatHours, formatHoursSpoken } from '../utils/hours'
+import { ReviewMarkdown } from './reviewMarkdown'
 
 function ExpandableText({ text }: { text: string }) {
   const bodyId = useId()
@@ -44,7 +44,7 @@ export function CommunityReviewCard({
   review,
   clamp = false,
   expandable = false,
-  plain = false
+  plain = false,
 }: {
   review: CommunityReview
   clamp?: boolean
@@ -52,7 +52,9 @@ export function CommunityReviewCard({
   plain?: boolean
 }) {
   const authorName = review.userName ?? 'Usuário'
-  const statusLabel = review.status ? REVIEW_STATUS_LABEL[review.status] : undefined
+  const statusLabel = review.status
+    ? REVIEW_STATUS_LABEL[review.status]
+    : undefined
 
   return (
     <div
@@ -85,7 +87,10 @@ export function CommunityReviewCard({
               title="Nota dada ao jogo"
               aria-label={`Nota: ${review.rating}`}
             >
-              <Star className="size-3 fill-current text-primary-light" aria-hidden="true" />
+              <Star
+                className="size-3 fill-current text-primary-light"
+                aria-hidden="true"
+              />
               {review.rating}
             </span>
           )}
@@ -105,7 +110,10 @@ export function CommunityReviewCard({
               title="Vezes finalizado"
               aria-label={`Finalizado ${review.completions}x`}
             >
-              <RotateCcw className="size-3 text-primary-link" aria-hidden="true" />
+              <RotateCcw
+                className="size-3 text-primary-link"
+                aria-hidden="true"
+              />
               {review.completions}x
             </span>
           )}
@@ -122,7 +130,10 @@ export function CommunityReviewCard({
               className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-dark-bg border border-dark-border"
               title="Jogo sem fim"
             >
-              <InfinityIcon className="size-3 text-primary-link" aria-hidden="true" />
+              <InfinityIcon
+                className="size-3 text-primary-link"
+                aria-hidden="true"
+              />
               Sem fim
             </span>
           )}

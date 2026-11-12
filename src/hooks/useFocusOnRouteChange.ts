@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom'
 function isEditing(el: Element | null) {
   return (
     el instanceof HTMLElement &&
-    (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))
+    (el.isContentEditable ||
+      ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))
   )
 }
 

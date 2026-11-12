@@ -1,8 +1,8 @@
 import { ArrowLeft } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { twMerge } from 'tailwind-merge'
-import { listStepsInHistory } from '../utils/listHistory'
 import { focusRing } from '../styles/focus'
+import { listStepsInHistory } from '../utils/listHistory'
 
 export function BackButton({ className }: { className?: string }) {
   const navigate = useNavigate()

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-import { api } from './useApi'
-import { getErrorMessage } from '../utils/getErrorMessage'
 import type { IsFollowingResponse } from '../types/follow'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
 
 export const useFollow = (userId: string | undefined) => {
   const queryClient = useQueryClient()
@@ -11,7 +11,7 @@ export const useFollow = (userId: string | undefined) => {
   const { data, isLoading } = useQuery<IsFollowingResponse>({
     queryKey,
     queryFn: () => api.getFollowStatus(userId as string),
-    enabled: Boolean(userId)
+    enabled: Boolean(userId),
   })
 
   const invalidateAll = () => {
@@ -29,13 +29,13 @@ export const useFollow = (userId: string | undefined) => {
   const follow = useMutation({
     mutationFn: () => api.followUser(userId as string),
     onSuccess: invalidateAll,
-    onError
+    onError,
   })
 
   const unfollow = useMutation({
     mutationFn: () => api.unfollowUser(userId as string),
     onSuccess: invalidateAll,
-    onError
+    onError,
   })
 
   return {
@@ -43,6 +43,6 @@ export const useFollow = (userId: string | undefined) => {
     isLoading,
     follow: () => follow.mutateAsync(),
     unfollow: () => unfollow.mutateAsync(),
-    isMutating: follow.isPending || unfollow.isPending
+    isMutating: follow.isPending || unfollow.isPending,
   }
 }

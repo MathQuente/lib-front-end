@@ -1,8 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { api } from './useApi'
-import { isValidIgdbId } from '../utils/isValidIgdbId'
 import type { GameResponse, SimilarGamesResponse } from '../types/games'
+import { isValidIgdbId } from '../utils/isValidIgdbId'
+import { api } from './useApi'
 
 export const useGame = (igdbId: string | undefined) => {
   const isValidId = isValidIgdbId(igdbId)
@@ -11,18 +11,18 @@ export const useGame = (igdbId: string | undefined) => {
     data: GameResponse,
     isError: isGameError,
     error,
-    refetch
+    refetch,
   } = useQuery<GameResponse>({
     queryKey: ['game', igdbId],
     queryFn: async () => api.getGame(igdbId),
-    enabled: isValidId
+    enabled: isValidId,
   })
 
   const { data: SimilarGames } = useQuery<SimilarGamesResponse>({
     queryKey: ['similarGames', igdbId],
     queryFn: async () => api.getSimilarGames(igdbId),
     placeholderData: keepPreviousData,
-    enabled: isValidId
+    enabled: isValidId,
   })
 
   const isNotFound = isAxiosError(error) && error.response?.status === 404
@@ -33,6 +33,6 @@ export const useGame = (igdbId: string | undefined) => {
     isValidId,
     isNotFound,
     isLoadFailed: isGameError && !isNotFound && !GameResponse,
-    refetch
+    refetch,
   }
 }

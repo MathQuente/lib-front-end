@@ -1,5 +1,5 @@
-import { forwardRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { forwardRef, useState } from 'react'
 import type { AuthInputProps } from '../interfaces/ui'
 import { fieldFocus, fieldFocusError, focusRing } from '../styles/focus'
 

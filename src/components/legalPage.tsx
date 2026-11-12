@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { sectionTitleClass } from './aboutComponents/styles'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { focusRing } from '../styles/focus'
+import { sectionTitleClass } from './aboutComponents/styles'
 import { LegalToc, type LegalTocItem } from './legalToc'
 
 export type LegalSection = {

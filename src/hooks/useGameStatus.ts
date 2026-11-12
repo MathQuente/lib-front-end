@@ -20,11 +20,11 @@ export const useGameStatus = (igdbId: string | undefined) => {
 
   const { data: gameStatusResponse, isLoading: isLoadingStatus } =
     useQuery<GameStatusResponse>({
-    queryKey,
-    queryFn: () => api.getGameStatus(igdbId),
-    enabled: Boolean(userId && igdbId),
-    staleTime: 1000 * 60 * 5,
-  })
+      queryKey,
+      queryFn: () => api.getGameStatus(igdbId),
+      enabled: Boolean(userId && igdbId),
+      staleTime: 1000 * 60 * 5,
+    })
 
   const updateGameStatus = useMutation({
     mutationFn: (data: { statusIds: number }) =>

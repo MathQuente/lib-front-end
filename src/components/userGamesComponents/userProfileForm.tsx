@@ -10,8 +10,8 @@ import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
 import { useUserProfile } from '../../hooks/useUserProfile'
 import type { UserGamesFormProps } from '../../interfaces/user'
 import { updateProfileSchema } from '../../schemas/profileSchema'
-import { Button } from '../button'
 import { fieldFocus, focusRing } from '../../styles/focus'
+import { Button } from '../button'
 
 type ProfileForm = z.infer<typeof updateProfileSchema>
 

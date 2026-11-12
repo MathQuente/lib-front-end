@@ -5,7 +5,7 @@ import { focusRing } from '../styles/focus'
 
 export function EndlessToggle({
   igdbId,
-  disabledReason = null
+  disabledReason = null,
 }: {
   igdbId: string
   disabledReason?: string | null
@@ -33,7 +33,8 @@ export function EndlessToggle({
         aria-disabled={disabledReason != null}
         disabled={isLoading}
         onClick={() => {
-          if (disabledReason == null) setEndless(!endless).catch(() => undefined)
+          if (disabledReason == null)
+            setEndless(!endless).catch(() => undefined)
         }}
         className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-50 ${focusRing} ${endless ? 'bg-primary' : 'bg-dark-border'} ${disabledReason != null ? 'opacity-50 cursor-not-allowed' : ''}`}
       >

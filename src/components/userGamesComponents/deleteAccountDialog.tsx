@@ -6,7 +6,7 @@ const CONSEQUENCES = [
   'Biblioteca, horas e conclusões',
   'Resenhas e notas',
   'Seguidores e quem você segue',
-  'Vínculos com Steam, Xbox e PSN'
+  'Vínculos com Steam, Xbox e PSN',
 ]
 
 export function DeleteAccountDialog({
@@ -18,7 +18,7 @@ export function DeleteAccountDialog({
   onReauth,
   isLoading,
   needsReauth,
-  errorMessage
+  errorMessage,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -84,7 +84,9 @@ export function DeleteAccountDialog({
           aria-describedby={hintId}
           aria-invalid={errorMessage ? true : undefined}
           className={`bg-dark-bg-darker text-white rounded-lg block w-full text-sm py-3 px-3 border ${
-            errorMessage ? `border-red-400 ${fieldFocusError}` : `border-dark-border ${fieldFocus}`
+            errorMessage
+              ? `border-red-400 ${fieldFocusError}`
+              : `border-dark-border ${fieldFocus}`
           } transition-colors duration-150`}
         />
         {errorMessage ? (

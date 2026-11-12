@@ -66,10 +66,7 @@ export function RatedScore({
     <div
       className={`flex shrink-0 items-center gap-1 ${variant === 'meta' ? 'mt-0.5' : ''}`}
     >
-      <Star
-        className="size-3 fill-gray-300 text-gray-300"
-        aria-hidden="true"
-      />
+      <Star className="size-3 fill-gray-300 text-gray-300" aria-hidden="true" />
       <span className="text-xs font-medium tabular-nums text-gray-300">
         {score}
       </span>
@@ -131,8 +128,7 @@ function featureLines(game: GameBase, type: SectionType) {
   }
 }
 
-const gamePath = (game: GameBase) =>
-  `/games/${encodeURIComponent(game.igdbId)}`
+const gamePath = (game: GameBase) => `/games/${encodeURIComponent(game.igdbId)}`
 
 export function GameRow({
   game,

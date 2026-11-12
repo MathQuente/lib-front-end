@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { FormResetPassword } from '../components/formResetPassword'
 import { api } from '../hooks/useApi'
-import { focusRing } from '../styles/focus'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { focusRing } from '../styles/focus'
 
 export function ResetPasswordPage() {
   useDocumentTitle('Redefinir senha')

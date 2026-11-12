@@ -2,8 +2,8 @@ import { X } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useResendVerification } from '../hooks/useResendVerification'
-import { Button } from './button'
 import { focusRing } from '../styles/focus'
+import { Button } from './button'
 
 const DISMISSED_KEY = 'emailNoticeDismissed'
 
@@ -32,7 +32,9 @@ export function EmailVerificationNotice() {
       <div className="min-w-0">
         <p className="text-sm text-gray-300">
           Confirme seu e-mail. Enviamos um link para{' '}
-          <span className="break-words font-medium text-white">{user.email}</span>
+          <span className="break-words font-medium text-white">
+            {user.email}
+          </span>
           .
         </p>
         <p className="mt-1 text-xs text-gray-400">

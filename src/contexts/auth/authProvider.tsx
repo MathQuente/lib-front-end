@@ -1,10 +1,10 @@
+import { isAxiosError } from 'axios'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import { isAxiosError } from 'axios'
-import { AuthContext } from './authContext'
+import { SESSION_ENDED_EVENT, api } from '../../hooks/useApi'
 import type { User } from '../../types/user'
-import { api, SESSION_ENDED_EVENT } from '../../hooks/useApi'
 import { getErrorMessage } from '../../utils/getErrorMessage'
+import { AuthContext } from './authContext'
 
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<Partial<User> | null>(null)
@@ -49,11 +49,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     acceptedTerms: boolean
   ) => {
     try {
-      const { user: newUser } = await api.signup(
-        email,
-        password,
-        acceptedTerms
-      )
+      const { user: newUser } = await api.signup(email, password, acceptedTerms)
       setUser(newUser)
       await loadUser()
       return null
@@ -72,7 +68,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
         message: getErrorMessage(
           error,
           'Não foi possível criar a conta. Tente novamente.'
-        )
+        ),
       }
     }
   }
@@ -121,7 +117,17 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, signup, refreshUser, clearSession }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        logout,
+        signup,
+        refreshUser,
+        clearSession,
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   )

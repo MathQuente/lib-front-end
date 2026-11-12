@@ -5,7 +5,7 @@ import { focusRing } from '../../styles/focus'
 
 export function EndlessChip({
   igdbId,
-  disabledReason = null
+  disabledReason = null,
 }: {
   igdbId: string
   disabledReason?: string | null
@@ -25,7 +25,9 @@ export function EndlessChip({
         aria-disabled={isLocked}
         aria-describedby={isLocked ? reasonId : undefined}
         disabled={isLoading}
-        title={isLocked ? undefined : 'Jogo sem fim, como MMOs e jogos como serviço'}
+        title={
+          isLocked ? undefined : 'Jogo sem fim, como MMOs e jogos como serviço'
+        }
         className={`group min-h-11 flex items-center rounded-full disabled:opacity-60 disabled:cursor-wait ${isLocked ? 'cursor-not-allowed opacity-60' : ''} ${focusRing}`}
       >
         <span

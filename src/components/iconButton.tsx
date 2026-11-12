@@ -4,12 +4,12 @@ import { focusRing } from '../styles/focus'
 
 const sizes = {
   sm: 'size-7 before:-inset-2',
-  md: 'size-9 before:-inset-1'
+  md: 'size-9 before:-inset-1',
 }
 
 const tones = {
   neutral: 'text-gray-300 hover:text-white',
-  danger: 'text-gray-300 hover:text-red-400'
+  danger: 'text-gray-300 hover:text-red-400',
 }
 
 export function IconButton({

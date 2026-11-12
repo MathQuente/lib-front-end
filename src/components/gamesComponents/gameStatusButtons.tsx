@@ -13,11 +13,11 @@ import { useAddGame } from '../../hooks/useAddGame'
 import { useGamePlatforms } from '../../hooks/useGamePlatforms'
 import { useGameStatus } from '../../hooks/useGameStatus'
 import type { GameFormProps } from '../../interfaces/games'
+import { focusRing } from '../../styles/focus'
 import type { UserGamePlatformEntry } from '../../types/platform'
 import { getLibraryPlatform } from '../../utils/libraryPlatforms'
 import { entryDisplayName, entryKey } from '../../utils/platformConsoles'
 import { ConfirmDialog } from '../confirmDialog'
-import { focusRing } from '../../styles/focus'
 
 interface StatusButton {
   statusId: number
@@ -45,10 +45,8 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const hasStatus = (statusId: number) => activeStatus?.id === statusId
   const canHavePlatforms = !!activeStatus && activeStatus.id !== STATUS.WISHLIST
 
-  const { platforms, updatePlatform, isMutating, isLoading, isError } = useGamePlatforms(
-    igdbId ?? '',
-    canHavePlatforms
-  )
+  const { platforms, updatePlatform, isMutating, isLoading, isError } =
+    useGamePlatforms(igdbId ?? '', canHavePlatforms)
   const [askingCompletion, setAskingCompletion] = useState(false)
   const [confirmingRemoval, setConfirmingRemoval] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
@@ -59,7 +57,8 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const completionTitleId = useId()
 
   useEffect(() => {
-    if (askingCompletion) completionRef.current?.querySelector('button')?.focus()
+    if (askingCompletion)
+      completionRef.current?.querySelector('button')?.focus()
   }, [askingCompletion])
 
   if (!game) return null
@@ -159,7 +158,9 @@ export function GameStatusButtons({ game }: GameFormProps) {
         aria-pressed={active}
         disabled={
           isSaving ||
-          (statusId === STATUS.PLAYED && canHavePlatforms && (isLoading || isError))
+          (statusId === STATUS.PLAYED &&
+            canHavePlatforms &&
+            (isLoading || isError))
         }
         className={`min-h-11 flex flex-col items-center justify-center gap-1.5 px-1 py-1.5 rounded-lg transition-colors ${focusRing} disabled:opacity-60 disabled:cursor-wait group ${
           active

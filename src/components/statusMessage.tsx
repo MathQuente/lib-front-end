@@ -1,20 +1,19 @@
+import { Compass, Search, TriangleAlert, WifiOff } from 'lucide-react'
 import { type ReactNode, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Compass, Search, TriangleAlert, WifiOff } from 'lucide-react'
-import { SearchBar } from './searchBar'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import type { StatusMessageProps } from '../interfaces/ui'
 import { focusRing } from '../styles/focus'
+import { SearchBar } from './searchBar'
 
 const ICONS = {
   'not-found': Compass,
   error: TriangleAlert,
   offline: WifiOff,
-  empty: Search
+  empty: Search,
 }
 
-const linkClass =
-  `text-primary-link hover:text-white transition-colors ${focusRing} rounded-sm`
+const linkClass = `text-primary-link hover:text-white transition-colors ${focusRing} rounded-sm`
 
 export function StatusMessage({
   variant,
@@ -25,7 +24,7 @@ export function StatusMessage({
   secondaryAction,
   showSearch,
   shortcuts,
-  documentTitle
+  documentTitle,
 }: StatusMessageProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const isPage = variant !== 'empty'
@@ -87,7 +86,7 @@ export function StatusMessage({
 export function StatusLink({
   to,
   variant = 'primary',
-  children
+  children,
 }: {
   to: string
   variant?: 'primary' | 'secondary'

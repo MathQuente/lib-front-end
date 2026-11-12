@@ -2,6 +2,7 @@ import { ChevronRight, Minus, Plus, Trash2 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import { toast } from 'react-toastify'
 import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
+import { focusRing, inlineFieldFocus } from '../styles/focus'
 import type {
   LibraryPlatform,
   PlatformConsole,
@@ -9,6 +10,12 @@ import type {
   UserGamePlatformPatch,
   UserGamePlatformsResponse,
 } from '../types/platform'
+import {
+  accountHoursText,
+  hasAccountBreakdown,
+  hasNoHours,
+} from '../utils/accountHours'
+import { NO_HOURS_LABEL, formatHoursOrNone } from '../utils/hours'
 import {
   getAvailableLibraryPlatforms,
   getLibraryPlatform,
@@ -24,17 +31,10 @@ import {
   platformAsksConsole,
   singleConsoleFor,
 } from '../utils/platformConsoles'
-import { ConfirmDialog } from './confirmDialog'
 import { Button } from './button'
+import { ConfirmDialog } from './confirmDialog'
 import { IconButton } from './iconButton'
-import {
-  accountHoursText,
-  hasAccountBreakdown,
-  hasNoHours,
-} from '../utils/accountHours'
-import { NO_HOURS_LABEL, formatHoursOrNone } from '../utils/hours'
 import { TotalsStrip } from './totalsGrid'
-import { inlineFieldFocus, focusRing } from '../styles/focus'
 
 const MAX_HOURS = 9999.99
 
@@ -387,12 +387,7 @@ function ConsolePicker({
         )}
       </select>
       <div className="flex justify-end gap-2">
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="secondary" size="sm" onClick={onCancel}>
           Cancelar
         </Button>
         <Button

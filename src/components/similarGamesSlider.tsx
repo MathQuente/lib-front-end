@@ -1,12 +1,12 @@
-import { useEffect } from 'react'
-import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
+import useEmblaCarousel from 'embla-carousel-react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { GameCard } from './gamesComponents/gameCard'
-import { SectionHeading } from './sectionHeading'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import type { SimilarGamesSliderProps } from '../interfaces/games'
 import { focusRing } from '../styles/focus'
+import { GameCard } from './gamesComponents/gameCard'
+import { SectionHeading } from './sectionHeading'
 
 export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -20,8 +20,8 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
           Autoplay({
             delay: 2500,
             stopOnInteraction: false,
-            stopOnMouseEnter: true
-          })
+            stopOnMouseEnter: true,
+          }),
         ]
   )
 

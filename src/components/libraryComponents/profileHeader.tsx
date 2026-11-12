@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react'
 import userProfilePictureDefault from '../../assets/Default_pfp.svg.png'
-import { formatHours } from '../../utils/hours'
 import { focusRing } from '../../styles/focus'
+import { formatHours } from '../../utils/hours'
 
-const factButton =
-  `rounded-sm transition-colors hover:text-white ${focusRing}`
+const factButton = `rounded-sm transition-colors hover:text-white ${focusRing}`
 
 function Fact({ value, label }: { value: string; label: string }) {
   return (

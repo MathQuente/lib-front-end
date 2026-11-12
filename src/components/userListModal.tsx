@@ -1,16 +1,16 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import type { ReactNode } from 'react'
 import { X } from 'lucide-react'
-import { FollowList } from './followList'
-import type { FollowSummary } from '../types/follow'
+import type { ReactNode } from 'react'
 import { focusRing } from '../styles/focus'
+import type { FollowSummary } from '../types/follow'
+import { FollowList } from './followList'
 
 export function UserListModal({
   open,
   onOpenChange,
   title,
   users,
-  renderAction
+  renderAction,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void

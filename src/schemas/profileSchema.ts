@@ -36,5 +36,5 @@ export const updateProfileSchema = z.object({
     }, 'O arquivo precisa ter menos de 3MB')
     .refine(file => {
       return !file || ACCEPTED_FILE_TYPES.includes(file.type)
-    }, 'O arquivo precisa ser PNG, JPEG ou GIF')
+    }, 'O arquivo precisa ser PNG, JPEG ou GIF'),
 })

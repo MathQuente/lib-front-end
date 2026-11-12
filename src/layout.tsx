@@ -1,5 +1,10 @@
 import { useEffect } from 'react'
-import { Outlet, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useNavigationType,
+} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { EmailVerificationNotice } from './components/emailVerificationNotice'

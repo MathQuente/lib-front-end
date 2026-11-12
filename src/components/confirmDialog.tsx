@@ -13,7 +13,7 @@ export function ConfirmDialog({
   confirmDisabled,
   confirmVariant = 'danger',
   lockWhileLoading,
-  children
+  children,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void

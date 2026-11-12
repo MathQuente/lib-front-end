@@ -4,9 +4,9 @@ import { Navigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FormLogin } from '../components/formLogin'
 import { FormSignUp } from '../components/formSignUp'
-import { focusRing } from '../styles/focus'
 import { useAuth } from '../hooks/useAuth'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { focusRing } from '../styles/focus'
 
 const tabTrigger =
   'flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent ' +
@@ -17,7 +17,7 @@ const tabTrigger =
 const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   access_denied: 'Login cancelado.',
   email_not_verified:
-    'O email dessa conta ainda não foi verificado no provedor. Verifique o email lá e tente de novo.'
+    'O email dessa conta ainda não foi verificado no provedor. Verifique o email lá e tente de novo.',
 }
 const TERMS_REQUIRED_MESSAGE =
   'Ainda não existe conta para esse login. Marque a caixa abaixo e continue com Google ou Discord para criar uma.'
@@ -56,7 +56,7 @@ export function Authentication() {
 
   function handleTabChange(value: string) {
     setSearchParams(value === 'signUp' ? { tab: 'signUp' } : {}, {
-      replace: true
+      replace: true,
     })
   }
 

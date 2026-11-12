@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { focusRing } from '../../styles/focus'
 import {
   primaryButtonClass,
   secondaryButtonClass,
 } from '../aboutComponents/styles'
 import { SUPPORT_EMAIL, mailtoHref } from './supportEmail'
-import { focusRing } from '../../styles/focus'
 
 const MESSAGE_MS = 4000
 const ANNOUNCE_GAP_MS = 80

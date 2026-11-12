@@ -9,7 +9,7 @@ export function ReviewRequirement({
   igdbId,
   inLibrary,
   inBacklog = false,
-  onPicked
+  onPicked,
 }: {
   reason: ReviewBlockedReason
   variant: 'link' | 'picker'

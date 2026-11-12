@@ -16,7 +16,8 @@ function useActiveSection(ids: string[]) {
   useEffect(() => {
     const update = () => {
       const atBottom =
-        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 2
       if (atBottom) {
         setActiveId(ids[ids.length - 1])
         return

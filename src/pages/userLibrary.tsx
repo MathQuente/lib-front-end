@@ -4,9 +4,9 @@ import { EmptyLibrary } from '../components/libraryComponents/emptyLibrary'
 import { ImportGamesModal } from '../components/libraryComponents/importGamesModal'
 import { LibraryShelves } from '../components/libraryComponents/libraryShelves'
 import { UserProfileDisplay } from '../components/userGamesComponents/userProfileDisplay'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { usePlatformLinkResult } from '../hooks/usePlatformLinkResult'
 import { useUserGames } from '../hooks/useUserGames'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const SKELETON_SHELVES = ['a', 'b', 'c']
 

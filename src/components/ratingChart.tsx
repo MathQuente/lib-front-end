@@ -1,9 +1,9 @@
 import { Star } from 'lucide-react'
 import { useState } from 'react'
-import { Bar, Cell, ResponsiveContainer, Tooltip, BarChart } from 'recharts'
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { PRIMARY, PRIMARY_DARK } from '../constants/colors'
 import { useRating } from '../hooks/useRating'
 import type { RatingChartProps } from '../interfaces/games'
-import { PRIMARY, PRIMARY_DARK } from '../constants/colors'
 
 export function RatingChart({ GameResponse }: RatingChartProps) {
   const { allRatingsResponse } = useRating(GameResponse.game.igdbId.toString())
@@ -30,7 +30,7 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
       count,
       label: `${ratingValue}`,
       percentage:
-        totalRating > 0 ? ((count / totalRating) * 100).toFixed(0) : '0.0'
+        totalRating > 0 ? ((count / totalRating) * 100).toFixed(0) : '0.0',
     }
   })
 

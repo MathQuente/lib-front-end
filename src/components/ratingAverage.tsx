@@ -1,15 +1,15 @@
 import { Rating } from '@mui/material'
-import { useRating } from '../hooks/useRating'
-import { useState, type SyntheticEvent } from 'react'
 import { Star, X } from 'lucide-react'
-import type { RatingAverageProps } from '../interfaces/games'
+import { type SyntheticEvent, useState } from 'react'
 import { PRIMARY, PRIMARY_LIGHT } from '../constants/colors'
+import { useRating } from '../hooks/useRating'
+import type { RatingAverageProps } from '../interfaces/games'
 import { focusRing } from '../styles/focus'
 
 export function RatingAverage({
   game,
   isForGamePage,
-  justAverage
+  justAverage,
 }: RatingAverageProps) {
   const igdbId = game?.igdbId?.toString()
 
@@ -22,7 +22,7 @@ export function RatingAverage({
     isError,
     addRating,
     removeRating,
-    isMutating
+    isMutating,
   } = useRating(igdbId)
 
   const [hoverValue, setHoverValue] = useState<number | null>(null)
@@ -80,7 +80,7 @@ export function RatingAverage({
             sx={{
               position: 'absolute',
               zIndex: 1,
-              '& .MuiRating-icon': { color: PRIMARY }
+              '& .MuiRating-icon': { color: PRIMARY },
             }}
           />
           <Rating
@@ -95,7 +95,7 @@ export function RatingAverage({
             sx={{
               position: 'relative',
               zIndex: 2,
-              '& .MuiRating-icon': { color: PRIMARY_LIGHT, opacity: 0.7 }
+              '& .MuiRating-icon': { color: PRIMARY_LIGHT, opacity: 0.7 },
             }}
           />
         </div>

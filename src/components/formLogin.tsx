@@ -1,17 +1,17 @@
-import type { z } from 'zod'
-import { safeRedirectPath } from '../utils/safeRedirectPath'
-import { loginSchema } from '../schemas/loginSchema'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Lock, Mail } from 'lucide-react'
 import { useContext } from 'react'
-import { AuthContext } from '../contexts/auth/authContext'
+import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock } from 'lucide-react'
-import { Button } from './button'
-import { GoogleAuthButton } from './googleAuthButton'
-import { DiscordAuthButton } from './discordAuthButton'
-import { AuthInput } from './authInput'
+import type { z } from 'zod'
+import { AuthContext } from '../contexts/auth/authContext'
+import { loginSchema } from '../schemas/loginSchema'
 import { focusRing } from '../styles/focus'
+import { safeRedirectPath } from '../utils/safeRedirectPath'
+import { AuthInput } from './authInput'
+import { Button } from './button'
+import { DiscordAuthButton } from './discordAuthButton'
+import { GoogleAuthButton } from './googleAuthButton'
 
 type LoginForm = z.infer<typeof loginSchema>
 
@@ -22,9 +22,9 @@ export function FormLogin() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(loginSchema),
   })
 
   async function onSubmit(data: LoginForm) {

@@ -2,17 +2,17 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
 } from 'lucide-react'
-import { IconButton } from './iconButton'
 import type { PaginationProps } from '../interfaces/ui'
+import { IconButton } from './iconButton'
 
 export function Pagination({
   currentPage,
   totalPages,
   totalItems,
   itemsPerPage,
-  onPageChange
+  onPageChange,
 }: PaginationProps) {
   const displayedItems = Math.min(itemsPerPage, totalItems)
 
@@ -43,9 +43,8 @@ export function Pagination({
         <span className="text-gray-200 font-medium">{displayedItems}</span> de{' '}
         <span className="text-gray-200 font-medium">{totalItems}</span> itens
         {' · '}
-        página{' '}
-        <span className="text-gray-200 font-medium">{currentPage}</span> de{' '}
-        <span className="text-gray-200 font-medium">{totalPages}</span>
+        página <span className="text-gray-200 font-medium">{currentPage}</span>{' '}
+        de <span className="text-gray-200 font-medium">{totalPages}</span>
       </p>
 
       <div className="flex gap-1.5">

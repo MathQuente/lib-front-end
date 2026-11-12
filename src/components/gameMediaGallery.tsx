@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
-import useEmblaCarousel from 'embla-carousel-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react'
-import { SectionHeading } from './sectionHeading'
-import type { GameScreenshot, GameVideo } from '../types/games'
+import { useEffect, useRef, useState } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { focusRing } from '../styles/focus'
+import type { GameScreenshot, GameVideo } from '../types/games'
+import { SectionHeading } from './sectionHeading'
 
 function youtubeThumbUrl(videoId: string) {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
@@ -36,9 +36,8 @@ function useRovingTabIndex(count: number) {
   const current = Math.min(active, Math.max(count - 1, 0))
 
   function onKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
-    const items = stripRef.current?.querySelectorAll<HTMLButtonElement>(
-      ':scope > button'
-    )
+    const items =
+      stripRef.current?.querySelectorAll<HTMLButtonElement>(':scope > button')
     if (!items || items.length === 0) return
     const last = items.length - 1
     let next: number | null = null
@@ -56,11 +55,14 @@ function useRovingTabIndex(count: number) {
     stripRef,
     onKeyDown,
     tabIndexFor: (index: number) => (index === current ? 0 : -1),
-    onItemFocus: (index: number) => setActive(index)
+    onItemFocus: (index: number) => setActive(index),
   }
 }
 
-function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
+function NavArrows({
+  onPrev,
+  onNext,
+}: { onPrev: () => void; onNext: () => void }) {
   return (
     <>
       <button
@@ -87,7 +89,7 @@ function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void 
 
 export function GameMediaGallery({
   screenshots = [],
-  videos = []
+  videos = [],
 }: {
   screenshots?: GameScreenshot[]
   videos?: GameVideo[]
@@ -114,7 +116,11 @@ export function GameMediaGallery({
   const goNextVideo = () =>
     setActiveVideoIndex(i => (i === null ? null : (i + 1) % videos.length))
 
-  useCarouselKeyboardNav(lightboxIndex !== null, goPrevScreenshot, goNextScreenshot)
+  useCarouselKeyboardNav(
+    lightboxIndex !== null,
+    goPrevScreenshot,
+    goNextScreenshot
+  )
   useCarouselKeyboardNav(activeVideoIndex !== null, goPrevVideo, goNextVideo)
 
   if (screenshots.length === 0 && videos.length === 0) return null
@@ -252,7 +258,10 @@ export function GameMediaGallery({
                 />
               )}
               {screenshots.length > 1 && (
-                <NavArrows onPrev={goPrevScreenshot} onNext={goNextScreenshot} />
+                <NavArrows
+                  onPrev={goPrevScreenshot}
+                  onNext={goNextScreenshot}
+                />
               )}
             </div>
             <Dialog.Close

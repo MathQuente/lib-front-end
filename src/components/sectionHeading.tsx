@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 export function SectionHeading({
   children,
   icon: Icon,
-  className
+  className,
 }: {
   children: ReactNode
   icon?: LucideIcon

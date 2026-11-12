@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useCommunityReviews } from '../hooks/useCommunityReviews'
+import { focusRing } from '../styles/focus'
 import { CommunityReviewCard } from './communityReviewCard'
 import { SectionHeading } from './sectionHeading'
-import { focusRing } from '../styles/focus'
 
 const PREVIEW_LIMIT = 3
 
 export function CommunityReviewsSection({
-  igdbId
+  igdbId,
 }: {
   igdbId: string | undefined
 }) {

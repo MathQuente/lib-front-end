@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from './useAuth'
-import { api } from './useApi'
-import type { GameHoursResponse } from '../types/user'
 import { toast } from 'react-toastify'
-import { useGameStatus } from './useGameStatus'
-import { getErrorMessage } from '../utils/getErrorMessage'
 import { USER_GAME_STATUS_ID as STATUS } from '../constants/gameStatus'
+import type { GameHoursResponse } from '../types/user'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
+import { useGameStatus } from './useGameStatus'
 
 const getGameHoursQueryKey = (userId: string, igdbId: string) => [
   'gameHours',
   userId,
-  igdbId
+  igdbId,
 ]
 
 export const useHoursPlayed = (igdbId: string) => {
@@ -25,14 +25,15 @@ export const useHoursPlayed = (igdbId: string) => {
 
   const { data: hoursData, isLoading: isFetchingHours } =
     useQuery<GameHoursResponse>({
-    queryKey,
-    queryFn: () => api.getGameHours(igdbId),
-    enabled: Boolean(igdbId && userId && !isWishlist),
-    staleTime: 1000 * 60 * 5
-  })
+      queryKey,
+      queryFn: () => api.getGameHours(igdbId),
+      enabled: Boolean(igdbId && userId && !isWishlist),
+      staleTime: 1000 * 60 * 5,
+    })
 
   const updateHoursPlayed = useMutation({
-    mutationFn: (hoursPlayed: number) => api.updateHoursPlayed(igdbId, hoursPlayed),
+    mutationFn: (hoursPlayed: number) =>
+      api.updateHoursPlayed(igdbId, hoursPlayed),
     onMutate: async hoursPlayed => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -57,7 +58,7 @@ export const useHoursPlayed = (igdbId: string) => {
         queryClient.setQueryData(queryKey, context.previousData)
       }
       toast.error(getErrorMessage(error, 'Erro ao atualizar horas jogadas.'))
-    }
+    },
   })
 
   return {
@@ -65,6 +66,6 @@ export const useHoursPlayed = (igdbId: string) => {
     isFetchingHours,
     updateHoursPlayed: (hoursPlayed: number) =>
       updateHoursPlayed.mutateAsync(hoursPlayed),
-    isLoading: updateHoursPlayed.isPending
+    isLoading: updateHoursPlayed.isPending,
   }
 }

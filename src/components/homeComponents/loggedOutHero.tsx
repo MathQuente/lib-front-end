@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
+import { focusRing } from '../../styles/focus'
 import { LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { CoverWall } from './coverWall'
 import { textLink } from './styles'
-import { focusRing } from '../../styles/focus'
 
 const LEGEND = [
   { status: 'PLAYED', label: 'Zerado' },

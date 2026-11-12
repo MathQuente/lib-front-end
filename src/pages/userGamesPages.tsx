@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { GameStatusEnum } from '../types/games'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { parsePage } from '../utils/parsePage'
-import { GameListPage } from '../components/gameListPage'
+import { toast } from 'react-toastify'
 import { BackButton } from '../components/backButton'
+import { GameListPage } from '../components/gameListPage'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useUserGames } from '../hooks/useUserGames'
 import type { SortField, SortOrder } from '../interfaces/games'
+import { GameStatusEnum } from '../types/games'
 import type { GameListData } from '../types/games'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { parsePage } from '../utils/parsePage'
 
 const ITEMS_PER_PAGE = 48
 
@@ -22,7 +22,7 @@ export function UserGamesPageByStatus() {
     [GameStatusEnum.Paused]: 'pausedGames',
     [GameStatusEnum.Backlog]: 'backlogGames',
     [GameStatusEnum.Wishlist]: 'wishlistGames',
-    [GameStatusEnum.Dropped]: 'droppedGames'
+    [GameStatusEnum.Dropped]: 'droppedGames',
   }
 
   const routeToEnumMap: Record<string, GameStatusEnum> = {
@@ -31,7 +31,7 @@ export function UserGamesPageByStatus() {
     pausedGames: GameStatusEnum.Paused,
     backlogGames: GameStatusEnum.Backlog,
     wishlistGames: GameStatusEnum.Wishlist,
-    droppedGames: GameStatusEnum.Dropped
+    droppedGames: GameStatusEnum.Dropped,
   }
 
   const [page, setPage] = useState(() => {
@@ -107,7 +107,7 @@ export function UserGamesPageByStatus() {
 
   const gamesForList: GameListData = {
     games: UserGamesResponse?.games[currentEnumStatus] ?? [],
-    total: UserGamesResponse?.total ?? 0
+    total: UserGamesResponse?.total ?? 0,
   }
 
   const isInvalidStatus = !status || !(status in routeToEnumMap)
@@ -118,7 +118,7 @@ export function UserGamesPageByStatus() {
     [GameStatusEnum.Paused]: 'Pausado',
     [GameStatusEnum.Backlog]: 'Na fila',
     [GameStatusEnum.Wishlist]: 'Lista de desejos',
-    [GameStatusEnum.Dropped]: 'Larguei'
+    [GameStatusEnum.Dropped]: 'Larguei',
   }
 
   useDocumentTitle(
@@ -129,9 +129,12 @@ export function UserGamesPageByStatus() {
 
   useEffect(() => {
     if (isInvalidStatus) {
-      toast.info('Essa seção da biblioteca não existe. Mostrando toda a sua biblioteca.', {
-        toastId: 'invalid-library-status'
-      })
+      toast.info(
+        'Essa seção da biblioteca não existe. Mostrando toda a sua biblioteca.',
+        {
+          toastId: 'invalid-library-status',
+        }
+      )
     }
   }, [isInvalidStatus])
 

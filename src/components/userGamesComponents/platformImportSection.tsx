@@ -6,15 +6,15 @@ import {
 } from '../../constants/importMessages'
 import { useHiddenImportResult } from '../../hooks/useHiddenImportResult'
 import type { PlatformImport } from '../../hooks/usePlatformImport'
+import { fieldFocus } from '../../styles/focus'
 import type { ImportSectionResult } from '../../types/import'
 import type { LibraryPlatform } from '../../types/platform'
 import { Button } from '../button'
 import { ConfirmDialog } from '../confirmDialog'
 import {
-  ImportResultSummary,
   type ImportResultSection,
+  ImportResultSummary,
 } from '../importResultSummary'
-import { fieldFocus } from '../../styles/focus'
 import { CompletionSuggestionsBlock } from './completionSuggestions'
 import { HiddenImportRow } from './hiddenImportRow'
 
@@ -430,7 +430,9 @@ export function PlatformImportSection<TResult>({
                     Desconectar
                   </Button>
                 </div>
-                {account.extra && <div className="pb-1 pr-1">{account.extra}</div>}
+                {account.extra && (
+                  <div className="pb-1 pr-1">{account.extra}</div>
+                )}
               </li>
             ))}
           </ul>
@@ -668,7 +670,11 @@ export function PlatformImportSection<TResult>({
                     variant="secondary"
                     size="md"
                     className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
-                    onClick={redirectsAway ? handleConnect : () => setAddingAccount(true)}
+                    onClick={
+                      redirectsAway
+                        ? handleConnect
+                        : () => setAddingAccount(true)
+                    }
                     loading={isConnectBusy}
                     disabled={isConnectBusy}
                   >

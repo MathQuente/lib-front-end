@@ -1,32 +1,32 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Authentication } from './pages/authentication'
-import { ForgotPasswordPage } from './pages/forgotPasswordPage'
-import { ResetPasswordPage } from './pages/resetPasswordPage'
-import { VerifyEmailPage } from './pages/verifyEmailPage'
-import { Home } from './pages/home'
-import { Games } from './pages/games'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { UserLibrary } from './pages/userLibrary'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { PostLoginRedirect } from './components/postLoginRedirect'
+import { RouteError } from './components/routeError'
 import { AuthProvider } from './contexts/auth/authProvider'
 import { RequireAuth } from './contexts/auth/requireAuth'
-import { GamePage } from './pages/gamePage'
-import { UserGamesPageByStatus } from './pages/userGamesPages'
-import { SearchResults } from './pages/searchResults'
-import { ComingSoonPage } from './pages/comingSoonPage'
-import { UserProfilePage } from './pages/userProfilePage'
-import { GameReviewsPage } from './pages/gameReviewsPage'
 import { Layout } from './layout'
-import { NotFoundPage } from './pages/notFoundPage'
-import { TermsPage } from './pages/termsPage'
-import { PrivacyPage } from './pages/privacyPage'
 import { AboutPage } from './pages/aboutPage'
+import { Authentication } from './pages/authentication'
+import { ComingSoonPage } from './pages/comingSoonPage'
 import { ContactPage } from './pages/contactPage'
-import { RouteError } from './components/routeError'
-import { PostLoginRedirect } from './components/postLoginRedirect'
+import { ForgotPasswordPage } from './pages/forgotPasswordPage'
+import { GamePage } from './pages/gamePage'
+import { GameReviewsPage } from './pages/gameReviewsPage'
+import { Games } from './pages/games'
+import { Home } from './pages/home'
+import { NotFoundPage } from './pages/notFoundPage'
+import { PrivacyPage } from './pages/privacyPage'
+import { ResetPasswordPage } from './pages/resetPasswordPage'
+import { SearchResults } from './pages/searchResults'
+import { TermsPage } from './pages/termsPage'
+import { UserGamesPageByStatus } from './pages/userGamesPages'
+import { UserLibrary } from './pages/userLibrary'
+import { UserProfilePage } from './pages/userProfilePage'
+import { VerifyEmailPage } from './pages/verifyEmailPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,9 +36,9 @@ const queryClient = new QueryClient({
         const status = isAxiosError(error) ? error.response?.status : undefined
         if (status && status >= 400 && status < 500) return false
         return failureCount < 3
-      }
-    }
-  }
+      },
+    },
+  },
 })
 
 const router = createBrowserRouter([
@@ -55,47 +55,47 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/auth',
-            element: <Authentication />
+            element: <Authentication />,
           },
           {
             path: '/forgot-password',
-            element: <ForgotPasswordPage />
+            element: <ForgotPasswordPage />,
           },
           {
             path: '/reset-password',
-            element: <ResetPasswordPage />
+            element: <ResetPasswordPage />,
           },
           {
             path: '/verify-email',
-            element: <VerifyEmailPage />
+            element: <VerifyEmailPage />,
           },
           {
             path: '/',
-            element: <Home />
+            element: <Home />,
           },
           {
             path: '/search/:query',
-            element: <SearchResults />
+            element: <SearchResults />,
           },
           {
             path: '/games',
-            element: <Games />
+            element: <Games />,
           },
           {
             path: '/games/comingSoon',
-            element: <ComingSoonPage />
+            element: <ComingSoonPage />,
           },
           {
             path: '/games/:igdbId',
-            element: <GamePage />
+            element: <GamePage />,
           },
           {
             path: '/games/:igdbId/reviews',
-            element: <GameReviewsPage />
+            element: <GameReviewsPage />,
           },
           {
             path: '/users/:userId',
-            element: <UserProfilePage />
+            element: <UserProfilePage />,
           },
           {
             path: '/userLibrary',
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
               <RequireAuth>
                 <UserLibrary />
               </RequireAuth>
-            )
+            ),
           },
           {
             path: '/userLibrary/:status',
@@ -111,32 +111,32 @@ const router = createBrowserRouter([
               <RequireAuth>
                 <UserGamesPageByStatus />
               </RequireAuth>
-            )
+            ),
           },
           {
             path: '/termos',
-            element: <TermsPage />
+            element: <TermsPage />,
           },
           {
             path: '/privacidade',
-            element: <PrivacyPage />
+            element: <PrivacyPage />,
           },
           {
             path: '/sobre',
-            element: <AboutPage />
+            element: <AboutPage />,
           },
           {
             path: '/contato',
-            element: <ContactPage />
+            element: <ContactPage />,
           },
           {
             path: '*',
-            element: <NotFoundPage />
-          }
-        ]
-      }
-    ]
-  }
+            element: <NotFoundPage />,
+          },
+        ],
+      },
+    ],
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -10,11 +10,6 @@ import type {
 import type { GameStatusEnum, UserGamesResponse } from '../types/games'
 import type { StartImportResponse } from '../types/import'
 import type {
-  AcceptSuggestionResponse,
-  CompletionSuggestionsResponse,
-  UndoSuggestionResponse,
-} from '../types/suggestion'
-import type {
   LibraryPlatform,
   PlatformConsole,
   UserGamePlatformPatch,
@@ -31,18 +26,19 @@ import type {
   GetReviewResponse,
   UpsertReviewResponse,
 } from '../types/review'
+import type { SteamImportStatusResponse } from '../types/steam'
 import type {
-  SteamImportStatusResponse,
-} from '../types/steam'
+  AcceptSuggestionResponse,
+  CompletionSuggestionsResponse,
+  UndoSuggestionResponse,
+} from '../types/suggestion'
 import type {
   PublicUserProfileResponse,
   UpdateUserPayload,
   UserProfileResponse,
   XboxPreferredConsole,
 } from '../types/user'
-import type {
-  XboxImportStatusResponse,
-} from '../types/xbox'
+import type { XboxImportStatusResponse } from '../types/xbox'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 export const SESSION_ENDED_EVENT = 'auth:session-ended'
@@ -122,7 +118,7 @@ export const api = {
     const response = await http.post('/auth/register', {
       email,
       password,
-      acceptedTerms
+      acceptedTerms,
     })
     setAccountDeletionInProgress(false)
     return response.data
@@ -179,7 +175,8 @@ export const api = {
   logout: async () => {
     try {
       await http.post('/auth/logout')
-    } catch {} finally {
+    } catch {
+    } finally {
       window.location.reload()
     }
   },
@@ -253,11 +250,18 @@ export const api = {
     return response.data
   },
   followUser: async (userId: string) => {
-    const response = await http.post(`/follows/${encodeURIComponent(userId)}`, {}, {})
+    const response = await http.post(
+      `/follows/${encodeURIComponent(userId)}`,
+      {},
+      {}
+    )
     return response.data
   },
   unfollowUser: async (userId: string) => {
-    const response = await http.delete(`/follows/${encodeURIComponent(userId)}`, {})
+    const response = await http.delete(
+      `/follows/${encodeURIComponent(userId)}`,
+      {}
+    )
     return response
   },
   getFollowStatus: async (userId: string) => {
@@ -292,13 +296,15 @@ export const api = {
         query,
         sortBy: 'relevance',
         sortOrder: 'desc',
-        limit
-      }
+        limit,
+      },
     })
     return response.data
   },
   getGame: async (igdbId: string | undefined) => {
-    const response = await http.get(`/games/${encodeURIComponent(String(igdbId))}`)
+    const response = await http.get(
+      `/games/${encodeURIComponent(String(igdbId))}`
+    )
     return response.data
   },
   getGameStatus: async (igdbId: string | undefined) => {

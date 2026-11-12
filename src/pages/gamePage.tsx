@@ -9,7 +9,6 @@ import { DlcAndOriginalGameArea } from '../components/dlcAndOriginalGameArea'
 import { GameLaunchersDiv } from '../components/gameLaunchersDiv'
 import { GameMediaGallery } from '../components/gameMediaGallery'
 import { GameForm } from '../components/gamesComponents/gameForm'
-import { StatusLink, StatusMessage } from '../components/statusMessage'
 import { PlatformDiv } from '../components/platformDiv'
 import { PlayersInfo } from '../components/playersInfo'
 import { RatingAverage } from '../components/ratingAverage'
@@ -17,20 +16,27 @@ import { RatingChart } from '../components/ratingChart'
 import { ReviewSection } from '../components/reviewSection'
 import { SectionHeading } from '../components/sectionHeading'
 import { SimilarGamesSlider } from '../components/similarGamesSlider'
+import { StatusLink, StatusMessage } from '../components/statusMessage'
 import { useAuth } from '../hooks/useAuth'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useGame } from '../hooks/useGame'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { focusRing } from '../styles/focus'
 import { hiResCover } from '../utils/hiResCover'
 import { formatReleaseDate } from '../utils/releaseDate'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import { focusRing } from '../styles/focus'
 
 export function GamePage() {
   const { user } = useAuth()
   const { igdbId } = useParams<{ igdbId: string }>()
   const { hash } = useLocation()
-  const { GameResponse, SimilarGames, isValidId, isNotFound, isLoadFailed, refetch } =
-    useGame(igdbId)
+  const {
+    GameResponse,
+    SimilarGames,
+    isValidId,
+    isNotFound,
+    isLoadFailed,
+    refetch,
+  } = useGame(igdbId)
   const isLoaded = Boolean(GameResponse)
   useDocumentTitle(
     isLoadFailed || !isValidId || isNotFound

@@ -1,18 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Mail, Lock } from 'lucide-react'
-import { safeRedirectPath } from '../utils/safeRedirectPath'
-import { signUpSchema } from '../schemas/signUpSchema'
+import { Lock, Mail } from 'lucide-react'
+import { useContext, useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useId } from 'react'
-import { AuthContext } from '../contexts/auth/authContext'
 import type { z } from 'zod'
+import { AuthContext } from '../contexts/auth/authContext'
+import { signUpSchema } from '../schemas/signUpSchema'
+import { safeRedirectPath } from '../utils/safeRedirectPath'
 
-import { Button } from './button'
-import { GoogleAuthButton } from './googleAuthButton'
-import { DiscordAuthButton } from './discordAuthButton'
-import { AuthInput } from './authInput'
 import { focusRing } from '../styles/focus'
+import { AuthInput } from './authInput'
+import { Button } from './button'
+import { DiscordAuthButton } from './discordAuthButton'
+import { GoogleAuthButton } from './googleAuthButton'
 
 type SignUpForm = z.infer<typeof signUpSchema>
 
@@ -25,10 +25,10 @@ export function FormSignUp() {
     handleSubmit,
     setError,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { acceptedTerms: false }
+    defaultValues: { acceptedTerms: false },
   })
   const termsMessageId = useId()
   const acceptedTerms = watch('acceptedTerms')

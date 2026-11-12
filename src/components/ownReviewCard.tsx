@@ -7,14 +7,14 @@ import { usePlayedCount } from '../hooks/usePlayedCount'
 import { useRating } from '../hooks/useRating'
 import { useReview } from '../hooks/useReview'
 import { useReviewPermission } from '../hooks/useReviewPermission'
+import type { GameStatusEnum } from '../types/games'
+import type { CommunityReview } from '../types/review'
 import { Button } from './button'
 import { CommunityReviewCard } from './communityReviewCard'
 import { ConfirmDialog } from './confirmDialog'
 import { ReviewEditor } from './reviewEditor'
 import { ReviewRequirement } from './reviewRequirement'
 import { StatusLink } from './statusMessage'
-import type { GameStatusEnum } from '../types/games'
-import type { CommunityReview } from '../types/review'
 
 const lockedPanel =
   'bg-dark-bg-light border border-dashed border-dark-border rounded-lg p-4 flex flex-col gap-3'
@@ -25,7 +25,7 @@ const editingPanel =
 export function OwnReviewCard({
   igdbId,
   gameName,
-  releaseDate
+  releaseDate,
 }: {
   igdbId: string
   gameName: string
@@ -38,7 +38,7 @@ export function OwnReviewCard({
     blockedReason,
     inLibrary,
     inBacklog,
-    isLoading: isPermissionLoading
+    isLoading: isPermissionLoading,
   } = useReviewPermission(igdbId, releaseDate)
   const { gameStatus } = useGameStatus(igdbId)
   const { userRating } = useRating(igdbId)
@@ -107,7 +107,10 @@ export function OwnReviewCard({
     if (blockedReason) {
       return (
         <section aria-labelledby="own-review-title" className={editingPanel}>
-          <h2 id="own-review-title" className="text-sm font-semibold text-white">
+          <h2
+            id="own-review-title"
+            className="text-sm font-semibold text-white"
+          >
             Para escrever sua resenha de {gameName}
           </h2>
           <ReviewRequirement
@@ -155,7 +158,7 @@ export function OwnReviewCard({
     status: ownStatus ?? null,
     endless: gameStatus?.endless === true,
     text: review.text,
-    createdAt: review.updatedAt
+    createdAt: review.updatedAt,
   }
 
   async function handleDelete() {

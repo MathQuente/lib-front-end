@@ -1,18 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from './useApi'
 import type { SearchUsersResponse } from '../types/follow'
+import { api } from './useApi'
 
 export const useUserSearch = (query: string) => {
   const { data, isLoading, isError, refetch } = useQuery<SearchUsersResponse>({
     queryKey: ['userSearch', query],
     queryFn: () => api.searchUsers(query),
-    enabled: query.trim().length > 0
+    enabled: query.trim().length > 0,
   })
 
   return {
     users: data?.users ?? [],
     isLoading,
     isError,
-    refetch
+    refetch,
   }
 }

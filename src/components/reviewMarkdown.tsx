@@ -39,7 +39,7 @@ export function ReviewMarkdown({ text }: { text: string }) {
           <code className="px-1 py-0.5 rounded bg-dark-bg text-primary-light text-xs">
             {children}
           </code>
-        )
+        ),
       }}
     >
       {text}

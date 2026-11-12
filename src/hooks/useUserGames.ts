@@ -1,7 +1,6 @@
-import { useMemo } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { api } from './useApi'
-import { useAuth } from './useAuth'
+import { useMemo } from 'react'
+import type { SortField, SortOrder } from '../interfaces/games'
 import type {
   GameStatusEnum,
   GameToDisplayResponse,
@@ -9,7 +8,8 @@ import type {
   UserGamesByStatus,
   UserGamesResponse,
 } from '../types/games'
-import type { SortField, SortOrder } from '../interfaces/games'
+import { api } from './useApi'
+import { useAuth } from './useAuth'
 
 const EMPTY_GROUPS: UserGamesByStatus = {
   PLAYED: [],

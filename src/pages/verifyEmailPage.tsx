@@ -4,10 +4,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/button'
 import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useResendVerification } from '../hooks/useResendVerification'
 import { focusRing } from '../styles/focus'
 import { getErrorMessage } from '../utils/getErrorMessage'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type Status = 'ready' | 'success' | 'invalid'
 

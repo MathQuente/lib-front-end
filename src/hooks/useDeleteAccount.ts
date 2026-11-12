@@ -32,7 +32,7 @@ export function useDeleteAccount() {
       clearSession()
       queryClient.clear()
       toast.success('Sua conta foi excluída.')
-    }
+    },
   })
 
   return {
@@ -45,6 +45,6 @@ export function useDeleteAccount() {
     errorMessage: mutation.isError
       ? getErrorMessage(mutation.error, FALLBACK_ERROR)
       : null,
-    resetError: mutation.reset
+    resetError: mutation.reset,
   }
 }

@@ -1,11 +1,16 @@
+import { Search, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Search, X } from 'lucide-react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { SearchBarProps } from '../interfaces/ui'
 import { fieldFocus, focusRing } from '../styles/focus'
 
-export function SearchBar({ isMobile, inputRef, autoFocus, onClose }: SearchBarProps) {
+export function SearchBar({
+  isMobile,
+  inputRef,
+  autoFocus,
+  onClose,
+}: SearchBarProps) {
   const { query } = useParams()
   const navigate = useNavigate()
   const { pathname, search: locationSearch } = useLocation()

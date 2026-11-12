@@ -10,14 +10,14 @@ const OPTIONS: { statusId: number; icon: LucideIcon; label: string }[] = [
   { statusId: STATUS.PLAYED, icon: Gamepad2, label: 'Jogado' },
   { statusId: STATUS.PLAYING, icon: Play, label: 'Jogando' },
   { statusId: STATUS.PAUSED, icon: Pause, label: 'Pausado' },
-  { statusId: STATUS.DROPPED, icon: CircleX, label: 'Larguei' }
+  { statusId: STATUS.DROPPED, icon: CircleX, label: 'Larguei' },
 ]
 
 export function ReviewStatusPicker({
   igdbId,
   inLibrary,
   inBacklog = false,
-  onPicked
+  onPicked,
 }: {
   igdbId: string
   inLibrary: boolean
@@ -72,7 +72,9 @@ export function ReviewStatusPicker({
       </div>
       <div className="flex flex-col gap-0.5 text-xs text-gray-400">
         {!inLibrary && <p>O jogo será adicionado à sua biblioteca.</p>}
-        <p id={playedNoteId}>Jogado também conta uma zerada na sua biblioteca.</p>
+        <p id={playedNoteId}>
+          Jogado também conta uma zerada na sua biblioteca.
+        </p>
         {inBacklog && (
           <p>
             Se você já jogou e quer manter na fila, registre horas ou uma

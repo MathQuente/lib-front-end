@@ -1,4 +1,5 @@
 import { Gamepad2, Monitor } from 'lucide-react'
+import type { ComponentType } from 'react'
 import { FaXbox } from 'react-icons/fa'
 import {
   SiNintendo,
@@ -10,9 +11,8 @@ import {
   SiPlaystation3,
   SiPlaystation4,
   SiPlaystation5,
-  SiPlaystationvita
+  SiPlaystationvita,
 } from 'react-icons/si'
-import type { ComponentType } from 'react'
 
 export function getPlatformIcon(
   name: string

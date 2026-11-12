@@ -1,20 +1,18 @@
+import { Gamepad2, Home, Library, LogOut, Menu, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import logo from '../assets/euzerei-logo.svg'
+import { api } from '../hooks/useApi'
 import { useAuth } from '../hooks/useAuth'
-import { useState, useEffect, useRef } from 'react'
-import { Menu, X, Home, Library, Gamepad2, LogOut } from 'lucide-react'
+import { focusRing } from '../styles/focus'
 import { buttonClasses } from './button'
 import { SearchBar } from './searchBar'
-import { api } from '../hooks/useApi'
-import logo from '../assets/euzerei-logo.svg'
-import { focusRing } from '../styles/focus'
 
 const navFocus = `${focusRing} rounded-sm`
 
 const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 text-base py-2 transition-colors ${navFocus} ${
-    isActive
-      ? 'text-white font-semibold'
-      : 'text-gray-300 hover:text-white'
+    isActive ? 'text-white font-semibold' : 'text-gray-300 hover:text-white'
   }`
 
 const desktopNavLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -208,7 +206,7 @@ export function SideBar() {
                     to="/auth?tab=signUp"
                     onClick={closeMobileMenu}
                     className={buttonClasses({
-                      className: 'mt-2 min-h-11'
+                      className: 'mt-2 min-h-11',
                     })}
                   >
                     Criar conta

@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Mail } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Mail } from 'lucide-react'
 import type { z } from 'zod'
 
-import { forgotPasswordSchema } from '../schemas/forgotPasswordSchema'
 import { api } from '../hooks/useApi'
-import { Button } from './button'
+import { forgotPasswordSchema } from '../schemas/forgotPasswordSchema'
 import { AuthInput } from './authInput'
+import { Button } from './button'
 
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>
 
@@ -17,9 +17,9 @@ export function FormForgotPassword() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordSchema)
+    resolver: zodResolver(forgotPasswordSchema),
   })
 
   async function onSubmit(data: ForgotPasswordForm) {
@@ -45,8 +45,7 @@ export function FormForgotPassword() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <p className="text-sm text-gray-400">
-        Digite o email da sua conta pra receber um link de redefinição de
-        senha.
+        Digite o email da sua conta pra receber um link de redefinição de senha.
       </p>
 
       <AuthInput

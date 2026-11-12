@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button } from './button'
 import { focusRing } from '../styles/focus'
+import { Button } from './button'
 
 const MAX_LENGTH = 2000
 
@@ -11,7 +11,7 @@ export function ReviewEditor({
   isSaving,
   autoFocus,
   locked = false,
-  describedBy
+  describedBy,
 }: {
   initialText: string
   onSave: (text: string) => Promise<void>

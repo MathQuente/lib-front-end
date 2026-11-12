@@ -1,14 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Lock } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Lock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import type { z } from 'zod'
 
-import { resetPasswordSchema } from '../schemas/resetPasswordSchema'
 import { api } from '../hooks/useApi'
-import { Button } from './button'
+import { resetPasswordSchema } from '../schemas/resetPasswordSchema'
 import { AuthInput } from './authInput'
+import { Button } from './button'
 
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>
 
@@ -18,9 +18,9 @@ export function FormResetPassword({ token }: { token: string }) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordForm>({
-    resolver: zodResolver(resetPasswordSchema)
+    resolver: zodResolver(resetPasswordSchema),
   })
 
   async function onSubmit(data: ResetPasswordForm) {

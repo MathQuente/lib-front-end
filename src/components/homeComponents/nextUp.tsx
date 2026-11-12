@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
 import { useGameStatus } from '../../hooks/useGameStatus'
+import { focusRing } from '../../styles/focus'
 import type {
   GameCardData,
   GameToDisplayResponse,
@@ -11,7 +12,6 @@ import type {
 import { Button } from '../button'
 import { GameCard } from '../gamesComponents/gameCard'
 import { coverLink, sectionTitle, textLink } from './styles'
-import { focusRing } from '../../styles/focus'
 
 const QUEUE_SIZE = 3
 const SWAP_IN = 'animate-swap-in motion-reduce:animate-none'
@@ -237,8 +237,7 @@ export function NextUp({
       ) : (
         <div className="mt-4 flex flex-col items-start gap-2">
           <p className="max-w-sm text-gray-400">
-            Sua fila está vazia. Coloque jogos na fila para ver sugestões
-            aqui.
+            Sua fila está vazia. Coloque jogos na fila para ver sugestões aqui.
           </p>
           <Link to="/games" className={textLink}>
             Explorar jogos

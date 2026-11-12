@@ -1,14 +1,14 @@
-import { useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useReview } from '../hooks/useReview'
 import { useReviewPermission } from '../hooks/useReviewPermission'
+import type { GameCardData } from '../types/games'
 import { ConfirmDialog } from './confirmDialog'
 import { IconButton } from './iconButton'
 import { ReviewEditor } from './reviewEditor'
+import { ReviewMarkdown } from './reviewMarkdown'
 import { ReviewRequirement } from './reviewRequirement'
 import { SectionHeading } from './sectionHeading'
-import { ReviewMarkdown } from './reviewMarkdown'
-import type { GameCardData } from '../types/games'
 
 export function ReviewSection({ game }: { game: GameCardData }) {
   const igdbId = game.igdbId.toString()
@@ -16,7 +16,7 @@ export function ReviewSection({ game }: { game: GameCardData }) {
     blockedReason,
     inLibrary,
     inBacklog,
-    isLoading: isPermissionLoading
+    isLoading: isPermissionLoading,
   } = useReviewPermission(igdbId, game.releaseDate)
   const { review, saveReview, deleteReview, isSaving, isDeleting } =
     useReview(igdbId)

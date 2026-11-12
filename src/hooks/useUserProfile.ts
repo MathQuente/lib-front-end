@@ -2,13 +2,13 @@ import {
   keepPreviousData,
   useMutation,
   useQuery,
-  useQueryClient
+  useQueryClient,
 } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import type { UpdateUserProfileData, UserProfileResponse } from '../types/user'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import { api } from './useApi'
 import { useAuth } from './useAuth'
-import type { UpdateUserProfileData, UserProfileResponse } from '../types/user'
-import { toast } from 'react-toastify'
-import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface UseUserProfileOptions {
   onUpdateSuccess?: () => void
@@ -25,11 +25,11 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
   const {
     data: UserProfileResponse,
     isLoading,
-    isError
+    isError,
   } = useQuery<UserProfileResponse>({
     queryKey: ['userProfile', userId],
     queryFn: async () => api.me(),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 
   const uploadImageIfNeeded = async (
@@ -89,7 +89,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
       return api.updateUser({
         userName: data.userName,
         profilePicture: profilePictureUrl,
-        userBanner: userBannerUrl
+        userBanner: userBannerUrl,
       })
     },
     onMutate: async newData => {
@@ -105,8 +105,8 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
             ...old,
             user: {
               ...old.user,
-              userName: newData.userName || old.user.userName
-            }
+              userName: newData.userName || old.user.userName,
+            },
           }
         })
       }
@@ -126,9 +126,9 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['userProfile', userId]
+        queryKey: ['userProfile', userId],
       })
-    }
+    },
   })
 
   return {
@@ -139,6 +139,6 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
     updateUserProfile: updateUserProfile.mutate,
     updateUserProfileAsync: updateUserProfile.mutateAsync,
     isUpdatingProfile: updateUserProfile.isPending,
-    updateError: updateUserProfile.error
+    updateError: updateUserProfile.error,
   }
 }

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
+import { focusRing } from '../../styles/focus'
 import { Button } from '../button'
 import { LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { sectionTitle } from '../homeComponents/styles'
-import { focusRing } from '../../styles/focus'
 
 const SHELVES = [
   { status: 'PLAYING', label: 'Jogando' },

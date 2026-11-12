@@ -1,15 +1,13 @@
 import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { focusRing } from '../../styles/focus'
 import type { UserGameEntry } from '../../types/games'
 import { GameCard, LIBRARY_STATUS_BADGES } from '../gamesComponents/gameCard'
 import { sectionTitle } from '../homeComponents/styles'
-import { focusRing } from '../../styles/focus'
 
-const shelfLink =
-  `whitespace-nowrap rounded-sm text-primary-link underline underline-offset-4 transition-colors hover:text-white ${focusRing}`
+const shelfLink = `whitespace-nowrap rounded-sm text-primary-link underline underline-offset-4 transition-colors hover:text-white ${focusRing}`
 
-const allLinkClass =
-  `-my-2 inline-flex min-h-11 shrink-0 items-center gap-0.5 whitespace-nowrap rounded-sm text-sm text-gray-300 transition-colors hover:text-white ${focusRing}`
+const allLinkClass = `-my-2 inline-flex min-h-11 shrink-0 items-center gap-0.5 whitespace-nowrap rounded-sm text-sm text-gray-300 transition-colors hover:text-white ${focusRing}`
 
 export interface ShelfLink {
   to: string
@@ -22,8 +20,7 @@ export interface ShelfTab {
   count?: number
 }
 
-const tabClass =
-  `min-h-11 rounded-full border px-3 text-sm transition-colors ${focusRing}`
+const tabClass = `min-h-11 rounded-full border px-3 text-sm transition-colors ${focusRing}`
 
 interface StatusShelfProps {
   status: keyof typeof LIBRARY_STATUS_BADGES

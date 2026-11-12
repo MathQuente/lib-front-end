@@ -6,7 +6,7 @@ import type {
   GameListData,
   GameResponse,
   GameStatusEnum,
-  SimilarGamesResponse
+  SimilarGamesResponse,
 } from '../types/games'
 
 export type SortField =
@@ -119,4 +119,3 @@ export interface SortControlsProps {
   totalGames: number
   isUserLibrary?: boolean
 }
-
