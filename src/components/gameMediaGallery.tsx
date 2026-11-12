@@ -30,7 +30,9 @@ function useCarouselKeyboardNav(
   }, [isOpen, onPrev, onNext])
 }
 
-function useRovingTabIndex(count: number) {
+type EmblaApi = ReturnType<typeof useEmblaCarousel>[1]
+
+function useRovingTabIndex(count: number, emblaApi: EmblaApi) {
   const [active, setActive] = useState(0)
   const stripRef = useRef<HTMLDivElement>(null)
   const current = Math.min(active, Math.max(count - 1, 0))
@@ -48,7 +50,8 @@ function useRovingTabIndex(count: number) {
     if (next === null) return
     e.preventDefault()
     setActive(next)
-    items[next].focus()
+    items[next].focus({ preventScroll: true })
+    emblaApi?.scrollTo(next)
   }
 
   return {
@@ -97,10 +100,19 @@ export function GameMediaGallery({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(null)
 
-  const [videosRef] = useEmblaCarousel({ align: 'start', dragFree: true })
-  const [screenshotsRef] = useEmblaCarousel({ align: 'start', dragFree: true })
-  const videosRoving = useRovingTabIndex(videos.length)
-  const screenshotsRoving = useRovingTabIndex(screenshots.length)
+  const [videosRef, videosApi] = useEmblaCarousel({
+    align: 'start',
+    dragFree: true,
+  })
+  const [screenshotsRef, screenshotsApi] = useEmblaCarousel({
+    align: 'start',
+    dragFree: true,
+  })
+  const videosRoving = useRovingTabIndex(videos.length, videosApi)
+  const screenshotsRoving = useRovingTabIndex(
+    screenshots.length,
+    screenshotsApi
+  )
 
   const goPrevScreenshot = () =>
     setLightboxIndex(i =>

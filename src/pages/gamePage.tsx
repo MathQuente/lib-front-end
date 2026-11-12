@@ -241,6 +241,7 @@ export function GamePage() {
 
         <div className="lg:col-span-2 flex flex-col gap-4">
           <GameMediaGallery
+            key={game.igdbId}
             screenshots={game.screenshots}
             videos={game.videos}
           />
