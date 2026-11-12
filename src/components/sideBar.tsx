@@ -97,7 +97,7 @@ export function SideBar() {
         </Link>
         <button
           ref={menuButtonRef}
-          className={`p-2 text-gray-400 hover:text-white transition-colors ${navFocus}`}
+          className={`-mr-1.5 flex size-11 items-center justify-center text-gray-400 hover:text-white transition-colors ${navFocus}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           type="button"
           title="Abrir menu"

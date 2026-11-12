@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
@@ -27,6 +28,36 @@ function useCarouselKeyboardNav(
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, onPrev, onNext])
+}
+
+function useRovingTabIndex(count: number) {
+  const [active, setActive] = useState(0)
+  const stripRef = useRef<HTMLDivElement>(null)
+  const current = Math.min(active, Math.max(count - 1, 0))
+
+  function onKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
+    const items = stripRef.current?.querySelectorAll<HTMLButtonElement>(
+      ':scope > button'
+    )
+    if (!items || items.length === 0) return
+    const last = items.length - 1
+    let next: number | null = null
+    if (e.key === 'ArrowRight') next = Math.min(current + 1, last)
+    else if (e.key === 'ArrowLeft') next = Math.max(current - 1, 0)
+    else if (e.key === 'Home') next = 0
+    else if (e.key === 'End') next = last
+    if (next === null) return
+    e.preventDefault()
+    setActive(next)
+    items[next].focus()
+  }
+
+  return {
+    stripRef,
+    onKeyDown,
+    tabIndexFor: (index: number) => (index === current ? 0 : -1),
+    onItemFocus: (index: number) => setActive(index)
+  }
 }
 
 function NavArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
@@ -66,6 +97,8 @@ export function GameMediaGallery({
 
   const [videosRef] = useEmblaCarousel({ align: 'start', dragFree: true })
   const [screenshotsRef] = useEmblaCarousel({ align: 'start', dragFree: true })
+  const videosRoving = useRovingTabIndex(videos.length)
+  const screenshotsRoving = useRovingTabIndex(screenshots.length)
 
   const goPrevScreenshot = () =>
     setLightboxIndex(i =>
@@ -92,11 +125,17 @@ export function GameMediaGallery({
         <div>
           <SectionHeading className="mb-3">Trailers</SectionHeading>
           <div className="overflow-hidden" ref={videosRef}>
-            <div className="flex gap-3">
+            <div
+              className="flex gap-3"
+              ref={videosRoving.stripRef}
+              onKeyDown={videosRoving.onKeyDown}
+            >
               {videos.map((video, index) => (
                 <button
                   key={video.videoId}
                   type="button"
+                  tabIndex={videosRoving.tabIndexFor(index)}
+                  onFocus={() => videosRoving.onItemFocus(index)}
                   onClick={() => setActiveVideoIndex(index)}
                   className={`group relative flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border ${focusRing}`}
                   title={video.name}
@@ -125,11 +164,17 @@ export function GameMediaGallery({
         <div>
           <SectionHeading className="mb-3">Screenshots</SectionHeading>
           <div className="overflow-hidden" ref={screenshotsRef}>
-            <div className="flex gap-3">
+            <div
+              className="flex gap-3"
+              ref={screenshotsRoving.stripRef}
+              onKeyDown={screenshotsRoving.onKeyDown}
+            >
               {screenshots.map((screenshot, index) => (
                 <button
                   key={screenshot.thumbUrl}
                   type="button"
+                  tabIndex={screenshotsRoving.tabIndexFor(index)}
+                  onFocus={() => screenshotsRoving.onItemFocus(index)}
                   onClick={() => setLightboxIndex(index)}
                   className={`flex-none w-56 aspect-video rounded-lg overflow-hidden border border-dark-border ${focusRing}`}
                   title="Ver em tamanho maior"

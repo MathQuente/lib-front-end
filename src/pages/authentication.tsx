@@ -81,10 +81,10 @@ export function Authentication() {
             )}
           </div>
 
-          <Tabs.Content value="login">
+          <Tabs.Content value="login" tabIndex={-1}>
             <FormLogin />
           </Tabs.Content>
-          <Tabs.Content value="signUp">
+          <Tabs.Content value="signUp" tabIndex={-1}>
             <FormSignUp />
           </Tabs.Content>
         </Tabs.Root>
