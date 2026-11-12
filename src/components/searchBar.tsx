@@ -46,13 +46,16 @@ export function SearchBar({
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
-    if (search.trim()) {
-      justSubmittedRef.current = true
+    const term = search.trim()
+    if (term) {
+      justSubmittedRef.current = !(
+        pathname.startsWith('/search/') && query === term
+      )
       const keepTab =
         pathname.startsWith('/search/') &&
         new URLSearchParams(locationSearch).get('tab') === 'pessoas'
       navigate(
-        `/search/${encodeURIComponent(search.trim())}${keepTab ? '?tab=pessoas' : ''}`
+        `/search/${encodeURIComponent(term)}${keepTab ? '?tab=pessoas' : ''}`
       )
       setSearch('')
       if (isMobile) {

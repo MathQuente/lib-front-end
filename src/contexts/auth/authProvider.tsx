@@ -113,7 +113,6 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: checkAuth roda uma vez ao montar o provider, não a cada render
   useEffect(() => {
     checkAuth()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

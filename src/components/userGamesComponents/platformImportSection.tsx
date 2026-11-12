@@ -210,7 +210,6 @@ export function PlatformImportSection<TResult>({
     const timer = setTimeout(showImportResult, remaining)
 
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status?.status])
 
   function showImportResult() {
