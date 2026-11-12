@@ -49,10 +49,9 @@ export function ReviewStatusPicker({
         Resenhas são de jogos que você já começou. Em que ponto você está com
         este jogo?
       </p>
-      <div
-        role="group"
+      <fieldset
         aria-labelledby={questionId}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+        className="grid min-w-0 grid-cols-2 sm:grid-cols-4 gap-2"
       >
         {OPTIONS.map(({ statusId, icon: Icon, label }) => (
           <button
@@ -69,7 +68,7 @@ export function ReviewStatusPicker({
             {label}
           </button>
         ))}
-      </div>
+      </fieldset>
       <div className="flex flex-col gap-0.5 text-xs text-gray-400">
         {!inLibrary && <p>O jogo será adicionado à sua biblioteca.</p>}
         <p id={playedNoteId}>

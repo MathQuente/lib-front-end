@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   Link,
   useNavigationType,
@@ -36,17 +36,20 @@ export function GameReviewsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const page = parsePage(searchParams.get('page'))
 
-  function setPage(next: number) {
-    setSearchParams(
-      prev => {
-        const params = new URLSearchParams(prev)
-        if (next <= 1) params.delete('page')
-        else params.set('page', String(next))
-        return params
-      },
-      { replace: true }
-    )
-  }
+  const setPage = useCallback(
+    (next: number) => {
+      setSearchParams(
+        prev => {
+          const params = new URLSearchParams(prev)
+          if (next <= 1) params.delete('page')
+          else params.set('page', String(next))
+          return params
+        },
+        { replace: true }
+      )
+    },
+    [setSearchParams]
+  )
 
   const { data: gameData, error: gameError } = useQuery<GameResponse>({
     queryKey: ['game', igdbId],
@@ -70,7 +73,7 @@ export function GameReviewsPage() {
 
   useEffect(() => {
     if (total > 0 && page > totalPages) setPage(totalPages)
-  }, [total, page, totalPages])
+  }, [total, page, totalPages, setPage])
 
   function handlePageChange(next: number) {
     setPage(next)

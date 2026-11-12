@@ -61,7 +61,7 @@ export function UserProfileForm({ afterSave, onCancel }: UserGamesFormProps) {
         userBanner: UserProfileResponse.user.userBanner || '',
       })
     }
-  }, [UserProfileResponse?.user])
+  }, [UserProfileResponse?.user, setValue])
 
   useEffect(() => {
     if (!UserProfileResponse?.user) return
