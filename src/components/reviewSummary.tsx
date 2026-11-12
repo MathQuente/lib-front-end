@@ -38,6 +38,7 @@ export function ReviewSummary({ igdbId }: { igdbId: string }) {
           <span className="text-base font-normal text-gray-400"> de 5</span>
         </p>
         <div
+          // biome-ignore lint/a11y/useSemanticElements: role="img" com aria-label agrupa as estrelas; <img> não aceita filhos
           className="flex gap-0.5 text-primary-light"
           role="img"
           aria-label={`Nota média ${displayValue} de 5`}

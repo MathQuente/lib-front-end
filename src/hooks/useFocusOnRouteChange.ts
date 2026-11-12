@@ -30,6 +30,7 @@ function focusMainHeading(allowMainFallback: boolean) {
 export function useFocusOnRouteChange() {
   const { pathname } = useLocation()
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(pathname): pathname só dispara o efeito, o foco é refeito a cada troca de rota
   useEffect(() => {
     let retry = 0
     const first = requestAnimationFrame(() => {

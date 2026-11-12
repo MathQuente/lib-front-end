@@ -67,6 +67,7 @@ export function GameReviewsPage() {
   )
   const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: só a troca de jogo (igdbId) rola ao topo; navigationType é lido na hora e não pode disparar o efeito
   useEffect(() => {
     if (navigationType !== 'POP') window.scrollTo(0, 0)
   }, [igdbId])
@@ -169,6 +170,7 @@ export function GameReviewsPage() {
             ))}
           </div>
         ) : isError ? (
+          // biome-ignore lint/a11y/useSemanticElements: role="alert" explícito, não há elemento nativo equivalente (<output> é status, não alert)
           <div
             role="alert"
             className="flex items-center justify-between gap-4 rounded-lg border border-dark-border bg-dark-bg-light px-4 py-3"

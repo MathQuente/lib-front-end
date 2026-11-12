@@ -20,6 +20,7 @@ export function SearchBar({
   const actualInputRef = inputRef || internalInputRef
   const justSubmittedRef = useRef(false)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(pathname): pathname só dispara o efeito, o campo volta ao termo da URL ao trocar de rota
   useEffect(() => {
     if (justSubmittedRef.current) {
       justSubmittedRef.current = false
@@ -62,6 +63,7 @@ export function SearchBar({
 
   return (
     <form
+      // biome-ignore lint/a11y/useSemanticElements: <form role="search"> é o padrão ARIA; o elemento <search> é recente demais para depender dele
       onSubmit={handleSearch}
       role="search"
       aria-label="Buscar jogos ou pessoas"

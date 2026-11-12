@@ -32,6 +32,7 @@ export function StatusMessage({
 
   useDocumentTitle(isPage ? (documentTitle ?? title) : undefined)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(title): title só dispara o efeito, o título é refocado quando o texto da mensagem muda
   useEffect(() => {
     if (!isPage) return
     headingRef.current?.focus({ preventScroll: true })

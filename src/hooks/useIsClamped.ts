@@ -7,6 +7,7 @@ export function useIsClamped(
 ) {
   const [isClamped, setIsClamped] = useState(false)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(dependency): dependency só dispara o efeito, o texto é remedido quando o conteúdo muda
   useEffect(() => {
     const el = ref.current
     if (!el || paused) return

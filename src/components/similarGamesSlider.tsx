@@ -25,6 +25,7 @@ export function SimilarGamesSlider({ SimilarGames }: SimilarGamesSliderProps) {
         ]
   )
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(games.length): games.length só dispara o efeito, o carrossel reinicia quando a quantidade de jogos muda
   useEffect(() => {
     emblaApi?.reInit()
   }, [emblaApi, games.length])

@@ -33,6 +33,7 @@ export function Layout() {
     navigate({ search: next ? `?${next}` : '' }, { replace: true })
   }, [search, navigate])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: só a troca de pathname rola ao topo; hash e navigationType são lidos na hora e, como dependências, rolariam também ao mudar só ?page= ou o hash
   useEffect(() => {
     if (navigationType !== 'POP' && !hash) window.scrollTo(0, 0)
   }, [pathname])

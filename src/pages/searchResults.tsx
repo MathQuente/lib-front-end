@@ -142,6 +142,7 @@ export function SearchResults() {
     isLoadingGames || isOutOfRange ? (
       <GamesSkeleton />
     ) : isErrorGames ? (
+      // biome-ignore lint/a11y/useSemanticElements: role="alert" explícito, não há elemento nativo equivalente (<output> é status, não alert)
       <div role="alert">
         <StatusMessage
           variant="empty"
@@ -215,6 +216,7 @@ export function SearchResults() {
   const peopleSection = isLoadingUsers ? (
     <SkeletonRows />
   ) : isErrorUsers ? (
+    // biome-ignore lint/a11y/useSemanticElements: role="alert" explícito, não há elemento nativo equivalente (<output> é status, não alert)
     <div role="alert">
       <StatusMessage
         variant="empty"
@@ -265,6 +267,7 @@ export function SearchResults() {
       <h1 className="mb-1 text-center sm:text-left text-white text-lg sm:text-xl font-bold break-words">
         Resultados para "{query}"
       </h1>
+      {/* biome-ignore lint/a11y/useSemanticElements: role="status" explícito é o padrão mais bem suportado por leitores de tela; <output> varia entre eles */}
       <p
         role="status"
         className="mb-4 min-h-5 text-center sm:text-left text-sm text-gray-400"

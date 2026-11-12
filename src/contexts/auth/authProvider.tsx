@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
       window.removeEventListener(SESSION_ENDED_EVENT, handleSessionEnded)
   }, [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: checkAuth roda uma vez ao montar o provider, não a cada render
   useEffect(() => {
     checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
