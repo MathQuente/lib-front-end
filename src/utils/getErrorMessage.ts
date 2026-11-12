@@ -10,7 +10,13 @@ const GENERIC_API_MESSAGES = new Set([
   'Payload too large',
   'Unsupported media type',
   'Too many requests',
+  'Bad Gateway',
+  'Service Unavailable',
+  'Gateway Timeout',
+  'Internal Server Error',
 ])
+
+const USER_FACING_SERVER_STATUSES = new Set([502, 503])
 
 export function getErrorMessage(error: unknown, fallback: string): string {
   if (!axios.isAxiosError(error)) return fallback
@@ -22,7 +28,8 @@ export function getErrorMessage(error: unknown, fallback: string): string {
       ? `Muitas tentativas. Tente novamente em ${Math.ceil(retryAfter)} segundos.`
       : 'Muitas tentativas. Aguarde um pouco e tente novamente.'
   }
-  if (!status || status >= 500) return fallback
+  if (!status) return fallback
+  if (status >= 500 && !USER_FACING_SERVER_STATUSES.has(status)) return fallback
 
   const passwordError = error.response?.data?.error?.password?.[0]
   if (typeof passwordError === 'string') return passwordError
