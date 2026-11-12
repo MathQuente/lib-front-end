@@ -30,8 +30,7 @@ export function ImportGamesModal({
     >
       <div className="flex flex-col gap-3 p-6">
         <SteamImportSection
-          steamId={user?.steamId ?? null}
-          steamPersonaName={user?.steamPersonaName ?? null}
+          steamAccounts={user?.steamAccounts ?? []}
           onViewLibrary={viewLibrary}
         />
         <PsnImportSection

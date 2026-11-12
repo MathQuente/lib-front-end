@@ -9,7 +9,7 @@ export function accountHoursText(entry: UserGamePlatformEntry) {
   return entry.accountHours
     .map(
       account =>
-        `${account.gamertag} ${formatHoursDetailed(account.hoursPlayed)}`
+        `${account.accountName} ${formatHoursDetailed(account.hoursPlayed)}`
     )
     .join(' · ')
 }

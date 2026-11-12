@@ -48,7 +48,7 @@ export type PlatformConsole =
   | 'ARCADE'
 
 export interface AccountHours {
-  gamertag: string
+  accountName: string
   hoursPlayed: number
 }
 

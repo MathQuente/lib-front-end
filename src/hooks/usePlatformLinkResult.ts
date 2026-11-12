@@ -15,6 +15,10 @@ const PLATFORMS: Record<string, Record<string, LinkMessage>> = {
       type: 'error',
       text: 'Este perfil da Steam já está vinculado a outra conta.',
     },
+    limit: {
+      type: 'error',
+      text: 'Você já vinculou o máximo de 2 contas Steam.',
+    },
     failed: {
       type: 'error',
       text: 'Não foi possível confirmar sua conta Steam. Tente novamente.',

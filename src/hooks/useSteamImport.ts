@@ -9,6 +9,6 @@ export const useSteamImport = () =>
     getStatus: () => api.getSteamImportStatus(),
     connect: () => api.startSteamLink(),
     redirectsAway: true,
-    disconnect: () => api.disconnectSteam(),
+    disconnect: accountId => api.disconnectSteam(accountId ?? ''),
     startImport: () => api.startSteamImport(),
   })

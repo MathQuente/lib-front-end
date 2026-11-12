@@ -508,8 +508,8 @@ export const api = {
   },
   startSteamLink: () =>
     openPlatformSignIn('/users/steam/openid', 'https://steamcommunity.com'),
-  disconnectSteam: async () => {
-    await http.delete('/users/steam', {})
+  disconnectSteam: async (accountId: string) => {
+    await http.delete(`/users/steam/${accountId}`, {})
   },
   getSuggestions: async (platform: LibraryPlatform) => {
     const response = await http.get<CompletionSuggestionsResponse>(

@@ -18,10 +18,10 @@ export function AccountHoursLine({
     >
       {entry.accountHours.map((account, index) => (
         <li
-          key={`${account.gamertag}-${index}`}
+          key={`${account.accountName}-${index}`}
           className="flex flex-wrap gap-x-1.5"
         >
-          <span className="break-all text-gray-200">{account.gamertag}</span>
+          <span className="break-all text-gray-200">{account.accountName}</span>
           <span className="font-display font-bold text-white tabular-nums">
             {formatHoursDetailed(account.hoursPlayed)}
           </span>

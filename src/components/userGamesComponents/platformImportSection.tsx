@@ -105,6 +105,7 @@ interface PlatformImportSectionProps<TResult> {
   hideConnectedId?: boolean
   accounts?: PlatformAccount[]
   maxAccounts?: number
+  addAccountHint?: string
   inputPlaceholder?: string
   connectLabel?: string
   verificationHint?: string
@@ -125,6 +126,7 @@ export function PlatformImportSection<TResult>({
   hideConnectedId = false,
   accounts,
   maxAccounts = 1,
+  addAccountHint,
   inputPlaceholder,
   connectLabel,
   verificationHint,
@@ -507,7 +509,9 @@ export function PlatformImportSection<TResult>({
                 )}
                 {!showHiddenRow &&
                   (accountResults.length > 1 ||
-                    accountResults.some(account => account.warning)) && (
+                    accountResults.some(
+                      account => account.warning || account.error
+                    )) && (
                     <ul className="flex flex-col gap-1.5">
                       {accountResults.map(account => (
                         <li
@@ -630,6 +634,11 @@ export function PlatformImportSection<TResult>({
                     Limite de {maxAccounts} contas {label}.
                   </p>
                 )}
+                {canAddAccount && addAccountHint && (
+                  <p className="basis-full text-xs text-gray-400">
+                    {addAccountHint}
+                  </p>
+                )}
               </>
             ) : (
               <Button
@@ -683,7 +692,7 @@ export function PlatformImportSection<TResult>({
         title={`Desconectar ${disconnectTarget?.name ?? label}`}
         description={
           hasAccountList && maxAccounts > 1
-            ? `A conta ${disconnectTarget?.name} será desvinculada e as horas que ela trouxe saem dos jogos. Os jogos já importados continuam na sua biblioteca.`
+            ? `A conta ${disconnectTarget?.name} será desvinculada e as horas dela saem dos jogos. Conclusões e status continuam, e os jogos já importados ficam na sua biblioteca.`
             : `Sua conta ${label} será desvinculada. Os jogos já importados continuam na sua biblioteca.`
         }
         confirmLabel="Desconectar"
