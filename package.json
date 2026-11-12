@@ -5,8 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
+    "build": "tsc -b && vite build",
+    "serve": "vite preview",
+    "typecheck": "tsc -b",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint --write src",
+    "format": "biome format --write src",
+    "format:check": "biome format src",
+    "check": "biome check src",
+    "check:fix": "biome check --write src",
+    "verify": "npm run typecheck && npm run check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
