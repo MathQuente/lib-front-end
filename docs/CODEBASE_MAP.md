@@ -197,6 +197,7 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | `dlcAndOriginalGameArea.tsx` | Parent-game link + paginated DLC list, reuses `getGameTag`. |
 | `emptyState.tsx` | Generic empty-state message. |
 | `gameLaunchersDiv.tsx` | Per-platform release-date pill. |
+| `gameMediaGallery.tsx` | Trailer and screenshot strips (Embla) plus the trailer dialog and the screenshot lightbox. Each strip is one Tab stop (roving `tabindex`): ArrowLeft/Right, Home and End move between thumbnails, focus uses `preventScroll` and the strip calls the Embla API's `scrollTo` (a native scroll would shift the `overflow-hidden` wrapper out of sync with Embla's transform). `gamePage.tsx` passes `key={game.igdbId}` so the Tab stop resets on a new game. |
 | `gameListPage.tsx` | Composes `SortControls`+`GamesGrid`+`Pagination`; manages URL query params via manual `URL`/`history.pushState` (not `useSearchParams`, unlike `authentication.tsx`). |
 | `gameListSection.tsx` | Home page's 3 list sections: from `lg` one `FeaturedGameRow` (first game) plus `GameRow`s (numbered for trending/rated), horizontal `CoverRow` below. `RatedScore` (in `homeComponents/gameListRows.tsx`) calls `useRating` per game (N+1 pattern). Release dates and platform labels come from `utils/releaseDate.ts` and `utils/platformLabel.ts`. |
 | `footer.tsx` | Site footer rendered by `layout.tsx` on every page; account links depend on login state. |
@@ -269,6 +270,20 @@ sequenceDiagram
     QC-->>GF: refetch -> re-render active button + toast.success
 ```
 
+## Commands
+
+| Script | What it runs |
+|---|---|
+| `npm run dev` / `serve` | Vite dev server / preview of the build. |
+| `npm run build` | `tsc -b && vite build`: a type error fails the build. |
+| `npm run typecheck` | `tsc -b`. The root `tsconfig.json` has `"files": []` and only references `tsconfig.app.json` and `tsconfig.node.json`, so a plain `tsc --noEmit -p .` checks nothing; `-b` is the one that does. |
+| `npm run lint` / `lint:fix` | `biome lint src` / with `--write` (safe fixes only). |
+| `npm run format` / `format:check` | `biome format --write src` / read-only. |
+| `npm run check` / `check:fix` | `biome check src` (format + lint + import order) / with `--write`. |
+| `npm run verify` | `typecheck` then `check`; run before committing. Exits 0 with no errors and no warnings. |
+
+There is no test runner. Biome is the only linter and formatter (ESLint stays in `devDependencies` without a config).
+
 ## Conventions
 
 - Zod schemas paired 1:1 with react-hook-form via `zodResolver`; form types via `z.infer<typeof schema>`.
@@ -279,7 +294,7 @@ sequenceDiagram
 
 ## Gotchas
 
-1. **CRLF/LF mix** across ~10 files (schemas, auth context, a few pages/components) — noisy diffs, no functional impact.
+1. **Line endings are LF everywhere in `src/`.** `biome check --write` (commit `ece26e3`) converted the ~10 files that were CRLF; `git blame` on those files stops at that commit (`git blame -w --ignore-rev ece26e3`).
 2. **`interactive` prop on `GameCard`** — prevents `<button>` nested in `<a>`; always paired with `interactive={false}` where the caller wraps the card in a `Link`.
 3. **Sort-field name mismatch**: `/users/userGames` backend expects `gameName`/`dateRelease`; only `useApi.getUserGames` maps this via `USER_GAMES_SORT_BY_MAP`. `getGames`/`getComingSoon` pass sort fields through unmapped — different backend routes use different naming conventions.
 4. **Two independent status vocabularies**: `GameStatusEnum` (string, order Played/Playing/Paused/Backlog/Wishlist) vs `USER_GAME_STATUS_ID` (numeric, PLAYED:1/PAUSED:2/PLAYING:3/BACKLOG:4/WISHLIST:5 — different internal order). No compile-time link; kept in sync only by matching English key names. `usePlayedCount.ts` hardcodes numeric literal `1` instead of `USER_GAME_STATUS_ID.PLAYED`.
@@ -347,6 +362,12 @@ Reasons that used to live in code comments (the project keeps source files comme
 - `pages/contactPage.tsx` has no form: the address is a visible `mailto` link plus "Escrever e-mail" and "Copiar endereço". Copy uses `navigator.clipboard.writeText`; when it is missing or rejects, the address text is selected and the message says to copy it by hand. The message lives in an `aria-live="polite"` paragraph and is cleared after 4 s. Each topic row is a `mailto` with a subject prefixed `[EuZerei]`, and its "Escrever" label carries a `sr-only` complement with the topic (WCAG 2.4.4). The address constant is `SUPPORT_EMAIL` in `contactComponents/supportEmail.ts`. From `lg` the page is two columns (7fr/5fr): address, tips and the sensitive-data warning on the left; topics and the "Antes de escrever" links (FAQ on `/sobre`, Terms, Privacy) on the right.
 
 - `/termos` and `/privacidade` already got the same treatment as Sobre and Contato (`b52594a`): full width, side table of contents (`legalToc.tsx`) for the numbered sections, texts unchanged.
+
+**Keyboard focus and lint directives**
+- `pages/authentication.tsx`: both `Tabs.Content` panels have `tabIndex={-1}`. Radix gives them `tabindex=0`, which put two invisible Tab stops before the form fields. The `tablist` keeps `tabindex=0` on purpose: it is Radix's roving group and hands focus to the active tab.
+- `components/searchBar.tsx`: `justSubmittedRef` makes the URL-sync effect skip one run after a submit (the field was just cleared). It is only set when the submit will change `pathname` or `query`; searching the current term again changes neither, the effect would not run and the flag would stay set, leaving the field empty after going back to another search.
+- `pages/gameReviewsPage.tsx`: `setPage` is a `useCallback` over `setSearchParams`. In react-router 6 `setSearchParams` changes identity whenever the search params change, so `setPage` is not stable; the clamp effect (`page > totalPages`) re-runs often but stays idempotent.
+- `biome-ignore` comments carry a reason and stay in the code. Effects that list a value only as a trigger use the per-dependency form (`useExhaustiveDependencies(pathname)`); a hook with several diagnostics (`layout.tsx`) uses one whole-rule comment. In JSX the comment goes inside the opening tag, before the attribute whose line precedes the flagged one (Biome starts the diagnostic at the end of the previous attribute line), not above the element. Explicit `role="alert"`, `"status"`, `"img"` and `"search"` keep their `biome-ignore` for `useSemanticElements`.
 
 **Routing, scroll and errors**
 - `layout.tsx` and `pages/gameReviewsPage.tsx`: the router keeps the scroll when changing page. A new page starts at the top; back/forward (POP) and anchor links (`#biblioteca`) are left as they are. Coming from "Ver todas" at the bottom of the game page, the reviews page goes to the top, but on browser back the restored scroll stays.
