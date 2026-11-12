@@ -2,9 +2,12 @@ export interface UserProfileResponse {
   user: User
 }
 
+export type XboxPreferredConsole = 'XBOX_ONE' | 'XBOX_SERIES'
+
 export interface XboxAccount {
   id: string
   gamertag: string
+  preferredConsole: XboxPreferredConsole | null
 }
 
 export interface SteamAccount {

@@ -46,6 +46,7 @@ function formatAccountResult({
 interface PlatformAccount {
   id: string
   name: string
+  extra?: ReactNode
 }
 
 interface AccountImportResult {
@@ -412,21 +413,24 @@ export function PlatformImportSection<TResult>({
             {accountList.map(account => (
               <li
                 key={account.id}
-                className="flex items-center justify-between gap-2.5 rounded-md border border-dark-border bg-dark-bg-light py-1.5 pl-2.5 pr-1.5"
+                className="flex flex-col gap-2 rounded-md border border-dark-border bg-dark-bg-light py-1.5 pl-2.5 pr-1.5"
               >
-                <span className="min-w-0 break-words text-sm text-white">
-                  {account.name}
-                </span>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="shrink-0 hover:text-white"
-                  onClick={() => setDisconnectTarget(account)}
-                  disabled={isImporting}
-                >
-                  Desconectar
-                </Button>
+                <div className="flex items-center justify-between gap-2.5">
+                  <span className="min-w-0 break-words text-sm text-white">
+                    {account.name}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="shrink-0 hover:text-white"
+                    onClick={() => setDisconnectTarget(account)}
+                    disabled={isImporting}
+                  >
+                    Desconectar
+                  </Button>
+                </div>
+                {account.extra && <div className="pb-1 pr-1">{account.extra}</div>}
               </li>
             ))}
           </ul>
