@@ -34,7 +34,7 @@ export function ImportGamesModal({
           onViewLibrary={viewLibrary}
         />
         <PsnImportSection
-          psnOnlineId={user?.psnOnlineId ?? null}
+          psnAccounts={user?.psnAccounts ?? []}
           onViewLibrary={viewLibrary}
         />
         <XboxImportSection

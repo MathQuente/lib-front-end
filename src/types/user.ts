@@ -13,6 +13,11 @@ export interface SteamAccount {
   personaName: string
 }
 
+export interface PsnAccount {
+  id: string
+  onlineId: string
+}
+
 export interface User {
   id: string
   email: string
@@ -23,7 +28,7 @@ export interface User {
   gamesAmount: number
   totalHoursPlayed: number
   steamAccounts: SteamAccount[]
-  psnOnlineId: string | null
+  psnAccounts: PsnAccount[]
   xboxAccounts: XboxAccount[]
   followersCount: number
   followingCount: number

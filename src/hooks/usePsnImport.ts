@@ -9,6 +9,6 @@ export const usePsnImport = () =>
     getStatus: () => api.getPsnImportStatus(),
     connect: () => api.connectPsn(),
     requestVerification: onlineId => api.requestPsnVerification(onlineId),
-    disconnect: () => api.disconnectPsn(),
+    disconnect: accountId => api.disconnectPsn(accountId ?? ''),
     startImport: () => api.startPsnImport(),
   })

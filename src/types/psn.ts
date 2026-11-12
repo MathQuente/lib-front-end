@@ -10,8 +10,15 @@ export interface ConnectPsnResponse {
   psnOnlineId: string
 }
 
+export interface PsnAccountImportResult {
+  displayName: string
+  library?: ImportSectionResult
+  error?: string
+}
+
 export interface PsnImportResult {
   library: ImportSectionResult
+  accounts?: PsnAccountImportResult[]
 }
 
 export type PsnImportStatusResponse = ImportStatusResponse<PsnImportResult>

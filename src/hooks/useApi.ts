@@ -563,8 +563,8 @@ export const api = {
     const response = await http.patch<ConnectPsnResponse>('/users/psn', {})
     return response.data
   },
-  disconnectPsn: async () => {
-    await http.delete('/users/psn', {})
+  disconnectPsn: async (accountId: string) => {
+    await http.delete(`/users/psn/${accountId}`, {})
   },
   startPsnImport: async () => {
     const response = await http.post<StartImportResponse>(

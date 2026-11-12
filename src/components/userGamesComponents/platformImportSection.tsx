@@ -1,5 +1,5 @@
 import { EyeOff } from 'lucide-react'
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import {
   getImportMessage,
   getSlowImportNotice,
@@ -107,6 +107,7 @@ interface PlatformImportSectionProps<TResult> {
   maxAccounts?: number
   addAccountHint?: string
   inputPlaceholder?: string
+  inputValidation?: { pattern: RegExp; message: string }
   connectLabel?: string
   verificationHint?: string
   disconnectedDescription: string
@@ -128,6 +129,7 @@ export function PlatformImportSection<TResult>({
   maxAccounts = 1,
   addAccountHint,
   inputPlaceholder,
+  inputValidation,
   connectLabel,
   verificationHint,
   disconnectedDescription,
@@ -156,6 +158,7 @@ export function PlatformImportSection<TResult>({
 
   const [profileInput, setProfileInput] = useState('')
   const [verificationCode, setVerificationCode] = useState<string | null>(null)
+  const [addingAccount, setAddingAccount] = useState(false)
   const [justFinished, setJustFinished] = useState(false)
   const [disconnectTarget, setDisconnectTarget] =
     useState<PlatformAccount | null>(null)
@@ -320,6 +323,7 @@ export function PlatformImportSection<TResult>({
     if (!requestVerification) {
       await connect(profileInput.trim())
       setProfileInput('')
+      setAddingAccount(false)
       return
     }
     const { code } = await requestVerification(profileInput.trim())
@@ -328,6 +332,13 @@ export function PlatformImportSection<TResult>({
 
   async function handleVerify() {
     await connect()
+    setVerificationCode(null)
+    setProfileInput('')
+    setAddingAccount(false)
+  }
+
+  function handleCancelAdding() {
+    setAddingAccount(false)
     setVerificationCode(null)
     setProfileInput('')
   }
@@ -344,8 +355,16 @@ export function PlatformImportSection<TResult>({
   const showViewLibrary =
     justFinished && status?.status === 'completed' && Boolean(onViewLibrary)
 
-  const needsInput = !connectedId && !redirectsAway
-  const isAwaitingVerification = !connectedId && verificationCode !== null
+  const wantsNewAccount = !connectedId || addingAccount
+  const needsInput = wantsNewAccount && !redirectsAway
+  const inputHintId = useId()
+  const trimmedInput = profileInput.trim()
+  const isInputInvalid =
+    needsInput &&
+    trimmedInput !== '' &&
+    inputValidation !== undefined &&
+    !inputValidation.pattern.test(trimmedInput)
+  const isAwaitingVerification = wantsNewAccount && verificationCode !== null
   const isConnectBusy = isConnecting || isRequestingVerification
 
   const accountList = accounts ?? []
@@ -413,7 +432,7 @@ export function PlatformImportSection<TResult>({
           </ul>
         )}
 
-        {!connectedId && (
+        {wantsNewAccount && (
           <div className="flex items-center gap-2">
             {needsInput && (
               <input
@@ -422,6 +441,8 @@ export function PlatformImportSection<TResult>({
                 value={profileInput}
                 onChange={e => setProfileInput(e.target.value)}
                 maxLength={64}
+                aria-invalid={isInputInvalid || undefined}
+                aria-describedby={isInputInvalid ? inputHintId : undefined}
                 disabled={isConnectBusy || isAwaitingVerification}
                 className={`bg-dark-bg text-white placeholder-gray-500 rounded-lg block w-full text-sm py-2.5 px-3 border border-dark-border ${fieldFocus} transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed`}
               />
@@ -437,7 +458,10 @@ export function PlatformImportSection<TResult>({
                     : 'text-sm [@media(max-width:480px)]:w-full'
                 }
                 onClick={handleConnect}
-                disabled={(needsInput && !profileInput.trim()) || isConnectBusy}
+                disabled={
+                  (needsInput && (!trimmedInput || isInputInvalid)) ||
+                  isConnectBusy
+                }
                 loading={isConnectBusy}
               >
                 {redirectsAway
@@ -445,7 +469,25 @@ export function PlatformImportSection<TResult>({
                   : 'Conectar'}
               </Button>
             )}
+            {addingAccount && !isAwaitingVerification && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                className="px-3 py-1.5 text-sm shrink-0"
+                onClick={handleCancelAdding}
+                disabled={isConnectBusy}
+              >
+                Cancelar
+              </Button>
+            )}
           </div>
+        )}
+
+        {isInputInvalid && (
+          <p id={inputHintId} className="text-xs text-gray-400">
+            {inputValidation?.message}
+          </p>
         )}
 
         {isAwaitingVerification && (
@@ -616,13 +658,13 @@ export function PlatformImportSection<TResult>({
             )}
             {hasAccountList && maxAccounts > 1 ? (
               <>
-                {canAddAccount && (
+                {canAddAccount && !addingAccount && (
                   <Button
                     type="button"
                     variant="secondary"
                     size="md"
                     className="text-sm hover:text-white [@media(max-width:480px)]:w-full"
-                    onClick={handleConnect}
+                    onClick={redirectsAway ? handleConnect : () => setAddingAccount(true)}
                     loading={isConnectBusy}
                     disabled={isConnectBusy}
                   >
