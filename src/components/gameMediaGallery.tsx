@@ -114,6 +114,20 @@ export function GameMediaGallery({
     screenshotsApi
   )
 
+  const activeVideo =
+    activeVideoIndex === null ? undefined : videos[activeVideoIndex]
+  const activeScreenshot =
+    lightboxIndex === null ? undefined : screenshots[lightboxIndex]
+
+  useEffect(() => {
+    if (lightboxIndex !== null && lightboxIndex >= screenshots.length) {
+      setLightboxIndex(null)
+    }
+    if (activeVideoIndex !== null && activeVideoIndex >= videos.length) {
+      setActiveVideoIndex(null)
+    }
+  }, [lightboxIndex, activeVideoIndex, screenshots.length, videos.length])
+
   const goPrevScreenshot = () =>
     setLightboxIndex(i =>
       i === null ? null : (i - 1 + screenshots.length) % screenshots.length
@@ -129,11 +143,11 @@ export function GameMediaGallery({
     setActiveVideoIndex(i => (i === null ? null : (i + 1) % videos.length))
 
   useCarouselKeyboardNav(
-    lightboxIndex !== null,
+    activeScreenshot !== undefined,
     goPrevScreenshot,
     goNextScreenshot
   )
-  useCarouselKeyboardNav(activeVideoIndex !== null, goPrevVideo, goNextVideo)
+  useCarouselKeyboardNav(activeVideo !== undefined, goPrevVideo, goNextVideo)
 
   if (screenshots.length === 0 && videos.length === 0) return null
 
@@ -210,7 +224,7 @@ export function GameMediaGallery({
       )}
 
       <Dialog.Root
-        open={activeVideoIndex !== null}
+        open={activeVideo !== undefined}
         onOpenChange={open => !open && setActiveVideoIndex(null)}
       >
         <Dialog.Portal>
@@ -223,11 +237,11 @@ export function GameMediaGallery({
           </Dialog.Description>
           <Dialog.Content className="w-[calc(100vw-2rem)] max-w-3xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
             <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
-              {activeVideoIndex !== null && (
+              {activeVideo && (
                 <iframe
-                  key={videos[activeVideoIndex].videoId}
+                  key={activeVideo.videoId}
                   className="w-full h-full"
-                  src={`https://www.youtube-nocookie.com/embed/${videos[activeVideoIndex].videoId}?autoplay=1`}
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.videoId}?autoplay=1`}
                   title="Trailer"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -249,7 +263,7 @@ export function GameMediaGallery({
       </Dialog.Root>
 
       <Dialog.Root
-        open={lightboxIndex !== null}
+        open={activeScreenshot !== undefined}
         onOpenChange={open => !open && setLightboxIndex(null)}
       >
         <Dialog.Portal>
@@ -262,9 +276,9 @@ export function GameMediaGallery({
           </Dialog.Description>
           <Dialog.Content className="w-[calc(100vw-2rem)] max-w-4xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
             <div className="relative">
-              {lightboxIndex !== null && (
+              {activeScreenshot && (
                 <img
-                  src={screenshots[lightboxIndex].fullUrl}
+                  src={activeScreenshot.fullUrl}
                   alt=""
                   className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
                 />
