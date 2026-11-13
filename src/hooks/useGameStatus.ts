@@ -36,6 +36,7 @@ export const useGameStatus = (igdbId: string | undefined) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
       queryClient.invalidateQueries({ queryKey: ['gameStats', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['gameHours', userId, igdbId] })
       queryClient.invalidateQueries({
         queryKey: ['gameCompletedAt', userId, igdbId],
       })
@@ -44,6 +45,12 @@ export const useGameStatus = (igdbId: string | undefined) => {
       })
       queryClient.invalidateQueries({ queryKey: ['userGames', userId] })
       queryClient.invalidateQueries({ queryKey: ['rating', userId, igdbId] })
+      queryClient.invalidateQueries({ queryKey: ['ratings', igdbId] })
+      queryClient.invalidateQueries({
+        predicate: query =>
+          String(query.queryKey[0]) === igdbId &&
+          query.queryKey[2] === 'averageRating',
+      })
       toast.success('Status do jogo atualizado com sucesso 👌')
     },
     onError: error => {
