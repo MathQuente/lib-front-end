@@ -33,6 +33,9 @@ export function ReviewSummary({ igdbId }: { igdbId: string }) {
       className="bg-dark-bg-light border border-dark-border rounded-lg p-5 grid gap-6 sm:grid-cols-[minmax(0,200px)_minmax(0,1fr)] items-center"
     >
       <div className="flex flex-col gap-1.5">
+        <p className="text-xs font-medium uppercase tracking-wider text-gray-400">
+          Média da comunidade
+        </p>
         <p className="text-5xl font-semibold leading-none text-white">
           {displayValue}
           <span className="text-base font-normal text-gray-400"> de 5</span>
