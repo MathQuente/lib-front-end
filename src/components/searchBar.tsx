@@ -76,7 +76,7 @@ export function SearchBar({
         <input
           ref={actualInputRef}
           className={`${
-            isMobile ? 'w-full' : 'w-48'
+            isMobile ? 'w-full' : 'w-60'
           } pl-8 pr-7 py-1.5 bg-dark-bg-darker text-sm text-white placeholder-gray-500 rounded-lg border border-dark-border ${fieldFocus} transition-colors duration-150`}
           type="text"
           value={search}
