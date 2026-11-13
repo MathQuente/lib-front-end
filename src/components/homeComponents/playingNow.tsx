@@ -43,7 +43,7 @@ export function PlayingNow({
   const shown = games.slice(0, MAX_PLAYING)
 
   return (
-    <section className="min-w-0">
+    <section className={`min-w-0 ${shown.length > 1 ? 'lg:w-fit' : ''}`}>
       <div className="flex items-baseline justify-between gap-4">
         <h2 className={sectionTitle}>Jogando agora</h2>
         {total > MAX_PLAYING && (

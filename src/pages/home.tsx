@@ -51,10 +51,10 @@ function LoggedInTop() {
 
     return (
       <div
-        className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14"
+        className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-14"
         aria-busy={isLoadingUserGames}
       >
-        <div className="h-56 rounded-lg bg-dark-bg-light lg:h-80" />
+        <div className="h-56 rounded-lg bg-dark-bg-light lg:h-80 lg:w-[528px] xl:w-[576px]" />
         <div className="h-56 rounded-lg bg-dark-bg-light lg:h-80" />
       </div>
     )
@@ -109,7 +109,13 @@ function LoggedInTop() {
 
   return (
     <>
-      <div className="mt-2 grid grid-cols-1 gap-10 lg:grid-cols-[7fr_5fr] lg:gap-14">
+      <div
+        className={`mt-2 grid grid-cols-1 gap-10 lg:gap-14 ${
+          playing.length > 1
+            ? 'lg:grid-cols-[auto_minmax(0,1fr)]'
+            : 'lg:grid-cols-[7fr_5fr]'
+        }`}
+      >
         <PlayingNow games={playing} total={playingTotal} />
         <NextUp
           backlog={nextUpQueue}
