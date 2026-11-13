@@ -282,7 +282,7 @@ sequenceDiagram
 | `npm run check` / `check:fix` | `biome check src` (format + lint + import order) / with `--write`. |
 | `npm run verify` | `typecheck` then `check`; run before committing. Exits 0 with no errors and no warnings. |
 
-There is no test runner. Biome is the only linter and formatter (ESLint stays in `devDependencies` without a config).
+There is no test runner. Biome is the only linter and formatter; ESLint and its plugins were removed from `devDependencies` (they had no config), so an `eslint-disable` comment would do nothing.
 
 ## Conventions
 
@@ -302,7 +302,7 @@ There is no test runner. Biome is the only linter and formatter (ESLint stays in
 6. **`removeGame` vs `removeUserGame`** (`useAddGame.ts`) — near-duplicate mutations, differ only in which cache they optimistically patch. Candidate for consolidation.
 7. **`/roulette` not wrapped in `RequireAuth`** despite needing `user.id` internally — shows empty state instead of redirecting when logged out.
 8. **`/forgotPasswordPage` link in `formLogin.tsx`** has no matching route — intentional placeholder for a not-yet-built feature (per project owner), not a bug to fix.
-9. **Unused dependencies**: `@auth0/auth0-react`, `typescript-cookie` in `package.json`, no imports found in `src/`. ESLint devDependencies present but Biome is the active linter (no `.eslintrc*`).
+9. **Unused dependencies**: `@auth0/auth0-react`, `typescript-cookie` in `package.json`, no imports found in `src/`.
 10. **`usePrefersReducedMotion`** reads `matchMedia` once per render, not reactive to live OS setting changes.
 11. **`types/sidebar.ts`'s `MenuItem`** and `interfaces/ui.ts`'s `SideBarItemProps` are leftover types from a `SideBarItem` component that no longer exists (removed as dead code in a prior cleanup) — latent dead types, not caught by file-level orphan scans since the type files themselves are still imported elsewhere.
 12. **Local variable names shadow their own type names** in destructured `useQuery` results (e.g. `const { data: GameResponse } = useQuery(...)`) across several hooks — stylistic, not a bug.
@@ -310,7 +310,7 @@ There is no test runner. Biome is the only linter and formatter (ESLint stays in
 
 ## Non-obvious behaviour
 
-Reasons that used to live in code comments (the project keeps source files comment-free; lint directives such as `biome-ignore`, `eslint-disable` and `@ts-expect-error` stay in place).
+Reasons that used to live in code comments (the project keeps source files comment-free; lint directives such as `biome-ignore` and `@ts-expect-error` stay in place).
 
 **Lists and library**
 - `components/gameListPage.tsx`: an empty list with a total above zero is not a real empty state. It is a page past the total, or the previous response kept by `keepPreviousData` while the right page loads. Both show the skeleton, not the empty state.
