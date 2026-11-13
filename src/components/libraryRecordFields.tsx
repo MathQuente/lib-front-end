@@ -21,9 +21,11 @@ const inputClass = `rounded-md bg-dark-bg px-2.5 py-1.5 text-sm text-white ${inl
 export function LibraryRecordFields({
   game,
   isPlayed,
+  endless = false,
 }: {
   game: GameCardData
   isPlayed: boolean
+  endless?: boolean
 }) {
   const igdbId = game.igdbId.toString()
   const hoursId = useId()
@@ -104,31 +106,33 @@ export function LibraryRecordFields({
         </p>
       )}
 
-      <div className="flex items-center justify-between gap-3 min-h-11">
-        <span className="text-xs text-gray-400">Vezes zerado</span>
-        <div className="flex items-center gap-1">
-          <IconButton
-            variant="bare"
-            onClick={() => updatePlayedCount(-1)}
-            disabled={count <= minimum}
-            title="Diminuir vezes zerado"
-            aria-label="Diminuir vezes zerado"
-          >
-            <Minus className="size-4" />
-          </IconButton>
-          <span className="w-6 text-center text-sm font-medium text-white tabular-nums">
-            {count}
-          </span>
-          <IconButton
-            variant="bare"
-            onClick={() => updatePlayedCount(1)}
-            title="Aumentar vezes zerado"
-            aria-label="Aumentar vezes zerado"
-          >
-            <Plus className="size-4" />
-          </IconButton>
+      {!endless && (
+        <div className="flex items-center justify-between gap-3 min-h-11">
+          <span className="text-xs text-gray-400">Vezes zerado</span>
+          <div className="flex items-center gap-1">
+            <IconButton
+              variant="bare"
+              onClick={() => updatePlayedCount(-1)}
+              disabled={count <= minimum}
+              title="Diminuir vezes zerado"
+              aria-label="Diminuir vezes zerado"
+            >
+              <Minus className="size-4" />
+            </IconButton>
+            <span className="w-6 text-center text-sm font-medium text-white tabular-nums">
+              {count}
+            </span>
+            <IconButton
+              variant="bare"
+              onClick={() => updatePlayedCount(1)}
+              title="Aumentar vezes zerado"
+              aria-label="Aumentar vezes zerado"
+            >
+              <Plus className="size-4" />
+            </IconButton>
+          </div>
         </div>
-      </div>
+      )}
 
       {isPlayed && (
         <div className="flex items-center justify-between gap-3 min-h-11">

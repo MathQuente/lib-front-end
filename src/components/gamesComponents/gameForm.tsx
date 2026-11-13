@@ -13,6 +13,7 @@ export function GameForm({ game }: GameFormProps) {
   const { gameStatus } = useGameStatus(igdbId)
 
   const activeStatus = gameStatus?.userGameStatus
+  const isEndless = gameStatus?.endless ?? false
   const hasStatus = (statusId: number) => activeStatus?.id === statusId
   const canHavePlatforms = !!activeStatus && activeStatus.id !== STATUS.WISHLIST
 
@@ -52,6 +53,7 @@ export function GameForm({ game }: GameFormProps) {
           totalCompletions={totals?.completions ?? 0}
           totalCompletedAt={totals?.completedAt}
           isPlayed={hasStatus(STATUS.PLAYED)}
+          endless={isEndless}
           statusId={activeStatus?.id}
           disabled={isMutating}
           onAdd={addPlatform}
@@ -61,7 +63,11 @@ export function GameForm({ game }: GameFormProps) {
       )}
 
       {!usesPlatforms && canHavePlatforms && (
-        <LibraryRecordFields game={game} isPlayed={hasStatus(STATUS.PLAYED)} />
+        <LibraryRecordFields
+          game={game}
+          isPlayed={hasStatus(STATUS.PLAYED)}
+          endless={isEndless}
+        />
       )}
     </div>
   )

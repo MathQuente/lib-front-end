@@ -67,6 +67,7 @@ export function PlatformEditor({
   className = 'flex flex-col gap-3',
   entry,
   isPlayed,
+  endless = false,
   disabled,
   onSave,
 }: {
@@ -74,6 +75,7 @@ export function PlatformEditor({
   className?: string
   entry: UserGamePlatformEntry
   isPlayed: boolean
+  endless?: boolean
   disabled: boolean
   onSave: (patch: UserGamePlatformPatch) => Promise<unknown>
 }) {
@@ -138,7 +140,7 @@ export function PlatformEditor({
           A próxima importação do Xbox substitui horas editadas à mão.
         </p>
       )}
-      {!completionsVisible && (
+      {!completionsVisible && !endless && (
         <button
           type="button"
           onClick={() => setShowCompletions(true)}
@@ -150,30 +152,32 @@ export function PlatformEditor({
 
       {completionsVisible && (
         <>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs text-gray-400">Vezes zerado</span>
-            <div className="flex items-center gap-2">
-              <IconButton
-                variant="bare"
-                onClick={() => onSave({ completions: entry.completions - 1 })}
-                disabled={disabled || entry.completions <= (isPlayed ? 1 : 0)}
-                aria-label={`Diminuir vezes zerado em ${name}`}
-              >
-                <Minus className="size-3.5" />
-              </IconButton>
-              <span className="w-5 text-center text-sm font-medium text-white">
-                {entry.completions}
-              </span>
-              <IconButton
-                variant="bare"
-                onClick={() => onSave({ completions: entry.completions + 1 })}
-                disabled={disabled}
-                aria-label={`Aumentar vezes zerado em ${name}`}
-              >
-                <Plus className="size-3.5" />
-              </IconButton>
+          {!endless && (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-gray-400">Vezes zerado</span>
+              <div className="flex items-center gap-2">
+                <IconButton
+                  variant="bare"
+                  onClick={() => onSave({ completions: entry.completions - 1 })}
+                  disabled={disabled || entry.completions <= (isPlayed ? 1 : 0)}
+                  aria-label={`Diminuir vezes zerado em ${name}`}
+                >
+                  <Minus className="size-3.5" />
+                </IconButton>
+                <span className="w-5 text-center text-sm font-medium text-white">
+                  {entry.completions}
+                </span>
+                <IconButton
+                  variant="bare"
+                  onClick={() => onSave({ completions: entry.completions + 1 })}
+                  disabled={disabled}
+                  aria-label={`Aumentar vezes zerado em ${name}`}
+                >
+                  <Plus className="size-3.5" />
+                </IconButton>
+              </div>
             </div>
-          </div>
+          )}
           {isPlayed && (
             <div className="flex items-center justify-between gap-2">
               <label htmlFor={dateId} className="text-xs text-gray-400">
@@ -242,6 +246,7 @@ function PlatformRow({
   entry,
   hint,
   isPlayed,
+  endless,
   disabled,
   open,
   onToggle,
@@ -251,6 +256,7 @@ function PlatformRow({
   entry: UserGamePlatformEntry
   hint: string | null
   isPlayed: boolean
+  endless?: boolean
   disabled: boolean
   open: boolean
   onToggle: () => void
@@ -318,6 +324,7 @@ function PlatformRow({
           className="flex flex-col gap-3 px-4 pb-4 pt-1"
           entry={entry}
           isPlayed={isPlayed}
+          endless={endless}
           disabled={disabled}
           onSave={onSave}
         />
@@ -411,6 +418,7 @@ export function GamePlatformsSection({
   totalCompletions,
   totalCompletedAt,
   isPlayed,
+  endless,
   statusId,
   disabled,
   onAdd,
@@ -423,6 +431,7 @@ export function GamePlatformsSection({
   totalCompletions: number
   totalCompletedAt: string | null | undefined
   isPlayed: boolean
+  endless?: boolean
   statusId?: number
   disabled: boolean
   onAdd: (
@@ -549,6 +558,7 @@ export function GamePlatformsSection({
                 .join(' · ') || null
             }
             isPlayed={isPlayed}
+            endless={endless}
             disabled={disabled}
             open={openKey === key}
             onToggle={() => setOpenKey(openKey === key ? null : key)}

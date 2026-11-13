@@ -379,6 +379,7 @@ Reasons that used to live in code comments (the project keeps source files comme
 - `pages/userProfilePage.tsx`: the back end answers 400 for an id that is not a UUID and 404 for a UUID that does not exist; both show the not-found screen.
 - `hooks/useApi.ts` (`getUserGames`): `/users/userGames` uses different names from the rest of the app (`gameName`/`dateRelease` instead of `name`/`releaseDate`); the mapping happens here so the inconsistency does not leak into the rest of the front.
 - `utils/releaseDate.ts`: IGDB sends the release date as UTC midnight; formatting in the local time zone shows the previous day in Brazil.
+- Jogo com a marca Infinito (`endless`): o "Vezes zerado" e o "Já zerei antes" não aparecem (`libraryRecordFields.tsx`, `gamePlatformsSection.tsx`, prop `endless`). Jogado continua valendo e a data "Finalizado em" fica; a contagem é no máximo 1, definida pelo Jogado. Ao marcar Jogado com várias plataformas o seletor "Em qual plataforma você zerou?" só aparece se ainda não houver zerada (o backend exige pelo menos 1 conclusão em Jogado). Voltar para Jogando mantém contagem e data como histórico (troféu "Já zerado" no card).
 
 ## Navigation Guide
 

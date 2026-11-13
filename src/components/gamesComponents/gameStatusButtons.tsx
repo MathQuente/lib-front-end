@@ -46,6 +46,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
   const { addGame, removeGame } = useAddGame(igdbId)
 
   const activeStatus = gameStatus?.userGameStatus
+  const isEndless = gameStatus?.endless ?? false
   const hasStatus = (statusId: number) => activeStatus?.id === statusId
   const canHavePlatforms = !!activeStatus && activeStatus.id !== STATUS.WISHLIST
 
@@ -153,7 +154,13 @@ export function GameStatusButtons({ game }: GameFormProps) {
     setIsSaving(true)
     try {
       if (hasExistingStatus) {
-        if (statusId === STATUS.PLAYED && platforms.length > 1) {
+        const alreadyCompletedEndless =
+          isEndless && platforms.some(entry => entry.completions > 0)
+        if (
+          statusId === STATUS.PLAYED &&
+          platforms.length > 1 &&
+          !alreadyCompletedEndless
+        ) {
           setAskingCompletion(true)
           return
         }
