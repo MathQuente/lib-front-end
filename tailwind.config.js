@@ -65,6 +65,7 @@ export default {
         primary: '#7A38CA',
         'primary-light': '#9D52E8',
         'primary-hover': '#8B47DB',
+        'primary-hover-light': '#AE63F9',
       },
     },
   },

@@ -183,7 +183,7 @@ colors: {
 }
 ```
 
-Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-light)`, `bg-primary`, `hover:bg-primary-hover` — no hardcoded hex in `className`, except where third-party libs need literal color values (MUI `Rating` `sx` in `ratingAverage.tsx`, Recharts `Cell fill` in `ratingChart.tsx`) and in `rouletteWheel.tsx` (least-polished page, ad-hoc hex + placeholder text — known, deliberately unfinished per project owner).
+Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-light)`, `bg-primary`, `hover:bg-primary-hover` — no hardcoded hex in `className`, except where third-party libs need literal color values (MUI `Rating` `sx` in `ratingAverage.tsx`) and in `rouletteWheel.tsx` (least-polished page, ad-hoc hex + placeholder text — known, deliberately unfinished per project owner).
 
 ### Everything else
 
@@ -208,7 +208,7 @@ Convention: components use `bg-dark-bg*`, `border-dark-border`, `text-primary(-l
 | `playedCount.tsx` | +/- "times completed" widget. |
 | `playersInfo.tsx` | Per-status user counts + ratings count. |
 | `ratingAverage.tsx` | Dual-layer MUI `Rating` (readonly + interactive hover) + remove button. |
-| `ratingChart.tsx` | Recharts bar chart, rating distribution. |
+| `ratingChart.tsx` | HTML/CSS histogram of 10 half-star bins; hidden below 6 ratings (total only), hover/focus readout. |
 | `searchBar.tsx` | Route-synced search input (`/search/:query`), autofocus + cursor-to-end. |
 | `sectionHeading.tsx` | Reusable heading, colored dot + optional icon. |
 | `sideBar.tsx` | Desktop nav + mobile drawer; calls `api.logout()` directly rather than via `useAuth()`. |
@@ -288,7 +288,7 @@ There is no test runner. Biome is the only linter and formatter; ESLint and its 
 
 - Zod schemas paired 1:1 with react-hook-form via `zodResolver`; form types via `z.infer<typeof schema>`.
 - TanStack Query hooks named `use<Noun>`, expose `.mutateAsync` wrapped in plain functions rather than the raw mutation object.
-- No hardcoded hex in Tailwind `className` outside third-party libs needing literal colors (MUI, Recharts) and the known-unfinished `rouletteWheel.tsx`.
+- No hardcoded hex in Tailwind `className` outside third-party libs needing literal colors (MUI) and the known-unfinished `rouletteWheel.tsx`.
 - `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-light` on every interactive element.
 - `rounded-full` pill badges for small metadata chips; small square dot (`size-1.5 bg-primary`) as section-heading marker.
 
