@@ -24,13 +24,16 @@ export const usePlayedCount = (igdbId: string) => {
 
   const queryKey = getGameStatsQueryKey(userId, igdbId)
 
-  const { data: completionsData, isLoading: isFetchingCompletions } =
-    useQuery<GameStatsResponse>({
-      queryKey: queryKey,
-      queryFn: () => api.getGameStats(igdbId),
-      enabled: Boolean(igdbId && userId && tracksCompletions),
-      staleTime: 1000 * 60 * 5,
-    })
+  const {
+    data: completionsData,
+    isLoading: isFetchingCompletions,
+    isError: isErrorCompletions,
+  } = useQuery<GameStatsResponse>({
+    queryKey: queryKey,
+    queryFn: () => api.getGameStats(igdbId),
+    enabled: Boolean(igdbId && userId && tracksCompletions),
+    staleTime: 1000 * 60 * 5,
+  })
 
   const updatePlayedCount = useMutation({
     mutationFn: (incrementValue: number) => {
@@ -77,6 +80,7 @@ export const usePlayedCount = (igdbId: string) => {
   return {
     completions: completionsData?.playedCount ?? 0,
     isFetchingCompletions,
+    isErrorCompletions,
     updatePlayedCount: (incrementValue: number) =>
       updatePlayedCount.mutateAsync(incrementValue),
     isLoading: updatePlayedCount.isPending,

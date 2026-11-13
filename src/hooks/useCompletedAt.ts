@@ -24,7 +24,11 @@ export const useCompletedAt = (igdbId: string) => {
 
   const queryKey = getCompletedAtQueryKey(userId, igdbId)
 
-  const { data } = useQuery<GameCompletedAtResponse>({
+  const {
+    data,
+    isLoading: isFetchingCompletedAt,
+    isError: isErrorCompletedAt,
+  } = useQuery<GameCompletedAtResponse>({
     queryKey,
     queryFn: () => api.getGameCompletedAt(igdbId),
     enabled: Boolean(igdbId && userId && inLibrary),
@@ -62,6 +66,8 @@ export const useCompletedAt = (igdbId: string) => {
 
   return {
     completedAt: data?.completedAt ?? null,
+    isFetchingCompletedAt,
+    isErrorCompletedAt,
     updateCompletedAt: (completedAt: string) =>
       updateCompletedAt.mutateAsync(completedAt),
     isLoading: updateCompletedAt.isPending,

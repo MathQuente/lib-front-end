@@ -23,13 +23,16 @@ export const useHoursPlayed = (igdbId: string) => {
 
   const queryKey = getGameHoursQueryKey(userId, igdbId)
 
-  const { data: hoursData, isLoading: isFetchingHours } =
-    useQuery<GameHoursResponse>({
-      queryKey,
-      queryFn: () => api.getGameHours(igdbId),
-      enabled: Boolean(igdbId && userId && !isWishlist),
-      staleTime: 1000 * 60 * 5,
-    })
+  const {
+    data: hoursData,
+    isLoading: isFetchingHours,
+    isError: isErrorHours,
+  } = useQuery<GameHoursResponse>({
+    queryKey,
+    queryFn: () => api.getGameHours(igdbId),
+    enabled: Boolean(igdbId && userId && !isWishlist),
+    staleTime: 1000 * 60 * 5,
+  })
 
   const updateHoursPlayed = useMutation({
     mutationFn: (hoursPlayed: number) =>
@@ -64,6 +67,7 @@ export const useHoursPlayed = (igdbId: string) => {
   return {
     hoursPlayed: hoursData?.hoursPlayed ?? 0,
     isFetchingHours,
+    isErrorHours,
     updateHoursPlayed: (hoursPlayed: number) =>
       updateHoursPlayed.mutateAsync(hoursPlayed),
     isLoading: updateHoursPlayed.isPending,

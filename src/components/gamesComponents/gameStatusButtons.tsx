@@ -10,8 +10,12 @@ import {
 import { useEffect, useId, useRef, useState } from 'react'
 import { USER_GAME_STATUS_ID as STATUS } from '../../constants/gameStatus'
 import { useAddGame } from '../../hooks/useAddGame'
+import { useCompletedAt } from '../../hooks/useCompletedAt'
 import { useGamePlatforms } from '../../hooks/useGamePlatforms'
 import { useGameStatus } from '../../hooks/useGameStatus'
+import { useHoursPlayed } from '../../hooks/useHoursPlayed'
+import { usePlayedCount } from '../../hooks/usePlayedCount'
+import { useRating } from '../../hooks/useRating'
 import type { GameFormProps } from '../../interfaces/games'
 import { focusRing } from '../../styles/focus'
 import type { UserGamePlatformEntry } from '../../types/platform'
@@ -47,8 +51,44 @@ export function GameStatusButtons({ game }: GameFormProps) {
 
   const { platforms, updatePlatform, isMutating, isLoading, isError } =
     useGamePlatforms(igdbId ?? '', canHavePlatforms)
+  const libraryId = activeStatus ? igdbId : undefined
+  const {
+    userRating,
+    isLoading: isLoadingRating,
+    isError: isErrorRating,
+  } = useRating(libraryId)
+  const { completions, isFetchingCompletions, isErrorCompletions } =
+    usePlayedCount(libraryId ?? '')
+  const { hoursPlayed, isFetchingHours, isErrorHours } = useHoursPlayed(
+    libraryId ?? ''
+  )
+  const { completedAt, isFetchingCompletedAt, isErrorCompletedAt } =
+    useCompletedAt(libraryId ?? '')
+  const isCheckingWishlistLoss =
+    isLoading ||
+    isLoadingRating ||
+    isFetchingCompletions ||
+    isFetchingHours ||
+    isFetchingCompletedAt
+  const failedCheckingWishlistLoss =
+    isError ||
+    isErrorRating ||
+    isErrorCompletions ||
+    isErrorHours ||
+    isErrorCompletedAt
+  const hasDataToLose =
+    platforms.length > 0 ||
+    userRating !== null ||
+    completions > 0 ||
+    hoursPlayed > 0 ||
+    completedAt !== null
+  const needsWishlistConfirmation =
+    isCheckingWishlistLoss || failedCheckingWishlistLoss || hasDataToLose
+
   const [askingCompletion, setAskingCompletion] = useState(false)
   const [confirmingRemoval, setConfirmingRemoval] = useState(false)
+  const [confirmingWishlist, setConfirmingWishlist] = useState(false)
+  const [isMovingToWishlist, setIsMovingToWishlist] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [completionPending, setCompletionPending] = useState(false)
@@ -74,6 +114,17 @@ export function GameStatusButtons({ game }: GameFormProps) {
     }
   }
 
+  async function confirmWishlist() {
+    setIsMovingToWishlist(true)
+    try {
+      await updateGameStatus({ statusIds: STATUS.WISHLIST })
+      setConfirmingWishlist(false)
+    } catch {
+    } finally {
+      setIsMovingToWishlist(false)
+    }
+  }
+
   async function handleStatusClick(statusId: number) {
     const isAlreadyActive = hasStatus(statusId)
     const hasExistingStatus = activeStatus != null
@@ -85,6 +136,15 @@ export function GameStatusButtons({ game }: GameFormProps) {
         return
       }
       setConfirmingRemoval(true)
+      return
+    }
+
+    if (
+      hasExistingStatus &&
+      statusId === STATUS.WISHLIST &&
+      needsWishlistConfirmation
+    ) {
+      setConfirmingWishlist(true)
       return
     }
 
@@ -261,6 +321,17 @@ export function GameStatusButtons({ game }: GameFormProps) {
           </div>
         </fieldset>
       )}
+
+      <ConfirmDialog
+        open={confirmingWishlist}
+        onOpenChange={open => !open && setConfirmingWishlist(false)}
+        title="Mover para a lista de desejos?"
+        description={`${game.name} vai para a lista de desejos. Nota, plataformas, horas, vezes zerado e data de conclusão registrados serão apagados.`}
+        confirmLabel="Mover"
+        onConfirm={confirmWishlist}
+        isLoading={isMovingToWishlist}
+        lockWhileLoading
+      />
 
       <ConfirmDialog
         open={confirmingRemoval}
