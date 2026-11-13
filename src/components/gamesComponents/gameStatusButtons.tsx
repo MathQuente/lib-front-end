@@ -98,7 +98,9 @@ export function GameStatusButtons({ game }: GameFormProps) {
 
   useEffect(() => {
     if (askingCompletion)
-      completionRef.current?.querySelector('button')?.focus()
+      completionRef.current
+        ?.querySelector<HTMLButtonElement>('[data-completion-option]')
+        ?.focus()
   }, [askingCompletion])
 
   if (!game) return null
@@ -202,6 +204,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
 
   function cancelCompletion() {
     setAskingCompletion(false)
+    setCompletionPending(false)
   }
 
   const canStop =
@@ -297,6 +300,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
                 <button
                   key={entryKey(entry)}
                   type="button"
+                  data-completion-option
                   onClick={() => applyPlayed(entry)}
                   disabled={isMutating || isSaving}
                   className={`relative inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs transition-colors after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${focusRing} disabled:opacity-50 border border-dark-border bg-dark-bg-light text-gray-200 hover:border-primary/50 hover:text-white`}
@@ -310,6 +314,7 @@ export function GameStatusButtons({ game }: GameFormProps) {
             })}
             <button
               type="button"
+              data-completion-option
               onClick={() => applyPlayed(null)}
               aria-label="Só marcar como Jogado"
               title="Só marcar como Jogado, sem registrar a zerada em uma plataforma"
