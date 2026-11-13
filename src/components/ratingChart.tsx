@@ -37,7 +37,7 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
   }
 
   return (
-    <figure className="flex flex-col gap-1.5">
+    <figure className="flex flex-col gap-1.5 [container-type:inline-size]">
       <p className="min-h-4 text-xs text-gray-300" aria-hidden="true">
         {active !== null &&
           `${nf.format(active)}★: ${nf.format(activeCount)} ${activeCount === 1 ? 'avaliação' : 'avaliações'} · ${Math.round((activeCount / total) * 100)}%`}
@@ -74,10 +74,10 @@ export function RatingChart({ GameResponse }: RatingChartProps) {
         {BINS.map(bin => (
           <span
             key={bin}
-            className={`flex-1 text-center ${active === bin ? 'font-bold text-white' : ''}`}
+            className={`flex flex-1 items-center justify-center gap-0.5 [@container(max-width:359px)]:flex-col [@container(max-width:359px)]:gap-0 ${active === bin ? 'font-bold text-white' : ''}`}
           >
             {nf.format(bin)}
-            <Star className="ml-0.5 inline size-3 fill-current align-[-1px]" />
+            <Star className="size-3 fill-current" />
           </span>
         ))}
       </div>
